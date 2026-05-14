@@ -1,429 +1,707 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="FYDP Research Proposal 2026–2027: Five Q1-level NLP & Agentic AI research directions, formally submitted to supervisor.">
-  <title>FYDP Research Proposal (2026–2027) — Overview</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FYDP Research Proposal 2026–2027: Five Q1-level NLP & Agentic AI research directions, formally submitted to supervisor."
+    />
+    <title>FYDP Research Proposal (2026–2027) — Overview</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ══ COVER HEADER ══════════════════════════════════════════ -->
+    <header>
+      <div class="doc-type">
+        Final Year Design Project · Formal Supervisor Proposal
+      </div>
+      <h1>FYDP High-Impact Research Proposal<br />(2026 – 2027)</h1>
+      <p class="subtitle">
+        NLP &amp; LLM-Based Q1-Level Research Directions in Agentic AI
+      </p>
 
-<!-- ══ COVER HEADER ══════════════════════════════════════════ -->
-<header>
-  <div class="doc-type">Final Year Design Project · Formal Supervisor Proposal</div>
-  <h1>FYDP High-Impact Research Proposal<br>(2026 – 2027)</h1>
-  <p class="subtitle">NLP &amp; LLM-Based Q1-Level Research Directions in Agentic AI</p>
+      <div class="cover-grid">
+        <div class="cover-item"><span>Prepared By</span>Md. Atikur Rahaman</div>
+        <div class="cover-item">
+          <span>GitHub</span
+          ><a
+            href="https://github.com/atik203"
+            style="color: white; text-decoration: none"
+            >atik203</a
+          >
+        </div>
+        <div class="cover-item">
+          <span>Website</span
+          ><a
+            href="https://atikurrahaman.live"
+            style="color: white; text-decoration: none"
+            >atikurrahaman.live</a
+          >
+        </div>
+      </div>
+    </header>
 
-  <div class="cover-grid">
-    <div class="cover-item"><span>Student</span>[Your Full Name]</div>
-    <div class="cover-item"><span>Student ID</span>[e.g. 20-XXXX-X]</div>
-    <div class="cover-item"><span>Program</span>B.Sc. in Computer Science / AI</div>
-    <div class="cover-item"><span>Supervisor</span>[Professor Name], PhD</div>
-    <div class="cover-item"><span>Department</span>[Dept. of CS &amp; Engineering]</div>
-    <div class="cover-item"><span>University</span>[University Name]</div>
-    <div class="cover-item"><span>Submission Date</span>May 2026</div>
-    <div class="cover-item"><span>Status</span>Under Supervisor Review</div>
-  </div>
-</header>
+    <!-- ══ NAVIGATION ════════════════════════════════════════════ -->
+    <nav>
+      <ul>
+        <li><a href="index.html" class="active">Overview</a></li>
+        <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
+        <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
+        <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
+        <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
+        <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
+        <li><a href="conclusion.html">Conclusion</a></li>
+      </ul>
+    </nav>
 
-<!-- ══ NAVIGATION ════════════════════════════════════════════ -->
-<nav>
-  <ul>
-    <li><a href="index.html" class="active">Overview</a></li>
-    <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
-    <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
-    <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
-    <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
-    <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
-    <li><a href="conclusion.html">Conclusion</a></li>
-  </ul>
-</nav>
+    <main>
+      <!-- 1. Executive Summary -->
+      <section class="accent-blue">
+        <h2><span class="section-icon">📋</span> 1. Executive Summary</h2>
+        <p>
+          This document is a formal research proposal submitted to my FYDP
+          supervisor for the academic year 2026–2027. It presents
+          <strong>five rigorously evaluated research directions</strong> in
+          Natural Language Processing (NLP), Large Language Models (LLMs), and
+          Agentic AI. Each direction has been assessed against a five-axis
+          evaluation framework aligned with Washington Accord engineering
+          standards and Q1 publication requirements (ACL, NeurIPS, EMNLP, ICLR,
+          IEEE Transactions).
+        </p>
+        <p>
+          The proposal follows the structure of a top-venue research paper:
+          problem formulation, related work critique, proposed architecture,
+          methodology, evaluation plan, expected outcomes, and a realistic
+          12-month feasibility breakdown. The goal is to identify a single
+          research direction for execution, culminating in a peer-reviewed
+          publication and a complete FYDP thesis.
+        </p>
 
-<main>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val">5</div>
+            <div class="kpi-label">Research Directions</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-val">12</div>
+            <div class="kpi-label">Month Timeline</div>
+          </div>
+          <div class="kpi-card sky">
+            <div class="kpi-val">Q1</div>
+            <div class="kpi-label">Target Venue</div>
+          </div>
+          <div class="kpi-card amber">
+            <div class="kpi-val">4.6</div>
+            <div class="kpi-label">Top Composite Score</div>
+          </div>
+          <div class="kpi-card rose">
+            <div class="kpi-val">2</div>
+            <div class="kpi-label">Recommended Ideas</div>
+          </div>
+        </div>
+      </section>
 
-  <!-- 1. Executive Summary -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">📋</span> 1. Executive Summary</h2>
-    <p>
-      This document is a formal research proposal submitted to my FYDP supervisor for the academic year 2026–2027.
-      It presents <strong>five rigorously evaluated research directions</strong> in Natural Language Processing (NLP),
-      Large Language Models (LLMs), and Agentic AI. Each direction has been assessed against a
-      five-axis evaluation framework aligned with Washington Accord engineering standards and Q1 publication
-      requirements (ACL, NeurIPS, EMNLP, ICLR, IEEE Transactions).
-    </p>
-    <p>
-      The proposal follows the structure of a top-venue research paper: problem formulation, related work critique,
-      proposed architecture, methodology, evaluation plan, expected outcomes, and a realistic 12-month feasibility breakdown.
-      The goal is to identify a single research direction for execution, culminating in a peer-reviewed publication
-      and a complete FYDP thesis.
-    </p>
+      <!-- 2. Project Information -->
+      <section class="accent-teal">
+        <h2>
+          <span class="section-icon">🎓</span> 2. Project &amp; Team Information
+        </h2>
 
-    <div class="kpi-row">
-      <div class="kpi-card"><div class="kpi-val">5</div><div class="kpi-label">Research Directions</div></div>
-      <div class="kpi-card green"><div class="kpi-val">12</div><div class="kpi-label">Month Timeline</div></div>
-      <div class="kpi-card sky"><div class="kpi-val">Q1</div><div class="kpi-label">Target Venue</div></div>
-      <div class="kpi-card amber"><div class="kpi-val">4.6</div><div class="kpi-label">Top Composite Score</div></div>
-      <div class="kpi-card rose"><div class="kpi-val">2</div><div class="kpi-label">Recommended Ideas</div></div>
-    </div>
-  </section>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Student Details</h4>
+            <table style="margin: 0; box-shadow: none; font-size: 0.85rem">
+              <tbody>
+                <tr>
+                  <td style="color: var(--text-muted); width: 45%">
+                    Full Name
+                  </td>
+                  <td><strong>Md. Atikur Rahaman</strong></td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Student ID</td>
+                  <td>[20-XXXX-X]</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Email</td>
+                  <td>[student@university.edu]</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Program</td>
+                  <td>B.Sc. Computer Science</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Year / Semester</td>
+                  <td>4th Year, Semester 7</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">CGPA</td>
+                  <td>[X.XX / 4.00]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-box">
+            <h4>Supervisor Details</h4>
+            <table style="margin: 0; box-shadow: none; font-size: 0.85rem">
+              <tbody>
+                <tr>
+                  <td style="color: var(--text-muted); width: 45%">Name</td>
+                  <td><strong>[Prof. Name]</strong></td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Designation</td>
+                  <td>[Associate Professor]</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Department</td>
+                  <td>[CS &amp; Engineering]</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Email</td>
+                  <td>[prof@university.edu]</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Research Focus</td>
+                  <td>NLP, AI Systems</td>
+                </tr>
+                <tr>
+                  <td style="color: var(--text-muted)">Office</td>
+                  <td>[Room No., Building]</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-  <!-- 2. Project Information -->
-  <section class="accent-teal">
-    <h2><span class="section-icon">🎓</span> 2. Project &amp; Team Information</h2>
+        <div class="info-grid" style="margin-top: 1rem">
+          <div class="info-card">
+            <div class="ic-label">Project Title (Working)</div>
+            <div class="ic-value">
+              Trust-Calibrated Multi-Agent Debate for Scientific Reasoning
+            </div>
+            <div class="ic-sub">Subject to supervisor approval</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Target Venue</div>
+            <div class="ic-value">ACL / EMNLP / NeurIPS 2027</div>
+            <div class="ic-sub">Q1 conference, peer-reviewed</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Project Duration</div>
+            <div class="ic-value">12 Months</div>
+            <div class="ic-sub">Sep 2026 – Aug 2027</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Compute Budget</div>
+            <div class="ic-value">≤ 2× A100-equivalent</div>
+            <div class="ic-sub">Via university/cloud resources</div>
+          </div>
+        </div>
+      </section>
 
-    <div class="two-col">
-      <div class="col-box">
-        <h4>Student Details</h4>
-        <table style="margin:0;box-shadow:none;font-size:.85rem;">
+      <!-- 3. Evaluation Framework -->
+      <section>
+        <h2>
+          <span class="section-icon">⚖️</span> 3. Academic Evaluation Framework
+        </h2>
+        <p>
+          Every research direction in this proposal is evaluated against the
+          following five axes, each reflecting a critical dimension of a
+          publishable, feasible FYDP project. Scoring is on a 1–5 scale assessed
+          by the author; the supervisor is invited to re-score any dimension
+          before a final direction is selected.
+        </p>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Axis 1 — Novelty</h4>
+            <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 0">
+              Does the idea close an <em>explicit, citable</em> research gap?
+              Does it contribute a new algorithm, architecture, or methodology —
+              not just a new application of known methods?
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Axis 2 — Methodological Rigor</h4>
+            <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 0">
+              Can the evaluation plan yield statistically significant,
+              reproducible results with clear ablation studies, multiple
+              baselines, and proper confidence intervals?
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Axis 3 — Engineering Complexity</h4>
+            <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 0">
+              Does the system address open-ended, ill-defined problems meeting
+              Washington Accord graduate-level standards? Is it more than a
+              pipeline of existing APIs?
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Axis 4 — Feasibility</h4>
+            <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 0">
+              Is the scope honestly achievable in 12 months with ≤ 2×A100
+              compute, open-weight models, and publicly available datasets —
+              without EHR, legal, or IRB dependencies?
+            </p>
+          </div>
+        </div>
+        <div class="col-box" style="margin-top: 0">
+          <h4>Axis 5 — Publication Readiness</h4>
+          <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 0">
+            Could a well-executed version realistically survive Q1 peer review
+            at ACL, EMNLP, NeurIPS, or ICLR? Does it tell a clean story with a
+            falsifiable hypothesis and a meaningful baseline gap?
+          </p>
+        </div>
+      </section>
+
+      <!-- 4. Ranked Ideas -->
+      <section>
+        <h2>
+          <span class="section-icon">🏆</span> 4. Ranked Research Directions
+        </h2>
+        <p class="text-muted" style="margin-bottom: 1rem">
+          Click any title to view the full proposal for that idea.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 55px">Rank</th>
+              <th>Research Direction</th>
+              <th>Domain</th>
+              <th>Status</th>
+              <th>Score</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr><td style="color:var(--text-muted);width:45%">Full Name</td><td><strong>[Your Name]</strong></td></tr>
-            <tr><td style="color:var(--text-muted)">Student ID</td><td>[20-XXXX-X]</td></tr>
-            <tr><td style="color:var(--text-muted)">Email</td><td>[student@university.edu]</td></tr>
-            <tr><td style="color:var(--text-muted)">Program</td><td>B.Sc. Computer Science</td></tr>
-            <tr><td style="color:var(--text-muted)">Year / Semester</td><td>4th Year, Semester 7</td></tr>
-            <tr><td style="color:var(--text-muted)">CGPA</td><td>[X.XX / 4.00]</td></tr>
+            <tr>
+              <td><span class="rank-badge">1</span></td>
+              <td>
+                <a href="idea1.html"
+                  >Trust-Calibrated Multi-Agent Debate for Scientific
+                  Reasoning</a
+                >
+              </td>
+              <td>Agentic AI / Reasoning</td>
+              <td><span class="badge badge-green">Recommended</span></td>
+              <td><strong>4.6</strong></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge">2</span></td>
+              <td>
+                <a href="idea2.html"
+                  >Argumentative Scientific Claim Verification</a
+                >
+              </td>
+              <td>NLP / Discourse Graphs</td>
+              <td><span class="badge badge-blue">Strong Backup</span></td>
+              <td><strong>4.2</strong></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge">3</span></td>
+              <td>
+                <a href="idea3.html"
+                  >Temporal Knowledge Decay + Dynamic Knowledge Graphs</a
+                >
+              </td>
+              <td>NLP / Graph-RAG</td>
+              <td><span class="badge badge-blue">Consider</span></td>
+              <td><strong>4.0</strong></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge">4</span></td>
+              <td><a href="idea4.html">Neuro-Symbolic Rare Disease NLP</a></td>
+              <td>Healthcare NLP</td>
+              <td><span class="badge badge-amber">High Risk</span></td>
+              <td><strong>3.6</strong></td>
+            </tr>
+            <tr>
+              <td><span class="rank-badge">5</span></td>
+              <td>
+                <a href="idea5.html"
+                  >Scientific Verification using Agentic LLMs</a
+                >
+              </td>
+              <td>Agentic AI / Tool Use</td>
+              <td><span class="badge badge-amber">Lower Novelty</span></td>
+              <td><strong>3.2</strong></td>
+            </tr>
           </tbody>
         </table>
-      </div>
-      <div class="col-box">
-        <h4>Supervisor Details</h4>
-        <table style="margin:0;box-shadow:none;font-size:.85rem;">
+      </section>
+
+      <!-- 5. Scoring Matrix -->
+      <section>
+        <h2>
+          <span class="section-icon">📊</span> 5. Multi-Axis Scoring Matrix
+        </h2>
+        <p class="text-muted" style="margin-bottom: 1rem">
+          Scores on a 1–5 scale across all five evaluation axes. Supervisor may
+          revise.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Idea</th>
+              <th>Novelty</th>
+              <th>Rigor</th>
+              <th>Complexity</th>
+              <th>Feasibility</th>
+              <th>Pub. Ready</th>
+              <th>Composite</th>
+            </tr>
+          </thead>
           <tbody>
-            <tr><td style="color:var(--text-muted);width:45%">Name</td><td><strong>[Prof. Name]</strong></td></tr>
-            <tr><td style="color:var(--text-muted)">Designation</td><td>[Associate Professor]</td></tr>
-            <tr><td style="color:var(--text-muted)">Department</td><td>[CS &amp; Engineering]</td></tr>
-            <tr><td style="color:var(--text-muted)">Email</td><td>[prof@university.edu]</td></tr>
-            <tr><td style="color:var(--text-muted)">Research Focus</td><td>NLP, AI Systems</td></tr>
-            <tr><td style="color:var(--text-muted)">Office</td><td>[Room No., Building]</td></tr>
+            <tr>
+              <td><a href="idea1.html">1. Trust-Calibrated Debate</a></td>
+              <td>5</td>
+              <td>4</td>
+              <td>5</td>
+              <td>4</td>
+              <td>5</td>
+              <td><strong>4.6 ★</strong></td>
+            </tr>
+            <tr>
+              <td><a href="idea2.html">2. Argumentative Verification</a></td>
+              <td>4</td>
+              <td>5</td>
+              <td>5</td>
+              <td>3</td>
+              <td>4</td>
+              <td><strong>4.2</strong></td>
+            </tr>
+            <tr>
+              <td><a href="idea3.html">3. Temporal KG + Chrono-RAG</a></td>
+              <td>4</td>
+              <td>4</td>
+              <td>4</td>
+              <td>4</td>
+              <td>4</td>
+              <td><strong>4.0</strong></td>
+            </tr>
+            <tr>
+              <td><a href="idea4.html">4. Neuro-Symbolic Rare Disease</a></td>
+              <td>4</td>
+              <td>4</td>
+              <td>4</td>
+              <td>3</td>
+              <td>3</td>
+              <td><strong>3.6</strong></td>
+            </tr>
+            <tr>
+              <td><a href="idea5.html">5. Agentic Sci-Verify</a></td>
+              <td>3</td>
+              <td>3</td>
+              <td>4</td>
+              <td>3</td>
+              <td>3</td>
+              <td><strong>3.2</strong></td>
+            </tr>
           </tbody>
         </table>
-      </div>
-    </div>
+      </section>
 
-    <div class="info-grid" style="margin-top:1rem;">
-      <div class="info-card">
-        <div class="ic-label">Project Title (Working)</div>
-        <div class="ic-value">Trust-Calibrated Multi-Agent Debate for Scientific Reasoning</div>
-        <div class="ic-sub">Subject to supervisor approval</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Target Venue</div>
-        <div class="ic-value">ACL / EMNLP / NeurIPS 2027</div>
-        <div class="ic-sub">Q1 conference, peer-reviewed</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Project Duration</div>
-        <div class="ic-value">12 Months</div>
-        <div class="ic-sub">Sep 2026 – Aug 2027</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Compute Budget</div>
-        <div class="ic-value">≤ 2× A100-equivalent</div>
-        <div class="ic-sub">Via university/cloud resources</div>
-      </div>
-    </div>
-  </section>
+      <!-- 6. Overall 12-Month Project Plan -->
+      <section class="accent-amber">
+        <h2>
+          <span class="section-icon">📅</span> 6. Overall 12-Month Project Plan
+        </h2>
+        <p>
+          The schedule below represents the master project plan assuming
+          <strong>Idea 1</strong> is selected. Phases are designed to allow a
+          mid-point pivot to Idea 2 if the trust-calibration results prove
+          inconclusive by Month 6.
+        </p>
 
-  <!-- 3. Evaluation Framework -->
-  <section>
-    <h2><span class="section-icon">⚖️</span> 3. Academic Evaluation Framework</h2>
-    <p>
-      Every research direction in this proposal is evaluated against the following five axes, each reflecting a critical dimension
-      of a publishable, feasible FYDP project. Scoring is on a 1–5 scale assessed by the author; the supervisor is
-      invited to re-score any dimension before a final direction is selected.
-    </p>
-    <div class="two-col">
-      <div class="col-box">
-        <h4>Axis 1 — Novelty</h4>
-        <p class="text-muted" style="font-size:.88rem;margin-bottom:0">Does the idea close an <em>explicit, citable</em> research gap? Does it contribute a new algorithm, architecture, or methodology — not just a new application of known methods?</p>
-      </div>
-      <div class="col-box">
-        <h4>Axis 2 — Methodological Rigor</h4>
-        <p class="text-muted" style="font-size:.88rem;margin-bottom:0">Can the evaluation plan yield statistically significant, reproducible results with clear ablation studies, multiple baselines, and proper confidence intervals?</p>
-      </div>
-      <div class="col-box">
-        <h4>Axis 3 — Engineering Complexity</h4>
-        <p class="text-muted" style="font-size:.88rem;margin-bottom:0">Does the system address open-ended, ill-defined problems meeting Washington Accord graduate-level standards? Is it more than a pipeline of existing APIs?</p>
-      </div>
-      <div class="col-box">
-        <h4>Axis 4 — Feasibility</h4>
-        <p class="text-muted" style="font-size:.88rem;margin-bottom:0">Is the scope honestly achievable in 12 months with ≤ 2×A100 compute, open-weight models, and publicly available datasets — without EHR, legal, or IRB dependencies?</p>
-      </div>
-    </div>
-    <div class="col-box" style="margin-top:0">
-      <h4>Axis 5 — Publication Readiness</h4>
-      <p class="text-muted" style="font-size:.88rem;margin-bottom:0">Could a well-executed version realistically survive Q1 peer review at ACL, EMNLP, NeurIPS, or ICLR? Does it tell a clean story with a falsifiable hypothesis and a meaningful baseline gap?</p>
-    </div>
-  </section>
+        <table class="gantt-table">
+          <thead>
+            <tr>
+              <th style="width: 25%">Phase</th>
+              <th style="width: 22%">Duration</th>
+              <th style="width: 35%">Key Deliverables</th>
+              <th style="width: 18%">Progress</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 0: Planning</strong></td>
+              <td>Sep 2026 (Wk 1–2)</td>
+              <td>
+                Supervisor sign-off, environment setup, access provisioning
+              </td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar bar-teal" style="width: 100%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 1: Literature Review</strong></td>
+              <td>Sep – Oct 2026</td>
+              <td>
+                30-paper annotated bibliography, baseline sycophancy replication
+              </td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar" style="width: 90%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2: System Build</strong></td>
+              <td>Nov – Jan 2027</td>
+              <td>RAG module, trust function, multi-agent loop (v1)</td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar bar-amber" style="width: 60%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3: Experiments</strong></td>
+              <td>Feb – Apr 2027</td>
+              <td>
+                Full 4-baseline × 3-dataset matrix, ablation studies, 3-seed
+                runs
+              </td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar bar-amber" style="width: 40%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4: Analysis</strong></td>
+              <td>May – Jun 2027</td>
+              <td>
+                Error analysis, case studies, human evaluation, final metrics
+              </td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar bar-rose" style="width: 20%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phase 5: Writing &amp; Submit</strong></td>
+              <td>Jul – Aug 2027</td>
+              <td>Paper draft, thesis, peer-review submission, FYDP defence</td>
+              <td>
+                <div class="gantt-bar-wrap">
+                  <div class="gantt-bar bar-rose" style="width: 10%"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-  <!-- 4. Ranked Ideas -->
-  <section>
-    <h2><span class="section-icon">🏆</span> 4. Ranked Research Directions</h2>
-    <p class="text-muted" style="margin-bottom:1rem;">Click any title to view the full proposal for that idea.</p>
-    <table>
-      <thead>
-        <tr>
-          <th style="width:55px">Rank</th>
-          <th>Research Direction</th>
-          <th>Domain</th>
-          <th>Status</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="rank-badge">1</span></td>
-          <td><a href="idea1.html">Trust-Calibrated Multi-Agent Debate for Scientific Reasoning</a></td>
-          <td>Agentic AI / Reasoning</td>
-          <td><span class="badge badge-green">Recommended</span></td>
-          <td><strong>4.6</strong></td>
-        </tr>
-        <tr>
-          <td><span class="rank-badge">2</span></td>
-          <td><a href="idea2.html">Argumentative Scientific Claim Verification</a></td>
-          <td>NLP / Discourse Graphs</td>
-          <td><span class="badge badge-blue">Strong Backup</span></td>
-          <td><strong>4.2</strong></td>
-        </tr>
-        <tr>
-          <td><span class="rank-badge">3</span></td>
-          <td><a href="idea3.html">Temporal Knowledge Decay + Dynamic Knowledge Graphs</a></td>
-          <td>NLP / Graph-RAG</td>
-          <td><span class="badge badge-blue">Consider</span></td>
-          <td><strong>4.0</strong></td>
-        </tr>
-        <tr>
-          <td><span class="rank-badge">4</span></td>
-          <td><a href="idea4.html">Neuro-Symbolic Rare Disease NLP</a></td>
-          <td>Healthcare NLP</td>
-          <td><span class="badge badge-amber">High Risk</span></td>
-          <td><strong>3.6</strong></td>
-        </tr>
-        <tr>
-          <td><span class="rank-badge">5</span></td>
-          <td><a href="idea5.html">Scientific Verification using Agentic LLMs</a></td>
-          <td>Agentic AI / Tool Use</td>
-          <td><span class="badge badge-amber">Lower Novelty</span></td>
-          <td><strong>3.2</strong></td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+        <ul class="timeline" style="margin-top: 1.5rem">
+          <li>
+            <span class="phase">Milestone M1 (Oct 2026):</span> Baseline
+            sycophancy rate reproduced on SciBench ≥ 30% — confirms problem
+            exists in our setup.
+            <div>
+              <span class="deliverable"
+                >Deliverable: Baseline Report (5 pages)</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="phase">Milestone M2 (Jan 2027):</span> Trust function
+            implemented; initial results show ≥ 10% sycophancy reduction —
+            validates core hypothesis.
+            <div>
+              <span class="deliverable"
+                >Deliverable: Progress Report to Supervisor</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="phase">Milestone M3 (Apr 2027):</span> Full
+            experimental matrix complete across 3 datasets, 4 baselines, 3 seeds
+            with confidence intervals.
+            <div>
+              <span class="deliverable"
+                >Deliverable: Results Dashboard + Ablation Table</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="phase">Milestone M4 (Jul 2027):</span> Paper draft
+            submitted to supervisor for review. FYDP thesis first draft
+            complete.
+            <div>
+              <span class="deliverable"
+                >Deliverable: Paper Draft + Thesis Draft</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="phase">Milestone M5 (Aug 2027):</span> Venue submission
+            + FYDP final defence.
+            <div>
+              <span class="deliverable"
+                >Deliverable: Submitted Paper + Defence Slides</span
+              >
+            </div>
+          </li>
+        </ul>
+      </section>
 
-  <!-- 5. Scoring Matrix -->
-  <section>
-    <h2><span class="section-icon">📊</span> 5. Multi-Axis Scoring Matrix</h2>
-    <p class="text-muted" style="margin-bottom:1rem;">Scores on a 1–5 scale across all five evaluation axes. Supervisor may revise.</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Idea</th>
-          <th>Novelty</th>
-          <th>Rigor</th>
-          <th>Complexity</th>
-          <th>Feasibility</th>
-          <th>Pub. Ready</th>
-          <th>Composite</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td><a href="idea1.html">1. Trust-Calibrated Debate</a></td><td>5</td><td>4</td><td>5</td><td>4</td><td>5</td><td><strong>4.6 ★</strong></td></tr>
-        <tr><td><a href="idea2.html">2. Argumentative Verification</a></td><td>4</td><td>5</td><td>5</td><td>3</td><td>4</td><td><strong>4.2</strong></td></tr>
-        <tr><td><a href="idea3.html">3. Temporal KG + Chrono-RAG</a></td><td>4</td><td>4</td><td>4</td><td>4</td><td>4</td><td><strong>4.0</strong></td></tr>
-        <tr><td><a href="idea4.html">4. Neuro-Symbolic Rare Disease</a></td><td>4</td><td>4</td><td>4</td><td>3</td><td>3</td><td><strong>3.6</strong></td></tr>
-        <tr><td><a href="idea5.html">5. Agentic Sci-Verify</a></td><td>3</td><td>3</td><td>4</td><td>3</td><td>3</td><td><strong>3.2</strong></td></tr>
-      </tbody>
-    </table>
-  </section>
+      <!-- 7. Resources & Tools -->
+      <section>
+        <h2>
+          <span class="section-icon">🛠️</span> 7. Required Resources &amp; Tools
+        </h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">Compute</div>
+            <div class="ic-value">1× A100 80GB (or equiv.)</div>
+            <div class="ic-sub">Google Colab Pro / University HPC</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Base Models</div>
+            <div class="ic-value">Llama-3-8B, Mistral-7B</div>
+            <div class="ic-sub">Open-weight, 4-bit quantized via vLLM</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Frameworks</div>
+            <div class="ic-value">LangGraph, AutoGen, PyTorch</div>
+            <div class="ic-sub">Open source, no licensing cost</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Retrieval</div>
+            <div class="ic-value">Semantic Scholar API, FAISS</div>
+            <div class="ic-sub">Free academic API access</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Primary Dataset</div>
+            <div class="ic-value">SciBench, GPQA, QASper</div>
+            <div class="ic-sub">All publicly available, no licensing</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Estimated Cost</div>
+            <div class="ic-value">~$200–400 USD</div>
+            <div class="ic-sub">Cloud API calls (judge module only)</div>
+          </div>
+        </div>
+      </section>
 
-  <!-- 6. Overall 12-Month Project Plan -->
-  <section class="accent-amber">
-    <h2><span class="section-icon">📅</span> 6. Overall 12-Month Project Plan</h2>
-    <p>The schedule below represents the master project plan assuming <strong>Idea 1</strong> is selected. Phases are designed to allow a mid-point pivot to Idea 2 if the trust-calibration results prove inconclusive by Month 6.</p>
+      <!-- 8. Risk Summary -->
+      <section>
+        <h2><span class="section-icon">⚠️</span> 8. Project Risk Register</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Risk</th>
+              <th>Likelihood</th>
+              <th>Impact</th>
+              <th>Mitigation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Compute unavailability</td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td><span class="badge badge-rose">High</span></td>
+              <td>
+                Use quantized 7–8B models locally; allocate cloud budget early
+              </td>
+            </tr>
+            <tr>
+              <td>Sycophancy effect too small to measure</td>
+              <td><span class="badge badge-green">Low</span></td>
+              <td><span class="badge badge-rose">High</span></td>
+              <td>
+                Pre-validate effect size on GPQA (known high sycophancy rate)
+                before full experiments
+              </td>
+            </tr>
+            <tr>
+              <td>RAG retrieval quality too low</td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td>
+                Cross-encoder reranker; citation-count filtering; domain
+                restriction to biomedicine
+              </td>
+            </tr>
+            <tr>
+              <td>Paper rejected (novelty concerns)</td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td>
+                Target workshop (ACL SRW) as a fallback; frame contribution as
+                empirical study
+              </td>
+            </tr>
+            <tr>
+              <td>Thesis / paper writing delays</td>
+              <td><span class="badge badge-green">Low</span></td>
+              <td><span class="badge badge-amber">Medium</span></td>
+              <td>
+                Begin writing Phase 3 results immediately; use structured paper
+                template from Month 1
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
 
-    <table class="gantt-table">
-      <thead>
-        <tr>
-          <th style="width:25%">Phase</th>
-          <th style="width:22%">Duration</th>
-          <th style="width:35%">Key Deliverables</th>
-          <th style="width:18%">Progress</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Phase 0: Planning</strong></td>
-          <td>Sep 2026 (Wk 1–2)</td>
-          <td>Supervisor sign-off, environment setup, access provisioning</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar bar-teal" style="width:100%"></div></div></td>
-        </tr>
-        <tr>
-          <td><strong>Phase 1: Literature Review</strong></td>
-          <td>Sep – Oct 2026</td>
-          <td>30-paper annotated bibliography, baseline sycophancy replication</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar" style="width:90%"></div></div></td>
-        </tr>
-        <tr>
-          <td><strong>Phase 2: System Build</strong></td>
-          <td>Nov – Jan 2027</td>
-          <td>RAG module, trust function, multi-agent loop (v1)</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar bar-amber" style="width:60%"></div></div></td>
-        </tr>
-        <tr>
-          <td><strong>Phase 3: Experiments</strong></td>
-          <td>Feb – Apr 2027</td>
-          <td>Full 4-baseline × 3-dataset matrix, ablation studies, 3-seed runs</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar bar-amber" style="width:40%"></div></div></td>
-        </tr>
-        <tr>
-          <td><strong>Phase 4: Analysis</strong></td>
-          <td>May – Jun 2027</td>
-          <td>Error analysis, case studies, human evaluation, final metrics</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar bar-rose" style="width:20%"></div></div></td>
-        </tr>
-        <tr>
-          <td><strong>Phase 5: Writing &amp; Submit</strong></td>
-          <td>Jul – Aug 2027</td>
-          <td>Paper draft, thesis, peer-review submission, FYDP defence</td>
-          <td><div class="gantt-bar-wrap"><div class="gantt-bar bar-rose" style="width:10%"></div></div></td>
-        </tr>
-      </tbody>
-    </table>
+      <!-- 9. How to Read -->
+      <section>
+        <h2>
+          <span class="section-icon">📖</span> 9. How to Read This Proposal
+        </h2>
+        <p>
+          Each idea page (<a href="idea1.html">Idea 1</a> through
+          <a href="idea5.html">Idea 5</a>) follows the exact structure of an
+          academic research paper:
+        </p>
+        <div class="chip-row">
+          <span class="chip">Core Idea</span>
+          <span class="chip">Problem Statement</span>
+          <span class="chip">Related Work</span>
+          <span class="chip green">Research Gap</span>
+          <span class="chip">Proposed Architecture</span>
+          <span class="chip">Methodology</span>
+          <span class="chip">Evaluation Plan</span>
+          <span class="chip green">Expected Results</span>
+          <span class="chip amber">Q1 Justification</span>
+          <span class="chip amber">Feasibility &amp; Risks</span>
+        </div>
+        <p>
+          The <a href="conclusion.html">Conclusion</a> page provides a critical
+          cross-idea comparison, identifies the top 2 recommendations, and
+          outlines the PhD trajectory plan for 2026–2030.
+        </p>
 
-    <ul class="timeline" style="margin-top:1.5rem;">
-      <li>
-        <span class="phase">Milestone M1 (Oct 2026):</span> Baseline sycophancy rate reproduced on SciBench ≥ 30% — confirms problem exists in our setup.
-        <div><span class="deliverable">Deliverable: Baseline Report (5 pages)</span></div>
-      </li>
-      <li>
-        <span class="phase">Milestone M2 (Jan 2027):</span> Trust function implemented; initial results show ≥ 10% sycophancy reduction — validates core hypothesis.
-        <div><span class="deliverable">Deliverable: Progress Report to Supervisor</span></div>
-      </li>
-      <li>
-        <span class="phase">Milestone M3 (Apr 2027):</span> Full experimental matrix complete across 3 datasets, 4 baselines, 3 seeds with confidence intervals.
-        <div><span class="deliverable">Deliverable: Results Dashboard + Ablation Table</span></div>
-      </li>
-      <li>
-        <span class="phase">Milestone M4 (Jul 2027):</span> Paper draft submitted to supervisor for review. FYDP thesis first draft complete.
-        <div><span class="deliverable">Deliverable: Paper Draft + Thesis Draft</span></div>
-      </li>
-      <li>
-        <span class="phase">Milestone M5 (Aug 2027):</span> Venue submission + FYDP final defence.
-        <div><span class="deliverable">Deliverable: Submitted Paper + Defence Slides</span></div>
-      </li>
-    </ul>
-  </section>
+        <div class="callout callout-info">
+          <div class="callout-title">ℹ Supervisor Action Required</div>
+          <p class="mb-0">
+            After reviewing all idea pages and the conclusion, please select a
+            preferred research direction and note any concerns regarding scope,
+            resources, or methodological approach. Your feedback will be
+            incorporated into the final project specification document (to be
+            submitted within 2 weeks of approval).
+          </p>
+        </div>
+      </section>
+    </main>
 
-  <!-- 7. Resources & Tools -->
-  <section>
-    <h2><span class="section-icon">🛠️</span> 7. Required Resources &amp; Tools</h2>
-    <div class="info-grid">
-      <div class="info-card">
-        <div class="ic-label">Compute</div>
-        <div class="ic-value">1× A100 80GB (or equiv.)</div>
-        <div class="ic-sub">Google Colab Pro / University HPC</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Base Models</div>
-        <div class="ic-value">Llama-3-8B, Mistral-7B</div>
-        <div class="ic-sub">Open-weight, 4-bit quantized via vLLM</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Frameworks</div>
-        <div class="ic-value">LangGraph, AutoGen, PyTorch</div>
-        <div class="ic-sub">Open source, no licensing cost</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Retrieval</div>
-        <div class="ic-value">Semantic Scholar API, FAISS</div>
-        <div class="ic-sub">Free academic API access</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Primary Dataset</div>
-        <div class="ic-value">SciBench, GPQA, QASper</div>
-        <div class="ic-sub">All publicly available, no licensing</div>
-      </div>
-      <div class="info-card">
-        <div class="ic-label">Estimated Cost</div>
-        <div class="ic-value">~$200–400 USD</div>
-        <div class="ic-sub">Cloud API calls (judge module only)</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 8. Risk Summary -->
-  <section>
-    <h2><span class="section-icon">⚠️</span> 8. Project Risk Register</h2>
-    <table>
-      <thead>
-        <tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Compute unavailability</td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td><span class="badge badge-rose">High</span></td>
-          <td>Use quantized 7–8B models locally; allocate cloud budget early</td>
-        </tr>
-        <tr>
-          <td>Sycophancy effect too small to measure</td>
-          <td><span class="badge badge-green">Low</span></td>
-          <td><span class="badge badge-rose">High</span></td>
-          <td>Pre-validate effect size on GPQA (known high sycophancy rate) before full experiments</td>
-        </tr>
-        <tr>
-          <td>RAG retrieval quality too low</td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td>Cross-encoder reranker; citation-count filtering; domain restriction to biomedicine</td>
-        </tr>
-        <tr>
-          <td>Paper rejected (novelty concerns)</td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td>Target workshop (ACL SRW) as a fallback; frame contribution as empirical study</td>
-        </tr>
-        <tr>
-          <td>Thesis / paper writing delays</td>
-          <td><span class="badge badge-green">Low</span></td>
-          <td><span class="badge badge-amber">Medium</span></td>
-          <td>Begin writing Phase 3 results immediately; use structured paper template from Month 1</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 9. How to Read -->
-  <section>
-    <h2><span class="section-icon">📖</span> 9. How to Read This Proposal</h2>
-    <p>Each idea page (<a href="idea1.html">Idea 1</a> through <a href="idea5.html">Idea 5</a>) follows the exact structure of an academic research paper:</p>
-    <div class="chip-row">
-      <span class="chip">Core Idea</span>
-      <span class="chip">Problem Statement</span>
-      <span class="chip">Related Work</span>
-      <span class="chip green">Research Gap</span>
-      <span class="chip">Proposed Architecture</span>
-      <span class="chip">Methodology</span>
-      <span class="chip">Evaluation Plan</span>
-      <span class="chip green">Expected Results</span>
-      <span class="chip amber">Q1 Justification</span>
-      <span class="chip amber">Feasibility &amp; Risks</span>
-    </div>
-    <p>The <a href="conclusion.html">Conclusion</a> page provides a critical cross-idea comparison, identifies the top 2 recommendations, and outlines the PhD trajectory plan for 2026–2030.</p>
-
-    <div class="callout callout-info">
-      <div class="callout-title">ℹ Supervisor Action Required</div>
-      <p class="mb-0">After reviewing all idea pages and the conclusion, please select a preferred research direction and note any concerns regarding scope, resources, or methodological approach. Your feedback will be incorporated into the final project specification document (to be submitted within 2 weeks of approval).</p>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <p><strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Prepared by [Student Name] &nbsp;·&nbsp; Submitted to [Supervisor Name] &nbsp;·&nbsp; &copy; 2026</p>
-  <p style="margin-top:.5rem;">Navigate: <a href="idea1.html">Idea 1</a> · <a href="idea2.html">Idea 2</a> · <a href="idea3.html">Idea 3</a> · <a href="idea4.html">Idea 4</a> · <a href="idea5.html">Idea 5</a> · <a href="conclusion.html">Conclusion</a></p>
-</footer>
-
-</body>
+    <footer>
+      <p>
+        <strong>FYDP Research Ideas 2026–2027</strong> &nbsp;·&nbsp; Prepared by
+        Md. Atikur Rahaman &nbsp;·&nbsp; &copy; 2026
+      </p>
+      <p style="margin-top: 0.5rem">
+        Navigate: <a href="idea1.html">Idea 1</a> ·
+        <a href="idea2.html">Idea 2</a> · <a href="idea3.html">Idea 3</a> ·
+        <a href="idea4.html">Idea 4</a> · <a href="idea5.html">Idea 5</a> ·
+        <a href="conclusion.html">Conclusion</a>
+      </p>
+    </footer>
+  </body>
 </html>

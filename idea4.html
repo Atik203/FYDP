@@ -1,229 +1,558 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Idea 4: Neuro-Symbolic Rare Disease NLP — LLM extraction combined with HPO symbolic reasoning for rare disease diagnosis.">
-  <title>Idea 4 — Neuro-Symbolic Rare Disease NLP</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Idea 4: Neuro-Symbolic Rare Disease NLP — LLM extraction combined with HPO symbolic reasoning for rare disease diagnosis."
+    />
+    <title>Idea 4 — Neuro-Symbolic Rare Disease NLP</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="doc-type">
+        FYDP Proposal · Idea 4 of 5 · Rank #4 · Score 3.6 / 5.0
+      </div>
+      <h1>Neuro-Symbolic Rare Disease NLP</h1>
+      <p class="subtitle">
+        Domain: Healthcare NLP &nbsp;·&nbsp; Neuro-Symbolic AI &nbsp;·&nbsp;
+        Clinical Informatics
+      </p>
+      <div class="cover-grid">
+        <div class="cover-item">
+          <span>Target Venue</span>JAMIA / BioNLP @ ACL 2027
+        </div>
+        <div class="cover-item"><span>Novelty Score</span>4 / 5</div>
+        <div class="cover-item"><span>Feasibility Score</span>3 / 5</div>
+        <div class="cover-item"><span>Composite Score</span>3.6 / 5</div>
+      </div>
+    </header>
 
-<header>
-  <div class="doc-type">FYDP Proposal · Idea 4 of 5 · Rank #4 · Score 3.6 / 5.0</div>
-  <h1>Neuro-Symbolic Rare Disease NLP</h1>
-  <p class="subtitle">Domain: Healthcare NLP &nbsp;·&nbsp; Neuro-Symbolic AI &nbsp;·&nbsp; Clinical Informatics</p>
-  <div class="cover-grid">
-    <div class="cover-item"><span>Proposed By</span>[Your Name]</div>
-    <div class="cover-item"><span>Supervisor</span>[Prof. Name]</div>
-    <div class="cover-item"><span>Target Venue</span>JAMIA / BioNLP @ ACL 2027</div>
-    <div class="cover-item"><span>Novelty Score</span>4 / 5</div>
-    <div class="cover-item"><span>Feasibility Score</span>3 / 5</div>
-    <div class="cover-item"><span>Composite Score</span>3.6 / 5</div>
-  </div>
-</header>
-
-<nav>
-  <ul>
-    <li><a href="index.html">Overview</a></li>
-    <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
-    <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
-    <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
-    <li><a href="idea4.html" class="active">Idea 4 — Rare Disease</a></li>
-    <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
-    <li><a href="conclusion.html">Conclusion</a></li>
-  </ul>
-</nav>
-
-<main>
-
-  <!-- KPI -->
-  <section>
-    <h2><span class="section-icon">📊</span> At a Glance</h2>
-    <div class="kpi-row">
-      <div class="kpi-card"><div class="kpi-val">+25%</div><div class="kpi-label">Top-5 Accuracy vs. LLM</div></div>
-      <div class="kpi-card rose"><div class="kpi-val">~0%</div><div class="kpi-label">Reasoning Hallucination</div></div>
-      <div class="kpi-card green"><div class="kpi-val">≥75%</div><div class="kpi-label">Phenotype Extraction F1</div></div>
-      <div class="kpi-card sky"><div class="kpi-val">6,000+</div><div class="kpi-label">Rare Diseases in ORPHANET</div></div>
-    </div>
-
-    <div class="callout callout-feasibility" style="margin-top:1.25rem;">
-      <div class="callout-title">⚠ Important Note — Feasibility Score: 3/5</div>
-      <p class="mb-0">This idea is ranked #4 primarily due to <strong>data access constraints</strong> (real EHR data requires IRB/HIPAA approval which is infeasible in 12 months) and <strong>venue uncertainty</strong> (healthcare venues require clinical validation beyond FYDP scope). However, the neuro-symbolic architecture is excellent and this idea has the strongest impact in the healthcare domain. Recommended as a <em>PhD Year 2–3 project</em> rather than a primary FYDP.</p>
-    </div>
-  </section>
-
-  <!-- 1. Core Idea -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
-    <p>
-      LLMs hallucinate confidently in rare disease diagnosis because their parametric memory is dominated by common
-      conditions. We propose a <strong>Neuro-Symbolic Diagnostic Pipeline</strong> with a strict division of
-      cognitive labour: the LLM handles natural-language understanding (extracting phenotypic symptoms from clinical
-      text), while a <em>deterministic symbolic reasoner</em> handles diagnostic logic by computing ontological
-      similarity over the Human Phenotype Ontology (HPO) and ORPHANET disease–phenotype associations. The LLM
-      <strong>never makes the diagnosis</strong> — it only feeds structured input to a provably correct symbolic engine.
-    </p>
-    <div class="callout callout-success">
-      <div class="callout-title">🎯 Core Research Contribution</div>
-      <p class="mb-0">The primary contribution is an <strong>end-to-end pipeline from free-text clinical narrative to ranked rare disease diagnoses</strong> with zero reasoning-layer hallucination — a property provably absent in pure-LLM diagnostics. Secondary contribution: an improved clinical phenotype extraction model handling negation, uncertainty qualifiers, and family history mentions.</p>
-    </div>
-  </section>
-
-  <!-- 2. Problem Statement -->
-  <section>
-    <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
-    <h3>2.1 The Rare Disease Diagnostic Crisis</h3>
-    <p>Rare diseases collectively affect ~300 million people globally. The average time to diagnosis is <strong>5–7 years</strong> (Eurordis, 2023). LLMs fail on rare conditions because:</p>
-    <ul>
-      <li><strong>Frequency bias:</strong> Training data is heavily skewed toward common diseases — a rare condition with 50 documented cases has ~50× less training signal than a common one.</li>
-      <li><strong>Phenotypic mimicry:</strong> Rare disease presentations often overlap with common conditions; LLMs pick the statistically more likely common condition.</li>
-      <li><strong>Hallucination without calibration:</strong> Singhal et al. (2023) showed Med-PaLM 2 achieves only ~45% accuracy on rare disease vignettes vs. ~86% on common conditions — a 41-point gap that fine-tuning alone cannot close.</li>
-    </ul>
-
-    <h3>2.2 Why This Architecture Works</h3>
-    <p>Clinical geneticists already use ontology-based reasoning tools (Phenomizer, OMIM) — the problem is they require manual HPO code entry. The real gap is a <em>natural language front-end</em> for these tools, not a replacement for their reasoning engine. Our architecture provides exactly that.</p>
-  </section>
-
-  <!-- 3. Related Work -->
-  <section>
-    <h2><span class="section-icon">📚</span> 3. Existing Solutions &amp; Limitations</h2>
-    <table>
-      <thead><tr><th>System</th><th>Type</th><th>Limitation</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Med-PaLM 2 / GPT-4</strong></td><td>Pure LLM</td><td>45% accuracy on rare vignettes; opaque, unverifiable reasoning; frequency-biased toward common diseases</td></tr>
-        <tr><td><strong>Phenomizer</strong> (Köhler 2009)</td><td>Pure Symbolic</td><td>Requires manual HPO code entry; no natural language interface; clinicians must already know HPO taxonomy</td></tr>
-        <tr><td><strong>PhenoBERT</strong> (Feng 2022)</td><td>Neural (extraction only)</td><td>Extraction pipeline only; no downstream diagnostic reasoning; poor negation/uncertainty handling</td></tr>
-        <tr><td><strong>Ada DX / Isabel</strong></td><td>Commercial</td><td>Proprietary; not reproducible; sparse rare disease coverage driven by commercial, not clinical, priorities</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-gap">
-      <div class="callout-title">⚠ Explicit Research Gap</div>
-      <p class="mb-0">No published end-to-end system bridges free-text clinical narratives → structured HPO extraction → symbolic ontological reasoning → ranked differential diagnosis with explainable HPO paths. The two halves exist (PhenoBERT for extraction; Phenomizer for reasoning) but have never been integrated into a unified, evaluated pipeline.</p>
-    </div>
-  </section>
-
-  <!-- 4. Architecture -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">🏗️</span> 4. Proposed 3-Stage Neuro-Symbolic Pipeline</h2>
-
-    <h3>Stage 1 — Neural Phenotype Extraction</h3>
-    <p>An LLM (Llama-3-8B, LoRA fine-tuned on RAMEDIS vignettes) extracts a structured phenotype profile from the clinical narrative, classifying each symptom mention as:</p>
-    <ul>
-      <li><strong>Positive:</strong> "bilateral cataracts" → <code>HP:0000518</code></li>
-      <li><strong>Negated:</strong> "no hepatomegaly" → <code>¬HP:0002240</code></li>
-      <li><strong>Uncertain:</strong> "possible developmental delay" → <code>HP:0001263, conf=0.5</code></li>
-      <li><strong>Family history:</strong> "mother had similar symptoms" → <code>HP:XXXX, source=family</code></li>
-    </ul>
-
-    <h3>Stage 2 — Symbolic Diagnostic Reasoning (Resnik Similarity over HPO DAG)</h3>
-    <p>The extracted HPO term set is passed to a <strong>deterministic graph algorithm</strong> over the HPO Directed Acyclic Graph (17,000 terms; 30,000 edges) + ORPHANET matrix (~100K disease–phenotype pairs):</p>
-    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:var(--r-sm);padding:1rem 1.5rem;margin:1rem 0;font-family:var(--mono);font-size:.88rem;">
-      sim(P_patient, P_disease) = (1/|P|) Σ max<sub>j</sub> IC(MICA(p_i, p_j))
-    </div>
-    <p>Where <code>IC(t) = −log(p(t))</code> (Information Content) and MICA = Most Informative Common Ancestor in the HPO DAG. Negated phenotypes apply a penalty term λ·IC(negated_term). This step is <strong>fully deterministic</strong> — identical input always produces identical ranking.</p>
-
-    <h3>Stage 3 — Neural Explanation Generation</h3>
-    <p>The LLM receives the top-5 ranked diseases with their ontological similarity paths and generates a human-readable rationale explicitly citing HPO ancestry: <em>"EDS ranked #1 because joint hypermobility (HP:0001382) and skin hyperextensibility (HP:0001030) share a common ancestor 'Connective tissue abnormality' (HP:0003549) with IC=4.2."</em></p>
-  </section>
-
-  <!-- 5. Methodology -->
-  <section>
-    <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
-    <h3>5.1 Datasets</h3>
-    <table>
-      <thead><tr><th>Dataset</th><th>Size</th><th>Purpose</th><th>Access</th></tr></thead>
-      <tbody>
-        <tr><td><strong>RAMEDIS</strong></td><td>524 vignettes</td><td>Primary evaluation — gold HPO annotations + diagnoses</td><td>Public (no IRB needed)</td></tr>
-        <tr><td><strong>ORPHANET</strong></td><td>~6,000 diseases; 100K pairs</td><td>Disease–phenotype association matrix</td><td>Free academic download</td></tr>
-        <tr><td><strong>HPO</strong></td><td>17,000 terms; 30,000 edges</td><td>Ontology for symbolic reasoning</td><td>Public (hpo.jax.org)</td></tr>
-        <tr><td><strong>PubMed case reports</strong></td><td>~200 curated</td><td>Supplementary evaluation on noisy real-world text</td><td>Open-access PubMed</td></tr>
-      </tbody>
-    </table>
-
-    <h3>5.2 Ablation Matrix</h3>
-    <table>
-      <thead><tr><th>Condition</th><th>Extraction</th><th>Symbolic Reasoning</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td>A — GPT-4o zero-shot</td><td>LLM direct</td><td>❌</td><td>Pure LLM ceiling (and floor)</td></tr>
-        <tr><td>B — Gold HPO + Phenomizer</td><td>Gold (manual)</td><td>✅ Resnik</td><td>Symbolic-only upper bound</td></tr>
-        <tr><td>C — Predicted HPO + Phenomizer</td><td>Our extractor</td><td>✅ Resnik</td><td>Isolate extraction quality impact</td></tr>
-        <tr><td>D — Full pipeline</td><td>Our extractor</td><td>✅ Resnik + penalties</td><td>Main proposed system</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 6. Evaluation -->
-  <section>
-    <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
-    <div class="chip-row">
-      <span class="chip green">Top-1 Accuracy ↑</span>
-      <span class="chip green">Top-5 Accuracy ↑</span>
-      <span class="chip">Top-10 Accuracy ↑</span>
-      <span class="chip amber">Extraction F1 ↑</span>
-      <span class="chip rose">Reasoning Hallucination Rate ↓</span>
-    </div>
-    <h3>Stratification</h3>
-    <p>Results reported separately for: (a) <em>ultra-rare</em> (&lt;1:1M prevalence), (b) <em>moderately rare</em> (1:100K–1:1M), and (c) <em>rare but known</em> (&gt;1:100K). Expected largest gain in category (a).</p>
-    <h3>Hallucination Audit</h3>
-    <p>For 100-sample subset: 2 annotators assess whether the explanation contains claims not supported by the symbolic output. Cohen's κ reported. Expected: reasoning-layer hallucination rate ≈ 0% (deterministic); generation-layer rate measured and reported.</p>
-  </section>
-
-  <!-- 7. Expected Results -->
-  <section>
-    <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
-    <div class="score-grid">
-      <div class="score-card"><div class="sv">+25–35%</div><div class="sl">Top-5 Accuracy vs. Pure LLM</div></div>
-      <div class="score-card"><div class="sv">~0%</div><div class="sl">Reasoning-Stage Hallucination</div></div>
-      <div class="score-card"><div class="sv">≥75%</div><div class="sl">HPO Extraction F1</div></div>
-      <div class="score-card"><div class="sv">Critical</div><div class="sl">Extraction F1 &gt;70% Required</div></div>
-    </div>
-    <p>If extraction F1 drops below 70%, error propagation will erode most gains — this is the primary risk. The gold-graph oracle (Condition B) establishes the ceiling, making the error propagation rate precisely quantifiable.</p>
-  </section>
-
-  <!-- 8. Feasibility -->
-  <section class="accent-amber">
-    <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
-    <table class="gantt-table">
-      <thead><tr><th>Phase</th><th>Months</th><th>Key Tasks</th><th>Deliverable</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Phase 1</strong></td><td>Sep–Nov 2026</td><td>HPO + ORPHANET parser; Resnik similarity engine; validation against Phenomizer gold outputs</td><td>Symbolic Reasoning Engine</td></tr>
-        <tr><td><strong>Phase 2</strong></td><td>Dec 2026–Jan 2027</td><td>LoRA fine-tune Llama-3-8B extraction on RAMEDIS; negation/uncertainty handling; extraction F1 eval</td><td>Extraction Model (F1≥75%)</td></tr>
-        <tr><td><strong>Phase 3</strong></td><td>Feb–Apr 2027</td><td>End-to-end pipeline; ablation matrix (A–D); stratified rarity analysis</td><td>Complete Results Table</td></tr>
-        <tr><td><strong>Phase 4</strong></td><td>May–Jun 2027</td><td>Hallucination audit; PubMed case report evaluation; explanation quality assessment</td><td>Hallucination Audit Report</td></tr>
-        <tr><td><strong>Phase 5</strong></td><td>Jul–Aug 2027</td><td>Paper writing (BioNLP/JAMIA); thesis submission</td><td>Submitted Paper + Thesis</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-feasibility">
-      <div class="callout-title">⚠ Risks &amp; Mitigations</div>
-      <ul class="mb-0">
-        <li><strong>EHR data access (CRITICAL — INFEASIBLE):</strong> Real patient records require IRB approval (6+ months) and HIPAA compliance. <em>Mitigation:</em> Use ONLY public datasets (RAMEDIS, published case reports). Frame as proof-of-concept on standardized vignettes, not a clinical study.</li>
-        <li><strong>Venue for publication (HIGH RISK):</strong> JAMIA/JBHI require clinical validation. <em>Mitigation:</em> Target BioNLP Shared Task @ ACL or ClinicalNLP workshop as first venue. Full journal submission as PhD Year 2 project.</li>
-        <li><strong>HPO extraction quality:</strong> Negation and family history are hard for LLMs. <em>Mitigation:</em> RAMEDIS vignettes are relatively clean; negation handled by explicit classifier head on top of LLM embeddings.</li>
+    <nav>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
+        <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
+        <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
+        <li><a href="idea4.html" class="active">Idea 4 — Rare Disease</a></li>
+        <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
+        <li><a href="conclusion.html">Conclusion</a></li>
       </ul>
-    </div>
-  </section>
+    </nav>
 
-  <!-- 10. Resources -->
-  <section>
-    <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
-    <div class="info-grid">
-      <div class="info-card"><div class="ic-label">GPU Compute</div><div class="ic-value">1× A100 (or RTX 4090)</div><div class="ic-sub">LoRA fine-tuning on RAMEDIS</div></div>
-      <div class="info-card"><div class="ic-label">Ontology Tools</div><div class="ic-value">pronto / owlready2</div><div class="ic-sub">HPO DAG parsing; free Python libraries</div></div>
-      <div class="info-card"><div class="ic-label">Graph Engine</div><div class="ic-value">NetworkX</div><div class="ic-sub">Resnik similarity traversal</div></div>
-      <div class="info-card"><div class="ic-label">Extraction LLM</div><div class="ic-value">Llama-3-8B (LoRA)</div><div class="ic-sub">No API cost; local execution</div></div>
-      <div class="info-card"><div class="ic-label">All Datasets</div><div class="ic-value">100% Public</div><div class="ic-sub">RAMEDIS, HPO, ORPHANET — no IRB</div></div>
-      <div class="info-card"><div class="ic-label">Estimated Cost</div><div class="ic-value">~$0–50 USD</div><div class="ic-sub">Minimal API cost; fully local</div></div>
-    </div>
-  </section>
+    <main>
+      <!-- KPI -->
+      <section>
+        <h2><span class="section-icon">📊</span> At a Glance</h2>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val">+25%</div>
+            <div class="kpi-label">Top-5 Accuracy vs. LLM</div>
+          </div>
+          <div class="kpi-card rose">
+            <div class="kpi-val">~0%</div>
+            <div class="kpi-label">Reasoning Hallucination</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-val">≥75%</div>
+            <div class="kpi-label">Phenotype Extraction F1</div>
+          </div>
+          <div class="kpi-card sky">
+            <div class="kpi-val">6,000+</div>
+            <div class="kpi-label">Rare Diseases in ORPHANET</div>
+          </div>
+        </div>
 
-</main>
+        <div class="callout callout-feasibility" style="margin-top: 1.25rem">
+          <div class="callout-title">
+            ⚠ Important Note — Feasibility Score: 3/5
+          </div>
+          <p class="mb-0">
+            This idea is ranked #4 primarily due to
+            <strong>data access constraints</strong> (real EHR data requires
+            IRB/HIPAA approval which is infeasible in 12 months) and
+            <strong>venue uncertainty</strong> (healthcare venues require
+            clinical validation beyond FYDP scope). However, the neuro-symbolic
+            architecture is excellent and this idea has the strongest impact in
+            the healthcare domain. Recommended as a
+            <em>PhD Year 2–3 project</em> rather than a primary FYDP.
+          </p>
+        </div>
+      </section>
 
-<footer>
-  <p><strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 4 of 5 &nbsp;·&nbsp; Score: 3.6 / 5.0 &nbsp;·&nbsp; <a href="idea5.html">Next: Idea 5 →</a></p>
-</footer>
+      <!-- 1. Core Idea -->
+      <section class="accent-blue">
+        <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
+        <p>
+          LLMs hallucinate confidently in rare disease diagnosis because their
+          parametric memory is dominated by common conditions. We propose a
+          <strong>Neuro-Symbolic Diagnostic Pipeline</strong> with a strict
+          division of cognitive labour: the LLM handles natural-language
+          understanding (extracting phenotypic symptoms from clinical text),
+          while a <em>deterministic symbolic reasoner</em> handles diagnostic
+          logic by computing ontological similarity over the Human Phenotype
+          Ontology (HPO) and ORPHANET disease–phenotype associations. The LLM
+          <strong>never makes the diagnosis</strong> — it only feeds structured
+          input to a provably correct symbolic engine.
+        </p>
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 Core Research Contribution</div>
+          <p class="mb-0">
+            The primary contribution is an
+            <strong
+              >end-to-end pipeline from free-text clinical narrative to ranked
+              rare disease diagnoses</strong
+            >
+            with zero reasoning-layer hallucination — a property provably absent
+            in pure-LLM diagnostics. Secondary contribution: an improved
+            clinical phenotype extraction model handling negation, uncertainty
+            qualifiers, and family history mentions.
+          </p>
+        </div>
+      </section>
 
-</body>
+      <!-- 2. Problem Statement -->
+      <section>
+        <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
+        <h3>2.1 The Rare Disease Diagnostic Crisis</h3>
+        <p>
+          Rare diseases collectively affect ~300 million people globally. The
+          average time to diagnosis is <strong>5–7 years</strong> (Eurordis,
+          2023). LLMs fail on rare conditions because:
+        </p>
+        <ul>
+          <li>
+            <strong>Frequency bias:</strong> Training data is heavily skewed
+            toward common diseases — a rare condition with 50 documented cases
+            has ~50× less training signal than a common one.
+          </li>
+          <li>
+            <strong>Phenotypic mimicry:</strong> Rare disease presentations
+            often overlap with common conditions; LLMs pick the statistically
+            more likely common condition.
+          </li>
+          <li>
+            <strong>Hallucination without calibration:</strong> Singhal et al.
+            (2023) showed Med-PaLM 2 achieves only ~45% accuracy on rare disease
+            vignettes vs. ~86% on common conditions — a 41-point gap that
+            fine-tuning alone cannot close.
+          </li>
+        </ul>
+
+        <h3>2.2 Why This Architecture Works</h3>
+        <p>
+          Clinical geneticists already use ontology-based reasoning tools
+          (Phenomizer, OMIM) — the problem is they require manual HPO code
+          entry. The real gap is a <em>natural language front-end</em> for these
+          tools, not a replacement for their reasoning engine. Our architecture
+          provides exactly that.
+        </p>
+      </section>
+
+      <!-- 3. Related Work -->
+      <section>
+        <h2>
+          <span class="section-icon">📚</span> 3. Existing Solutions &amp;
+          Limitations
+        </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>System</th>
+              <th>Type</th>
+              <th>Limitation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Med-PaLM 2 / GPT-4</strong></td>
+              <td>Pure LLM</td>
+              <td>
+                45% accuracy on rare vignettes; opaque, unverifiable reasoning;
+                frequency-biased toward common diseases
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Phenomizer</strong> (Köhler 2009)</td>
+              <td>Pure Symbolic</td>
+              <td>
+                Requires manual HPO code entry; no natural language interface;
+                clinicians must already know HPO taxonomy
+              </td>
+            </tr>
+            <tr>
+              <td><strong>PhenoBERT</strong> (Feng 2022)</td>
+              <td>Neural (extraction only)</td>
+              <td>
+                Extraction pipeline only; no downstream diagnostic reasoning;
+                poor negation/uncertainty handling
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Ada DX / Isabel</strong></td>
+              <td>Commercial</td>
+              <td>
+                Proprietary; not reproducible; sparse rare disease coverage
+                driven by commercial, not clinical, priorities
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-gap">
+          <div class="callout-title">⚠ Explicit Research Gap</div>
+          <p class="mb-0">
+            No published end-to-end system bridges free-text clinical narratives
+            → structured HPO extraction → symbolic ontological reasoning →
+            ranked differential diagnosis with explainable HPO paths. The two
+            halves exist (PhenoBERT for extraction; Phenomizer for reasoning)
+            but have never been integrated into a unified, evaluated pipeline.
+          </p>
+        </div>
+      </section>
+
+      <!-- 4. Architecture -->
+      <section class="accent-blue">
+        <h2>
+          <span class="section-icon">🏗️</span> 4. Proposed 3-Stage
+          Neuro-Symbolic Pipeline
+        </h2>
+
+        <h3>Stage 1 — Neural Phenotype Extraction</h3>
+        <p>
+          An LLM (Llama-3-8B, LoRA fine-tuned on RAMEDIS vignettes) extracts a
+          structured phenotype profile from the clinical narrative, classifying
+          each symptom mention as:
+        </p>
+        <ul>
+          <li>
+            <strong>Positive:</strong> "bilateral cataracts" →
+            <code>HP:0000518</code>
+          </li>
+          <li>
+            <strong>Negated:</strong> "no hepatomegaly" →
+            <code>¬HP:0002240</code>
+          </li>
+          <li>
+            <strong>Uncertain:</strong> "possible developmental delay" →
+            <code>HP:0001263, conf=0.5</code>
+          </li>
+          <li>
+            <strong>Family history:</strong> "mother had similar symptoms" →
+            <code>HP:XXXX, source=family</code>
+          </li>
+        </ul>
+
+        <h3>
+          Stage 2 — Symbolic Diagnostic Reasoning (Resnik Similarity over HPO
+          DAG)
+        </h3>
+        <p>
+          The extracted HPO term set is passed to a
+          <strong>deterministic graph algorithm</strong> over the HPO Directed
+          Acyclic Graph (17,000 terms; 30,000 edges) + ORPHANET matrix (~100K
+          disease–phenotype pairs):
+        </p>
+        <div
+          style="
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            font-family: var(--mono);
+            font-size: 0.88rem;
+          "
+        >
+          sim(P_patient, P_disease) = (1/|P|) Σ max<sub>j</sub> IC(MICA(p_i,
+          p_j))
+        </div>
+        <p>
+          Where <code>IC(t) = −log(p(t))</code> (Information Content) and MICA =
+          Most Informative Common Ancestor in the HPO DAG. Negated phenotypes
+          apply a penalty term λ·IC(negated_term). This step is
+          <strong>fully deterministic</strong> — identical input always produces
+          identical ranking.
+        </p>
+
+        <h3>Stage 3 — Neural Explanation Generation</h3>
+        <p>
+          The LLM receives the top-5 ranked diseases with their ontological
+          similarity paths and generates a human-readable rationale explicitly
+          citing HPO ancestry:
+          <em
+            >"EDS ranked #1 because joint hypermobility (HP:0001382) and skin
+            hyperextensibility (HP:0001030) share a common ancestor 'Connective
+            tissue abnormality' (HP:0003549) with IC=4.2."</em
+          >
+        </p>
+      </section>
+
+      <!-- 5. Methodology -->
+      <section>
+        <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
+        <h3>5.1 Datasets</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Size</th>
+              <th>Purpose</th>
+              <th>Access</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>RAMEDIS</strong></td>
+              <td>524 vignettes</td>
+              <td>Primary evaluation — gold HPO annotations + diagnoses</td>
+              <td>Public (no IRB needed)</td>
+            </tr>
+            <tr>
+              <td><strong>ORPHANET</strong></td>
+              <td>~6,000 diseases; 100K pairs</td>
+              <td>Disease–phenotype association matrix</td>
+              <td>Free academic download</td>
+            </tr>
+            <tr>
+              <td><strong>HPO</strong></td>
+              <td>17,000 terms; 30,000 edges</td>
+              <td>Ontology for symbolic reasoning</td>
+              <td>Public (hpo.jax.org)</td>
+            </tr>
+            <tr>
+              <td><strong>PubMed case reports</strong></td>
+              <td>~200 curated</td>
+              <td>Supplementary evaluation on noisy real-world text</td>
+              <td>Open-access PubMed</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5.2 Ablation Matrix</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>Extraction</th>
+              <th>Symbolic Reasoning</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A — GPT-4o zero-shot</td>
+              <td>LLM direct</td>
+              <td>❌</td>
+              <td>Pure LLM ceiling (and floor)</td>
+            </tr>
+            <tr>
+              <td>B — Gold HPO + Phenomizer</td>
+              <td>Gold (manual)</td>
+              <td>✅ Resnik</td>
+              <td>Symbolic-only upper bound</td>
+            </tr>
+            <tr>
+              <td>C — Predicted HPO + Phenomizer</td>
+              <td>Our extractor</td>
+              <td>✅ Resnik</td>
+              <td>Isolate extraction quality impact</td>
+            </tr>
+            <tr>
+              <td>D — Full pipeline</td>
+              <td>Our extractor</td>
+              <td>✅ Resnik + penalties</td>
+              <td>Main proposed system</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 6. Evaluation -->
+      <section>
+        <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
+        <div class="chip-row">
+          <span class="chip green">Top-1 Accuracy ↑</span>
+          <span class="chip green">Top-5 Accuracy ↑</span>
+          <span class="chip">Top-10 Accuracy ↑</span>
+          <span class="chip amber">Extraction F1 ↑</span>
+          <span class="chip rose">Reasoning Hallucination Rate ↓</span>
+        </div>
+        <h3>Stratification</h3>
+        <p>
+          Results reported separately for: (a) <em>ultra-rare</em> (&lt;1:1M
+          prevalence), (b) <em>moderately rare</em> (1:100K–1:1M), and (c)
+          <em>rare but known</em> (&gt;1:100K). Expected largest gain in
+          category (a).
+        </p>
+        <h3>Hallucination Audit</h3>
+        <p>
+          For 100-sample subset: 2 annotators assess whether the explanation
+          contains claims not supported by the symbolic output. Cohen's κ
+          reported. Expected: reasoning-layer hallucination rate ≈ 0%
+          (deterministic); generation-layer rate measured and reported.
+        </p>
+      </section>
+
+      <!-- 7. Expected Results -->
+      <section>
+        <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
+        <div class="score-grid">
+          <div class="score-card">
+            <div class="sv">+25–35%</div>
+            <div class="sl">Top-5 Accuracy vs. Pure LLM</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">~0%</div>
+            <div class="sl">Reasoning-Stage Hallucination</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">≥75%</div>
+            <div class="sl">HPO Extraction F1</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">Critical</div>
+            <div class="sl">Extraction F1 &gt;70% Required</div>
+          </div>
+        </div>
+        <p>
+          If extraction F1 drops below 70%, error propagation will erode most
+          gains — this is the primary risk. The gold-graph oracle (Condition B)
+          establishes the ceiling, making the error propagation rate precisely
+          quantifiable.
+        </p>
+      </section>
+
+      <!-- 8. Feasibility -->
+      <section class="accent-amber">
+        <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
+        <table class="gantt-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Months</th>
+              <th>Key Tasks</th>
+              <th>Deliverable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1</strong></td>
+              <td>Sep–Nov 2026</td>
+              <td>
+                HPO + ORPHANET parser; Resnik similarity engine; validation
+                against Phenomizer gold outputs
+              </td>
+              <td>Symbolic Reasoning Engine</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2</strong></td>
+              <td>Dec 2026–Jan 2027</td>
+              <td>
+                LoRA fine-tune Llama-3-8B extraction on RAMEDIS;
+                negation/uncertainty handling; extraction F1 eval
+              </td>
+              <td>Extraction Model (F1≥75%)</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3</strong></td>
+              <td>Feb–Apr 2027</td>
+              <td>
+                End-to-end pipeline; ablation matrix (A–D); stratified rarity
+                analysis
+              </td>
+              <td>Complete Results Table</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4</strong></td>
+              <td>May–Jun 2027</td>
+              <td>
+                Hallucination audit; PubMed case report evaluation; explanation
+                quality assessment
+              </td>
+              <td>Hallucination Audit Report</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 5</strong></td>
+              <td>Jul–Aug 2027</td>
+              <td>Paper writing (BioNLP/JAMIA); thesis submission</td>
+              <td>Submitted Paper + Thesis</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-feasibility">
+          <div class="callout-title">⚠ Risks &amp; Mitigations</div>
+          <ul class="mb-0">
+            <li>
+              <strong>EHR data access (CRITICAL — INFEASIBLE):</strong> Real
+              patient records require IRB approval (6+ months) and HIPAA
+              compliance. <em>Mitigation:</em> Use ONLY public datasets
+              (RAMEDIS, published case reports). Frame as proof-of-concept on
+              standardized vignettes, not a clinical study.
+            </li>
+            <li>
+              <strong>Venue for publication (HIGH RISK):</strong> JAMIA/JBHI
+              require clinical validation. <em>Mitigation:</em> Target BioNLP
+              Shared Task @ ACL or ClinicalNLP workshop as first venue. Full
+              journal submission as PhD Year 2 project.
+            </li>
+            <li>
+              <strong>HPO extraction quality:</strong> Negation and family
+              history are hard for LLMs. <em>Mitigation:</em> RAMEDIS vignettes
+              are relatively clean; negation handled by explicit classifier head
+              on top of LLM embeddings.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 10. Resources -->
+      <section>
+        <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">GPU Compute</div>
+            <div class="ic-value">1× A100 (or RTX 4090)</div>
+            <div class="ic-sub">LoRA fine-tuning on RAMEDIS</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Ontology Tools</div>
+            <div class="ic-value">pronto / owlready2</div>
+            <div class="ic-sub">HPO DAG parsing; free Python libraries</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Graph Engine</div>
+            <div class="ic-value">NetworkX</div>
+            <div class="ic-sub">Resnik similarity traversal</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Extraction LLM</div>
+            <div class="ic-value">Llama-3-8B (LoRA)</div>
+            <div class="ic-sub">No API cost; local execution</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">All Datasets</div>
+            <div class="ic-value">100% Public</div>
+            <div class="ic-sub">RAMEDIS, HPO, ORPHANET — no IRB</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Estimated Cost</div>
+            <div class="ic-value">~$0–50 USD</div>
+            <div class="ic-sub">Minimal API cost; fully local</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 4
+        of 5 &nbsp;·&nbsp; Score: 3.6 / 5.0 &nbsp;·&nbsp;
+        <a href="idea5.html">Next: Idea 5 →</a>
+      </p>
+    </footer>
+  </body>
 </html>

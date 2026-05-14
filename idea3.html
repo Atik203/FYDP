@@ -1,287 +1,704 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Idea 3: Chrono-RAG — Temporal Knowledge Graph-augmented retrieval to eliminate temporal hallucination in LLMs.">
-  <title>Idea 3 — Temporal Knowledge Decay + Dynamic Knowledge Graphs</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-  <div class="doc-type">FYDP Proposal · Idea 3 of 5 · Rank #3 · Score 4.0 / 5.0</div>
-  <h1>Temporal Knowledge Decay +<br>Dynamic Knowledge Graphs (Chrono-RAG)</h1>
-  <p class="subtitle">Domain: NLP &nbsp;·&nbsp; Knowledge Graphs &nbsp;·&nbsp; Temporal Reasoning &nbsp;·&nbsp; RAG</p>
-  <div class="cover-grid">
-    <div class="cover-item"><span>Proposed By</span>[Your Name]</div>
-    <div class="cover-item"><span>Supervisor</span>[Prof. Name]</div>
-    <div class="cover-item"><span>Target Venue</span>ACL / WWW / KDD 2027</div>
-    <div class="cover-item"><span>Novelty Score</span>4 / 5</div>
-    <div class="cover-item"><span>Feasibility Score</span>4 / 5</div>
-    <div class="cover-item"><span>Composite Score</span>4.0 / 5</div>
-  </div>
-</header>
-
-<nav>
-  <ul>
-    <li><a href="index.html">Overview</a></li>
-    <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
-    <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
-    <li><a href="idea3.html" class="active">Idea 3 — Temporal KG</a></li>
-    <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
-    <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
-    <li><a href="conclusion.html">Conclusion</a></li>
-  </ul>
-</nav>
-
-<main>
-
-  <!-- KPI -->
-  <section>
-    <h2><span class="section-icon">📊</span> At a Glance</h2>
-    <div class="kpi-row">
-      <div class="kpi-card"><div class="kpi-val">+15%</div><div class="kpi-label">Temporal Accuracy Target</div></div>
-      <div class="kpi-card rose"><div class="kpi-val">−40%</div><div class="kpi-label">Temporal Hallucination Rate</div></div>
-      <div class="kpi-card green"><div class="kpi-val">>85%</div><div class="kpi-label">Temporal Isolation Score</div></div>
-      <div class="kpi-card sky"><div class="kpi-val">3</div><div class="kpi-label">Architecture Layers</div></div>
-      <div class="kpi-card amber"><div class="kpi-val">4</div><div class="kpi-label">Benchmark Datasets</div></div>
-    </div>
-  </section>
-
-  <!-- 1. Core Idea -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
-    <p>
-      LLMs treat knowledge as timeless, blending facts from different eras into incoherent answers. Standard RAG
-      compounds this by retrieving the "most semantically similar" text regardless of temporal validity. We propose
-      <strong>Chrono-RAG</strong> — a retrieval-augmented generation framework that routes queries through a
-      <em>Temporal Knowledge Graph (TKG)</em>, where every fact is stored as a time-bounded quadruple
-      <code>(Subject, Predicate, Object, [t_start, t_end])</code>. The system enforces chronological isolation:
-      only facts valid at the queried time point are injected into the LLM context, and conflicting temporal
-      facts are explicitly surfaced as version histories.
-    </p>
-    <div class="callout callout-success">
-      <div class="callout-title">🎯 Core Research Contribution</div>
-      <p class="mb-0"><strong>Chrono-RAG</strong>: a three-layer retrieval architecture treating temporal validity as a <em>first-class constraint</em> in both knowledge representation (TKG schema with time-bounded quadruples) and retrieval algorithm (temporal filtering before semantic ranking). Neither component alone constitutes the contribution — the novelty is in their unified integration.</p>
-    </div>
-  </section>
-
-  <!-- 2. Problem Statement -->
-  <section>
-    <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
-    <h3>2.1 The Temporal Hallucination Problem</h3>
-    <p>
-      Knowledge evolves. The WHO reversed its mask guidance in June 2020. A country's head of state changes every election cycle. Drug dosage guidelines update annually. LLMs trained on static snapshots conflate these temporal versions into a "probability-weighted average" that may never have been true at any specific point in time.
-    </p>
-    <p>
-      Kasai et al. (2023) demonstrated GPT-4's accuracy on time-sensitive questions drops <strong>18–25%</strong> compared to static factual questions. Liska et al. (2022) showed even fine-tuned models struggle to distinguish "X was true in 2019" from "X is true now." This is not a parametric knowledge problem — it is a <em>representation problem</em>: LLMs have no internal clock and no mechanism for temporal isolation.
-    </p>
-
-    <h3>2.2 Why Standard RAG Fails</h3>
-    <p>Dense passage retrieval (DPR) ranks documents by semantic similarity, not temporal validity. A highly-cited 2018 treatment protocol outscores a 2024 update with fewer citations. The retriever cannot understand that the older document has been <em>superseded</em>. Even appending retrieval timestamps to the prompt is insufficient — the LLM is not trained to use them as hard temporal constraints.</p>
-
-    <h3>2.3 Engineering Complexity</h3>
-    <div class="two-col">
-      <div class="col-box">
-        <h4>Challenge A: Temporal Schema Design</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Representing facts as time-bounded quadruples and resolving overlapping or open-ended temporal intervals (e.g., facts that are still valid: [2020, ∞]).</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Idea 3: Chrono-RAG — Temporal Knowledge Graph-augmented retrieval to eliminate temporal hallucination in LLMs."
+    />
+    <title>Idea 3 — Temporal Knowledge Decay + Dynamic Knowledge Graphs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="doc-type">
+        FYDP Proposal · Idea 3 of 5 · Rank #3 · Score 4.0 / 5.0
       </div>
-      <div class="col-box">
-        <h4>Challenge B: Query Temporal Resolution</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Extracting temporal constraints from natural language queries — distinguishing explicit ("in 2021"), implicit ("during COVID"), and absent temporal references.</p>
+      <h1>
+        Temporal Knowledge Decay +<br />Dynamic Knowledge Graphs (Chrono-RAG)
+      </h1>
+      <p class="subtitle">
+        Domain: NLP &nbsp;·&nbsp; Knowledge Graphs &nbsp;·&nbsp; Temporal
+        Reasoning &nbsp;·&nbsp; RAG
+      </p>
+      <div class="cover-grid">
+        <div class="cover-item">
+          <span>Target Venue</span>ACL / WWW / KDD 2027
+        </div>
+        <div class="cover-item"><span>Novelty Score</span>4 / 5</div>
+        <div class="cover-item"><span>Feasibility Score</span>4 / 5</div>
+        <div class="cover-item"><span>Composite Score</span>4.0 / 5</div>
       </div>
-      <div class="col-box">
-        <h4>Challenge C: Conflict Detection</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Identifying when two facts about the same entity conflict across time periods and generating a coherent temporal evolution narrative rather than blending them.</p>
-      </div>
-      <div class="col-box">
-        <h4>Challenge D: TKG Coverage</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Pre-built TKGs (YAGO3, Wikidata) have variable temporal annotation density across domains — sparse in niche domains, dense in politics/science/medicine.</p>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- 3. Related Work -->
-  <section>
-    <h2><span class="section-icon">📚</span> 3. Existing Solutions &amp; Limitations</h2>
-    <table>
-      <thead><tr><th>System</th><th>Year</th><th>Approach</th><th>Key Limitation</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Continual Pre-training</strong> (Jang et al.)</td><td>2022</td><td>Re-trains model on newer data periodically</td><td>Astronomically expensive; catastrophic forgetting of older knowledge still needed for temporal reasoning</td></tr>
-        <tr><td><strong>Standard RAG</strong> (Lewis et al.)</td><td>2020</td><td>Dense passage retrieval from vector DB</td><td>No temporal filtering; treats 2015 and 2024 documents identically if semantically similar</td></tr>
-        <tr><td><strong>KGQA systems</strong></td><td>2020–23</td><td>Queries static KGs (Wikidata/Freebase)</td><td>Most KGs record <em>current</em> state, not temporal evolution; limited temporal qualifier support</td></tr>
-        <tr><td><strong>GraphRAG</strong> (Microsoft)</td><td>2024</td><td>Community summaries over knowledge graphs</td><td>Graph construction is static and domain-agnostic; no temporal dimension in the schema</td></tr>
-        <tr><td><strong>RealTime QA</strong> (Kasai et al.)</td><td>2023</td><td>Weekly QA benchmark for currency testing</td><td>Evaluation benchmark only; no retrieval architecture proposed</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-gap">
-      <div class="callout-title">⚠ Explicit Research Gap</div>
-      <p class="mb-0">No RAG system treats <strong>temporal validity as a first-class constraint</strong> in both the knowledge representation schema and the retrieval algorithm. Existing systems are temporally blind by architectural design — they can retrieve <em>about</em> time but cannot enforce temporal isolation during retrieval.</p>
-    </div>
-  </section>
-
-  <!-- 4. Architecture -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">🏗️</span> 4. Chrono-RAG Architecture (3 Layers)</h2>
-
-    <h3>Layer 1 — Temporal Knowledge Graph</h3>
-    <p>Facts stored as time-bounded quadruples: <code>(entity, relation, entity, [t_start, t_end])</code>. Examples:</p>
-    <ul>
-      <li><code>(WHO, recommends_against, general_mask_use, [2020-01, 2020-06])</code></li>
-      <li><code>(WHO, recommends, general_mask_use, [2020-06, ∞])</code></li>
-      <li><code>(Joe_Biden, president_of, USA, [2021-01, 2025-01])</code></li>
-    </ul>
-    <p><strong>Sources used (pre-built — no TKG construction from scratch):</strong></p>
-    <div class="info-grid">
-      <div class="info-card"><div class="ic-label">YAGO3</div><div class="ic-value">~3M temporal facts</div><div class="ic-sub">Wikipedia-derived; time intervals on entities</div></div>
-      <div class="info-card"><div class="ic-label">Wikidata Temporal</div><div class="ic-value">~50M qualifiers</div><div class="ic-sub">point-in-time, start-time, end-time properties</div></div>
-      <div class="info-card"><div class="ic-label">T-REx</div><div class="ic-value">~6.2M triples</div><div class="ic-sub">Wikipedia-aligned temporal relations</div></div>
-    </div>
-
-    <h3>Layer 2 — Temporal Query Resolution</h3>
-    <p>A fine-tuned <strong>Temporal Constraint Extractor</strong> (RoBERTa-base on TempQuestions) identifies:</p>
-    <ul>
-      <li><strong>Explicit:</strong> "in 2021" → <code>[2021-01-01, 2021-12-31]</code></li>
-      <li><strong>Implicit:</strong> "during the pandemic" → <code>[2020-03, 2022-05]</code> (mapped via event ontology)</li>
-      <li><strong>Absent:</strong> Default to current date (open temporal query)</li>
-    </ul>
-    <p>The extracted window <code>[t_query_start, t_query_end]</code> filters the TKG before any semantic retrieval occurs — temporal isolation is enforced at the data access layer, not at the generation layer.</p>
-
-    <h3>Layer 3 — Filtered Traversal + Generation</h3>
-    <p>The temporally filtered subgraph is serialized as structured text (entity–relation–entity chains) and injected into the LLM prompt. When conflicting facts exist across adjacent time windows, the system generates an explicit <strong>temporal evolution narrative</strong> rather than blending them.</p>
-  </section>
-
-  <!-- 5. Methodology -->
-  <section>
-    <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
-    <h3>5.1 Datasets</h3>
-    <table>
-      <thead><tr><th>Dataset</th><th>Size</th><th>Temporal Type</th><th>Why Used</th></tr></thead>
-      <tbody>
-        <tr><td><strong>TimeQA</strong> (Chen 2021)</td><td>20K QA pairs</td><td>Explicit + implicit</td><td>Gold temporal annotations; standard benchmark</td></tr>
-        <tr><td><strong>TempQuestions</strong> (Jia 2018)</td><td>1,271 QA</td><td>Explicit/implicit/ordinal</td><td>Training data for temporal constraint extractor</td></tr>
-        <tr><td><strong>RealTime QA</strong> (Kasai 2023)</td><td>Weekly updated</td><td>Current events</td><td>Tests knowledge currency; hardest temporal test</td></tr>
-        <tr><td><strong>Temporal Isolation Set</strong></td><td>200 pairs (curated)</td><td>Paired same-entity queries</td><td>Custom diagnostic: same entity, different time points — must return different answers</td></tr>
-      </tbody>
-    </table>
-
-    <h3>5.2 Ablation Matrix</h3>
-    <table>
-      <thead><tr><th>Condition</th><th>TKG Filter</th><th>Temporal Extractor</th><th>Graph Traversal</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td>A — Zero-shot LLM</td><td>❌</td><td>❌</td><td>❌</td><td>LLM parametric memory only</td></tr>
-        <tr><td>B — Standard RAG</td><td>❌</td><td>❌</td><td>❌</td><td>Dense retrieval without temporal awareness</td></tr>
-        <tr><td>C — RAG + timestamp metadata</td><td>❌</td><td>❌</td><td>❌</td><td>Does appending date solve it? (hypothesis: no)</td></tr>
-        <tr><td>D — TKG only (no extractor)</td><td>✅</td><td>❌</td><td>✅</td><td>TKG without temporal query resolution</td></tr>
-        <tr><td>E — Full Chrono-RAG</td><td>✅</td><td>✅</td><td>✅</td><td>Main proposed system</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 6. Evaluation -->
-  <section>
-    <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
-    <div class="chip-row">
-      <span class="chip green">Temporal Accuracy ↑</span>
-      <span class="chip rose">Temporal Hallucination Rate ↓</span>
-      <span class="chip">Temporal Isolation Score ↑</span>
-      <span class="chip amber">Overall EM / F1 ↑</span>
-    </div>
-    <table>
-      <thead><tr><th>Metric</th><th>Definition</th><th>Evaluation Method</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Temporal Accuracy</strong></td><td>EM accuracy on questions with a temporal qualifier</td><td>TimeQA/TempQuestions test sets</td></tr>
-        <tr><td><strong>Temporal Hallucination Rate</strong></td><td>Fraction of answers containing facts from the wrong time period</td><td>Manual annotation of 200-sample subset; 2 annotators; κ reported</td></tr>
-        <tr><td><strong>Temporal Isolation Score</strong></td><td>For paired same-entity questions at different times, fraction where system correctly returns distinct answers</td><td>Custom diagnostic test set (200 pairs)</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 7. Expected Results -->
-  <section>
-    <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
-    <div class="score-grid">
-      <div class="score-card"><div class="sv">+12–18%</div><div class="sl">Temporal Accuracy vs. Std. RAG</div></div>
-      <div class="score-card"><div class="sv">−40%</div><div class="sl">Temporal Hallucination Rate</div></div>
-      <div class="score-card"><div class="sv">>85%</div><div class="sl">Temporal Isolation Score</div></div>
-      <div class="score-card"><div class="sv">~0%</div><div class="sl">Gain on Static Facts</div></div>
-    </div>
-    <p>We explicitly expect <strong>no gain</strong> on static, time-invariant facts (boiling points, mathematical constants). We will report this domain boundary honestly — it is a feature, not a bug, and demonstrates the system is working correctly by <em>not</em> over-claiming.</p>
-  </section>
-
-  <!-- 8. Q1 Justification -->
-  <section class="accent-teal">
-    <h2><span class="section-icon">🎓</span> 8. Why This Meets Q1 Standards</h2>
-    <div class="two-col">
-      <div class="col-box">
-        <h4>Production-Critical Problem</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Temporal hallucination is a top-3 reason enterprises distrust LLM deployments in legal, medical, and financial contexts. This directly addresses a deployment blocker.</p>
-      </div>
-      <div class="col-box">
-        <h4>Novel Unified Architecture</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Temporal query resolution + TKG-filtered retrieval + evolution-aware generation has no published precedent as a unified system. Each component is independently evaluable.</p>
-      </div>
-      <div class="col-box">
-        <h4>Multiple Venue Options</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">ACL (knowledge-grounded generation), WWW/KDD (knowledge graphs), EMNLP (temporal reasoning). More venue options than any other idea in this proposal.</p>
-      </div>
-      <div class="col-box">
-        <h4>Best Feasibility Score</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Scores 4/5 on feasibility — tied with Idea 1. Pre-built TKGs (YAGO3, Wikidata) eliminate the most common failure mode of KG-based projects.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9. Feasibility -->
-  <section class="accent-amber">
-    <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
-    <table class="gantt-table">
-      <thead><tr><th>Phase</th><th>Months</th><th>Key Tasks</th><th>Deliverable</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Phase 1</strong></td><td>Sep–Oct 2026</td><td>YAGO3 + Wikidata temporal import; Neo4j or NetworkX graph engine setup; TKG query interface</td><td>TKG Ready (3M+ facts)</td></tr>
-        <tr><td><strong>Phase 2</strong></td><td>Nov–Dec 2026</td><td>Fine-tune RoBERTa temporal extractor on TempQuestions; implicit reference mapping; integration with TKG filter</td><td>Temporal Extractor (F1≥75%)</td></tr>
-        <tr><td><strong>Phase 3</strong></td><td>Jan–Mar 2027</td><td>End-to-end Chrono-RAG; baseline comparisons on TimeQA; custom isolation test set creation</td><td>Baseline Results Table</td></tr>
-        <tr><td><strong>Phase 4</strong></td><td>Apr–May 2027</td><td>Full ablation matrix (A–E); hallucination annotation study; conflict detection analysis</td><td>Complete Ablation Analysis</td></tr>
-        <tr><td><strong>Phase 5</strong></td><td>Jun–Aug 2027</td><td>Paper writing; reproducibility package; thesis; submission</td><td>Submitted Paper + Thesis</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-feasibility">
-      <div class="callout-title">⚠ Risks &amp; Mitigations</div>
-      <ul class="mb-0">
-        <li><strong>TKG construction (CRITICAL MISUNDERSTANDING RISK):</strong> Building a TKG from scratch is a PhD-level project. <em>Mitigation:</em> We use <em>only</em> pre-existing TKGs (YAGO3, Wikidata). The contribution is the retrieval architecture, not the knowledge graph itself.</li>
-        <li><strong>Implicit temporal resolution:</strong> "During COVID" → ambiguous date mapping. <em>Mitigation:</em> Restrict main experiments to explicit temporal queries; report implicit resolution as a separate harder sub-task with honest numbers.</li>
-        <li><strong>TKG coverage gaps:</strong> Sparse temporal annotations in niche domains. <em>Mitigation:</em> Restrict evaluation to densely annotated domains (politics, medicine, science) where YAGO3/Wikidata coverage is verified.</li>
-        <li><strong>Reviewer concern "just a date filter":</strong> A skeptical reviewer may argue the contribution is trivial. <em>Mitigation:</em> Emphasise the novelty of temporal constraint extraction at the query level, and show with Condition C (RAG + metadata) that simply appending dates does not solve the problem.</li>
+    <nav>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
+        <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
+        <li><a href="idea3.html" class="active">Idea 3 — Temporal KG</a></li>
+        <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
+        <li><a href="idea5.html">Idea 5 — Stat Verify</a></li>
+        <li><a href="conclusion.html">Conclusion</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="callout callout-info">
-      <div class="callout-title">ℹ Agentic AI Relevance</div>
-      <p class="mb-0">An agentic architecture is <strong>optionally beneficial</strong> here as an extension. A planning agent could decompose complex temporal queries into sub-queries (e.g., "First, determine when policy X changed; then retrieve the version valid at that time"). This is a natural Phase 2 extension for a PhD, not a core FYDP requirement. The base Chrono-RAG pipeline works without agents.</p>
-    </div>
-  </section>
+    <main>
+      <!-- KPI -->
+      <section>
+        <h2><span class="section-icon">📊</span> At a Glance</h2>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val">+15%</div>
+            <div class="kpi-label">Temporal Accuracy Target</div>
+          </div>
+          <div class="kpi-card rose">
+            <div class="kpi-val">−40%</div>
+            <div class="kpi-label">Temporal Hallucination Rate</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-val">>85%</div>
+            <div class="kpi-label">Temporal Isolation Score</div>
+          </div>
+          <div class="kpi-card sky">
+            <div class="kpi-val">3</div>
+            <div class="kpi-label">Architecture Layers</div>
+          </div>
+          <div class="kpi-card amber">
+            <div class="kpi-val">4</div>
+            <div class="kpi-label">Benchmark Datasets</div>
+          </div>
+        </div>
+      </section>
 
-  <!-- 10. Resources -->
-  <section>
-    <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
-    <div class="info-grid">
-      <div class="info-card"><div class="ic-label">GPU Compute</div><div class="ic-value">1× A100 (or RTX 4090)</div><div class="ic-sub">Generation and extractor fine-tuning</div></div>
-      <div class="info-card"><div class="ic-label">Graph Database</div><div class="ic-value">Neo4j (free) or NetworkX</div><div class="ic-sub">TKG storage and SPARQL queries</div></div>
-      <div class="info-card"><div class="ic-label">TKG Sources</div><div class="ic-value">YAGO3, Wikidata</div><div class="ic-sub">100% free; downloadable dumps available</div></div>
-      <div class="info-card"><div class="ic-label">Generator LLM</div><div class="ic-value">Llama-3-8B-Instruct</div><div class="ic-sub">Open-weight; no API cost</div></div>
-      <div class="info-card"><div class="ic-label">All Datasets</div><div class="ic-value">100% Public</div><div class="ic-sub">TimeQA, TempQuestions, RealTime QA</div></div>
-      <div class="info-card"><div class="ic-label">Estimated Cost</div><div class="ic-value">~$0–100 USD</div><div class="ic-sub">No paid API required for core system</div></div>
-    </div>
-  </section>
+      <!-- 1. Core Idea -->
+      <section class="accent-blue">
+        <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
+        <p>
+          LLMs treat knowledge as timeless, blending facts from different eras
+          into incoherent answers. Standard RAG compounds this by retrieving the
+          "most semantically similar" text regardless of temporal validity. We
+          propose
+          <strong>Chrono-RAG</strong> — a retrieval-augmented generation
+          framework that routes queries through a
+          <em>Temporal Knowledge Graph (TKG)</em>, where every fact is stored as
+          a time-bounded quadruple
+          <code>(Subject, Predicate, Object, [t_start, t_end])</code>. The
+          system enforces chronological isolation: only facts valid at the
+          queried time point are injected into the LLM context, and conflicting
+          temporal facts are explicitly surfaced as version histories.
+        </p>
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 Core Research Contribution</div>
+          <p class="mb-0">
+            <strong>Chrono-RAG</strong>: a three-layer retrieval architecture
+            treating temporal validity as a <em>first-class constraint</em> in
+            both knowledge representation (TKG schema with time-bounded
+            quadruples) and retrieval algorithm (temporal filtering before
+            semantic ranking). Neither component alone constitutes the
+            contribution — the novelty is in their unified integration.
+          </p>
+        </div>
+      </section>
 
-</main>
+      <!-- 2. Problem Statement -->
+      <section>
+        <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
+        <h3>2.1 The Temporal Hallucination Problem</h3>
+        <p>
+          Knowledge evolves. The WHO reversed its mask guidance in June 2020. A
+          country's head of state changes every election cycle. Drug dosage
+          guidelines update annually. LLMs trained on static snapshots conflate
+          these temporal versions into a "probability-weighted average" that may
+          never have been true at any specific point in time.
+        </p>
+        <p>
+          Kasai et al. (2023) demonstrated GPT-4's accuracy on time-sensitive
+          questions drops <strong>18–25%</strong> compared to static factual
+          questions. Liska et al. (2022) showed even fine-tuned models struggle
+          to distinguish "X was true in 2019" from "X is true now." This is not
+          a parametric knowledge problem — it is a
+          <em>representation problem</em>: LLMs have no internal clock and no
+          mechanism for temporal isolation.
+        </p>
 
-<footer>
-  <p><strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 3 of 5 &nbsp;·&nbsp; Score: 4.0 / 5.0 &nbsp;·&nbsp; <a href="idea4.html">Next: Idea 4 →</a></p>
-</footer>
+        <h3>2.2 Why Standard RAG Fails</h3>
+        <p>
+          Dense passage retrieval (DPR) ranks documents by semantic similarity,
+          not temporal validity. A highly-cited 2018 treatment protocol
+          outscores a 2024 update with fewer citations. The retriever cannot
+          understand that the older document has been <em>superseded</em>. Even
+          appending retrieval timestamps to the prompt is insufficient — the LLM
+          is not trained to use them as hard temporal constraints.
+        </p>
 
-</body>
+        <h3>2.3 Engineering Complexity</h3>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Challenge A: Temporal Schema Design</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Representing facts as time-bounded quadruples and resolving
+              overlapping or open-ended temporal intervals (e.g., facts that are
+              still valid: [2020, ∞]).
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Challenge B: Query Temporal Resolution</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Extracting temporal constraints from natural language queries —
+              distinguishing explicit ("in 2021"), implicit ("during COVID"),
+              and absent temporal references.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Challenge C: Conflict Detection</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Identifying when two facts about the same entity conflict across
+              time periods and generating a coherent temporal evolution
+              narrative rather than blending them.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Challenge D: TKG Coverage</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Pre-built TKGs (YAGO3, Wikidata) have variable temporal annotation
+              density across domains — sparse in niche domains, dense in
+              politics/science/medicine.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Related Work -->
+      <section>
+        <h2>
+          <span class="section-icon">📚</span> 3. Existing Solutions &amp;
+          Limitations
+        </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>System</th>
+              <th>Year</th>
+              <th>Approach</th>
+              <th>Key Limitation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Continual Pre-training</strong> (Jang et al.)</td>
+              <td>2022</td>
+              <td>Re-trains model on newer data periodically</td>
+              <td>
+                Astronomically expensive; catastrophic forgetting of older
+                knowledge still needed for temporal reasoning
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Standard RAG</strong> (Lewis et al.)</td>
+              <td>2020</td>
+              <td>Dense passage retrieval from vector DB</td>
+              <td>
+                No temporal filtering; treats 2015 and 2024 documents
+                identically if semantically similar
+              </td>
+            </tr>
+            <tr>
+              <td><strong>KGQA systems</strong></td>
+              <td>2020–23</td>
+              <td>Queries static KGs (Wikidata/Freebase)</td>
+              <td>
+                Most KGs record <em>current</em> state, not temporal evolution;
+                limited temporal qualifier support
+              </td>
+            </tr>
+            <tr>
+              <td><strong>GraphRAG</strong> (Microsoft)</td>
+              <td>2024</td>
+              <td>Community summaries over knowledge graphs</td>
+              <td>
+                Graph construction is static and domain-agnostic; no temporal
+                dimension in the schema
+              </td>
+            </tr>
+            <tr>
+              <td><strong>RealTime QA</strong> (Kasai et al.)</td>
+              <td>2023</td>
+              <td>Weekly QA benchmark for currency testing</td>
+              <td>
+                Evaluation benchmark only; no retrieval architecture proposed
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-gap">
+          <div class="callout-title">⚠ Explicit Research Gap</div>
+          <p class="mb-0">
+            No RAG system treats
+            <strong>temporal validity as a first-class constraint</strong> in
+            both the knowledge representation schema and the retrieval
+            algorithm. Existing systems are temporally blind by architectural
+            design — they can retrieve <em>about</em> time but cannot enforce
+            temporal isolation during retrieval.
+          </p>
+        </div>
+      </section>
+
+      <!-- 4. Architecture -->
+      <section class="accent-blue">
+        <h2>
+          <span class="section-icon">🏗️</span> 4. Chrono-RAG Architecture (3
+          Layers)
+        </h2>
+
+        <h3>Layer 1 — Temporal Knowledge Graph</h3>
+        <p>
+          Facts stored as time-bounded quadruples:
+          <code>(entity, relation, entity, [t_start, t_end])</code>. Examples:
+        </p>
+        <ul>
+          <li>
+            <code
+              >(WHO, recommends_against, general_mask_use, [2020-01,
+              2020-06])</code
+            >
+          </li>
+          <li>
+            <code>(WHO, recommends, general_mask_use, [2020-06, ∞])</code>
+          </li>
+          <li>
+            <code>(Joe_Biden, president_of, USA, [2021-01, 2025-01])</code>
+          </li>
+        </ul>
+        <p>
+          <strong
+            >Sources used (pre-built — no TKG construction from
+            scratch):</strong
+          >
+        </p>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">YAGO3</div>
+            <div class="ic-value">~3M temporal facts</div>
+            <div class="ic-sub">
+              Wikipedia-derived; time intervals on entities
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Wikidata Temporal</div>
+            <div class="ic-value">~50M qualifiers</div>
+            <div class="ic-sub">
+              point-in-time, start-time, end-time properties
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">T-REx</div>
+            <div class="ic-value">~6.2M triples</div>
+            <div class="ic-sub">Wikipedia-aligned temporal relations</div>
+          </div>
+        </div>
+
+        <h3>Layer 2 — Temporal Query Resolution</h3>
+        <p>
+          A fine-tuned
+          <strong>Temporal Constraint Extractor</strong> (RoBERTa-base on
+          TempQuestions) identifies:
+        </p>
+        <ul>
+          <li>
+            <strong>Explicit:</strong> "in 2021" →
+            <code>[2021-01-01, 2021-12-31]</code>
+          </li>
+          <li>
+            <strong>Implicit:</strong> "during the pandemic" →
+            <code>[2020-03, 2022-05]</code> (mapped via event ontology)
+          </li>
+          <li>
+            <strong>Absent:</strong> Default to current date (open temporal
+            query)
+          </li>
+        </ul>
+        <p>
+          The extracted window <code>[t_query_start, t_query_end]</code> filters
+          the TKG before any semantic retrieval occurs — temporal isolation is
+          enforced at the data access layer, not at the generation layer.
+        </p>
+
+        <h3>Layer 3 — Filtered Traversal + Generation</h3>
+        <p>
+          The temporally filtered subgraph is serialized as structured text
+          (entity–relation–entity chains) and injected into the LLM prompt. When
+          conflicting facts exist across adjacent time windows, the system
+          generates an explicit
+          <strong>temporal evolution narrative</strong> rather than blending
+          them.
+        </p>
+      </section>
+
+      <!-- 5. Methodology -->
+      <section>
+        <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
+        <h3>5.1 Datasets</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Dataset</th>
+              <th>Size</th>
+              <th>Temporal Type</th>
+              <th>Why Used</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>TimeQA</strong> (Chen 2021)</td>
+              <td>20K QA pairs</td>
+              <td>Explicit + implicit</td>
+              <td>Gold temporal annotations; standard benchmark</td>
+            </tr>
+            <tr>
+              <td><strong>TempQuestions</strong> (Jia 2018)</td>
+              <td>1,271 QA</td>
+              <td>Explicit/implicit/ordinal</td>
+              <td>Training data for temporal constraint extractor</td>
+            </tr>
+            <tr>
+              <td><strong>RealTime QA</strong> (Kasai 2023)</td>
+              <td>Weekly updated</td>
+              <td>Current events</td>
+              <td>Tests knowledge currency; hardest temporal test</td>
+            </tr>
+            <tr>
+              <td><strong>Temporal Isolation Set</strong></td>
+              <td>200 pairs (curated)</td>
+              <td>Paired same-entity queries</td>
+              <td>
+                Custom diagnostic: same entity, different time points — must
+                return different answers
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5.2 Ablation Matrix</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>TKG Filter</th>
+              <th>Temporal Extractor</th>
+              <th>Graph Traversal</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A — Zero-shot LLM</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>LLM parametric memory only</td>
+            </tr>
+            <tr>
+              <td>B — Standard RAG</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>Dense retrieval without temporal awareness</td>
+            </tr>
+            <tr>
+              <td>C — RAG + timestamp metadata</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>Does appending date solve it? (hypothesis: no)</td>
+            </tr>
+            <tr>
+              <td>D — TKG only (no extractor)</td>
+              <td>✅</td>
+              <td>❌</td>
+              <td>✅</td>
+              <td>TKG without temporal query resolution</td>
+            </tr>
+            <tr>
+              <td>E — Full Chrono-RAG</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>Main proposed system</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 6. Evaluation -->
+      <section>
+        <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
+        <div class="chip-row">
+          <span class="chip green">Temporal Accuracy ↑</span>
+          <span class="chip rose">Temporal Hallucination Rate ↓</span>
+          <span class="chip">Temporal Isolation Score ↑</span>
+          <span class="chip amber">Overall EM / F1 ↑</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Definition</th>
+              <th>Evaluation Method</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Temporal Accuracy</strong></td>
+              <td>EM accuracy on questions with a temporal qualifier</td>
+              <td>TimeQA/TempQuestions test sets</td>
+            </tr>
+            <tr>
+              <td><strong>Temporal Hallucination Rate</strong></td>
+              <td>
+                Fraction of answers containing facts from the wrong time period
+              </td>
+              <td>
+                Manual annotation of 200-sample subset; 2 annotators; κ reported
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Temporal Isolation Score</strong></td>
+              <td>
+                For paired same-entity questions at different times, fraction
+                where system correctly returns distinct answers
+              </td>
+              <td>Custom diagnostic test set (200 pairs)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 7. Expected Results -->
+      <section>
+        <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
+        <div class="score-grid">
+          <div class="score-card">
+            <div class="sv">+12–18%</div>
+            <div class="sl">Temporal Accuracy vs. Std. RAG</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">−40%</div>
+            <div class="sl">Temporal Hallucination Rate</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">>85%</div>
+            <div class="sl">Temporal Isolation Score</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">~0%</div>
+            <div class="sl">Gain on Static Facts</div>
+          </div>
+        </div>
+        <p>
+          We explicitly expect <strong>no gain</strong> on static,
+          time-invariant facts (boiling points, mathematical constants). We will
+          report this domain boundary honestly — it is a feature, not a bug, and
+          demonstrates the system is working correctly by
+          <em>not</em> over-claiming.
+        </p>
+      </section>
+
+      <!-- 8. Q1 Justification -->
+      <section class="accent-teal">
+        <h2>
+          <span class="section-icon">🎓</span> 8. Why This Meets Q1 Standards
+        </h2>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Production-Critical Problem</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Temporal hallucination is a top-3 reason enterprises distrust LLM
+              deployments in legal, medical, and financial contexts. This
+              directly addresses a deployment blocker.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Novel Unified Architecture</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Temporal query resolution + TKG-filtered retrieval +
+              evolution-aware generation has no published precedent as a unified
+              system. Each component is independently evaluable.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Multiple Venue Options</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              ACL (knowledge-grounded generation), WWW/KDD (knowledge graphs),
+              EMNLP (temporal reasoning). More venue options than any other idea
+              in this proposal.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Best Feasibility Score</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Scores 4/5 on feasibility — tied with Idea 1. Pre-built TKGs
+              (YAGO3, Wikidata) eliminate the most common failure mode of
+              KG-based projects.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Feasibility -->
+      <section class="accent-amber">
+        <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
+        <table class="gantt-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Months</th>
+              <th>Key Tasks</th>
+              <th>Deliverable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1</strong></td>
+              <td>Sep–Oct 2026</td>
+              <td>
+                YAGO3 + Wikidata temporal import; Neo4j or NetworkX graph engine
+                setup; TKG query interface
+              </td>
+              <td>TKG Ready (3M+ facts)</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2</strong></td>
+              <td>Nov–Dec 2026</td>
+              <td>
+                Fine-tune RoBERTa temporal extractor on TempQuestions; implicit
+                reference mapping; integration with TKG filter
+              </td>
+              <td>Temporal Extractor (F1≥75%)</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3</strong></td>
+              <td>Jan–Mar 2027</td>
+              <td>
+                End-to-end Chrono-RAG; baseline comparisons on TimeQA; custom
+                isolation test set creation
+              </td>
+              <td>Baseline Results Table</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4</strong></td>
+              <td>Apr–May 2027</td>
+              <td>
+                Full ablation matrix (A–E); hallucination annotation study;
+                conflict detection analysis
+              </td>
+              <td>Complete Ablation Analysis</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 5</strong></td>
+              <td>Jun–Aug 2027</td>
+              <td>
+                Paper writing; reproducibility package; thesis; submission
+              </td>
+              <td>Submitted Paper + Thesis</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-feasibility">
+          <div class="callout-title">⚠ Risks &amp; Mitigations</div>
+          <ul class="mb-0">
+            <li>
+              <strong
+                >TKG construction (CRITICAL MISUNDERSTANDING RISK):</strong
+              >
+              Building a TKG from scratch is a PhD-level project.
+              <em>Mitigation:</em> We use <em>only</em> pre-existing TKGs
+              (YAGO3, Wikidata). The contribution is the retrieval architecture,
+              not the knowledge graph itself.
+            </li>
+            <li>
+              <strong>Implicit temporal resolution:</strong> "During COVID" →
+              ambiguous date mapping. <em>Mitigation:</em> Restrict main
+              experiments to explicit temporal queries; report implicit
+              resolution as a separate harder sub-task with honest numbers.
+            </li>
+            <li>
+              <strong>TKG coverage gaps:</strong> Sparse temporal annotations in
+              niche domains. <em>Mitigation:</em> Restrict evaluation to densely
+              annotated domains (politics, medicine, science) where
+              YAGO3/Wikidata coverage is verified.
+            </li>
+            <li>
+              <strong>Reviewer concern "just a date filter":</strong> A
+              skeptical reviewer may argue the contribution is trivial.
+              <em>Mitigation:</em> Emphasise the novelty of temporal constraint
+              extraction at the query level, and show with Condition C (RAG +
+              metadata) that simply appending dates does not solve the problem.
+            </li>
+          </ul>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">ℹ Agentic AI Relevance</div>
+          <p class="mb-0">
+            An agentic architecture is
+            <strong>optionally beneficial</strong> here as an extension. A
+            planning agent could decompose complex temporal queries into
+            sub-queries (e.g., "First, determine when policy X changed; then
+            retrieve the version valid at that time"). This is a natural Phase 2
+            extension for a PhD, not a core FYDP requirement. The base
+            Chrono-RAG pipeline works without agents.
+          </p>
+        </div>
+      </section>
+
+      <!-- 10. Resources -->
+      <section>
+        <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">GPU Compute</div>
+            <div class="ic-value">1× A100 (or RTX 4090)</div>
+            <div class="ic-sub">Generation and extractor fine-tuning</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Graph Database</div>
+            <div class="ic-value">Neo4j (free) or NetworkX</div>
+            <div class="ic-sub">TKG storage and SPARQL queries</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">TKG Sources</div>
+            <div class="ic-value">YAGO3, Wikidata</div>
+            <div class="ic-sub">100% free; downloadable dumps available</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Generator LLM</div>
+            <div class="ic-value">Llama-3-8B-Instruct</div>
+            <div class="ic-sub">Open-weight; no API cost</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">All Datasets</div>
+            <div class="ic-value">100% Public</div>
+            <div class="ic-sub">TimeQA, TempQuestions, RealTime QA</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Estimated Cost</div>
+            <div class="ic-value">~$0–100 USD</div>
+            <div class="ic-sub">No paid API required for core system</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 3
+        of 5 &nbsp;·&nbsp; Score: 4.0 / 5.0 &nbsp;·&nbsp;
+        <a href="idea4.html">Next: Idea 4 →</a>
+      </p>
+    </footer>
+  </body>
 </html>

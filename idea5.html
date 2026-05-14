@@ -1,258 +1,564 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Idea 5: StatVerify-Agent — agentic LLM with Python REPL for automated statistical reproducibility checking in scientific papers.">
-  <title>Idea 5 — Scientific Verification using Agentic LLMs</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-  <div class="doc-type">FYDP Proposal · Idea 5 of 5 · Rank #5 · Score 3.2 / 5.0</div>
-  <h1>Scientific Verification using Agentic LLMs<br>(StatVerify-Agent)</h1>
-  <p class="subtitle">Domain: Agentic AI &nbsp;·&nbsp; Tool Use &nbsp;·&nbsp; Code Generation &nbsp;·&nbsp; Meta-Science</p>
-  <div class="cover-grid">
-    <div class="cover-item"><span>Proposed By</span>[Your Name]</div>
-    <div class="cover-item"><span>Supervisor</span>[Prof. Name]</div>
-    <div class="cover-item"><span>Target Venue</span>NeurIPS / EMNLP / ACM FAccT 2027</div>
-    <div class="cover-item"><span>Novelty Score</span>3 / 5</div>
-    <div class="cover-item"><span>Feasibility Score</span>3 / 5</div>
-    <div class="cover-item"><span>Composite Score</span>3.2 / 5</div>
-  </div>
-</header>
-
-<nav>
-  <ul>
-    <li><a href="index.html">Overview</a></li>
-    <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
-    <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
-    <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
-    <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
-    <li><a href="idea5.html" class="active">Idea 5 — Stat Verify</a></li>
-    <li><a href="conclusion.html">Conclusion</a></li>
-  </ul>
-</nav>
-
-<main>
-
-  <!-- KPI -->
-  <section>
-    <h2><span class="section-icon">📊</span> At a Glance</h2>
-    <div class="kpi-row">
-      <div class="kpi-card"><div class="kpi-val">≥70%</div><div class="kpi-label">Code Execution Success Rate</div></div>
-      <div class="kpi-card green"><div class="kpi-val">≥60%</div><div class="kpi-label">Statistical Match Rate</div></div>
-      <div class="kpi-card sky"><div class="kpi-val">≥80%</div><div class="kpi-label">Error Detection F1</div></div>
-      <div class="kpi-card amber"><div class="kpi-val">100</div><div class="kpi-label">Papers in Evaluation Set</div></div>
-    </div>
-
-    <div class="callout callout-feasibility" style="margin-top:1.25rem;">
-      <div class="callout-title">⚠ Important Note — Ranked #5</div>
-      <p class="mb-0">This idea is ranked lowest because <strong>methodological novelty is limited</strong> — ReAct agents with code execution were published in 2023 (Yao et al.). The novelty is in the <em>application domain</em> (statistical reproducibility auditing), which is compelling but may not satisfy Q1 reviewers who expect algorithmic novelty. Additionally, the data curation bottleneck (100 papers with manual gold annotations) consumes significant project time. Recommended as a strong workshop paper submission.</p>
-    </div>
-  </section>
-
-  <!-- 1. Core Idea -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
-    <p>
-      We propose <strong>StatVerify-Agent</strong>: an LLM-based autonomous agent that reads statistical claims in
-      a scientific paper's Results section, identifies the corresponding supplementary dataset, writes Python code
-      to reproduce the reported statistical test (t-test, ANOVA, chi-squared, etc.), executes it in a sandboxed
-      environment, and reports whether the computed result matches the paper's stated conclusion. This shifts
-      verification from <em>semantic plausibility</em> to <em>computational reproducibility</em>.
-    </p>
-    <div class="callout callout-success">
-      <div class="callout-title">🎯 Core Research Contribution</div>
-      <p class="mb-0">The first end-to-end agentic pipeline for <strong>automated statistical reproducibility auditing</strong> of scientific papers. Secondary contribution: a <em>taxonomy of irreproducibility causes</em> derived from systematic failure analysis — itself a publishable finding for the science policy community.</p>
-    </div>
-  </section>
-
-  <!-- 2. Problem Statement -->
-  <section>
-    <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
-    <h3>2.1 The Reproducibility Crisis</h3>
-    <p>
-      An estimated 70% of researchers have tried and failed to reproduce another scientist's experiments (Baker, 2016,
-      <em>Nature</em>). Nuijten et al. (2016) found that <strong>49.6% of psychology papers</strong> contained at
-      least one statistical reporting error, with 12.8% containing errors that changed the significance conclusion.
-      These errors persist because peer reviewers lack the time and tools to re-run analyses from scratch.
-    </p>
-    <h3>2.2 Why This Task Requires an Agent</h3>
-    <p>Unlike other ideas in this proposal, this task <em>genuinely requires</em> an agentic architecture. The workflow is inherently multi-step with feedback loops:</p>
-    <div class="two-col">
-      <div class="col-box">
-        <h4>Planning Required</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">"I need to run a paired t-test on columns X and Y, apply Bonferroni correction, and compare with the reported p=0.003." This multi-step plan cannot be expressed as a single prompt.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Idea 5: StatVerify-Agent — agentic LLM with Python REPL for automated statistical reproducibility checking in scientific papers."
+    />
+    <title>Idea 5 — Scientific Verification using Agentic LLMs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="doc-type">
+        FYDP Proposal · Idea 5 of 5 · Rank #5 · Score 3.2 / 5.0
       </div>
-      <div class="col-box">
-        <h4>Tool Use Required</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Actual code execution in a Python REPL is necessary — the answer cannot be reasoned about in text alone. Scipy, pandas, and statsmodels must be called and results read.</p>
+      <h1>
+        Scientific Verification using Agentic LLMs<br />(StatVerify-Agent)
+      </h1>
+      <p class="subtitle">
+        Domain: Agentic AI &nbsp;·&nbsp; Tool Use &nbsp;·&nbsp; Code Generation
+        &nbsp;·&nbsp; Meta-Science
+      </p>
+      <div class="cover-grid">
+        <div class="cover-item">
+          <span>Target Venue</span>NeurIPS / EMNLP / ACM FAccT 2027
+        </div>
+        <div class="cover-item"><span>Novelty Score</span>3 / 5</div>
+        <div class="cover-item"><span>Feasibility Score</span>3 / 5</div>
+        <div class="cover-item"><span>Composite Score</span>3.2 / 5</div>
       </div>
-      <div class="col-box">
-        <h4>Self-Correction Required</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">If the code errors (wrong column name, type mismatch), the agent must parse the traceback, identify the fix, and re-run — a classic ReAct loop that cannot be handled by a static pipeline.</p>
-      </div>
-      <div class="col-box">
-        <h4>Verdict Generation Required</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">The agent must compare computed vs. reported p-values, account for rounding, and generate a structured verdict (MATCH / MISMATCH / INCONCLUSIVE) with a complete evidence trace.</p>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- 3. Related Work -->
-  <section>
-    <h2><span class="section-icon">📚</span> 3. Existing Solutions &amp; Limitations</h2>
-    <table>
-      <thead><tr><th>System</th><th>Year</th><th>Approach</th><th>Key Limitation</th></tr></thead>
-      <tbody>
-        <tr><td><strong>statcheck</strong> (Epskamp &amp; Nuijten)</td><td>2018</td><td>Regex extracts APA-formatted stats and recomputes p-values</td><td>Only works on APA formatting; cannot handle non-standard reporting; no dataset interaction; regex = brittle</td></tr>
-        <tr><td><strong>GROBID + statcheck</strong></td><td>2020</td><td>PDF parsing + regex verification</td><td>Same regex dependency; no code generation or supplementary data interaction</td></tr>
-        <tr><td><strong>ReAct</strong> (Yao et al.)</td><td>2023</td><td>LLM with ReAct reasoning loop for tool-augmented QA</td><td>General-purpose; not deployed for statistical verification; no domain-specific claim extraction</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-gap">
-      <div class="callout-title">⚠ Explicit Research Gap</div>
-      <p class="mb-0">No system implements an <strong>autonomous end-to-end pipeline</strong>: reading a paper's statistical claim → identifying the relevant dataset → generating correct statistical test code → executing it → comparing the result to the reported value. The gap is in agentic orchestration of these four steps as a self-correcting loop.</p>
-    </div>
-  </section>
-
-  <!-- 4. Architecture -->
-  <section class="accent-blue">
-    <h2><span class="section-icon">🏗️</span> 4. StatVerify-Agent Architecture</h2>
-
-    <h3>Component 1 — Claim Extractor</h3>
-    <p>Scans Results/Discussion sections and outputs structured claim objects:</p>
-    <ul>
-      <li><code>claim_text</code>: "Treatment group showed significantly lower scores (t(48)=3.21, p=0.002)"</li>
-      <li><code>test_type</code>: independent t-test</li>
-      <li><code>reported_statistic</code>: t=3.21, df=48, p=0.002</li>
-      <li><code>data_reference</code>: Table 2 / Supplementary File S1</li>
-    </ul>
-
-    <h3>Component 2 — Plan-and-Solve ReAct Agent (Core)</h3>
-    <p>Implemented via <strong>LangGraph state machine</strong> with conditional edges for error recovery (max 3 retries):</p>
-    <ol>
-      <li><strong>Plan:</strong> "Load S1.csv, identify treatment/control columns, run scipy.stats.ttest_ind"</li>
-      <li><strong>Act:</strong> Generate Python code</li>
-      <li><strong>Observe:</strong> Execute in Dockerized sandbox; parse output or traceback</li>
-      <li><strong>Reflect:</strong> If error: "Column was 'Treatment_Score', not 'treatment'. Fix and retry."</li>
-      <li><strong>Loop</strong> (max 3 iterations; returns INCONCLUSIVE if unresolved)</li>
-    </ol>
-
-    <h3>Component 3 — Verdict Generator</h3>
-    <div class="two-col">
-      <div class="col-box">
-        <h4>MATCH</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">|p<sub>computed</sub> − p<sub>reported</sub>| &lt; ε (ε=0.005 default). Paper's statistical claim is reproducible.</p>
-      </div>
-      <div class="col-box">
-        <h4>MISMATCH</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Significant divergence detected. Full code trace, both p-values, and discrepancy magnitude reported.</p>
-      </div>
-      <div class="col-box">
-        <h4>INCONCLUSIVE</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Max retries exceeded or data format unresolvable. Reason code returned (categorised for the failure taxonomy).</p>
-      </div>
-      <div class="col-box">
-        <h4>SCOPE ERROR</h4>
-        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Claim identified but data not available in supplementary files. Common case; reported as data availability failure.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Methodology -->
-  <section>
-    <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
-    <h3>5.1 Data Collection (Primary Bottleneck)</h3>
-    <p><strong>Source:</strong> PLOS ONE (CC-BY licensed, mandates data availability). Select 100 papers where: (a) Results section contains APA-style statistical reporting, and (b) supplementary data is a downloadable CSV/XLSX file (bypassing PDF extraction entirely). Manual gold annotation: human annotator runs each analysis independently.</p>
-    <p><strong>Error injection:</strong> For 50% of the test set, deliberately introduce one of four error types: (1) wrong p-value by ±20%, (2) incorrect test type, (3) unreported data filtering, (4) n manipulation. Measures error detection sensitivity.</p>
-
-    <h3>5.2 Ablation Matrix</h3>
-    <table>
-      <thead><tr><th>Condition</th><th>Plan Step</th><th>Retry Loop</th><th>Purpose</th></tr></thead>
-      <tbody>
-        <tr><td>A — statcheck baseline</td><td>❌ (regex)</td><td>❌</td><td>Existing SOTA baseline</td></tr>
-        <tr><td>B — Single-pass LLM code</td><td>❌</td><td>❌</td><td>LLM code generation, no agent loop</td></tr>
-        <tr><td>C — ReAct, no plan step</td><td>❌</td><td>✅</td><td>Isolate value of planning</td></tr>
-        <tr><td>D — Full StatVerify-Agent</td><td>✅</td><td>✅</td><td>Main proposed system</td></tr>
-        <tr><td>E — GPT-4o with functions</td><td>✅</td><td>✅</td><td>Closed-source ceiling</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- 6. Evaluation -->
-  <section>
-    <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
-    <div class="chip-row">
-      <span class="chip green">Code Execution Rate ↑</span>
-      <span class="chip green">Statistical Match Rate ↑</span>
-      <span class="chip rose">Error Detection F1 ↑</span>
-      <span class="chip amber">Retry Efficiency</span>
-    </div>
-    <h3>Human Evaluation</h3>
-    <p>50-sample subset: 2 reviewers assess (a) correct test selected? (b) code logically correct? (c) verdict justified? Cohen's κ reported for inter-annotator agreement.</p>
-    <h3>Failure Taxonomy</h3>
-    <p>All INCONCLUSIVE cases categorised by cause: missing data / format error / ambiguous column / test selection error / unreported preprocessing. This taxonomy is a standalone contribution for the reproducibility community.</p>
-  </section>
-
-  <!-- 7. Expected Results -->
-  <section>
-    <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
-    <div class="score-grid">
-      <div class="score-card"><div class="sv">≥70%</div><div class="sl">Code Execution Rate</div></div>
-      <div class="score-card"><div class="sv">≥60%</div><div class="sl">Statistical Match Rate</div></div>
-      <div class="score-card"><div class="sv">≥80%</div><div class="sl">Error Detection on Injected Set</div></div>
-      <div class="score-card"><div class="sv">40%</div><div class="sl">Estimated INCONCLUSIVE Rate</div></div>
-    </div>
-    <p>The 60% statistical match rate is honestly modest. The 40% failure rate is expected and will be presented as a <em>taxonomy of irreproducibility causes</em> — turning the limitation into a contribution that is independently valuable for science policy researchers.</p>
-  </section>
-
-  <!-- 8. Feasibility -->
-  <section class="accent-amber">
-    <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
-    <table class="gantt-table">
-      <thead><tr><th>Phase</th><th>Months</th><th>Key Tasks</th><th>Deliverable</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Phase 1</strong></td><td>Sep–Nov 2026</td><td>PLOS ONE paper curation (100 papers); manual gold annotation; Docker sandbox setup; claim extractor v1</td><td>Annotated Dataset + Sandbox</td></tr>
-        <tr><td><strong>Phase 2</strong></td><td>Dec 2026–Jan 2027</td><td>LangGraph agent implementation; single-pass baseline; retry loop integration</td><td>StatVerify-Agent v1</td></tr>
-        <tr><td><strong>Phase 3</strong></td><td>Feb–Apr 2027</td><td>Full evaluation on 100 papers; error injection experiments; ablation matrix (A–E)</td><td>Complete Results Table</td></tr>
-        <tr><td><strong>Phase 4</strong></td><td>May–Jun 2027</td><td>Failure taxonomy; human evaluation; retry efficiency analysis</td><td>Taxonomy + Human Eval Report</td></tr>
-        <tr><td><strong>Phase 5</strong></td><td>Jul–Aug 2027</td><td>Paper writing; thesis; reproducibility package release</td><td>Submitted Paper + Thesis</td></tr>
-      </tbody>
-    </table>
-
-    <div class="callout callout-feasibility">
-      <div class="callout-title">⚠ Risks &amp; Mitigations</div>
-      <ul class="mb-0">
-        <li><strong>Data curation bottleneck (HIGH RISK):</strong> Manual gold annotation of 100 papers' statistical analyses takes 2–3 months. <em>Mitigation:</em> Start curation in Month 1 in parallel with system design. Consider splitting annotation across 2 team members if possible.</li>
-        <li><strong>PDF extraction (BYPASSED):</strong> Only papers with downloadable CSV supplementary data are included. This reduces corpus size but eliminates the PDF parsing problem entirely.</li>
-        <li><strong>Novelty concerns (REAL RISK):</strong> ReAct agents are not new. <em>Mitigation:</em> Frame as the first <em>domain-specific</em> deployment for statistical auditing; emphasise the failure taxonomy as a standalone contribution; target SDP@EMNLP workshop as first venue.</li>
-        <li><strong>Code generation correctness:</strong> LLMs may generate syntactically correct but semantically wrong code. <em>Mitigation:</em> Add explicit test-justification step before code generation; human-evaluate 50-sample subset.</li>
+    <nav>
+      <ul>
+        <li><a href="index.html">Overview</a></li>
+        <li><a href="idea1.html">Idea 1 — Agent Debate</a></li>
+        <li><a href="idea2.html">Idea 2 — Arg. Verification</a></li>
+        <li><a href="idea3.html">Idea 3 — Temporal KG</a></li>
+        <li><a href="idea4.html">Idea 4 — Rare Disease</a></li>
+        <li><a href="idea5.html" class="active">Idea 5 — Stat Verify</a></li>
+        <li><a href="conclusion.html">Conclusion</a></li>
       </ul>
-    </div>
-  </section>
+    </nav>
 
-  <!-- 10. Resources -->
-  <section>
-    <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
-    <div class="info-grid">
-      <div class="info-card"><div class="ic-label">Code LLM</div><div class="ic-value">DeepSeek-Coder-V2 (local)</div><div class="ic-sub">Strong code generation; no API cost</div></div>
-      <div class="info-card"><div class="ic-label">Agent Framework</div><div class="ic-value">LangGraph (state machine)</div><div class="ic-sub">Free; open source; ReAct loop support</div></div>
-      <div class="info-card"><div class="ic-label">Execution Sandbox</div><div class="ic-value">Docker (Python 3.11)</div><div class="ic-sub">scipy, statsmodels, pandas; network-isolated</div></div>
-      <div class="info-card"><div class="ic-label">GPU Compute</div><div class="ic-value">RTX 4090 / A100</div><div class="ic-sub">Code LLM inference; lighter than other ideas</div></div>
-      <div class="info-card"><div class="ic-label">Dataset Source</div><div class="ic-value">PLOS ONE (CC-BY)</div><div class="ic-sub">100% open access; no licensing issues</div></div>
-      <div class="info-card"><div class="ic-label">Oracle API Budget</div><div class="ic-value">~$100 USD</div><div class="ic-sub">GPT-4o with functions for Condition E</div></div>
-    </div>
-  </section>
+    <main>
+      <!-- KPI -->
+      <section>
+        <h2><span class="section-icon">📊</span> At a Glance</h2>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-val">≥70%</div>
+            <div class="kpi-label">Code Execution Success Rate</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-val">≥60%</div>
+            <div class="kpi-label">Statistical Match Rate</div>
+          </div>
+          <div class="kpi-card sky">
+            <div class="kpi-val">≥80%</div>
+            <div class="kpi-label">Error Detection F1</div>
+          </div>
+          <div class="kpi-card amber">
+            <div class="kpi-val">100</div>
+            <div class="kpi-label">Papers in Evaluation Set</div>
+          </div>
+        </div>
 
-</main>
+        <div class="callout callout-feasibility" style="margin-top: 1.25rem">
+          <div class="callout-title">⚠ Important Note — Ranked #5</div>
+          <p class="mb-0">
+            This idea is ranked lowest because
+            <strong>methodological novelty is limited</strong> — ReAct agents
+            with code execution were published in 2023 (Yao et al.). The novelty
+            is in the <em>application domain</em> (statistical reproducibility
+            auditing), which is compelling but may not satisfy Q1 reviewers who
+            expect algorithmic novelty. Additionally, the data curation
+            bottleneck (100 papers with manual gold annotations) consumes
+            significant project time. Recommended as a strong workshop paper
+            submission.
+          </p>
+        </div>
+      </section>
 
-<footer>
-  <p><strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 5 of 5 &nbsp;·&nbsp; Score: 3.2 / 5.0 &nbsp;·&nbsp; <a href="conclusion.html">Next: Conclusion →</a></p>
-</footer>
+      <!-- 1. Core Idea -->
+      <section class="accent-blue">
+        <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
+        <p>
+          We propose <strong>StatVerify-Agent</strong>: an LLM-based autonomous
+          agent that reads statistical claims in a scientific paper's Results
+          section, identifies the corresponding supplementary dataset, writes
+          Python code to reproduce the reported statistical test (t-test, ANOVA,
+          chi-squared, etc.), executes it in a sandboxed environment, and
+          reports whether the computed result matches the paper's stated
+          conclusion. This shifts verification from
+          <em>semantic plausibility</em> to
+          <em>computational reproducibility</em>.
+        </p>
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 Core Research Contribution</div>
+          <p class="mb-0">
+            The first end-to-end agentic pipeline for
+            <strong>automated statistical reproducibility auditing</strong> of
+            scientific papers. Secondary contribution: a
+            <em>taxonomy of irreproducibility causes</em> derived from
+            systematic failure analysis — itself a publishable finding for the
+            science policy community.
+          </p>
+        </div>
+      </section>
 
-</body>
+      <!-- 2. Problem Statement -->
+      <section>
+        <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
+        <h3>2.1 The Reproducibility Crisis</h3>
+        <p>
+          An estimated 70% of researchers have tried and failed to reproduce
+          another scientist's experiments (Baker, 2016,
+          <em>Nature</em>). Nuijten et al. (2016) found that
+          <strong>49.6% of psychology papers</strong> contained at least one
+          statistical reporting error, with 12.8% containing errors that changed
+          the significance conclusion. These errors persist because peer
+          reviewers lack the time and tools to re-run analyses from scratch.
+        </p>
+        <h3>2.2 Why This Task Requires an Agent</h3>
+        <p>
+          Unlike other ideas in this proposal, this task
+          <em>genuinely requires</em> an agentic architecture. The workflow is
+          inherently multi-step with feedback loops:
+        </p>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Planning Required</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              "I need to run a paired t-test on columns X and Y, apply
+              Bonferroni correction, and compare with the reported p=0.003."
+              This multi-step plan cannot be expressed as a single prompt.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Tool Use Required</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Actual code execution in a Python REPL is necessary — the answer
+              cannot be reasoned about in text alone. Scipy, pandas, and
+              statsmodels must be called and results read.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Self-Correction Required</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              If the code errors (wrong column name, type mismatch), the agent
+              must parse the traceback, identify the fix, and re-run — a classic
+              ReAct loop that cannot be handled by a static pipeline.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>Verdict Generation Required</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              The agent must compare computed vs. reported p-values, account for
+              rounding, and generate a structured verdict (MATCH / MISMATCH /
+              INCONCLUSIVE) with a complete evidence trace.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Related Work -->
+      <section>
+        <h2>
+          <span class="section-icon">📚</span> 3. Existing Solutions &amp;
+          Limitations
+        </h2>
+        <table>
+          <thead>
+            <tr>
+              <th>System</th>
+              <th>Year</th>
+              <th>Approach</th>
+              <th>Key Limitation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>statcheck</strong> (Epskamp &amp; Nuijten)</td>
+              <td>2018</td>
+              <td>
+                Regex extracts APA-formatted stats and recomputes p-values
+              </td>
+              <td>
+                Only works on APA formatting; cannot handle non-standard
+                reporting; no dataset interaction; regex = brittle
+              </td>
+            </tr>
+            <tr>
+              <td><strong>GROBID + statcheck</strong></td>
+              <td>2020</td>
+              <td>PDF parsing + regex verification</td>
+              <td>
+                Same regex dependency; no code generation or supplementary data
+                interaction
+              </td>
+            </tr>
+            <tr>
+              <td><strong>ReAct</strong> (Yao et al.)</td>
+              <td>2023</td>
+              <td>LLM with ReAct reasoning loop for tool-augmented QA</td>
+              <td>
+                General-purpose; not deployed for statistical verification; no
+                domain-specific claim extraction
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-gap">
+          <div class="callout-title">⚠ Explicit Research Gap</div>
+          <p class="mb-0">
+            No system implements an
+            <strong>autonomous end-to-end pipeline</strong>: reading a paper's
+            statistical claim → identifying the relevant dataset → generating
+            correct statistical test code → executing it → comparing the result
+            to the reported value. The gap is in agentic orchestration of these
+            four steps as a self-correcting loop.
+          </p>
+        </div>
+      </section>
+
+      <!-- 4. Architecture -->
+      <section class="accent-blue">
+        <h2>
+          <span class="section-icon">🏗️</span> 4. StatVerify-Agent Architecture
+        </h2>
+
+        <h3>Component 1 — Claim Extractor</h3>
+        <p>
+          Scans Results/Discussion sections and outputs structured claim
+          objects:
+        </p>
+        <ul>
+          <li>
+            <code>claim_text</code>: "Treatment group showed significantly lower
+            scores (t(48)=3.21, p=0.002)"
+          </li>
+          <li><code>test_type</code>: independent t-test</li>
+          <li><code>reported_statistic</code>: t=3.21, df=48, p=0.002</li>
+          <li><code>data_reference</code>: Table 2 / Supplementary File S1</li>
+        </ul>
+
+        <h3>Component 2 — Plan-and-Solve ReAct Agent (Core)</h3>
+        <p>
+          Implemented via <strong>LangGraph state machine</strong> with
+          conditional edges for error recovery (max 3 retries):
+        </p>
+        <ol>
+          <li>
+            <strong>Plan:</strong> "Load S1.csv, identify treatment/control
+            columns, run scipy.stats.ttest_ind"
+          </li>
+          <li><strong>Act:</strong> Generate Python code</li>
+          <li>
+            <strong>Observe:</strong> Execute in Dockerized sandbox; parse
+            output or traceback
+          </li>
+          <li>
+            <strong>Reflect:</strong> If error: "Column was 'Treatment_Score',
+            not 'treatment'. Fix and retry."
+          </li>
+          <li>
+            <strong>Loop</strong> (max 3 iterations; returns INCONCLUSIVE if
+            unresolved)
+          </li>
+        </ol>
+
+        <h3>Component 3 — Verdict Generator</h3>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>MATCH</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              |p<sub>computed</sub> − p<sub>reported</sub>| &lt; ε (ε=0.005
+              default). Paper's statistical claim is reproducible.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>MISMATCH</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Significant divergence detected. Full code trace, both p-values,
+              and discrepancy magnitude reported.
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>INCONCLUSIVE</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Max retries exceeded or data format unresolvable. Reason code
+              returned (categorised for the failure taxonomy).
+            </p>
+          </div>
+          <div class="col-box">
+            <h4>SCOPE ERROR</h4>
+            <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
+              Claim identified but data not available in supplementary files.
+              Common case; reported as data availability failure.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Methodology -->
+      <section>
+        <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
+        <h3>5.1 Data Collection (Primary Bottleneck)</h3>
+        <p>
+          <strong>Source:</strong> PLOS ONE (CC-BY licensed, mandates data
+          availability). Select 100 papers where: (a) Results section contains
+          APA-style statistical reporting, and (b) supplementary data is a
+          downloadable CSV/XLSX file (bypassing PDF extraction entirely). Manual
+          gold annotation: human annotator runs each analysis independently.
+        </p>
+        <p>
+          <strong>Error injection:</strong> For 50% of the test set,
+          deliberately introduce one of four error types: (1) wrong p-value by
+          ±20%, (2) incorrect test type, (3) unreported data filtering, (4) n
+          manipulation. Measures error detection sensitivity.
+        </p>
+
+        <h3>5.2 Ablation Matrix</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>Plan Step</th>
+              <th>Retry Loop</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A — statcheck baseline</td>
+              <td>❌ (regex)</td>
+              <td>❌</td>
+              <td>Existing SOTA baseline</td>
+            </tr>
+            <tr>
+              <td>B — Single-pass LLM code</td>
+              <td>❌</td>
+              <td>❌</td>
+              <td>LLM code generation, no agent loop</td>
+            </tr>
+            <tr>
+              <td>C — ReAct, no plan step</td>
+              <td>❌</td>
+              <td>✅</td>
+              <td>Isolate value of planning</td>
+            </tr>
+            <tr>
+              <td>D — Full StatVerify-Agent</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>Main proposed system</td>
+            </tr>
+            <tr>
+              <td>E — GPT-4o with functions</td>
+              <td>✅</td>
+              <td>✅</td>
+              <td>Closed-source ceiling</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 6. Evaluation -->
+      <section>
+        <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
+        <div class="chip-row">
+          <span class="chip green">Code Execution Rate ↑</span>
+          <span class="chip green">Statistical Match Rate ↑</span>
+          <span class="chip rose">Error Detection F1 ↑</span>
+          <span class="chip amber">Retry Efficiency</span>
+        </div>
+        <h3>Human Evaluation</h3>
+        <p>
+          50-sample subset: 2 reviewers assess (a) correct test selected? (b)
+          code logically correct? (c) verdict justified? Cohen's κ reported for
+          inter-annotator agreement.
+        </p>
+        <h3>Failure Taxonomy</h3>
+        <p>
+          All INCONCLUSIVE cases categorised by cause: missing data / format
+          error / ambiguous column / test selection error / unreported
+          preprocessing. This taxonomy is a standalone contribution for the
+          reproducibility community.
+        </p>
+      </section>
+
+      <!-- 7. Expected Results -->
+      <section>
+        <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
+        <div class="score-grid">
+          <div class="score-card">
+            <div class="sv">≥70%</div>
+            <div class="sl">Code Execution Rate</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">≥60%</div>
+            <div class="sl">Statistical Match Rate</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">≥80%</div>
+            <div class="sl">Error Detection on Injected Set</div>
+          </div>
+          <div class="score-card">
+            <div class="sv">40%</div>
+            <div class="sl">Estimated INCONCLUSIVE Rate</div>
+          </div>
+        </div>
+        <p>
+          The 60% statistical match rate is honestly modest. The 40% failure
+          rate is expected and will be presented as a
+          <em>taxonomy of irreproducibility causes</em> — turning the limitation
+          into a contribution that is independently valuable for science policy
+          researchers.
+        </p>
+      </section>
+
+      <!-- 8. Feasibility -->
+      <section class="accent-amber">
+        <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
+        <table class="gantt-table">
+          <thead>
+            <tr>
+              <th>Phase</th>
+              <th>Months</th>
+              <th>Key Tasks</th>
+              <th>Deliverable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Phase 1</strong></td>
+              <td>Sep–Nov 2026</td>
+              <td>
+                PLOS ONE paper curation (100 papers); manual gold annotation;
+                Docker sandbox setup; claim extractor v1
+              </td>
+              <td>Annotated Dataset + Sandbox</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 2</strong></td>
+              <td>Dec 2026–Jan 2027</td>
+              <td>
+                LangGraph agent implementation; single-pass baseline; retry loop
+                integration
+              </td>
+              <td>StatVerify-Agent v1</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 3</strong></td>
+              <td>Feb–Apr 2027</td>
+              <td>
+                Full evaluation on 100 papers; error injection experiments;
+                ablation matrix (A–E)
+              </td>
+              <td>Complete Results Table</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 4</strong></td>
+              <td>May–Jun 2027</td>
+              <td>
+                Failure taxonomy; human evaluation; retry efficiency analysis
+              </td>
+              <td>Taxonomy + Human Eval Report</td>
+            </tr>
+            <tr>
+              <td><strong>Phase 5</strong></td>
+              <td>Jul–Aug 2027</td>
+              <td>Paper writing; thesis; reproducibility package release</td>
+              <td>Submitted Paper + Thesis</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout-feasibility">
+          <div class="callout-title">⚠ Risks &amp; Mitigations</div>
+          <ul class="mb-0">
+            <li>
+              <strong>Data curation bottleneck (HIGH RISK):</strong> Manual gold
+              annotation of 100 papers' statistical analyses takes 2–3 months.
+              <em>Mitigation:</em> Start curation in Month 1 in parallel with
+              system design. Consider splitting annotation across 2 team members
+              if possible.
+            </li>
+            <li>
+              <strong>PDF extraction (BYPASSED):</strong> Only papers with
+              downloadable CSV supplementary data are included. This reduces
+              corpus size but eliminates the PDF parsing problem entirely.
+            </li>
+            <li>
+              <strong>Novelty concerns (REAL RISK):</strong> ReAct agents are
+              not new. <em>Mitigation:</em> Frame as the first
+              <em>domain-specific</em> deployment for statistical auditing;
+              emphasise the failure taxonomy as a standalone contribution;
+              target SDP@EMNLP workshop as first venue.
+            </li>
+            <li>
+              <strong>Code generation correctness:</strong> LLMs may generate
+              syntactically correct but semantically wrong code.
+              <em>Mitigation:</em> Add explicit test-justification step before
+              code generation; human-evaluate 50-sample subset.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 10. Resources -->
+      <section>
+        <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="ic-label">Code LLM</div>
+            <div class="ic-value">DeepSeek-Coder-V2 (local)</div>
+            <div class="ic-sub">Strong code generation; no API cost</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Agent Framework</div>
+            <div class="ic-value">LangGraph (state machine)</div>
+            <div class="ic-sub">Free; open source; ReAct loop support</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Execution Sandbox</div>
+            <div class="ic-value">Docker (Python 3.11)</div>
+            <div class="ic-sub">
+              scipy, statsmodels, pandas; network-isolated
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">GPU Compute</div>
+            <div class="ic-value">RTX 4090 / A100</div>
+            <div class="ic-sub">
+              Code LLM inference; lighter than other ideas
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Dataset Source</div>
+            <div class="ic-value">PLOS ONE (CC-BY)</div>
+            <div class="ic-sub">100% open access; no licensing issues</div>
+          </div>
+          <div class="info-card">
+            <div class="ic-label">Oracle API Budget</div>
+            <div class="ic-value">~$100 USD</div>
+            <div class="ic-sub">GPT-4o with functions for Condition E</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        <strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 5
+        of 5 &nbsp;·&nbsp; Score: 3.2 / 5.0 &nbsp;·&nbsp;
+        <a href="conclusion.html">Next: Conclusion →</a>
+      </p>
+    </footer>
+  </body>
 </html>
