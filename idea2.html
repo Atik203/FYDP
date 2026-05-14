@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Idea 2: Argumentative Scientific Claim Verification — graph-based discourse reasoning for scientific fact-checking.">
+  <title>Idea 2 — Argumentative Scientific Claim Verification</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="doc-type">FYDP Proposal · Idea 2 of 5 · Rank #2 · Score 4.2 / 5.0</div>
+  <h1>Argumentative Scientific Claim Verification</h1>
+  <p class="subtitle">Domain: NLP &nbsp;·&nbsp; Discourse Parsing &nbsp;·&nbsp; Graph Neural Networks &nbsp;·&nbsp; Fact-Checking</p>
+  <div class="cover-grid">
+    <div class="cover-item"><span>Proposed By</span>[Your Name]</div>
+    <div class="cover-item"><span>Supervisor</span>[Prof. Name]</div>
+    <div class="cover-item"><span>Target Venue</span>ACL / EMNLP 2027</div>
+    <div class="cover-item"><span>Novelty Score</span>4 / 5</div>
+    <div class="cover-item"><span>Rigor Score</span>5 / 5</div>
+    <div class="cover-item"><span>Composite Score</span>4.2 / 5</div>
+  </div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="index.html">Overview</a></li>
+    <li><a href="idea1.html">Idea 1</a></li>
+    <li><a href="idea2.html" class="active">Idea 2</a></li>
+    <li><a href="idea3.html">Idea 3</a></li>
+    <li><a href="idea4.html">Idea 4</a></li>
+    <li><a href="idea5.html">Idea 5</a></li>
+    <li><a href="conclusion.html">Conclusion</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- KPI -->
+  <section>
+    <h2><span class="section-icon">📊</span> At a Glance</h2>
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-val">+5%</div><div class="kpi-label">Macro-F1 Gain (Hard Claims)</div></div>
+      <div class="kpi-card green"><div class="kpi-val">≥80%</div><div class="kpi-label">Discourse Parser F1 Target</div></div>
+      <div class="kpi-card sky"><div class="kpi-val">3</div><div class="kpi-label">Pipeline Stages</div></div>
+      <div class="kpi-card amber"><div class="kpi-val">4</div><div class="kpi-label">Baseline Systems</div></div>
+    </div>
+  </section>
+
+  <!-- 1. Core Idea -->
+  <section class="accent-blue">
+    <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
+    <p>
+      Scientific claim verification is currently treated as a flat sequence-pair classification task: given a claim and
+      an abstract, predict <em>Support / Refute / Not Enough Info</em>. This fundamentally misrepresents how scientific
+      arguments work. We propose modelling the <strong>argumentative discourse structure</strong> of source literature
+      as a heterogeneous directed graph — where nodes represent discourse units (Background, Method, Result,
+      Conclusion) and edges encode argumentative relations (supports, contradicts, depends-on) — and performing
+      verification as <em>graph-based multi-hop reasoning</em> using an LLM-initialized Graph Attention Network.
+    </p>
+    <div class="callout callout-success">
+      <div class="callout-title">🎯 Core Research Contribution</div>
+      <p class="mb-0">The primary contribution is a <strong>Directed Heterogeneous Discourse Graph (DHDG)</strong> representation of scientific papers with a GNN-based verification head — the first system to perform claim verification via graph-level multi-hop inference rather than flat text classification. Secondary contribution: an improved discourse parsing pipeline combining SciBERT and LLM-based fallback extraction.</p>
+    </div>
+  </section>
+
+  <!-- 2. Problem Statement -->
+  <section>
+    <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
+    <h3>2.1 The Scientific Misinformation Problem</h3>
+    <p>Scientific misinformation is structurally different from general misinformation. A false scientific claim is typically embedded in a multi-hop chain of reasoning: it may cite a real experiment using a flawed methodology, or draw a conclusion valid for one population but overgeneralised to another.</p>
+    <p>
+      Consider the claim: <em>"Drug X reduces mortality by 30%."</em> The abstract may state this. But the Results section qualifies it as <em>"in subpopulation aged 65+"</em>, the Methods section reveals N=12 with no control group, and the Discussion acknowledges <em>"findings not replicable across ethnic groups."</em> A flat verifier reads the abstract and outputs "Supports." A discourse-aware system correctly identifies the logical qualification chain and outputs "Insufficient Evidence."
+    </p>
+    <h3>2.2 Engineering Complexity</h3>
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Challenge A: Discourse Extraction</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Automatically parsing scientific text into structured discourse graphs from noisy, heterogeneous academic writing styles — no universal standard exists.</p>
+      </div>
+      <div class="col-box">
+        <h4>Challenge B: Edge Prediction</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Predicting argumentative <em>relations</em> between sentence pairs (supports/contradicts/depends-on) is harder than node classification — requires pairwise reasoning across the full document.</p>
+      </div>
+      <div class="col-box">
+        <h4>Challenge C: GNN + LLM Integration</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Combining dense LLM embeddings (high-dimensional, semantically rich) with sparse graph structure (low-dimensional, relational) without information bottleneck requires careful architectural design.</p>
+      </div>
+      <div class="col-box">
+        <h4>Challenge D: Error Propagation</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Errors in the discourse parser cascade directly to the verification head. If the graph is wrong, GNN reasoning over it produces garbage. Quantifying and bounding this propagation is a core experimental challenge.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Related Work -->
+  <section>
+    <h2><span class="section-icon">📚</span> 3. Existing Solutions &amp; Limitations</h2>
+    <table>
+      <thead><tr><th>System</th><th>Year</th><th>Approach</th><th>Key Limitation</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SciFact pipeline</strong> (Wadden et al.)</td><td>2020</td><td>SciBERT for evidence retrieval + rationale selection + NLI</td><td>Single-sentence rationale; no structural reasoning; ~67% F1 on hard multi-hop claims</td></tr>
+        <tr><td><strong>VerT5erini</strong> (Pradeep et al.)</td><td>2021</td><td>T5-based retrieval and verification</td><td>Stronger retrieval, same flat classification paradigm; no discourse understanding</td></tr>
+        <tr><td><strong>MultiVerS</strong> (Wadden et al.)</td><td>2022</td><td>Multi-granularity attention (token/sentence/abstract)</td><td>Step toward structure-awareness but treats abstract as bag-of-sentences, not a directed argument graph</td></tr>
+        <tr><td><strong>SciArg</strong> (Lauscher et al.)</td><td>2018</td><td>Gold discourse annotations for 40 CL papers</td><td>Annotation resource only; no verification pipeline built on it — the gap this project fills</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-gap">
+      <div class="callout-title">⚠ Explicit Research Gap</div>
+      <p class="mb-0">No published system constructs the <strong>argumentative discourse graph</strong> of scientific evidence and performs <em>graph-based inference</em> for claim verification. The gap is the missing bridge: <strong>discourse structure → computational graph → multi-hop verification.</strong> Existing work either ignores structure entirely or annotates it without building a reasoning pipeline.</p>
+    </div>
+  </section>
+
+  <!-- 4. Architecture -->
+  <section class="accent-blue">
+    <h2><span class="section-icon">🏗️</span> 4. Proposed 3-Stage Architecture</h2>
+
+    <h3>Stage 1 — Discourse Graph Construction</h3>
+    <p>Each sentence in the source paper is classified into a discourse role using SciBERT fine-tuned on SciArg: {Background, Objective, Method, Result, Conclusion}. Argumentative edges are then predicted between sentence pairs via a bilinear scorer. The result is a <strong>Directed Heterogeneous Discourse Graph (DHDG)</strong> where:</p>
+    <ul>
+      <li><strong>Nodes:</strong> individual sentences, typed by discourse role</li>
+      <li><strong>Edges:</strong> directed argumentative relations — <em>supports, contradicts, depends-on, is-evidence-for</em></li>
+    </ul>
+    <p>An LLM fallback (Llama-3-8B, structured JSON mode) handles sentences below SciBERT's confidence threshold θ = 0.7.</p>
+
+    <h3>Stage 2 — Graph-Augmented Encoding</h3>
+    <p>Each node is embedded using SciBERT-base (or LoRA-adapted Llama-3). These embeddings are processed through a <strong>2-layer Graph Attention Network (GAT)</strong> (Veličković et al., 2018) with 8 attention heads and 256-dim hidden states. The GAT propagates information along argumentative edges, learning to weight different path types — e.g., "Result → supports → Conclusion" receives higher attention than "Background → is-evidence-for → Conclusion" when verifying empirical claims.</p>
+
+    <h3>Stage 3 — Verification Head</h3>
+    <p>The claim is encoded separately (same SciBERT encoder), then attended against the graph-updated node embeddings via a cross-attention layer. The final pooled representation passes through a 3-class classifier: {Support, Refute, Not Enough Info}.</p>
+
+    <div class="two-col" style="margin-top:1rem;">
+      <div class="col-box">
+        <h4>Key Hyperparameters</h4>
+        <ul style="font-size:.87rem;margin-bottom:0">
+          <li>GAT layers: 2 (sweep: 1–3)</li>
+          <li>Attention heads: 8</li>
+          <li>Hidden dim: 256</li>
+          <li>Dropout: 0.2</li>
+          <li>LR: 2e-5 (SciBERT); 1e-3 (GAT)</li>
+        </ul>
+      </div>
+      <div class="col-box">
+        <h4>Training Strategy</h4>
+        <ul style="font-size:.87rem;margin-bottom:0">
+          <li>Stage 1 trained independently on SciArg</li>
+          <li>Stages 2–3 trained jointly on SciFact</li>
+          <li>Gold-graph oracle run to establish upper bound</li>
+          <li>Early stopping on validation Macro-F1</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Methodology -->
+  <section>
+    <h2><span class="section-icon">🔬</span> 5. Methodology</h2>
+    <h3>5.1 Datasets</h3>
+    <table>
+      <thead><tr><th>Dataset</th><th>Size</th><th>Purpose</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td><strong>SciFact</strong> (Wadden 2020)</td><td>1,409 claims; 5,183 abstracts</td><td>Primary verification benchmark — train/dev/test splits</td><td>Public (HuggingFace)</td></tr>
+        <tr><td><strong>SciArg</strong> (Lauscher 2018)</td><td>40 fully annotated CL papers</td><td>Training data for discourse parser (node + edge labels)</td><td>Public (GitHub)</td></tr>
+        <tr><td><strong>HealthVer</strong> (Sarrouti 2021)</td><td>14,330 claim-evidence pairs</td><td>Cross-domain evaluation (COVID-19 health claims)</td><td>Public</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.2 Ablation Matrix</h3>
+    <table>
+      <thead><tr><th>Condition</th><th>Discourse Graph</th><th>GAT Layer</th><th>Encoder</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td>A — Flat baseline</td><td>❌</td><td>❌</td><td>SciBERT</td><td>Reproduce SciFact baseline</td></tr>
+        <tr><td>B — Gold graph + GAT</td><td>Gold (SciArg)</td><td>✅</td><td>SciBERT</td><td>Upper-bound with perfect parsing</td></tr>
+        <tr><td>C — Predicted graph, no GAT</td><td>Predicted</td><td>❌</td><td>SciBERT</td><td>Isolate graph structure value</td></tr>
+        <tr><td>D — Full system</td><td>Predicted</td><td>✅</td><td>SciBERT</td><td>Main proposed system</td></tr>
+        <tr><td>E — Full system + LLM enc.</td><td>Predicted</td><td>✅</td><td>Llama-3 (LoRA)</td><td>LLM encoder ablation</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 6. Evaluation -->
+  <section>
+    <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
+    <div class="chip-row">
+      <span class="chip green">Macro-F1 (3-class) ↑</span>
+      <span class="chip">Evidence F1 ↑</span>
+      <span class="chip rose">Hard-Claim Accuracy ↑</span>
+      <span class="chip amber">Discourse Parser F1</span>
+    </div>
+    <h3>Stratified Evaluation</h3>
+    <p>Results reported separately for difficulty tiers, which is the key novelty of our evaluation protocol:</p>
+    <ul>
+      <li><strong>Easy claims</strong> — verifiable from a single sentence (baseline strong here)</li>
+      <li><strong>Medium claims</strong> — require 2-sentence cross-reference (moderate improvement expected)</li>
+      <li><strong>Hard claims</strong> — require ≥3 sentences or cross-section reasoning (largest improvement here)</li>
+    </ul>
+    <h3>Statistical Protocol</h3>
+    <p>3-seed runs. 95% CI. Paired bootstrap resampling significance tests. McNemar's test for per-instance comparison against strongest baseline (MultiVerS). Inter-annotator agreement (Cohen's κ) for difficulty tier annotation.</p>
+  </section>
+
+  <!-- 7. Expected Results -->
+  <section>
+    <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
+    <div class="score-grid">
+      <div class="score-card"><div class="sv">+4–7%</div><div class="sl">Macro-F1 on Hard Claims</div></div>
+      <div class="score-card"><div class="sv">~0%</div><div class="sl">Gain on Easy Claims</div></div>
+      <div class="score-card"><div class="sv">≥80%</div><div class="sl">Discourse Parser F1</div></div>
+      <div class="score-card"><div class="sv">+10–15%</div><div class="sl">Upper Bound (Gold Graphs)</div></div>
+    </div>
+    <p>The gap between Gold-graph performance (Condition B) and Predicted-graph performance (Condition D) quantifies the <em>headroom left by parser improvement</em> — itself a publishable finding that motivates future work on scientific discourse parsing.</p>
+  </section>
+
+  <!-- 8. Q1 Justification -->
+  <section class="accent-teal">
+    <h2><span class="section-icon">🎓</span> 8. Why This Meets Q1 Standards</h2>
+    <div class="two-col">
+      <div class="col-box">
+        <h4>Interdisciplinary Depth</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Bridges argumentation theory (classical CL field), graph neural networks (ML field), and LLMs — a cross-cutting contribution appreciated by ACL/EMNLP reviewers who value linguistic insight over pure scaling.</p>
+      </div>
+      <div class="col-box">
+        <h4>Clean Ablation Story</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">The 5-condition ablation matrix answers: "What does the graph add? What does the GAT add? What if parsing were perfect?" This is exactly what top-venue reviewers demand.</p>
+      </div>
+      <div class="col-box">
+        <h4>Dual Contribution</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">(1) Improved discourse parser for scientific text. (2) Graph-based claim verification framework. Two separable contributions strengthen the paper significantly.</p>
+      </div>
+      <div class="col-box">
+        <h4>Real-World Impact</h4>
+        <p class="text-muted" style="font-size:.87rem;margin-bottom:0">Addresses the scientific reproducibility crisis and science misinformation epidemic. ACL, EMNLP, and NAACL have dedicated Scientific Document Processing tracks.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Feasibility -->
+  <section class="accent-amber">
+    <h2><span class="section-icon">📅</span> 9. 12-Month Execution Plan</h2>
+    <table class="gantt-table">
+      <thead><tr><th>Phase</th><th>Months</th><th>Key Tasks</th><th>Deliverable</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Phase 1</strong></td><td>Sep–Nov 2026</td><td>SciBERT discourse parser fine-tuning on SciArg; edge prediction model; parser evaluation on held-out SciArg</td><td>Discourse Parser (F1 ≥80%)</td></tr>
+        <tr><td><strong>Phase 2</strong></td><td>Dec 2026–Jan 2027</td><td>PyTorch Geometric GAT implementation; SciFact end-to-end training; integration testing</td><td>Working E2E Pipeline</td></tr>
+        <tr><td><strong>Phase 3</strong></td><td>Feb–Apr 2027</td><td>Full ablation matrix (A–E); stratified evaluation; HealthVer cross-domain run</td><td>Complete Ablation Table</td></tr>
+        <tr><td><strong>Phase 4</strong></td><td>May–Jun 2027</td><td>Error analysis; case study annotation; difficulty-tier analysis; LLM encoder ablation</td><td>Error Analysis Report</td></tr>
+        <tr><td><strong>Phase 5</strong></td><td>Jul–Aug 2027</td><td>Paper writing (ACL 2027 template); thesis; reproducibility package</td><td>Submitted Paper + Thesis</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-feasibility">
+      <div class="callout-title">⚠ Risks &amp; Mitigations</div>
+      <ul class="mb-0">
+        <li><strong>Error propagation (HIGH RISK):</strong> If discourse parser F1 &lt; 70%, the GNN receives degraded graphs. <em>Mitigation:</em> Run gold-graph oracle (Condition B) as upper bound from Month 2. If parser quality is insufficient, pivot the contribution to "improved scientific discourse parser" as the primary claim.</li>
+        <li><strong>SciArg annotation scarcity (40 papers):</strong> Small training set for the parser. <em>Mitigation:</em> LLM-generated silver annotations on SciFact abstracts (GPT-4o structured output), with 10% human spot-check. Expected to add 200+ silver-annotated documents.</li>
+        <li><strong>GNN overfitting on small graphs:</strong> Scientific abstracts produce 5–15 nodes. <em>Mitigation:</em> Aggressive dropout (0.3), early stopping, and compare against non-GNN path pooling baseline.</li>
+        <li><strong>Feasibility score = 3/5:</strong> This idea is more engineering-intensive than Idea 1. The discourse parser requires ~3 months of focused work. If falling behind, scope to abstracts-only graphs (removing cross-section reasoning) to reduce complexity.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">ℹ Note on Agentic AI</div>
+      <p class="mb-0">This idea does <strong>not</strong> require an agentic architecture. The task is a structured prediction pipeline, not a planning or tool-use problem. The LLM is used as an <em>encoder component</em> and as a fallback extraction tool — not as an autonomous reasoning agent. Forcing an agent loop would add latency and complexity without scientific justification.</p>
+    </div>
+  </section>
+
+  <!-- 10. Resources -->
+  <section>
+    <h2><span class="section-icon">🛠️</span> 10. Required Resources</h2>
+    <div class="info-grid">
+      <div class="info-card"><div class="ic-label">GPU Compute</div><div class="ic-value">1× A100 or RTX 4090</div><div class="ic-sub">GNN training is lightweight; LLM encoder is the bottleneck</div></div>
+      <div class="info-card"><div class="ic-label">Graph Library</div><div class="ic-value">PyTorch Geometric</div><div class="ic-sub">Free, well-documented GAT implementation</div></div>
+      <div class="info-card"><div class="ic-label">NLP Tools</div><div class="ic-value">SciBERT, SciSpacy</div><div class="ic-sub">Free; domain-specific scientific NLP</div></div>
+      <div class="info-card"><div class="ic-label">Silver Annotation</div><div class="ic-value">~$50 GPT-4o API</div><div class="ic-sub">Silver annotation generation for SciArg augmentation</div></div>
+      <div class="info-card"><div class="ic-label">All Datasets</div><div class="ic-value">100% Public</div><div class="ic-sub">SciFact, SciArg, HealthVer — no access requirements</div></div>
+      <div class="info-card"><div class="ic-label">LLM Fallback</div><div class="ic-value">Llama-3-8B (local)</div><div class="ic-sub">Discourse extraction fallback; no API cost</div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>FYDP Research Proposal 2026–2027</strong> &nbsp;·&nbsp; Idea 2 of 5 &nbsp;·&nbsp; Score: 4.2 / 5.0 &nbsp;·&nbsp; <a href="idea3.html">Next: Idea 3 →</a></p>
+</footer>
+
+</body>
+</html>

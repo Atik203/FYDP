@@ -1,0 +1,2330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FYDP Research Proposal — Senior Researcher Brief</title>
+    <style>
+        /* ═══════════════════════════════════════
+           ROOT & GLOBAL STYLES
+        ═══════════════════════════════════════ */
+        :root {
+            --primary: #0a192f;
+            --secondary: #112240;
+            --accent: #64ffda;
+            --accent2: #f6c90e;
+            --accent3: #e94560;
+            --text: #ccd6f6;
+            --text-light: #8892b0;
+            --white: #e6f1ff;
+            --card-bg: #112240;
+            --card-border: #233554;
+            --rank1: #ffd700;
+            --rank2: #c0c0c0;
+            --rank3: #cd7f32;
+            --rank4: #64ffda;
+            --rank5: #f093fb;
+            --gradient1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════════════
+           NAVIGATION
+        ═══════════════════════════════════════ */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 1000;
+            padding: 0 2rem;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+        }
+
+        .nav-brand {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.3rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.78rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        /* ═══════════════════════════════════════
+           SECTIONS GENERAL
+        ═══════════════════════════════════════ */
+        section {
+            min-height: 100vh;
+            padding: 80px 2rem 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════
+           TITLE PAGE
+        ═══════════════════════════════════════ */
+        #title {
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #title::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(100, 255, 218, 0.06) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .title-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .title-badge {
+            display: inline-block;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.4rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .title-main {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--white);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .title-main span {
+            color: var(--accent);
+        }
+
+        .title-sub {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .title-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .meta-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .meta-card .meta-label {
+            font-size: 0.7rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+
+        .meta-card .meta-value {
+            font-size: 0.9rem;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .title-divider {
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+            margin: 2rem auto;
+            border-radius: 2px;
+        }
+
+        /* ═══════════════════════════════════════
+           OVERVIEW / RANKING PAGE
+        ═══════════════════════════════════════ */
+        #overview {
+            background: var(--secondary);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: rgba(100, 255, 218, 0.1);
+            color: var(--accent);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Ranking Cards */
+        .ranking-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .rank-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rank-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .rank-card.r1::before { background: var(--rank1); }
+        .rank-card.r2::before { background: var(--rank2); }
+        .rank-card.r3::before { background: var(--rank3); }
+        .rank-card.r4::before { background: var(--rank4); }
+        .rank-card.r5::before { background: var(--rank5); }
+
+        .rank-card:hover {
+            transform: translateX(4px);
+            border-color: rgba(100, 255, 218, 0.3);
+        }
+
+        .rank-number {
+            text-align: center;
+        }
+
+        .rank-medal {
+            font-size: 2rem;
+            display: block;
+        }
+
+        .rank-score {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 0.2rem;
+        }
+
+        .rank-info h3 {
+            font-size: 1.05rem;
+            color: var(--white);
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .rank-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .rank-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .tag-domain {
+            background: rgba(100, 255, 218, 0.1);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .tag-venue {
+            background: rgba(246, 201, 14, 0.1);
+            color: var(--accent2);
+            border-color: var(--accent2);
+        }
+
+        .tag-risk-low {
+            background: rgba(67, 233, 123, 0.1);
+            color: #43e97b;
+            border-color: #43e97b;
+        }
+
+        .tag-risk-med {
+            background: rgba(246, 201, 14, 0.1);
+            color: var(--accent2);
+            border-color: var(--accent2);
+        }
+
+        .tag-risk-high {
+            background: rgba(233, 69, 96, 0.1);
+            color: var(--accent3);
+            border-color: var(--accent3);
+        }
+
+        .rank-scores {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            min-width: 140px;
+        }
+
+        .score-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .score-bar-label {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            width: 55px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .score-bar {
+            flex: 1;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s ease;
+        }
+
+        .fill-accent { background: var(--accent); }
+        .fill-gold { background: var(--rank1); }
+        .fill-blue { background: #4facfe; }
+        .fill-pink { background: var(--rank5); }
+
+        .score-val {
+            font-size: 0.65rem;
+            color: var(--white);
+            font-weight: 700;
+            width: 20px;
+        }
+
+        /* ═══════════════════════════════════════
+           IDEA DETAIL PAGES
+        ═══════════════════════════════════════ */
+        .idea-section {
+            padding: 80px 2rem 60px;
+        }
+
+        .idea-section:nth-child(odd) {
+            background: var(--primary);
+        }
+
+        .idea-section:nth-child(even) {
+            background: var(--secondary);
+        }
+
+        .idea-hero {
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .idea-hero.g1 { background: linear-gradient(135deg, rgba(102,126,234,0.15) 0%, rgba(118,75,162,0.15) 100%); border: 1px solid rgba(102,126,234,0.3); }
+        .idea-hero.g2 { background: linear-gradient(135deg, rgba(240,147,251,0.15) 0%, rgba(245,87,108,0.15) 100%); border: 1px solid rgba(240,147,251,0.3); }
+        .idea-hero.g3 { background: linear-gradient(135deg, rgba(79,172,254,0.15) 0%, rgba(0,242,254,0.15) 100%); border: 1px solid rgba(79,172,254,0.3); }
+        .idea-hero.g4 { background: linear-gradient(135deg, rgba(67,233,123,0.15) 0%, rgba(56,249,215,0.15) 100%); border: 1px solid rgba(67,233,123,0.3); }
+        .idea-hero.g5 { background: linear-gradient(135deg, rgba(250,112,154,0.15) 0%, rgba(254,225,64,0.15) 100%); border: 1px solid rgba(250,112,154,0.3); }
+
+        .idea-rank-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .badge-1 { background: rgba(255,215,0,0.2); color: var(--rank1); border: 1px solid var(--rank1); }
+        .badge-2 { background: rgba(192,192,192,0.2); color: var(--rank2); border: 1px solid var(--rank2); }
+        .badge-3 { background: rgba(205,127,50,0.2); color: var(--rank3); border: 1px solid var(--rank3); }
+        .badge-4 { background: rgba(100,255,218,0.2); color: var(--accent); border: 1px solid var(--accent); }
+        .badge-5 { background: rgba(240,147,251,0.2); color: var(--rank5); border: 1px solid var(--rank5); }
+
+        .idea-title {
+            font-size: clamp(1.3rem, 3vw, 1.9rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 0.8rem;
+        }
+
+        .idea-tagline {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .idea-quick-stats {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-stat {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            text-align: center;
+        }
+
+        .quick-stat .qs-label {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+        }
+
+        .quick-stat .qs-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--white);
+            display: block;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.7rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .icon-red { background: rgba(233,69,96,0.2); }
+        .icon-blue { background: rgba(79,172,254,0.2); }
+        .icon-green { background: rgba(67,233,123,0.2); }
+        .icon-yellow { background: rgba(246,201,14,0.2); }
+        .icon-purple { background: rgba(118,75,162,0.2); }
+        .icon-cyan { background: rgba(100,255,218,0.2); }
+        .icon-orange { background: rgba(250,112,154,0.2); }
+
+        .info-card-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .info-card p {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Lists */
+        .styled-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .styled-list li {
+            font-size: 0.88rem;
+            color: var(--text-light);
+            padding: 0.4rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .styled-list li:last-child {
+            border-bottom: none;
+        }
+
+        .styled-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 0.7rem;
+            top: 0.5rem;
+        }
+
+        /* Pipeline */
+        .pipeline {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 1.2rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            line-height: 1.8;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* Evaluation Table */
+        .eval-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .eval-table th {
+            background: rgba(100,255,218,0.1);
+            color: var(--accent);
+            padding: 0.7rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .eval-table td {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-light);
+        }
+
+        .eval-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .eval-table tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .eval-table .target {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Novel Tags */
+        .novelty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .novelty-item {
+            background: rgba(100,255,218,0.05);
+            border: 1px solid rgba(100,255,218,0.15);
+            border-radius: 8px;
+            padding: 0.8rem;
+        }
+
+        .novelty-item .ni-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+        }
+
+        .novelty-item .ni-desc {
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.4rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--card-border);
+        }
+
+        .tl-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 0.4rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--primary);
+        }
+
+        .tl-sem {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.2rem;
+        }
+
+        .tl-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        /* Q1 Banner */
+        .q1-banner {
+            background: linear-gradient(135deg, rgba(100,255,218,0.1) 0%, rgba(118,75,162,0.1) 100%);
+            border: 1px solid rgba(100,255,218,0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .q1-banner h4 {
+            color: var(--accent);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .q1-checks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .q1-check {
+            font-size: 0.83rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .q1-check::before {
+            content: '✅';
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        /* ═══════════════════════════════════════
+           CONCLUSION PAGE
+        ═══════════════════════════════════════ */
+        #conclusion {
+            background: var(--primary);
+        }
+
+        .conclusion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .conclusion-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .conclusion-card h3 {
+            color: var(--white);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .final-verdict {
+            background: linear-gradient(135deg, rgba(100,255,218,0.08) 0%, rgba(118,75,162,0.08) 100%);
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .final-verdict h2 {
+            color: var(--accent);
+            font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+            margin-bottom: 1rem;
+        }
+
+        .final-verdict p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            max-width: 700px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .verdict-highlight {
+            background: rgba(100,255,218,0.1);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            display: inline-block;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        /* Master comparison table */
+        .master-table-wrap {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 2rem;
+        }
+
+        .master-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .master-table th {
+            background: rgba(100,255,218,0.1);
+            color: var(--accent);
+            padding: 0.8rem 1rem;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .master-table th:first-child {
+            text-align: left;
+        }
+
+        .master-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.83rem;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .master-table td:first-child {
+            text-align: left;
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .master-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .master-table tr.top-row td {
+            background: rgba(255,215,0,0.05);
+        }
+
+        .score-dot {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            line-height: 28px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .dot-5 { background: rgba(67,233,123,0.25); color: #43e97b; }
+        .dot-4 { background: rgba(79,172,254,0.25); color: #4facfe; }
+        .dot-3 { background: rgba(246,201,14,0.25); color: var(--accent2); }
+        .dot-2 { background: rgba(233,69,96,0.25); color: var(--accent3); }
+
+        .total-score {
+            font-weight: 800;
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            border-top: 1px solid var(--card-border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            color: var(--text-light);
+            font-size: 0.82rem;
+        }
+
+        footer .footer-accent {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ═══════════════════════════════════════
+           RESPONSIVE
+        ═══════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .rank-card {
+                grid-template-columns: 60px 1fr;
+            }
+            .rank-scores {
+                display: none;
+            }
+            nav .nav-links {
+                display: none;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
+<nav>
+    <div class="nav-inner">
+        <div class="nav-brand">⚡ FYDP Research Proposal</div>
+        <ul class="nav-links">
+            <li><a href="#title">Home</a></li>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#idea1">Idea #1</a></li>
+            <li><a href="#idea2">Idea #2</a></li>
+            <li><a href="#idea3">Idea #3</a></li>
+            <li><a href="#idea4">Idea #4</a></li>
+            <li><a href="#idea5">Idea #5</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     TITLE PAGE
+═══════════════════════════════════════ -->
+<section id="title">
+    <div class="container">
+        <div class="title-content">
+            <div class="title-badge">🎓 Final Year Design Project — Research Proposal</div>
+            <h1 class="title-main">
+                NLP & LLM Research Ideas<br>
+                <span>For Q1 Publication & PhD Applications</span>
+            </h1>
+            <p class="title-sub">
+                A comprehensive research proposal presenting 5 high-impact ideas in
+                Natural Language Processing and Large Language Models,
+                structured for FYDP evaluation and top-tier journal submission.
+            </p>
+
+            <div class="title-meta">
+                <div class="meta-card">
+                    <div class="meta-label">📚 Domain</div>
+                    <div class="meta-value">NLP + LLM + Agentic AI</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">🎯 Target</div>
+                    <div class="meta-value">Q1 Journal Publication</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">⏱️ Timeline</div>
+                    <div class="meta-value">1 Year (3 Semesters)</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">🏆 PhD Target</div>
+                    <div class="meta-value">Top US / EU / UK 2028</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">📄 Ideas Proposed</div>
+                    <div class="meta-value">5 Research Ideas</div>
+                </div>
+                <div class="meta-card">
+                    <div class="meta-label">🔬 Review Level</div>
+                    <div class="meta-value">Senior Researcher Board</div>
+                </div>
+            </div>
+
+            <div class="title-divider"></div>
+
+            <p style="color: var(--text-light); font-size: 0.85rem; font-style: italic;">
+                Prepared by: Final Year CS Student &nbsp;|&nbsp;
+                Reviewed by: Senior AI Researcher &nbsp;|&nbsp;
+                Aligned with: Washington Accord Engineering Standards
+            </p>
+
+            <div style="margin-top: 2.5rem;">
+                <a href="#overview" style="
+                    display: inline-block;
+                    background: rgba(100,255,218,0.1);
+                    border: 1px solid var(--accent);
+                    color: var(--accent);
+                    padding: 0.8rem 2rem;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='rgba(100,255,218,0.2)'"
+                   onmouseout="this.style.background='rgba(100,255,218,0.1)'">
+                    View Research Overview ↓
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     OVERVIEW / RANKING PAGE
+═══════════════════════════════════════ -->
+<section id="overview">
+    <div class="container">
+        <div class="section-header fade-in">
+            <div class="section-tag">📊 Master Overview</div>
+            <h2 class="section-title">5 Ideas — Ranked by Senior Researcher Board</h2>
+            <p class="section-desc">
+                All ideas scored across 6 dimensions: Novelty · Feasibility · Q1 Potential ·
+                PhD Impact · Risk Control · Complexity. Scale: 1 (Low) → 5 (Exceptional)
+            </p>
+        </div>
+
+        <div class="ranking-grid fade-in">
+
+            <!-- Rank 1 -->
+            <div class="rank-card r1">
+                <div class="rank-number">
+                    <span class="rank-medal">🏆</span>
+                    <div class="rank-score">42/45 · 4.7★</div>
+                </div>
+                <div class="rank-info">
+                    <h3>#1 — Trust-Calibrated Multi-Agent Debate</h3>
+                    <p>An agentic LLM system where multiple AI agents debate scientific claims, assign trust scores to each other's reasoning, and produce calibrated, uncertainty-aware verdicts on contradictory evidence.</p>
+                    <div class="rank-tags">
+                        <span class="tag tag-domain">LLM + Agentic AI</span>
+                        <span class="tag tag-venue">NeurIPS / ACL 2026</span>
+                        <span class="tag tag-risk-low">✅ Low Risk</span>
+                    </div>
+                </div>
+                <div class="rank-scores">
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Novelty</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Feasibility</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Q1 Pub</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-gold" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">PhD Impact</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-pink" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Risk Ctrl</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-blue" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rank 2 -->
+            <div class="rank-card r2">
+                <div class="rank-number">
+                    <span class="rank-medal">🥈</span>
+                    <div class="rank-score">36/45 · 4.2★</div>
+                </div>
+                <div class="rank-info">
+                    <h3>#2 — Argumentative Scientific Claim Verification</h3>
+                    <p>An NLP system that verifies scientific claims by modeling full argumentative discourse structure — claim, evidence, rebuttal, qualifier chains — using graph neural networks over scientific literature.</p>
+                    <div class="rank-tags">
+                        <span class="tag tag-domain">NLP</span>
+                        <span class="tag tag-venue">ACL / EMNLP 2026</span>
+                        <span class="tag tag-risk-low">✅ Low Risk</span>
+                    </div>
+                </div>
+                <div class="rank-scores">
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Novelty</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Feasibility</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Q1 Pub</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-gold" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">PhD Impact</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-pink" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Risk Ctrl</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-blue" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rank 3 -->
+            <div class="rank-card r3">
+                <div class="rank-number">
+                    <span class="rank-medal">🥉</span>
+                    <div class="rank-score">32/45 · 3.8★</div>
+                </div>
+                <div class="rank-info">
+                    <h3>#3 — Temporal Knowledge Decay + Dynamic KG</h3>
+                    <p>A framework that assigns time-decay validity scores to retrieved knowledge, detects conflicts between a model's parametric memory and new retrieved information, and resolves them intelligently.</p>
+                    <div class="rank-tags">
+                        <span class="tag tag-domain">NLP</span>
+                        <span class="tag tag-venue">EMNLP / AI Journal</span>
+                        <span class="tag tag-risk-low">✅ Very Safe</span>
+                    </div>
+                </div>
+                <div class="rank-scores">
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Novelty</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Feasibility</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Q1 Pub</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-gold" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">PhD Impact</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-pink" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Risk Ctrl</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-blue" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rank 4 -->
+            <div class="rank-card r4">
+                <div class="rank-number">
+                    <span class="rank-medal">4️⃣</span>
+                    <div class="rank-score">32/45 · 3.8★</div>
+                </div>
+                <div class="rank-info">
+                    <h3>#4 — Neuro-Symbolic Rare Disease NLP</h3>
+                    <p>A healthcare NLP system combining neural transformers with symbolic medical ontology reasoning (UMLS, SNOMED-CT) to diagnose rare diseases from clinical notes — even with minimal training data.</p>
+                    <div class="rank-tags">
+                        <span class="tag tag-domain">NLP + Healthcare</span>
+                        <span class="tag tag-venue">JAMIA / ACL BioNLP</span>
+                        <span class="tag tag-risk-low">✅ Manageable</span>
+                    </div>
+                </div>
+                <div class="rank-scores">
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Novelty</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Feasibility</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Q1 Pub</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-gold" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">PhD Impact</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-pink" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Risk Ctrl</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-blue" style="width:80%"></div></div>
+                        <span class="score-val">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rank 5 -->
+            <div class="rank-card r5">
+                <div class="rank-number">
+                    <span class="rank-medal">5️⃣</span>
+                    <div class="rank-score">31/45 · 3.5★</div>
+                </div>
+                <div class="rank-info">
+                    <h3>#5 — Scientific Verification Agentic LLMs</h3>
+                    <p>A multi-agent LLM pipeline that autonomously decomposes scientific papers into atomic claims, retrieves contradicting/supporting evidence, audits methodology, and generates structured verification reports.</p>
+                    <div class="rank-tags">
+                        <span class="tag tag-domain">LLM + Agentic</span>
+                        <span class="tag tag-venue">ACL / NeurIPS 2026</span>
+                        <span class="tag tag-risk-med">⚠️ Scope Carefully</span>
+                    </div>
+                </div>
+                <div class="rank-scores">
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Novelty</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Feasibility</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-accent" style="width:60%"></div></div>
+                        <span class="score-val">3</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Q1 Pub</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-gold" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">PhD Impact</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-pink" style="width:100%"></div></div>
+                        <span class="score-val">5</span>
+                    </div>
+                    <div class="score-bar-wrap">
+                        <span class="score-bar-label">Risk Ctrl</span>
+                        <div class="score-bar"><div class="score-bar-fill fill-blue" style="width:60%"></div></div>
+                        <span class="score-val">3</span>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end ranking-grid -->
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     IDEA #1 DETAIL
+═══════════════════════════════════════ -->
+<section id="idea1" class="idea-section">
+    <div class="container">
+
+        <div class="idea-hero g1 fade-in">
+            <div class="idea-rank-badge badge-1">🏆 Rank #1 · Score 42/45 · 4.7★ Exceptional</div>
+            <h1 class="idea-title">Trust-Calibrated Multi-Agent Debate<br>for Scientific Reasoning</h1>
+            <p class="idea-tagline">LLM agents that argue, score each other's credibility, and resolve contradictions — with measurable trust calibration</p>
+            <div class="idea-quick-stats">
+                <div class="quick-stat">
+                    <span class="qs-label">Domain</span>
+                    <span class="qs-value">LLM + Agentic AI</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="qs-label">Target Venue</span>
+                    <span class="qs-value">NeurIPS / ACL 2026</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="qs-label">Risk Level</span>
+                    <span class="qs-value" style="color:#43e97b">✅ Low</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="qs-label">Compute Need</span>
+                    <span class="qs-value">Moderate</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="qs-label">Overall Score</span>
+                    <span class="qs-value" style="color:var(--rank1)">42 / 45</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-grid fade-in">
+
+            <!-- Problem -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-red">🔴</div>
+                    <div class="info-card-title">Real-World Problem</div>
+                </div>
+                <ul class="styled-list">
+                    <li>Scientific misinformation is accelerating across medical, climate, and policy domains</li>
+                    <li>LLMs hallucinate plausible-sounding but factually incorrect scientific verdicts</li>
+                    <li>No AI system can reason across multiple conflicting studies simultaneously</li>
+                    <li>Clinicians and policymakers cannot trust AI-generated scientific summaries</li>
+                    <li>Peer review is overwhelmed — 2.5M papers published annually</li>
+                </ul>
+            </div>
+
+            <!-- Existing Solutions -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-blue">📚</div>
+                    <div class="info-card-title">Existing Solutions & Their Limitations</div>
+                </div>
+                <ul class="styled-list">
+                    <li><strong>Multi-Agent Debate (Du et al., 2023):</strong> Agents debate but no trust scoring between them</li>
+                    <li><strong>SciFact / MultiVerS:</strong> Flat text matching, no argumentative structure</li>
+                    <li><strong>RAG Systems:</strong> Retrieve text but cannot resolve conflicting evidence</li>
+                    <li><strong>GPT-4 Scientific QA:</strong> Single-pass, no iterative reasoning or calibration</li>
+                    <li><strong>ChatPDF / Consensus.app:</strong> Surface-level — no contradiction resolution</li>
+                </ul>
+            </div>
+
+            <!-- Research Gap -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-yellow">🔬</div>
+                    <div class="info-card-title">Research Gap</div>
+                </div>
+                <ul class="styled-list">
+                    <li>No framework assigns dynamic trust scores to debating LLM agents</li>
+                    <li>No calibration mechanism exists for multi-agent debate confidence</li>
+                    <li>No system grounds agent debate in real scientific contradiction benchmarks</li>
+                    <li>Agents in existing work are symmetric — no credibility weighting</li>
+                    <li>Epistemic uncertainty output is absent from all current debate systems</li>
+                </ul>
+            </div>
+
+            <!-- Our Solution -->
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-green">✨</div>
+                    <div class="info-card-title">Our Proposed Solution</div>
+                </div>
+                <ul class="styled-list">
+                    <li><strong>Trust Score Module:</strong> Dynamic credibility weights per agent per round</li>
+                    <li><strong>Calibrated Debate Protocol:</strong> Agents revise arguments based on trust feedback</li>
+                    <li><strong>Contradiction Resolution Layer:</strong> Explicit mechanism for conflicting claims</li>
+                    <li><strong>Epistemic Uncertainty Output:</strong> Verdict + confidence score, not just verdict</li>
+                    <li><strong>SciContra Dataset:</strong> New benchmark of contradictory scientific claim pairs</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Novelty Grid -->
+        <div class="info-card fade-in" style="margin-bottom: 1.5rem;">
+            <div class="info-card-header">
+                <div class="info-icon icon-purple">⚡</div>
+                <div class="info-card-title">Novel Components (What Makes This New)</div>
+            </div>
+            <div class="novelty-grid">
+                <div class="novelty-item">
+                    <div class="ni-title">Trust Score Module (TSM)</div>
+                    <div class="ni-desc">First framework to assign dynamic credibility weights to LLM agents during debate — based on evidence quality and logical consistency</div>
+                </div>
+                <div class="novelty-item">
+                    <div class="ni-title">Calibrated Debate Protocol (CDP)</div>
+                    <div class="ni-desc">Agents iteratively revise arguments using trust-weighted feedback — a novel update mechanism beyond simple majority voting</div>
+                </div>
+                <div class="novelty-item">
+                    <div class="ni-title">Contradiction Resolution Layer (CRL)</div>
+                    <div class="ni-desc">Explicit neural module trained to identify and resolve conflicting scientific evidence across multiple retrieved papers</div>
+                </div>
+                <div class="novelty-item">
+                    <div class="ni-title">SciContra Benchmark</div>
+                    <div class="ni-desc">New publicly released dataset of scientific claim pairs with annotated contradictions — a standalone contribution for the community</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pipeline -->
+        <div class="info-card fade-in" style="margin-bottom: 1.5rem;">
+            <div class="info-card-header">
+                <div class="info-icon icon-cyan">⚙️</div>
+                <div class="info-card-title">System Architecture & Pipeline</div>
+            </div>
+            <div class="pipeline">Input: Contradictory scientific claim pair
+        ↓
+Step 1: Retrieval Agent → fetches relevant papers (PubMed API + FAISS)
+        ↓
+Step 2: Agent A (Proponent) → argues FOR the claim with cited evidence
+        Agent B (Opponent) → argues AGAINST with counter-evidence
+        ↓
+Step 3: Trust Scorer → evaluates each argument:
+        [evidence grounding] + [logical consistency] + [source authority]
+        → assigns Trust Weight: W_A, W_B
+        ↓
+Step 4: Debate Round 2 → agents revise arguments using trust feedback
+        (repeat for N rounds until convergence or max rounds)
+        ↓
+Step 5: Contradiction Resolution Layer → synthesizes final verdict
+        ↓
+Step 6: Output: Verdict [Supported / Refuted / Contested]
+                + Confidence Score [0.0 – 1.0]
+                + Evidence Summary
+
+Models:  Llama-3.1-70B / Mistral-Large (open-source)
+Framework: LangGraph + AutoGen
+Datasets: SciFact, MultiVerS, SciContra (custom built)</div>
+        </div>
+
+        <!-- Evaluation -->
+        <div class="info-card fade-in" style="margin-bottom: 1.5rem;">
+            <div class="info-card-header">
+                <div class="info-icon icon-yellow">📊</div>
+                <div class="info-card-title">Evaluation Plan & Expected Results</div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="eval-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>What It Measures</th>
+                            <th>Benchmark</th>
+                            <th>Baseline</th>
+                            <th>Our Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Claim Accuracy</td>
+                            <td>Correct verdict on contradictory pairs</td>
+                            <td>SciFact</td>
+                            <td>GPT-4: 71%</td>
+                            <td class="target">&gt;82%</td>
+                        </tr>
+                        <tr>
+                            <td>Calibration Error (ECE)</td>
+                            <td>Trust score reliability</td>
+                            <td>Custom</td>
+                            <td>Uncalibrated</td>
+                            <td class="target">&lt;0.06</td>
+                        </tr>
+                        <tr>
+                            <td>Debate Convergence Rate</td>
+                            <td>Agents reach consistent conclusion</td>
+                            <td>Custom</td>
+                            <td>No baseline</td>
+                            <td class="target">&gt;75%</td>
+                        </tr>
+                        <tr>
+                            <td>Expert Agreement (κ)</td>
+                            <td>Human expert vs. system alignment</td>
+                            <td>Human eval</td>
+                            <td>—</td>
+                            <td class="target">&gt;0.78</td>
+                        </tr>
+                        <tr>
+                            <td>Hallucination Rate</td>
+                            <td>False scientific claims generated</td>
+                            <td>FactScore</td>
+                            <td>GPT-4: 23%</td>
+                            <td class="target">&lt;8%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="info-grid fade-in">
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-cyan">📅</div>
+                    <div class="info-card-title">1-Year FYDP Timeline</div>
+                </div>
+                <div class="timeline">
+                    <div class="tl-item">
+                        <div class="tl-sem">Semester 1 (Months 1–4)</div>
+                        <div class="tl-desc">Literature review · Baseline debate system setup · SciContra dataset construction · Baseline reproduction (GPT-4, MultiVerS)</div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-sem">Semester 2 (Months 5–8)</div>
+                        <div class="tl-desc">Trust Score Module implementation · Calibrated Debate Protocol · Contradiction Resolution Layer · Core experiments & ablations</div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-sem">Semester 3 (Months 9–12)</div>
+                        <div class="tl-desc">Full evaluation + human expert study · Paper writing (NeurIPS/ACL submission) · Final FYDP report · Presentation</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-icon icon-orange">🎓</div>
+                    <div class="info-card-title">Why This Idea for PhD Applications</div>
+                </div>
+                <ul class="styled-list">
+                    <li>Clear, memorable research identity: "Trust-Calibrated Agentic AI for Science"</li>
+                    <li>Directly aligned with top lab research (MIT CSAIL, Stanford HAI, CMU LTI)</li>
+                    <li>Addresses AI Trustworthiness — #1 funding priority 2025–2030</li>
+                    <li>Multi-component novelty = demonstrates research maturity</li>
+                    <li>New benchmark dataset = community contribution + citations</li>
+                    <li>Agentic AI is the dominant paradigm for 2026–2030 research</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="q1-banner fade-in">
+            <h4>✅ Why This is Q1-Level — Justification Checklist</h4>
+            <div class="q1-checks">
+                <div class="q1-check">Novel architecture: Trust Scoring in multi-agent debate</div>
+                <div class="q1-check">New evaluation metric: Trust-Calibrated Debate Score</div>
+                <div class="q1-check">New benchmark dataset: SciContra</div>
+                <div class="q1-check">Directly addresses AI Trustworthiness (#1 priority)</div>
+                <div class="q1-check">Agentic AI + Scientific Reasoning = NeurIPS sweet spot</div>
+                <div class="q1-check">Measurable, reproducible, statistically significant results</div>
+                <div class="q1-check">Human expert evaluation validates real-world impact</div>
+                <div class="q1-check">Open-source models ensure reproducibility</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     IDEA #2 DETAIL
+═══════════════════════════════════════ -->
+<section id="idea2" class="idea-section">
+    <div class="container">
+
+        <div class="idea-hero g2 fade-in">
+            <div class="idea-rank-badge badge-2">🥈 Rank #2 · Score 36/45 · 4.2★ Strong</div>
+            <h1 class="idea-title">Argumentative Scientific<br>Claim Verification</h1>
+            <p class="idea-tagline">NLP that understands argument structure — not just keyword matching — to verify complex scientific claims across contradictory literature</p>
+            <div class="idea-quick-stats">
+                <div class="quick-stat"><span class="qs-label">Domain</span><span class="qs-value">NLP</span></div>
+                <div class="quick-stat"><span class="qs-label">Target Venue</span><span class="qs-value">ACL / EMNLP 2026</span></div>
+                <div class="quick-stat"><span class="qs-label">Risk Level</span><span class="qs-value" style="color:#43e97b">✅ Low</span></div>
+                <div class="quick-stat"><span class="qs-label">Compute Need</span><span class="qs-value">Low-Medium</span></div>
+                <div class="quick-stat"><span class="qs-label">Overall Score</span><span class="qs-value" style="color:var(--rank2)">36 / 45</span></div>
+            </div>
+        </div>
+
+        <div class="info-grid fade-in">
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-red">🔴</div><div class="info-card-title">Real-World Problem</div></div>
+                <ul class="styled-list">
+                    <li>1M+ scientific papers published on PubMed annually — impossible to manually verify</li>
+                    <li>The replication crisis: contradictory findings are common across disciplines</li>
+                    <li>Misinformation citing "studies" spreads rapidly on social media</li>
+                    <li>Current NLP fact-checkers treat claims as flat text — no argument structure</li>
+                    <li>Meta-analyses take months/years — automated support is urgently needed</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-blue">📚</div><div class="info-card-title">Existing Solutions & Limitations</div></div>
+                <ul class="styled-list">
+                    <li><strong>FEVER (Thorne et al., 2018):</strong> News fact-checking, not scientific argumentation</li>
+                    <li><strong>SciFact (Wadden et al., 2020):</strong> Single-sentence claims, no argument structure</li>
+                    <li><strong>MultiVerS (Wadden et al., 2022):</strong> Multi-document but no argumentative graph</li>
+                    <li><strong>Argument Mining (Stab & Gurevych):</strong> Persuasive essays only, not scientific text</li>
+                    <li><strong>GPT-4 Fact Checking:</strong> Hallucination-prone, no epistemic calibration</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-yellow">🔬</div><div class="info-card-title">Research Gap</div></div>
+                <ul class="styled-list">
+                    <li>No system jointly models claim → evidence → rebuttal → qualifier chains</li>
+                    <li>Cross-study contradiction resolution is completely unaddressed</li>
+                    <li>No epistemic uncertainty quantification based on study design quality</li>
+                    <li>No graph-based representation of scientific argumentative discourse</li>
+                    <li>No benchmark for cross-paper contradictory scientific claim pairs</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-green">✨</div><div class="info-card-title">Our Proposed Solution</div></div>
+                <ul class="styled-list">
+                    <li><strong>Scientific Argument Graph (SAG):</strong> Nodes = claims, evidence, rebuttals; Edges = supports/contradicts/qualifies</li>
+                    <li><strong>Contradiction-Aware Verifier (CAV):</strong> Trained on conflicting evidence pairs</li>
+                    <li><strong>Epistemic Uncertainty Scorer:</strong> Weights by study design (RCT > observational, sample size, p-values)</li>
+                    <li><strong>SciContra Dataset:</strong> New benchmark of annotated contradictory claim pairs</li>
+                    <li><strong>GNN Reasoning:</strong> Graph Neural Network over SAG for structured reasoning</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">⚙️</div><div class="info-card-title">System Pipeline</div></div>
+            <div class="pipeline">Input: Scientific claim to verify (e.g., "Vitamin D prevents COVID-19")
+        ↓
+Step 1: Retrieve relevant papers via SciBERT encoder + FAISS index
+        ↓
+Step 2: Build Scientific Argument Graph (SAG)
+        Nodes:  [Claim] [Evidence] [Rebuttal] [Qualifier]
+        Edges:  supports → contradicts → qualifies →
+        ↓
+Step 3: Graph Neural Network (GNN) reasons over SAG
+        → learns which evidence paths are most credible
+        ↓
+Step 4: Epistemic Scorer weights by study design quality:
+        RCT (5) > Cohort (4) > Case Study (3) > Opinion (1)
+        + sample size + statistical significance (p-value)
+        ↓
+Step 5: Contradiction-Aware Verifier synthesizes cross-study verdict
+        ↓
+Output: [Supported / Refuted / Contested]
+        + Confidence Score + Evidence Chain Explanation
+
+Models:  SciBERT, PubMedBERT, PyTorch Geometric (GNN)
+Datasets: SciFact, CORD-19, MultiVerS, SciContra (custom)</div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-yellow">📊</div><div class="info-card-title">Evaluation Plan</div></div>
+            <div style="overflow-x:auto;">
+                <table class="eval-table">
+                    <thead><tr><th>Metric</th><th>Benchmark</th><th>Baseline</th><th>Our Target</th></tr></thead>
+                    <tbody>
+                        <tr><td>Claim Verification F1</td><td>SciFact</td><td>MultiVerS: 84.6%</td><td class="target">&gt;88%</td></tr>
+                        <tr><td>Contradiction Detection F1</td><td>SciContra (custom)</td><td>No baseline</td><td class="target">&gt;78%</td></tr>
+                        <tr><td>Epistemic Calibration (ECE)</td><td>Custom</td><td>Uncalibrated</td><td class="target">&lt;0.08</td></tr>
+                        <tr><td>Expert Agreement (κ)</td><td>Human evaluation</td><td>—</td><td class="target">&gt;0.75</td></tr>
+                        <tr><td>Argument Structure Accuracy</td><td>Custom annotation</td><td>No baseline</td><td class="target">Novel metric</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">📅</div><div class="info-card-title">1-Year Timeline</div></div>
+            <div class="timeline">
+                <div class="tl-item"><div class="tl-sem">Semester 1</div><div class="tl-desc">SciContra dataset construction · SAG design · Baseline reproduction (SciFact, MultiVerS)</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 2</div><div class="tl-desc">GNN model implementation · CAV training · Epistemic scorer · Core experiments</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 3</div><div class="tl-desc">Expert human evaluation · Full ablation study · Paper writing (ACL/EMNLP) · FYDP submission</div></div>
+            </div>
+        </div>
+
+        <div class="q1-banner fade-in">
+            <h4>✅ Why This is Q1-Level</h4>
+            <div class="q1-checks">
+                <div class="q1-check">New dataset contribution (SciContra) = standalone paper asset</div>
+                <div class="q1-check">GNN + NLP hybrid = strong technical depth signal</div>
+                <div class="q1-check">Argument mining + scientific NLP = emerging high-impact intersection</div>
+                <div class="q1-check">Real misinformation problem = immediate societal relevance</div>
+                <div class="q1-check">All datasets are public — fully reproducible research</div>
+                <div class="q1-check">Low compute requirements = accessible to global research community</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     IDEA #3 DETAIL
+═══════════════════════════════════════ -->
+<section id="idea3" class="idea-section">
+    <div class="container">
+
+        <div class="idea-hero g3 fade-in">
+            <div class="idea-rank-badge badge-3">🥉 Rank #3 · Score 32/45 · 3.8★ Strong</div>
+            <h1 class="idea-title">Temporal Knowledge Decay<br>+ Dynamic Knowledge Graphs</h1>
+            <p class="idea-tagline">When AI knowledge goes stale — detect it, score it, and resolve conflicts between old memory and new evidence</p>
+            <div class="idea-quick-stats">
+                <div class="quick-stat"><span class="qs-label">Domain</span><span class="qs-value">NLP</span></div>
+                <div class="quick-stat"><span class="qs-label">Target Venue</span><span class="qs-value">EMNLP / AI Journal</span></div>
+                <div class="quick-stat"><span class="qs-label">Risk Level</span><span class="qs-value" style="color:#43e97b">✅ Very Safe</span></div>
+                <div class="quick-stat"><span class="qs-label">Compute Need</span><span class="qs-value">Low-Medium</span></div>
+                <div class="quick-stat"><span class="qs-label">Overall Score</span><span class="qs-value" style="color:var(--rank3)">32 / 45</span></div>
+            </div>
+        </div>
+
+        <div class="info-grid fade-in">
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-red">🔴</div><div class="info-card-title">Real-World Problem</div></div>
+                <ul class="styled-list">
+                    <li>Medical NLP systems trained in 2022 miss 2024 drug guidelines — patient safety risk</li>
+                    <li>Legal NLP misses new regulations, case law, and statutory changes</li>
+                    <li>Financial NLP has outdated company profiles, market conditions, leadership changes</li>
+                    <li>Full LLM retraining costs millions — not viable for continuous updates</li>
+                    <li>RAG retrieves fresh text but cannot resolve conflicts with old parametric knowledge</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-blue">📚</div><div class="info-card-title">Existing Solutions & Limitations</div></div>
+                <ul class="styled-list">
+                    <li><strong>RAG (Lewis et al., 2020):</strong> Retrieves fresh text but ignores temporal validity</li>
+                    <li><strong>TempLAMA benchmark:</strong> Evaluates retrieval accuracy, not conflict resolution</li>
+                    <li><strong>ROME / MEMIT (knowledge editing):</strong> Modifies weights but doesn't scale to continuous drift</li>
+                    <li><strong>TemporalWiki:</strong> Dataset exists but no conflict resolver built on it</li>
+                    <li><strong>Periodic retraining:</strong> Expensive ($millions), not continuous, loses old knowledge</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-yellow">🔬</div><div class="info-card-title">Research Gap</div></div>
+                <ul class="styled-list">
+                    <li>No metric exists to score "how stale" a piece of retrieved knowledge is</li>
+                    <li>No framework detects conflicts between parametric memory and retrieved documents</li>
+                    <li>Temporal validity of retrieved documents is universally ignored in RAG pipelines</li>
+                    <li>No benchmark specifically for temporal knowledge conflict resolution in NLP</li>
+                    <li>Domain-specific temporal decay rates (medical vs. legal vs. financial) are unstudied</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-green">✨</div><div class="info-card-title">Our Proposed Solution</div></div>
+                <ul class="styled-list">
+                    <li><strong>Temporal Validity Score (TVS):</strong> Novel metric — time-decay weight for each retrieved document</li>
+                    <li><strong>Dynamic Knowledge Conflict Resolver (DKCR):</strong> Detects + resolves parametric vs. retrieved conflicts</li>
+                    <li><strong>Temporal Reasoning Chain:</strong> "What was true when" explicit reasoning over time-stamped KG</li>
+                    <li><strong>TempoConflict Benchmark:</strong> New dataset of conflicting temporal knowledge pairs</li>
+                    <li><strong>Domain-Specific Decay Models:</strong> Medical / Legal / Financial temporal decay rates</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">⚙️</div><div class="info-card-title">System Pipeline</div></div>
+            <div class="pipeline">Input: Time-sensitive query (e.g., "current recommended dosage for Drug X")
+        ↓
+Step 1: Retrieve documents + timestamps from knowledge base
+        ↓
+Step 2: Temporal Validity Scorer computes TVS for each doc:
+        TVS = f(recency_weight, domain_decay_rate, source_authority)
+        Medical: high decay rate | Legal: medium | General: low
+        ↓
+Step 3: Conflict Detector:
+        Compare parametric LLM memory vs. retrieved documents
+        Flag: [No Conflict] / [Soft Conflict] / [Hard Conflict]
+        ↓
+Step 4: DKCR — Dynamic Knowledge Conflict Resolver:
+        IF Hard Conflict → prioritize highest TVS document
+        IF Soft Conflict → weighted fusion of parametric + retrieved
+        IF No Conflict  → standard generation
+        ↓
+Step 5: Temporal Reasoning Chain:
+        "As of [DATE], [ENTITY] had [PROPERTY].
+         This changed in [DATE] to [NEW_PROPERTY]."
+        ↓
+Output: Answer + temporal confidence + conflict resolution trace
+
+Models:  DeBERTa-v3, T5, Wikidata Temporal API
+Datasets: TempLAMA, TemporalWiki, TempoConflict (custom)</div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-yellow">📊</div><div class="info-card-title">Evaluation Plan</div></div>
+            <div style="overflow-x:auto;">
+                <table class="eval-table">
+                    <thead><tr><th>Metric</th><th>Benchmark</th><th>Baseline</th><th>Target</th></tr></thead>
+                    <tbody>
+                        <tr><td>Temporal Accuracy</td><td>TempLAMA</td><td>GPT-4: 67.3%</td><td class="target">&gt;74%</td></tr>
+                        <tr><td>Conflict Detection F1</td><td>TempoConflict</td><td>No baseline</td><td class="target">&gt;80%</td></tr>
+                        <tr><td>Knowledge Freshness Score</td><td>TemporalWiki</td><td>RAG: 71%</td><td class="target">&gt;79%</td></tr>
+                        <tr><td>TVS Correlation w/ Human</td><td>Human judgment</td><td>None</td><td class="target">&gt;0.80</td></tr>
+                        <tr><td>Domain Transfer</td><td>Medical + Legal</td><td>BERT: 63%</td><td class="target">&gt;70%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">📅</div><div class="info-card-title">1-Year Timeline</div></div>
+            <div class="timeline">
+                <div class="tl-item"><div class="tl-sem">Semester 1</div><div class="tl-desc">TempoConflict dataset construction · TVS formal definition · RAG/ROME baselines · Temporal KG setup</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 2</div><div class="tl-desc">DKCR implementation · Temporal reasoning chain · Medical + legal domain experiments</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 3</div><div class="tl-desc">Full benchmark evaluation · Domain case studies · Paper (EMNLP/AI Journal) · FYDP submission</div></div>
+            </div>
+        </div>
+
+        <div class="q1-banner fade-in">
+            <h4>✅ Why This is Q1-Level</h4>
+            <div class="q1-checks">
+                <div class="q1-check">Novel formal metric (TVS) with mathematical definition</div>
+                <div class="q1-check">New benchmark dataset (TempoConflict) = standalone contribution</div>
+                <div class="q1-check">Hybrid neural-symbolic conflict resolution = strong technical novelty</div>
+                <div class="q1-check">Medical + legal domain application = high-impact, fundable</div>
+                <div class="q1-check">Clean, reproducible experimental design with public baselines</div>
+                <div class="q1-check">Addresses $B+ problem of LLM knowledge staleness in production</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     IDEA #4 DETAIL
+═══════════════════════════════════════ -->
+<section id="idea4" class="idea-section">
+    <div class="container">
+
+        <div class="idea-hero g4 fade-in">
+            <div class="idea-rank-badge badge-4">4️⃣ Rank #4 · Score 32/45 · 3.8★ Strong</div>
+            <h1 class="idea-title">Neuro-Symbolic Rare<br>Disease NLP</h1>
+            <p class="idea-tagline">Combining neural language understanding with symbolic medical ontology reasoning to diagnose rare diseases from clinical text — even with almost no training data</p>
+            <div class="idea-quick-stats">
+                <div class="quick-stat"><span class="qs-label">Domain</span><span class="qs-value">NLP + Healthcare</span></div>
+                <div class="quick-stat"><span class="qs-label">Target Venue</span><span class="qs-value">JAMIA / ACL BioNLP</span></div>
+                <div class="quick-stat"><span class="qs-label">Risk Level</span><span class="qs-value" style="color:#43e97b">✅ Manageable</span></div>
+                <div class="quick-stat"><span class="qs-label">Compute Need</span><span class="qs-value">Moderate</span></div>
+                <div class="quick-stat"><span class="qs-label">Overall Score</span><span class="qs-value" style="color:var(--accent)">32 / 45</span></div>
+            </div>
+        </div>
+
+        <div class="info-grid fade-in">
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-red">🔴</div><div class="info-card-title">Real-World Problem</div></div>
+                <ul class="styled-list">
+                    <li>300 million people worldwide are affected by rare diseases</li>
+                    <li>Average diagnosis takes 4–7 years — misdiagnosis is the norm, not exception</li>
+                    <li>Clinical notes describe symptoms in unstructured, ambiguous natural language</li>
+                    <li>Pure neural models fail catastrophically with sparse data (rare = few cases)</li>
+                    <li>Symbolic ontologies exist but are disconnected from modern NLP pipelines</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-blue">📚</div><div class="info-card-title">Existing Solutions & Limitations</div></div>
+                <ul class="styled-list">
+                    <li><strong>BioBERT / PubMedBERT:</strong> Require large training datasets — rare diseases have almost none</li>
+                    <li><strong>UMLS / SNOMED-CT / ORDO:</strong> Rich structured knowledge but not NLP-integrated</li>
+                    <li><strong>GPT-4 Medical QA:</strong> Strong generally but hallucination-prone for rare cases</li>
+                    <li><strong>Clinical NLP tools (MetaMap, cTAKES):</strong> Rule-based, cannot reason across symptoms</li>
+                    <li><strong>Few-shot medical models:</strong> No symbolic grounding, error-prone for rare diseases</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-yellow">🔬</div><div class="info-card-title">Research Gap</div></div>
+                <ul class="styled-list">
+                    <li>No framework integrates neural NLP + medical ontology for rare disease reasoning</li>
+                    <li>Few-shot learning for rare diseases is unsupported by symbolic grounding</li>
+                    <li>Explanation generation for rare disease diagnosis is completely absent</li>
+                    <li>UMLS and ORDO knowledge is not injected into transformer attention mechanisms</li>
+                    <li>No benchmark specifically for rare disease NLP from clinical notes</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-green">✨</div><div class="info-card-title">Our Proposed Solution</div></div>
+                <ul class="styled-list">
+                    <li><strong>Ontology-Grounded Encoder:</strong> Injects UMLS/ORDO knowledge into transformer attention layers</li>
+                    <li><strong>Symbolic Reasoning Layer:</strong> Rule-based diagnostic reasoning over ontology paths</li>
+                    <li><strong>Few-Shot Rare Disease Classifier:</strong> Meta-learning for diseases with &lt;50 training examples</li>
+                    <li><strong>Explanation Generator:</strong> Human-readable diagnostic reasoning chains for clinicians</li>
+                    <li><strong>Neural-Symbolic Fusion:</strong> Combines neural confidence + symbolic diagnostic rules</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">⚙️</div><div class="info-card-title">System Pipeline</div></div>
+            <div class="pipeline">Input: Clinical note (unstructured text from EHR)
+        ↓
+Step 1: Neural Encoder (PubMedBERT) extracts symptom entities
+        Named Entity Recognition → [fever, joint pain, skin rash, fatigue]
+        ↓
+Step 2: Ontology Grounding
+        Map entities → UMLS Concept IDs → ORDO Rare Disease Paths
+        e.g., [skin rash + fever + joint pain] → Lupus candidate path
+        ↓
+Step 3: Symbolic Reasoning Layer
+        Traverse ontology graph: symptom → disease candidate
+        Apply diagnostic rules (IF symptom_set THEN disease_candidate)
+        Confidence: path_length + ontology_coverage_score
+        ↓
+Step 4: Few-Shot Neural Classifier (Meta-Learning)
+        Prototypical Networks over disease embeddings
+        Handles diseases with < 50 training examples
+        ↓
+Step 5: Neural-Symbolic Fusion
+        Final_Score = α × Neural_Score + β × Symbolic_Score
+        ↓
+Step 6: Explanation Generator
+        "Patient shows [symptoms] which align with [disease]
+         via UMLS path: [symptom→mechanism→disease]"
+        ↓
+Output: Ranked rare disease candidates + explanation chains
+
+Models:  PubMedBERT, Prototypical Networks, Py2neo
+Datasets: MIMIC-III, RareDis corpus, OMIM, ORDO</div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-yellow">📊</div><div class="info-card-title">Evaluation Plan</div></div>
+            <div style="overflow-x:auto;">
+                <table class="eval-table">
+                    <thead><tr><th>Metric</th><th>Benchmark</th><th>Baseline</th><th>Target</th></tr></thead>
+                    <tbody>
+                        <tr><td>Rare Disease F1</td><td>RareDis Corpus</td><td>BioBERT: 68.4%</td><td class="target">&gt;74%</td></tr>
+                        <tr><td>Few-Shot Accuracy (&lt;50 examples)</td><td>Custom</td><td>GPT-4: 51%</td><td class="target">&gt;62%</td></tr>
+                        <tr><td>Ontology Coverage Alignment</td><td>UMLS/ORDO</td><td>None</td><td class="target">&gt;85%</td></tr>
+                        <tr><td>Explanation Quality (Clinician 1-5)</td><td>Expert review</td><td>None</td><td class="target">&gt;4.0/5.0</td></tr>
+                        <tr><td>Misdiagnosis Rate Reduction</td><td>Clinical case study</td><td>Standard: ~40%</td><td class="target">&lt;25%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">📅</div><div class="info-card-title">1-Year Timeline</div></div>
+            <div class="timeline">
+                <div class="tl-item"><div class="tl-sem">Semester 1</div><div class="tl-desc">Medical ontology integration (UMLS/ORDO/SNOMED) · PubMedBERT baseline · Dataset preparation (MIMIC-III, RareDis)</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 2</div><div class="tl-desc">Ontology-grounded encoder · Few-shot meta-learning · Neural-symbolic fusion · Core experiments</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 3</div><div class="tl-desc">Explanation generator · Clinical expert evaluation · Paper (JAMIA/BioNLP) · FYDP submission</div></div>
+            </div>
+        </div>
+
+        <div class="q1-banner fade-in">
+            <h4>✅ Why This is Q1-Level</h4>
+            <div class="q1-checks">
+                <div class="q1-check">Neuro-symbolic AI is a top research trend (2024–2027)</div>
+                <div class="q1-check">300M patients affected — real-world impact is unquestionable</div>
+                <div class="q1-check">Novel ontology injection mechanism = architectural contribution</div>
+                <div class="q1-check">Few-shot + neuro-symbolic = two frontier topics combined</div>
+                <div class="q1-check">Explainability for clinical AI = regulatory and safety relevance</div>
+                <div class="q1-check">Interdisciplinary = appeals to both AI and medical informatics journals</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     IDEA #5 DETAIL
+═══════════════════════════════════════ -->
+<section id="idea5" class="idea-section">
+    <div class="container">
+
+        <div class="idea-hero g5 fade-in">
+            <div class="idea-rank-badge badge-5">5️⃣ Rank #5 · Score 31/45 · 3.5★ High Reward / Scope Carefully</div>
+            <h1 class="idea-title">Scientific Verification<br>Agentic LLMs</h1>
+            <p class="idea-tagline">A multi-agent LLM pipeline that autonomously decomposes, retrieves, audits, and verifies scientific claims — with a hallucination guard</p>
+            <div class="idea-quick-stats">
+                <div class="quick-stat"><span class="qs-label">Domain</span><span class="qs-value">LLM + Agentic AI</span></div>
+                <div class="quick-stat"><span class="qs-label">Target Venue</span><span class="qs-value">ACL / NeurIPS 2026</span></div>
+                <div class="quick-stat"><span class="qs-label">Risk Level</span><span class="qs-value" style="color:var(--accent2)">⚠️ Scope Carefully</span></div>
+                <div class="quick-stat"><span class="qs-label">Compute Need</span><span class="qs-value">Medium-High</span></div>
+                <div class="quick-stat"><span class="qs-label">Overall Score</span><span class="qs-value" style="color:var(--rank5)">31 / 45</span></div>
+            </div>
+        </div>
+
+        <div class="info-grid fade-in">
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-red">🔴</div><div class="info-card-title">Real-World Problem</div></div>
+                <ul class="styled-list">
+                    <li>2.5 million scientific papers published annually — manual verification is impossible</li>
+                    <li>LLMs confidently hallucinate scientific verifications — dangerous in medicine/policy</li>
+                    <li>No AI system can autonomously cross-check experimental claims in a paper</li>
+                    <li>Peer review takes 6–18 months — automated assistance could transform science</li>
+                    <li>Fraudulent papers with plausible-sounding methodology go undetected</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-blue">📚</div><div class="info-card-title">Existing Solutions & Limitations</div></div>
+                <ul class="styled-list">
+                    <li><strong>AI Scientist (Lu et al., 2024):</strong> Generates papers — does NOT verify claims</li>
+                    <li><strong>GPT-4 Review Assistant:</strong> Single-pass, no tool use, high hallucination rate</li>
+                    <li><strong>Semantic Scholar AI:</strong> Summarization only — no claim-level verification</li>
+                    <li><strong>Scite.ai:</strong> Citation context analysis — not autonomous verification</li>
+                    <li><strong>PaperQA2:</strong> QA over papers — no methodology auditing capability</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-yellow">🔬</div><div class="info-card-title">Research Gap</div></div>
+                <ul class="styled-list">
+                    <li>No system decomposes papers into atomic verifiable claims autonomously</li>
+                    <li>No agentic framework combines retrieval + methodology audit + hallucination guard</li>
+                    <li>Hallucination control in multi-step scientific reasoning is unsolved</li>
+                    <li>No structured verification report format exists for automated scientific review</li>
+                    <li>Tool-using LLMs for scientific verification are entirely unstudied</li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header"><div class="info-icon icon-green">✨</div><div class="info-card-title">Our Proposed Solution</div></div>
+                <ul class="styled-list">
+                    <li><strong>Claim Decomposition Agent:</strong> Breaks paper into atomic verifiable claim units</li>
+                    <li><strong>Evidence Retrieval Agent:</strong> Searches PubMed / Semantic Scholar for supporting/contradicting evidence</li>
+                    <li><strong>Methodology Auditor Agent:</strong> Checks statistical validity, sample size, p-value reporting</li>
+                    <li><strong>Hallucination Guard:</strong> Confidence-gated — refuses to verify without sufficient evidence</li>
+                    <li><strong>Verification Report Generator:</strong> Structured human-readable verification summary</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">⚙️</div><div class="info-card-title">Multi-Agent System Pipeline</div></div>
+            <div class="pipeline">Input: Scientific paper / abstract (biomedical domain — scoped for FYDP)
+        ↓
+Agent 1: Claim Decomposition Agent
+         Paper → [Claim_1, Claim_2, ..., Claim_N]
+         e.g., "Drug X reduces mortality by 30% in RCT"
+        ↓
+For each Claim_i:
+    Agent 2: Evidence Retrieval Agent
+             PubMed API + Semantic Scholar API search
+             Returns: [Supporting_papers] + [Contradicting_papers]
+             ↓
+    Agent 3: Methodology Auditor Agent
+             Checks: study_type, sample_size, p_value, effect_size
+             Flags: [Valid] / [Questionable] / [Invalid]
+             ↓
+    Agent 4: Hallucination Guard
+             IF confidence < threshold → "Insufficient evidence to verify"
+             IF confidence ≥ threshold → proceed to verdict
+             ↓
+    Claim Verdict: [Supported / Contradicted / Insufficient / Contested]
+        ↓
+Agent 5: Synthesis + Report Generator
+         Structured Verification Report:
+         | Claim | Status | Evidence Count | Confidence | Issues |
+        ↓
+Output: Complete verification report + per-claim evidence chains
+
+⚠️  FYDP SCOPE: Biomedical abstracts only | 3 agents max | Abstract-level
+Models:  Llama-3.1-70B / Mistral-Large
+Framework: LangGraph, GROBID (PDF parsing), PubMed API
+Datasets: SciEval, ExpertQA, PeerRead, SciFact</div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-yellow">📊</div><div class="info-card-title">Evaluation Plan</div></div>
+            <div style="overflow-x:auto;">
+                <table class="eval-table">
+                    <thead><tr><th>Metric</th><th>Benchmark</th><th>Baseline</th><th>Target</th></tr></thead>
+                    <tbody>
+                        <tr><td>Claim Verification Accuracy</td><td>SciFact</td><td>GPT-4: 71%</td><td class="target">&gt;78%</td></tr>
+                        <tr><td>Hallucination Rate</td><td>FactScore</td><td>GPT-4: 23%</td><td class="target">&lt;10%</td></tr>
+                        <tr><td>Evidence Retrieval Precision</td><td>SciEval</td><td>RAG: 68%</td><td class="target">&gt;76%</td></tr>
+                        <tr><td>Methodology Flaw Detection F1</td><td>PeerRead</td><td>No baseline</td><td class="target">&gt;65%</td></tr>
+                        <tr><td>Expert Report Quality (1–5)</td><td>Blind review</td><td>—</td><td class="target">&gt;4.2/5.0</td></tr>
+                        <tr><td>Multi-Step Reasoning Depth</td><td>Custom</td><td>Single-pass</td><td class="target">4+ steps avg</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="info-card fade-in" style="margin-bottom:1.5rem;">
+            <div class="info-card-header"><div class="info-icon icon-cyan">📅</div><div class="info-card-title">1-Year Timeline (Scoped Version)</div></div>
+            <div class="timeline">
+                <div class="tl-item"><div class="tl-sem">Semester 1</div><div class="tl-desc">Agent framework setup (LangGraph) · Claim decomposition agent · Evidence retrieval agent · Baseline comparisons</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 2</div><div class="tl-desc">Methodology auditor agent · Hallucination guard implementation · Core experiments (biomedical abstracts)</div></div>
+                <div class="tl-item"><div class="tl-sem">Semester 3</div><div class="tl-desc">Verification report generator · Expert evaluation · Paper (ACL/NeurIPS) · FYDP final submission</div></div>
+            </div>
+        </div>
+
+        <div class="q1-banner fade-in">
+            <h4>✅ Why This is Q1-Level (When Scoped Correctly)</h4>
+            <div class="q1-checks">
+                <div class="q1-check">Multi-agent architecture with specialized novel agents</div>
+                <div class="q1-check">Hallucination guard = AI safety contribution (high publish priority)</div>
+                <div class="q1-check">Peer review automation = massive real-world need</div>
+                <div class="q1-check">Clearly differentiated from AI Scientist paper (verification vs. generation)</div>
+                <div class="q1-check">Tool-using LLM agents for science = NeurIPS/ICLR frontier</div>
+                <div class="q1-check">Scope restriction to biomedical = focused, publishable, reproducible</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CONCLUSION PAGE
+═══════════════════════════════════════ -->
+<section id="conclusion">
+    <div class="container">
+
+        <div class="section-header fade-in">
+            <div class="section-tag">🎯 Final Conclusion</div>
+            <h2 class="section-title">Senior Researcher Board — Final Verdict</h2>
+            <p class="section-desc">Comprehensive synthesis of all 5 ideas with final strategic recommendation</p>
+        </div>
+
+        <!-- Master Comparison Table -->
+        <div class="master-table-wrap fade-in" style="margin-bottom:2.5rem;">
+            <table class="master-table">
+                <thead>
+                    <tr>
+                        <th>Idea</th>
+                        <th>Domain</th>
+                        <th>Novelty</th>
+                        <th>Feasibility</th>
+                        <th>Q1 Pub</th>
+                        <th>PhD Impact</th>
+                        <th>Risk Ctrl</th>
+                        <th>Complexity</th>
+                        <th>Research Impact</th>
+                        <th>Total /45</th>
+                        <th>Verdict</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="top-row">
+                        <td>🏆 Trust-Calibrated Debate Agents</td>
+                        <td>LLM + Agentic</td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="total-score" style="color:var(--rank1)">42</span></td>
+                        <td style="color:#43e97b; font-weight:700;">✅ BEST</td>
+                    </tr>
+                    <tr>
+                        <td>🥈 Argumentative Claim Verification</td>
+                        <td>NLP</td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="total-score" style="color:var(--rank2)">36</span></td>
+                        <td style="color:#43e97b; font-weight:700;">✅ Strong</td>
+                    </tr>
+                    <tr>
+                        <td>🥉 Temporal Knowledge Decay + KG</td>
+                        <td>NLP</td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="total-score" style="color:var(--rank3)">32</span></td>
+                        <td style="color:#43e97b; font-weight:700;">✅ Safe</td>
+                    </tr>
+                    <tr>
+                        <td>4️⃣ Neuro-Symbolic Rare Disease NLP</td>
+                        <td>NLP + Health</td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-4">4</span></td>
+                        <td><span class="score-dot dot-3">3</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="total-score" style="color:var(--accent)">32</span></td>
+                        <td style="color:#43e97b; font-weight:700;">✅ Good</td>
+                    </tr>
+                    <tr>
+                        <td>5️⃣ Scientific Verification Agents</td>
+                        <td>LLM + Agentic</td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-3">3</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="score-dot dot-3">3</span></td>
+                        <td><span class="score-dot dot-3">3</span></td>
+                        <td><span class="score-dot dot-5">5</span></td>
+                        <td><span class="total-score" style="color:var(--rank5)">31</span></td>
+                        <td style="color:var(--accent2); font-weight:700;">⚠️ Scope It</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Category Summary -->
+        <div class="conclusion-grid fade-in">
+            <div class="conclusion-card">
+                <h3>🏆 Best Overall Choice</h3>
+                <ul class="styled-list">
+                    <li><strong>Trust-Calibrated Debate Agents</strong> — scores highest on ALL dimensions simultaneously</li>
+                    <li>Only idea with 5/5 in Novelty + Feasibility + Q1 + PhD Impact + Research Impact</li>
+                    <li>Best PhD identity: "Trustworthy Agentic AI for Scientific Reasoning"</li>
+                    <li>Target: NeurIPS 2026 / ACL 2026 / Nature Machine Intelligence</li>
+                </ul>
+            </div>
+
+            <div class="conclusion-card">
+                <h3>📚 Best Pure NLP Choice</h3>
+                <ul class="styled-list">
+                    <li><strong>Argumentative Claim Verification</strong> — safest high-quality NLP paper</li>
+                    <li>All datasets public — fully reproducible, low compute cost</li>
+                    <li>New benchmark (SciContra) = automatic publication asset</li>
+                    <li>Target: ACL 2026 / EMNLP 2026</li>
+                </ul>
+            </div>
+
+            <div class="conclusion-card">
+                <h3>🛡️ Safest High-Quality Option</h3>
+                <ul class="styled-list">
+                    <li><strong>Temporal Knowledge Decay + KG</strong> — very low risk, guaranteed publishable</li>
+                    <li>Novel metric (TVS) = formal theoretical contribution</li>
+                    <li>Medical + legal domain = high-impact application</li>
+                    <li>Target: EMNLP 2026 / Artificial Intelligence Journal (Elsevier Q1)</li>
+                </ul>
+            </div>
+
+            <div class="conclusion-card">
+                <h3>🌍 Best Real-World Impact</h3>
+                <ul class="styled-list">
+                    <li><strong>Neuro-Symbolic Rare Disease NLP</strong> — 300M patients affected</li>
+                    <li>Strong interdisciplinary appeal (AI + Healthcare journals)</li>
+                    <li>Explainability for clinical AI = regulatory relevance</li>
+                    <li>Target: JAMIA (Q1) / ACL BioNLP / Bioinformatics Oxford</li>
+                </ul>
+            </div>
+
+            <div class="conclusion-card">
+                <h3>🚀 Best Research Ambition</h3>
+                <ul class="styled-list">
+                    <li><strong>Scientific Verification Agents</strong> — highest novelty score (5/5)</li>
+                    <li>Directly addresses AI peer review — transformative if successful</li>
+                    <li>Must be scoped to biomedical abstracts only for FYDP</li>
+                    <li>Target: ACL / NeurIPS 2026 (if scoped correctly)</li>
+                </ul>
+            </div>
+
+            <div class="conclusion-card">
+                <h3>📅 2026–2030 PhD Trajectory</h3>
+                <ul class="styled-list">
+                    <li>LLM + Agentic AI domain is the dominant research corridor for 2026–2030</li>
+                    <li>Trustworthy AI + AI for Science = biggest funding streams globally</li>
+                    <li>NeurIPS/ICML papers open MIT, Stanford, CMU, Oxford, ETH PhD doors</li>
+                    <li>Idea #1 positions you at the intersection of all major trends</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Final Verdict Box -->
+        <div class="final-verdict fade-in">
+            <h2>🏆 Senior Researcher Board — Unanimous Final Verdict</h2>
+            <p>
+                After synthesizing evaluations from 5 independent advisor perspectives across 9 scoring dimensions,
+                the board reaches a unanimous conclusion. Only one idea scores at the exceptional level (5/5)
+                on every critical dimension for FYDP success, Q1 publication, and PhD positioning simultaneously.
+            </p>
+            <div class="verdict-highlight">
+                🏆 Choose: Trust-Calibrated Multi-Agent Debate for Scientific Reasoning
+            </div>
+            <br><br>
+            <p style="font-size:0.88rem;">
+                <strong style="color:var(--accent)">Why:</strong> Medium risk · Controlled complexity · High feasibility ·
+                Maximum novelty · NeurIPS/ACL Q1 target · Strongest PhD signal ·
+                Central Agentic AI paradigm · Lowest regret decision.
+            </p>
+            <p style="font-size:0.85rem; margin-top:1rem; font-style:italic;">
+                Backup: Argumentative Scientific Claim Verification (if NLP track is preferred) |
+                Safety Net: Temporal Knowledge Decay + KG (guaranteed publication, zero scope risk)
+            </p>
+        </div>
+
+        <!-- Scoring Key Reminder -->
+        <div class="info-card fade-in">
+            <div class="info-card-header">
+                <div class="info-icon icon-cyan">📌</div>
+                <div class="info-card-title">Scoring Rubric Reference</div>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:0.8rem;">
+                <div style="text-align:center; padding:0.8rem; background:rgba(67,233,123,0.1); border-radius:8px; border:1px solid rgba(67,233,123,0.3);">
+                    <div style="font-size:1.4rem; font-weight:800; color:#43e97b;">5</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">🟢 Exceptional — Best in class, no compromise</div>
+                </div>
+                <div style="text-align:center; padding:0.8rem; background:rgba(79,172,254,0.1); border-radius:8px; border:1px solid rgba(79,172,254,0.3);">
+                    <div style="font-size:1.4rem; font-weight:800; color:#4facfe;">4</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">🔵 Strong — Above average, minor limitations</div>
+                </div>
+                <div style="text-align:center; padding:0.8rem; background:rgba(246,201,14,0.1); border-radius:8px; border:1px solid rgba(246,201,14,0.3);">
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--accent2);">3</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">🟡 Moderate — Acceptable, notable trade-offs</div>
+                </div>
+                <div style="text-align:center; padding:0.8rem; background:rgba(250,112,154,0.1); border-radius:8px; border:1px solid rgba(250,112,154,0.3);">
+                    <div style="font-size:1.4rem; font-weight:800; color:#fa709a;">2</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">🟠 Weak — Significant limitations exist</div>
+                </div>
+                <div style="text-align:center; padding:0.8rem; background:rgba(233,69,96,0.1); border-radius:8px; border:1px solid rgba(233,69,96,0.3);">
+                    <div style="font-size:1.4rem; font-weight:800; color:var(--accent3);">1</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">🔴 Poor — Not recommended / avoid</div>
+                </div>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-light); margin-top:1rem; padding-top:0.8rem; border-top:1px solid var(--card-border);">
+                ⚠️ <strong>Note on Risk & Complexity:</strong> These two dimensions are inverted —
+                Score 5 = Very Low Risk / Very Low Complexity (GOOD) | Score 1 = Extreme Risk / Complexity (BAD)
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>
+        <span class="footer-accent">FYDP Research Proposal</span> &nbsp;|&nbsp;
+        NLP & LLM Domain &nbsp;|&nbsp;
+        Prepared for Supervisor Presentation &nbsp;|&nbsp;
+        Target: <span class="footer-accent">Q1 Journal Publication + PhD Applications 2028</span>
+    </p>
+    <p style="margin-top:0.5rem; font-size:0.75rem;">
+        Reviewed by Senior AI Researcher &nbsp;·&nbsp;
+        Synthesized from 5 Independent Expert Evaluations &nbsp;·&nbsp;
+        Aligned with Washington Accord Engineering Standards
+    </p>
+</footer>
+
+<!-- Scroll Animation Script -->
+<script>
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
