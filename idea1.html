@@ -836,19 +836,15 @@
             </summary>
             <div class="faq-answer">
               We address the problem of
-              <strong
-                >unreliable and overconfident reasoning in Large Language Models
-                (LLMs)</strong
-              >, particularly in scientific and multi-step reasoning tasks.
+              <strong>agentic sycophancy in Multi-Agent Debate (MAD) systems</strong>, 
+              where LLM agents abandon their correct initial positions to conform with a 
+              confidently-stated but incorrect majority opinion.
               <br /><br />
 
-              Current LLMs often generate plausible but incorrect answers
-              without properly expressing uncertainty, which is dangerous in
-              domains such as:
-              <strong
-                >scientific research, healthcare, finance, and decision-support
-                systems.</strong
-              >
+              While debate systems aim to improve reasoning, sycophancy completely undermines this by 
+              causing the system to converge on confident hallucinations rather than ground truth. 
+              This is a critical failure mode in domains like:
+              <strong>scientific reasoning, healthcare, and high-stakes decision support.</strong>
             </div>
           </details>
 
@@ -985,10 +981,10 @@
               <br /><br />
 
               <strong>
-                "Trust-calibrated multi-agent debate combined with
-                evidence-grounded verification significantly reduces
-                hallucination and improves reasoning calibration compared to
-                standard single-agent and vanilla debate-based LLM systems."
+                "Dynamically updating an agent's influence based on the real-time verifiability 
+                of its claims against an external corpus (Trust-Calibrated Adjudication) significantly 
+                reduces agentic sycophancy and improves final answer accuracy compared to standard 
+                majority-vote multi-agent debate systems."
               </strong>
             </div>
           </details>
@@ -1047,23 +1043,19 @@
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              The framework contains multiple specialized agents:
+              The framework operates as a uniform multi-agent debate with a continuous trust-calibration loop:
               <br /><br />
 
-              <strong> Proposer Agent: </strong>
-              Generates initial reasoning and answers.
+              <strong> 1. Debate Pool: </strong> N agents debate a scientific problem, starting with equal trust weights.
               <br /><br />
 
-              <strong> Challenger Agent: </strong>
-              Critiques reasoning and identifies inconsistencies.
+              <strong> 2. RAG Verification: </strong> After each turn, claims are decomposed into atomic propositions and queried against Semantic Scholar APIs to retrieve evidence.
               <br /><br />
 
-              <strong> Verifier Agent: </strong>
-              Retrieves external scientific evidence.
+              <strong> 3. Trust Update: </strong> Each agent's trust score is mathematically updated (penalised for contradicted claims, rewarded for supported claims).
               <br /><br />
 
-              <strong> Judge Agent: </strong>
-              Aggregates responses using trust-weighted scoring.
+              <strong> 4. Adjudication: </strong> The final answer is determined by a trust-weighted aggregation of all agents' final positions, rather than a simple majority vote.
             </div>
           </details>
 
@@ -1104,18 +1096,17 @@
           <details class="faq-item">
             <summary>How are trust scores calculated?</summary>
             <div class="faq-answer">
-              Trust scores are computed using:
+              Trust scores are computed via a formal mathematical update rule after each round:
               <br /><br />
 
               <strong>
-                - Evidence support strength<br />
-                - Historical correctness<br />
-                - Contradiction penalties<br />
-                - Confidence calibration
+                - Verification Score (V): Proportion of claims explicitly supported by RAG evidence.<br />
+                - Hallucination Penalty (H): Proportion of claims explicitly contradicted.<br />
+                - Update Function: The previous trust is multiplied by a sigmoid function of (αV - βH), bounding trust in (0.1, 0.9).
               </strong>
               <br /><br />
 
-              Scores are dynamically updated after each debate round.
+              This ensures trust is session-scoped and dynamically prevents hallucinating agents from dominating the debate.
             </div>
           </details>
         </div>
@@ -1130,22 +1121,21 @@
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              Evaluation will be performed using scientific reasoning
-              benchmarks:
+              Evaluation will be performed using multi-step scientific reasoning
+              benchmarks where sycophancy is highly prevalent:
               <br /><br />
 
               <strong>
-                - TruthfulQA<br />
-                - SciFact<br />
-                - PubMedQA<br />
-                - SciBench
+                - SciBench (Multi-step Physics/Chemistry/Maths)<br />
+                - GPQA (Graduate-level domain expertise)<br />
+                - QASper (NLP paper QA for ArXiv verification)
               </strong>
               <br /><br />
 
-              We measure:
+              We will explicitly measure:
               <strong>
-                accuracy, hallucination rate, calibration quality, and reasoning
-                consistency.
+                sycophancy reduction rate against planted incorrect majorities, along with 
+                claim accuracy and trust calibration ECE.
               </strong>
             </div>
           </details>
@@ -1183,12 +1173,11 @@
             <summary>What metrics will you use?</summary>
             <div class="faq-answer">
               <strong>
-                - Accuracy<br />
-                - F1-score<br />
-                - Hallucination rate<br />
-                - Expected Calibration Error (ECE)<br />
-                - Brier Score<br />
-                - Contradiction detection accuracy
+                - Sycophancy Reduction Rate (%)<br />
+                - Claim Accuracy (EM Improvement)<br />
+                - Expected Calibration Error (ECE) for trust scores<br />
+                - Debate Convergence Rate<br />
+                - Hallucination Rate (% of false scientific claims)
               </strong>
             </div>
           </details>
