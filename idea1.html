@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Idea 1: Trust-Calibrated Multi-Agent Debate — algorithmically eliminating sycophancy in LLM debate systems via dynamic evidence-grounded trust functions."
+      content="Idea 1: Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning."
     />
-    <title>Idea 1 — Trust-Calibrated Multi-Agent Debate</title>
+    <title>
+      Idea 1 — Trust-Calibrated Multi-Agent Scientific Deliberation for
+      Mitigating Sycophantic Consensus in LLM Reasoning.
+    </title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -27,14 +30,19 @@
       >
         Project Idea Title
       </div>
-      <h1>Trust-Calibrated Multi-Agent Debate<br />for Scientific Reasoning</h1>
+      <h1>
+        Trust-Calibrated Multi-Agent Scientific Deliberation<br /><span
+          style="font-size: 0.6em; opacity: 0.9"
+          >for Mitigating Sycophantic Consensus in LLM Reasoning</span
+        >
+      </h1>
       <p class="subtitle">
         Domain: Agentic AI &nbsp;·&nbsp; Multi-Agent Systems &nbsp;·&nbsp;
         Scientific QA
       </p>
       <div class="cover-grid">
         <div class="cover-item">
-          <span>Target Venue</span>NeurIPS / ICLR / ACL 2027
+          <span>Target Venue</span>ACL W. / EMNLP Findings
         </div>
         <div class="cover-item"><span>Novelty Score</span>5 / 5</div>
         <div class="cover-item"><span>Feasibility Score</span>4 / 5</div>
@@ -86,27 +94,37 @@
       <section class="accent-blue">
         <h2><span class="section-icon">💡</span> 1. Core Idea</h2>
         <p>
-          We propose a <strong>multi-agent LLM debate framework</strong> where each participating
-          agent is assigned a
-          <strong>dynamic trust score</strong> updated in real-time based on the
-          <strong>empirical verifiability</strong> of its claims against a retrieved scientific
-          evidence corpus. Unlike standard <strong>Multi-Agent Debate (MAD)</strong> — where
-          agents argue freely and converge via <strong>majority voting</strong> — our system
-          introduces a <strong><em>Trust-Calibrated Adjudication</em></strong> layer: agents
-          whose claims are contradicted by <strong>RAG-retrieved evidence</strong> receive
-          <strong>mathematically reduced influence</strong> in subsequent rounds; well-grounded
-          agents gain <strong>proportionally higher weight</strong>.
+          We propose a
+          <strong>trust-calibrated multi-agent scientific deliberation</strong>
+          framework designed to mitigate sycophantic consensus collapse in LLM
+          reasoning. Rather than allowing agents to converge via ungrounded
+          social pressure, our system introduces a dynamic, evidence-weighted
+          aggregation mechanism. Agents whose claims align with progressive
+          retrieval of scientific literature maintain higher trust weights,
+          preventing hallucinating majorities from suppressing correct minority
+          agents.
         </p>
         <div class="callout callout-success">
-          <div class="callout-title">🎯 Core Research Contribution</div>
-          <p class="mb-0">
-            The <strong>primary contribution</strong> is a
-            <strong>mathematical formulation of per-agent trust</strong> within
-            a multi-agent debate session — a concept <strong>absent from all existing
-            frameworks</strong>. Secondary contributions include: (1) a <strong>RAG-grounded
-            claim verification sub-module</strong>, and (2) a <strong>reproducible sycophancy
-            measurement protocol</strong> applicable to any multi-agent system.
-          </p>
+          <div class="callout-title">🎯 Core Research Contributions</div>
+          <ul class="mb-0" style="padding-left: 1.5rem; margin-top: 0.5rem">
+            <li>
+              <strong>Trust-Calibrated Evidence-Grounded Aggregation:</strong>
+              Dynamic evidence-weighted anti-sycophancy aggregation (our primary
+              systems contribution).
+            </li>
+            <li>
+              <strong
+                >Progressive Retrieval for Scientific Deliberation:</strong
+              >
+              A supporting architecture enabling iterative verification of
+              atomic claims.
+            </li>
+            <li>
+              <strong>Sycophancy-Focused Evaluation Framework:</strong>
+              Introducing robust metrics including CCR, MPR, and ECR to elevate
+              evaluation beyond standard accuracy.
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -116,56 +134,64 @@
         <h3>2.1 The Real-World Problem</h3>
         <p>
           Multi-agent debate has emerged as a leading paradigm for improving LLM
-          reasoning reliability (<strong>Du et al., 2023; Liang et al., 2023</strong>). The
-          intuition is sound: multiple independent models challenge each other's
-          reasoning, converging on correct answers through <strong>dialectical pressure</strong>.
-          However, the paradigm suffers from a well-documented and dangerous
-          failure mode — <strong>agentic sycophancy</strong>.
+          reasoning reliability (<strong
+            >Du et al., 2023; Liang et al., 2023</strong
+          >). The intuition is sound: multiple independent models challenge each
+          other's reasoning, converging on correct answers through
+          <strong>dialectical pressure</strong>. However, the paradigm suffers
+          from a well-documented and dangerous failure mode —
+          <strong>agentic sycophancy</strong>.
         </p>
         <p>
           Sycophancy manifests when agents
-          <strong><em>abandon correct initial positions</em></strong> to conform with a
-          confidently-stated but <strong>incorrect majority opinion</strong>. <strong>Perez et al. (2023)</strong>
-          demonstrated sycophancy rates of <strong>40–55%</strong> on complex reasoning tasks
-          when a <strong>planted incorrect majority opinion</strong> was introduced. <strong>Wei et al.
-          (2024)</strong> further showed this behaviour persists even in the largest
-          frontier models.
+          <strong><em>abandon correct initial positions</em></strong> to conform
+          with a confidently-stated but
+          <strong>incorrect majority opinion</strong>.
+          <strong>Perez et al. (2023)</strong> demonstrated sycophancy rates of
+          <strong>40–55%</strong> on complex reasoning tasks when a
+          <strong>planted incorrect majority opinion</strong> was introduced.
+          <strong>Wei et al. (2024)</strong> further showed this behaviour
+          persists even in the largest frontier models.
         </p>
         <h3>2.2 Engineering Complexity</h3>
         <p>
-          From a systems perspective, this requires solving <strong>four interdependent
-          challenges</strong>:
+          From a systems perspective, this requires solving
+          <strong>four interdependent challenges</strong>:
         </p>
         <div class="two-col">
           <div class="col-box">
             <h4>Challenge A: Real-time Verification</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              Decompose each agent's claim into <strong>atomic propositions</strong> and retrieve
-              supporting/contradicting evidence within the debate turn <strong>latency
-              budget (&lt;10s per turn)</strong>.
+              Decompose each agent's claim into
+              <strong>atomic propositions</strong> and retrieve
+              supporting/contradicting evidence within the debate turn
+              <strong>latency budget (&lt;10s per turn)</strong>.
             </p>
           </div>
           <div class="col-box">
             <h4>Challenge B: Trust Stability</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              Design a trust update rule that avoids <strong>degenerate equilibria</strong> — all
-              trust collapsing to zero, or trust becoming dominated by the first
-              correct agent regardless of subsequent performance.
+              Design a trust update rule that avoids
+              <strong>degenerate equilibria</strong> — all trust collapsing to
+              zero, or trust becoming dominated by the first correct agent
+              regardless of subsequent performance.
             </p>
           </div>
           <div class="col-box">
             <h4>Challenge C: Behavioural Effectiveness</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              Ensure trust weights <strong>actually change model outputs</strong>, not just appear in the
-              prompt context and get ignored by the model's <strong>attention mechanism</strong>.
+              Ensure trust weights
+              <strong>actually change model outputs</strong>, not just appear in
+              the prompt context and get ignored by the model's
+              <strong>attention mechanism</strong>.
             </p>
           </div>
           <div class="col-box">
             <h4>Challenge D: Heterogeneous Agents</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
               Extend the framework to agents from different model families
-              (<strong>Llama-3, Mistral, Phi-3</strong>) — trust calibration must be
-              <strong>model-agnostic</strong>.
+              (<strong>Qwen-3.5, Mistral Small 4, Phi-4-Reasoning</strong>) — trust calibration
+              must be <strong>model-agnostic</strong>.
             </p>
           </div>
         </div>
@@ -183,7 +209,7 @@
               <th>System</th>
               <th>Year</th>
               <th>Core Approach</th>
-              <th>Key Limitation</th>
+              <th>Key Limitation vs. Our Work</th>
             </tr>
           </thead>
           <tbody>
@@ -191,47 +217,37 @@
               <td><strong>Self-Refine</strong> (Madaan et al.)</td>
               <td>2023</td>
               <td>Single LLM iteratively critiques its own output</td>
-              <td>
-                Bounded by model's own blind spots; Huang et al. (2024) showed
-                LLMs cannot reliably self-correct reasoning without external
-                feedback
-              </td>
+              <td>Bounded by model's own blind spots; no external grounding or trust dynamics</td>
             </tr>
             <tr>
               <td><strong>Multi-Agent Debate / MAD</strong> (Du et al.)</td>
               <td>2023</td>
               <td>Multiple LLMs debate until majority consensus</td>
-              <td>
-                No external grounding; consensus ≠ correctness; hallucinating
-                majority wins
-              </td>
+              <td>No external grounding; consensus ≠ correctness; hallucinating majority wins</td>
             </tr>
             <tr>
               <td><strong>ChatEval</strong> (Chan et al.)</td>
               <td>2023</td>
               <td>Role-based agents evaluate open-ended responses</td>
-              <td>
-                Fixed roles, no dynamic trust; designed for evaluation, not
-                reasoning tasks
-              </td>
-            </tr>
-            <tr>
-              <td><strong>Debate + Static Judge</strong> (Zhang et al.)</td>
-              <td>2023</td>
-              <td>Separate judge model selects winner</td>
-              <td>
-                Judge itself ungrounded — selects "more convincing" argument,
-                not correct one
-              </td>
+              <td>Fixed roles, no dynamic trust; designed for evaluation, not reasoning tasks</td>
             </tr>
             <tr>
               <td><strong>CRITIC</strong> (Gou et al.)</td>
               <td>2024</td>
               <td>Single agent self-critique with tool use</td>
-              <td>
-                Not multi-agent; trust dynamics absent; no session-level penalty
-                mechanism
-              </td>
+              <td>Single-agent; no cross-agent trust dynamics or session-level penalty mechanism</td>
+            </tr>
+            <tr>
+              <td><strong>PROClaim</strong> (2025)</td>
+              <td>2025</td>
+              <td>Claim-level verification with propagation scoring</td>
+              <td>No multi-agent deliberation or dynamic agent weighting based on session trust</td>
+            </tr>
+            <tr>
+              <td><strong>iMAD</strong> (2025)</td>
+              <td>2025</td>
+              <td>Iterative multi-agent debate with implicit confidence signals</td>
+              <td>Confidence signals implicit and ungrounded; no formal trust calibration or evidence partitioning</td>
             </tr>
           </tbody>
         </table>
@@ -259,27 +275,51 @@
       <section class="accent-blue">
         <h2><span class="section-icon">🏗️</span> 4. Proposed Architecture</h2>
 
-        <h3>4.1 Debate Agent Pool</h3>
+        <h3>4.1 Adaptive Debate Triggering</h3>
         <p>
-          <strong>N agents (N = 3 by default)</strong> instantiated from open-weight models. Each
-          agent maintains: (a) its current position on the debate topic, and (b)
-          a <strong>trust vector</strong>
+          Not every query warrants a full multi-agent debate. Our system uses an
+          <strong>adaptive confidence estimator</strong> to gate deliberation:
+        </p>
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--r-sm); padding: 1rem 1.5rem; margin: 1rem 0; font-size: 0.9rem; font-family: var(--mono); text-align: center;">
+          Input → Single-Agent Pass → Confidence Estimator → <em>IF uncertain</em> → Trigger Multi-Agent Debate
+        </div>
+        <p style="font-size:0.9rem;">This improves <strong>computational realism</strong>, reduces unnecessary inference cost, and improves publication maturity by demonstrating practical engineering judgment.</p>
+
+        <h3>4.2 Debate Agent Pool</h3>
+        <p>
+          <strong>N agents (N = 3 by default)</strong> instantiated from open-weight models
+          (Qwen-3.5, Mistral Small 4, Phi-4-Reasoning — one each). Each agent maintains: (a) its current position on
+          the debate topic, and (b) a <strong>trust vector</strong>
           <code>T ∈ ℝ<sup>N</sup></code> representing its assigned credibility
-          weight. At initialisation, all trust values are <strong>uniform:
-          <code>T<sub>i,j</sub> = 1/N</code></strong>.
+          weight. At initialisation, all trust values are
+          <strong
+            >uniform: <code>T<sub>i,j</sub> = 1/N</code></strong
+          >.
         </p>
 
-        <h3>4.2 RAG Evidence Retrieval Module</h3>
+        <h3>4.3 Source-Partitioned RAG Evidence Retrieval</h3>
         <p>
           After each debate turn, every claim made by the active agent is
-          decomposed into <strong>atomic propositions</strong> (using an LLM prompt with
-          structured JSON output) and queried against a domain corpus (<strong>Semantic
-          Scholar API → PubMed/ArXiv abstracts</strong>). A <strong>cross-encoder reranker</strong>
-          returns top-K evidence with a relevance score per claim. Claims with
-          no supporting evidence above a <strong>threshold θ</strong> are flagged.
+          decomposed into <strong>atomic propositions</strong> (using an LLM
+          prompt with structured JSON output) and queried against
+          <strong>partitioned source corpora</strong> to reduce correlated
+          retrieval hallucinations:
+        </p>
+        <ul style="font-size:0.9rem; padding-left:1.5rem; margin-bottom: 0.75rem;">
+          <li><strong>Agent A</strong> → PubMed (biomedical literature)</li>
+          <li><strong>Agent B</strong> → ArXiv (preprints &amp; CS/Physics)</li>
+          <li><strong>Agent C</strong> → Semantic Scholar (cross-domain)</li>
+        </ul>
+        <p>
+          A <strong>cross-encoder reranker</strong> returns top-K evidence
+          with a relevance score per claim. Claims with no supporting evidence
+          above a <strong>threshold θ</strong> are flagged as abstentions and
+          excluded from trust updates.
         </p>
 
-        <h3>4.3 Trust Calibration Function <strong>(Core Contribution)</strong></h3>
+        <h3>
+          4.4 Trust Calibration Function <strong>(Core Contribution)</strong>
+        </h3>
         <p>
           For agent <em>i</em> at debate round <em>t</em>, the trust update is:
         </p>
@@ -304,46 +344,94 @@
             <h4>Variables</h4>
             <ul style="font-size: 0.87rem; margin-bottom: 0">
               <li>
-                <code>V<sub>i</sub></code> — <strong>Verification score</strong>: proportion of
-                claims <strong>supported</strong> by evidence
+                <code>V<sub>i</sub></code> —
+                <strong>Verification score</strong>: proportion of claims
+                <strong>supported</strong> by evidence
               </li>
               <li>
-                <code>H<sub>i</sub></code> — <strong>Hallucination penalty</strong>: proportion
-                of claims <strong>contradicted</strong>
+                <code>H<sub>i</sub></code> —
+                <strong>Hallucination penalty</strong>: proportion of claims
+                <strong>contradicted</strong>
               </li>
               <li>
-                <code>α, β</code> — <strong>Tunable hyperparameters</strong> (sweep range:
-                0.5–2.0)
+                <code>α, β</code> —
+                <strong>Tunable hyperparameters</strong> (sweep range: 0.5–2.0)
               </li>
-              <li><code>σ</code> — <strong>Sigmoid function</strong>, bounds trust in (0, 1)</li>
+              <li>
+                <code>σ</code> — <strong>Sigmoid function</strong>, bounds trust
+                in (0, 1)
+              </li>
             </ul>
           </div>
           <div class="col-box">
             <h4>Design Properties</h4>
             <ul style="font-size: 0.87rem; margin-bottom: 0">
               <li>
-                Trust <strong>never collapses to zero</strong> (sigmoid lower bound &gt; 0)
+                Trust <strong>never collapses to zero</strong> (sigmoid lower
+                bound &gt; 0)
               </li>
               <li>
-                <strong>Trust floor T<sub>min</sub> = 0.1</strong> prevents agent silencing
+                <strong>Trust floor T<sub>min</sub> = 0.1</strong> prevents
+                agent silencing
               </li>
               <li>
-                <strong>Trust ceiling T<sub>max</sub> = 0.9</strong> prevents single-agent
-                dominance
+                <strong>Trust ceiling T<sub>max</sub> = 0.9</strong> prevents
+                single-agent dominance
               </li>
-              <li><strong>Session-scoped</strong> — resets between questions</li>
+              <li>
+                <strong>Session-scoped</strong> — resets between questions
+              </li>
             </ul>
           </div>
         </div>
 
-        <h3>4.4 Trust-Weighted Adjudication</h3>
+        <h3>4.5 Properties of Trust Dynamics</h3>
+        <p>
+          To ensure stability, the trust calibration mechanism exhibits the
+          following theoretical properties. <em>These are theoretical intuitions
+          rather than formal convergence guarantees</em>, consistent with the
+          scope of a rigorous systems paper.
+        </p>
+        <ul style="margin-bottom: 1rem; padding-left: 1.5rem">
+          <li>
+            <strong>Bounded Trust Intervals:</strong> Trust is strictly bounded
+            within [T<sub>min</sub>, T<sub>max</sub>] to prevent irreversible
+            suppression or complete dominance.
+          </li>
+          <li>
+            <strong>Monotonicity:</strong> If an agent repeatedly produces
+            evidence-supported claims, its trust converges monotonically toward
+            T<sub>max</sub>.
+          </li>
+          <li>
+            <strong>Resistance to Collapse:</strong> Contradicted claims produce
+            bounded trust decay. The trust floor prevents irreversible
+            suppression of minority agents.
+          </li>
+          <li>
+            <strong>Minority Preservation Intuition:</strong> Even a single
+            correct agent can outweigh a hallucinating majority if its
+            evidence-grounded trust exceeds the combined decayed trust of the
+            majority.
+          </li>
+          <li>
+            <strong>Probabilistic Interpretation:</strong> Trust T<sub>i</sub>
+            can be interpreted as a bounded empirical estimate of agent
+            <em>i</em>'s conditional correctness under evidence-grounded
+            verification — i.e., P(agent <em>i</em> is correct | evidence
+            retrieved so far).
+          </li>
+        </ul>
+
+        <h3>4.5 Trust-Weighted Adjudication</h3>
         <p>
           Final answer is determined by
           <strong>trust-weighted aggregation</strong> over agent final
-          positions, <strong>not majority vote</strong>. This is conceptually analogous to
-          weighted ensemble methods but applied at the
-          <strong><em>reasoning trace</em></strong> level — each agent's complete argument chain
-          is weighted by its accumulated trust score <strong>T<sub>i</sub><sup>(K)</sup></strong> at round K.
+          positions, <strong>not majority vote</strong>. This is conceptually
+          analogous to weighted ensemble methods but applied at the
+          <strong><em>reasoning trace</em></strong> level — each agent's
+          complete argument chain is weighted by its accumulated trust score
+          <strong>T<sub>i</sub><sup>(K)</sup></strong> at round K.
         </p>
       </section>
 
@@ -355,17 +443,22 @@
         <div class="info-grid">
           <div class="info-card">
             <div class="ic-label">Primary Agents</div>
-            <div class="ic-value">Llama-3-8B-Instruct</div>
-            <div class="ic-sub">4-bit GPTQ quantized, vLLM inference</div>
+            <div class="ic-value">Qwen-3.5 / Qwen-3.6</div>
+            <div class="ic-sub">Open-weight; 4-bit quantized, vLLM inference</div>
           </div>
           <div class="info-card">
-            <div class="ic-label">Secondary Agents</div>
-            <div class="ic-value">Mistral-7B-v0.3</div>
+            <div class="ic-label">Secondary Agent</div>
+            <div class="ic-value">Mistral Small 4</div>
             <div class="ic-sub">Heterogeneous agent experiment</div>
           </div>
           <div class="info-card">
+            <div class="ic-label">Third Agent</div>
+            <div class="ic-value">Phi-4-Reasoning</div>
+            <div class="ic-sub">Diverse reasoning family</div>
+          </div>
+          <div class="info-card">
             <div class="ic-label">Oracle Judge</div>
-            <div class="ic-value">GPT-4o (API)</div>
+            <div class="ic-value">Gemini 3.1 Pro (API)</div>
             <div class="ic-sub">Ceiling baseline only; budgeted</div>
           </div>
           <div class="info-card">
@@ -380,37 +473,25 @@
           <thead>
             <tr>
               <th>Dataset</th>
-              <th>Size</th>
-              <th>Domain</th>
+              <th>Category</th>
               <th>Why Used</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>SciBench</strong> (Wang 2024)</td>
-              <td>695 problems</td>
-              <td>Physics, Chemistry, Maths</td>
+              <td><strong>BrokenMath, BrokenArXiv, HLE</strong></td>
+              <td>Main Frontier</td>
               <td>
-                Multi-step scientific reasoning; high baseline sycophancy rates
-                observed
+                Modern, rigorous sycophancy benchmarks that isolate complex
+                failure modes.
               </td>
             </tr>
             <tr>
-              <td><strong>GPQA</strong> (Rein 2024)</td>
-              <td>448 questions</td>
-              <td>Biology, Physics, Chemistry</td>
+              <td><strong>GPQA, MMLU-Pro</strong></td>
+              <td>Stable Comparison</td>
               <td>
-                Graduate-level; even experts disagree — ideal sycophancy trigger
-                environment
-              </td>
-            </tr>
-            <tr>
-              <td><strong>QASper</strong> (Dasigi 2021)</td>
-              <td>5,049 QA pairs</td>
-              <td>NLP papers</td>
-              <td>
-                Domain where RAG grounding over ArXiv is tractable and
-                verifiable
+                Standardised reasoning benchmarks ensuring continuity and
+                baseline comparability.
               </td>
             </tr>
           </tbody>
@@ -419,34 +500,32 @@
         <h3>5.3 Experimental Protocol</h3>
         <ol>
           <li>
-            <strong>Baseline replication:</strong> Reproduce sycophancy rates
-            from Du et al. (2023) using standard MAD (N=3, K=3) on SciBench.
-            Inject planted incorrect majority opinions to measure sycophancy
-            rate.
+            <strong>Primary Evaluation:</strong> Can trust-calibrated
+            evidence-grounded aggregation reduce sycophantic consensus collapse?
+            Measure baseline vs. trust-calibrated performance.
           </li>
           <li>
-            <strong>Trust-calibrated system:</strong> Same setup with trust
-            function active. Compare to all baselines.
+            <strong>Ablation Matrix:</strong>
+            Evaluate the system by independently disabling key components:
+            <br />
+            (a) Without trust calibration <br />
+            (b) Without progressive retrieval <br />
+            (c) Without source partitioning <br />
+            (d) Without adaptive triggering.
           </li>
           <li>
-            <strong>Full ablation matrix:</strong> (a) Trust only, no RAG
-            grounding. (b) RAG grounding, no trust function. (c) Full system.
-            (d) Standard MAD. (e) Single-agent CoT. (f) GPT-4o oracle.
-          </li>
-          <li>
-            <strong>Hyperparameter sweep:</strong> α, β ∈ {0.5, 1.0, 2.0}; K ∈
-            {2, 3, 5} debate rounds.
-          </li>
-          <li>
-            <strong>Heterogeneous agent experiment:</strong> Mix Llama-3 +
-            Mistral + Phi-3 as debaters.
+            <strong>Human Evaluation:</strong> Small-scale human evaluation
+            (20–30 samples) reviewed by graduate students or domain experts.
+            Measures reasoning quality, evidence quality, hallucination
+            severity, and trustworthiness.
           </li>
         </ol>
         <p>
-          <strong>Statistical rigour:</strong> All experiments run across <strong>3
-          random seeds</strong>. Results with <strong>95% confidence intervals</strong>. <strong>Paired bootstrap significance
-          testing</strong> (Koehn, 2004). <strong>Effect sizes (Cohen's d)</strong> reported alongside
-          p-values.
+          <strong>Statistical rigour:</strong> All experiments run across
+          <strong>3 random seeds</strong>. Results with
+          <strong>95% confidence intervals</strong>.
+          <strong>Paired bootstrap significance testing</strong> (Koehn, 2004).
+          <strong>Effect sizes (Cohen's d)</strong> reported alongside p-values.
         </p>
       </section>
 
@@ -454,8 +533,16 @@
       <section>
         <h2><span class="section-icon">📐</span> 6. Evaluation Plan</h2>
         <p class="text-muted" style="margin-bottom: 1rem">
-          Metrics, benchmarks, baselines, and realistic targets.
+          Metrics, benchmarks, baselines, and realistic targets. All three primary metrics (CCR, MPR, ECR) are formally defined below.
         </p>
+        <div class="callout callout-gap" style="margin-bottom: 1.25rem;">
+          <div class="callout-title">📐 Formal Metric Definitions</div>
+          <p class="mb-0" style="font-size: 0.9rem; font-family: var(--mono); line-height: 2;">
+            <strong>CCR</strong> = |{debates where correct minority conforms}| / |{debates with injected incorrect majority}|<br />
+            <strong>MPR</strong> = |{debates where correct minority position survives to final output}| / |{total debates with correct minority}|<br />
+            <strong>ECR</strong> = 1 − |T<sub>i</sub> − P̂(correct | evidence)| averaged over all agents and rounds
+          </p>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -463,51 +550,43 @@
                 <th>Metric</th>
                 <th>What It Measures</th>
                 <th>Benchmark</th>
-                <th>Current Baseline</th>
-                <th>Our Target</th>
+                <th>Baseline (MAD)</th>
+                <th>Target (Ours)</th>
                 <th>Justification</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Claim Accuracy</strong></td>
-                <td>Correct verdict on contradictory pairs</td>
-                <td>SciFact</td>
-                <td>GPT-4: 71.2%</td>
-                <td class="text-accent"><strong>&gt;82%</strong></td>
-                <td>11% improvement over best single-pass LLM</td>
+                <td><strong>CCR</strong></td>
+                <td>Rate of correct minority collapse to incorrect majority</td>
+                <td>BrokenMath</td>
+                <td>~45%</td>
+                <td class="text-accent"><strong>~20–30% reduction</strong></td>
+                <td>Direct measure of sycophancy mitigation</td>
               </tr>
               <tr>
-                <td><strong>ECE (Calibration Error)</strong></td>
-                <td>Trust score reliability vs. empirical accuracy</td>
-                <td>SciContra</td>
+                <td><strong>MPR</strong></td>
+                <td>% of debates where correct minority survives to final output</td>
+                <td>BrokenArXiv</td>
+                <td>~12%</td>
+                <td class="text-accent"><strong>Substantial improvement</strong></td>
+                <td>Proves trust mechanism protects evidence-grounded agents</td>
+              </tr>
+              <tr>
+                <td><strong>ECR</strong></td>
+                <td>Alignment between agent trust and empirical correctness</td>
+                <td>HLE</td>
                 <td>Uncalibrated</td>
-                <td class="text-accent"><strong>&lt;0.06</strong></td>
-                <td>Well-calibrated clinical AI standard</td>
+                <td class="text-accent"><strong>&gt;0.80</strong></td>
+                <td>Validates trust dynamics stability</td>
               </tr>
               <tr>
-                <td><strong>Debate Convergence Rate</strong></td>
-                <td>% of debates reaching stable consensus</td>
-                <td>SciContra</td>
-                <td>No baseline exists</td>
-                <td class="text-accent"><strong>&gt;75%</strong></td>
-                <td>New metric — establishes first baseline</td>
-              </tr>
-              <tr>
-                <td><strong>Expert Agreement (κ)</strong></td>
-                <td>Human domain expert vs. system alignment</td>
-                <td>Human eval (n=3)</td>
+                <td><strong>Human Eval (Likert)</strong></td>
+                <td>Factual grounding, hallucination severity, trustworthiness</td>
+                <td>n=30 expert manual</td>
                 <td>—</td>
-                <td class="text-accent"><strong>&gt;0.78</strong></td>
-                <td>Substantial agreement</td>
-              </tr>
-              <tr>
-                <td><strong>Hallucination Rate</strong></td>
-                <td>% false scientific claims in output</td>
-                <td>FactScore</td>
-                <td>GPT-4: 23.1%</td>
-                <td class="text-accent"><strong>&lt;8%</strong></td>
-                <td>65% hallucination reduction via trust calibration</td>
+                <td class="text-accent"><strong>&gt;4.0/5</strong></td>
+                <td>Qualitative validation; Cohen's κ inter-annotator agreement</td>
               </tr>
             </tbody>
           </table>
@@ -519,70 +598,79 @@
         <h2><span class="section-icon">📈</span> 7. Expected Results</h2>
         <div class="score-grid">
           <div class="score-card">
-            <div class="sv">≥20%</div>
-            <div class="sl">Sycophancy Reduction vs. MAD</div>
+            <div class="sv">20–30%</div>
+            <div class="sl">CCR Reduction vs. MAD</div>
           </div>
           <div class="score-card">
-            <div class="sv">+5–8%</div>
-            <div class="sl">EM Accuracy Gain (SciBench)</div>
+            <div class="sv">&gt;0.80</div>
+            <div class="sl">ECR on HLE</div>
           </div>
           <div class="score-card">
-            <div class="sv">−1.5</div>
-            <div class="sl">Fewer Debate Rounds Avg.</div>
+            <div class="sv">Substantial</div>
+            <div class="sl">MPR Improvement</div>
           </div>
           <div class="score-card">
-            <div class="sv">&lt;0.12</div>
-            <div class="sl">Trust Calibration ECE</div>
+            <div class="sv">&gt;4.0/5</div>
+            <div class="sl">Human Eval (n=30)</div>
           </div>
         </div>
         <p>
           The largest improvements are expected on
-          <strong>complex multi-step scientific problems</strong> (<strong>SciBench, GPQA</strong>) where
-          <strong>baseline sycophancy is highest</strong> and parametric knowledge is weakest. On
-          trivial questions where all agents already agree on the correct
-          answer, the trust function overhead provides <strong>negligible benefit</strong> — we
-          report this honestly as a <strong>domain-of-applicability boundary</strong>, which
-          actually <strong><em>strengthens</em></strong> the paper by demonstrating <strong>when the
-          method is and is not appropriate</strong>.
+          <strong>adversarial consensus scenarios</strong> (<strong
+            >BrokenMath, BrokenArXiv, HLE</strong
+          >) where <strong>baseline sycophancy is highest</strong> and
+          parametric knowledge is weakest. On trivial questions where all agents
+          already agree on the correct answer, the trust function overhead
+          provides <strong>negligible benefit</strong> — we report this honestly
+          as a <strong>domain-of-applicability boundary</strong>, which actually
+          <strong><em>strengthens</em></strong> the paper by demonstrating
+          <strong>when the method is and is not appropriate</strong>.
         </p>
       </section>
 
-      <!-- 8. Q1 Justification -->
+      <!-- 8. Research Positioning -->
       <section class="accent-teal">
         <h2>
-          <span class="section-icon">🎓</span> 8. Why This Meets Q1 Standards
+          <span class="section-icon">🎓</span> 8. Research Positioning &amp; Venue Fit
         </h2>
+        <p style="margin-bottom: 1rem; font-style: italic; opacity: 0.85;">
+          This work aligns with current research directions in trustworthy multi-agent reasoning and agentic AI evaluation — framed as a rigorous systems paper, not an alignment breakthrough.
+        </p>
         <div class="two-col">
           <div class="col-box">
             <h4>Timeliness &amp; Community Interest</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              <strong>Multi-agent LLM systems</strong> dominate <strong>NeurIPS/ICLR 2024–2025</strong> accepted
-              papers. <strong>Sycophancy</strong> is cited as an open problem in <strong>&gt;50
-              peer-reviewed papers</strong> since 2023. The timing is ideal.
+              <strong>Trustworthy multi-agent LLM systems</strong> are among the
+              most active research areas at <strong>ACL / EMNLP / NeurIPS 2025–2026</strong>.
+              <strong>Sycophancy</strong> is cited as an open problem in
+              <strong>&gt;50 peer-reviewed papers</strong> since 2023.
             </p>
           </div>
           <div class="col-box">
             <h4>Contribution Type</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              This is an <strong>algorithmic contribution</strong> — the <strong>trust calibration function</strong>
-              — with a <strong>mathematical formulation</strong>, testable hypotheses, and
-              clearly <strong>separable ablation components</strong>. Not prompt engineering.
+              A <strong>systems + evaluation paper</strong> with a
+              <strong>mathematical trust calibration mechanism</strong>, testable hypotheses,
+              separable ablation components, and a novel sycophancy-focused
+              evaluation framework. Not prompt engineering.
             </p>
           </div>
           <div class="col-box">
             <h4>Reproducibility</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              All models are <strong>open-weight</strong>, all datasets <strong>publicly available</strong>, and the trust
-              function is <strong>fully specified</strong>. Any reviewer can replicate every
-              experiment on a <strong>single A100 within 72 hours</strong>.
+              All agents use <strong>open-weight models</strong>, all datasets
+              are <strong>publicly available</strong>, and the trust function is
+              <strong>fully specified</strong>. Full replication on a
+              <strong>single A100 within 72 hours</strong>.
             </p>
           </div>
           <div class="col-box">
-            <h4>Venue Fit</h4>
+            <h4>Realistic Publication Path</h4>
             <p class="text-muted" style="font-size: 0.87rem; margin-bottom: 0">
-              <strong>NeurIPS</strong> (multi-agent systems), <strong>ICLR</strong> (reasoning &amp; alignment),
-              <strong>ACL</strong> (LLM evaluation). The <strong>AI Safety / Alignment</strong> framing gives
-              additional submission options at NeurIPS workshops.
+              Most realistic: <strong>ACL Workshop</strong>,
+              <strong>EMNLP Findings</strong>,
+              <strong>NeurIPS Workshop</strong>. Possible with extension:
+              <strong>TMLR</strong>, <strong>IEEE Intelligent Systems</strong>.
             </p>
           </div>
         </div>
@@ -606,8 +694,8 @@
               <td><strong>Phase 1</strong></td>
               <td>Sep–Oct 2026</td>
               <td>
-                Literature review (30+ papers); baseline MAD replication on
-                SciBench; environment setup (vLLM, LangGraph)
+              Literature review (30+ papers); baseline MAD replication on
+                BrokenMath / GPQA; environment setup (vLLM, LangGraph)
               </td>
               <td>Baseline Sycophancy Report</td>
             </tr>
@@ -652,8 +740,8 @@
 
         <ul class="timeline" style="margin-top: 1.5rem">
           <li>
-            <span class="phase">M1 — Oct 2026:</span> Baseline sycophancy ≥ 30%
-            confirmed on SciBench in our setup.
+            <span class="phase">M1 — Oct 2026:</span> Baseline sycophancy &ge;
+            30% confirmed on BrokenMath / GPQA in our setup.
             <div>
               <span class="deliverable"
                 >Go/No-Go checkpoint with supervisor</span
@@ -704,10 +792,11 @@
             </li>
             <li>
               <strong>Novelty concerns at review:</strong> Sycophancy papers are
-              increasingly common. <em>Mitigation:</em> Frame as the
-              <em>first system with a formal trust calibration function</em>;
-              emphasise mathematical formulation and trust ECE metric as novel
-              diagnostics.
+              increasingly common. <em>Mitigation:</em> Frame as
+              <em>one of the first evidence-grounded trust-calibrated frameworks
+              specifically targeting sycophantic consensus collapse</em>;
+              emphasise the novel CCR/MPR/ECR metrics as concrete evaluation
+              contributions.
             </li>
           </ul>
         </div>
@@ -735,7 +824,7 @@
           <div class="info-card">
             <div class="ic-label">Oracle API Budget</div>
             <div class="ic-value">~$150–200 USD</div>
-            <div class="ic-sub">GPT-4o calls for oracle baseline only</div>
+            <div class="ic-sub">Gemini 3.1 Pro API calls for oracle baseline only</div>
           </div>
           <div class="info-card">
             <div class="ic-label">Agent Framework</div>
@@ -745,7 +834,7 @@
           <div class="info-card">
             <div class="ic-label">All Datasets</div>
             <div class="ic-value">100% Public</div>
-            <div class="ic-sub">SciBench, GPQA, QASper — no licensing</div>
+            <div class="ic-sub">BrokenMath, HLE, GPQA, MMLU-Pro — no licensing</div>
           </div>
         </div>
         <div class="callout callout-success">
@@ -758,6 +847,47 @@
           </p>
         </div>
       </section>
+
+      <!-- 10.5 Scope Boundaries -->
+      <section>
+        <h2><span class="section-icon">📌</span> 10.5 Scope Boundaries</h2>
+        <div class="callout callout-gap">
+          <div class="callout-title">🛑 What This Work Does Not Claim</div>
+          <p class="mb-0">
+            This work focuses specifically on <strong>scientific deliberation under adversarial consensus pressure</strong> and does not attempt to address general-purpose LLM alignment. Concretely, it does <em>not</em> claim to:
+            <br /><br />
+            — <strong>Eliminate</strong> hallucinations (only <strong>reduce</strong> and <strong>detect</strong> them).<br />
+            — Provide formal convergence proofs (only theoretical intuitions and empirical evidence).<br />
+            — Generalise to all domains without retrieval infrastructure.<br />
+            — Address long-term agent memory, planning, or general reasoning alignment.
+          </p>
+        </div>
+      </section>
+
+      <!-- 10.6 Planned Failure Analysis -->
+      <section>
+        <h2><span class="section-icon">🔍</span> 10.6 Planned Failure Analysis</h2>
+        <p>Systematic failure analysis is planned as part of Phase 4 (Apr–May 2027). Known risk scenarios and planned diagnostic approaches:</p>
+        <div class="two-col">
+          <div class="col-box">
+            <h4>Correlated Hallucination</h4>
+            <p class="text-muted" style="font-size:0.87rem; margin-bottom:0">If all N agents share a common pre-training error, the trust function cannot detect it — all agents agree incorrectly. <em>Diagnostic:</em> compare homogeneous vs. heterogeneous agent configurations.</p>
+          </div>
+          <div class="col-box">
+            <h4>Retrieval Failure / Evidence Sparsity</h4>
+            <p class="text-muted" style="font-size:0.87rem; margin-bottom:0">For very recent or niche questions, no supporting evidence exists in corpora. <em>Diagnostic:</em> track abstention rate; report performance stratified by retrieval success rate.</p>
+          </div>
+          <div class="col-box">
+            <h4>Trust Collapse</h4>
+            <p class="text-muted" style="font-size:0.87rem; margin-bottom:0">Repeated contradictions early in a session may cause trust to approach T<sub>min</sub> for all agents. <em>Diagnostic:</em> monitor trust variance across rounds; trust floor prevents full collapse.</p>
+          </div>
+          <div class="col-box">
+            <h4>Adversarial Consensus</h4>
+            <p class="text-muted" style="font-size:0.87rem; margin-bottom:0">Two agents may converge on a confident but unverifiable claim, overwhelming a correct third agent. <em>Diagnostic:</em> track MPR under 2-vs-1 adversarial injection conditions.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- 11. Supervisor Question Bank -->
       <section class="accent-teal" id="supervisor-questions">
         <h2>
@@ -833,15 +963,20 @@
             </summary>
             <div class="faq-answer">
               We address the problem of
-              <strong>agentic sycophancy in Multi-Agent Debate (MAD) systems</strong>, 
-              where LLM agents abandon their correct initial positions to conform with a 
-              confidently-stated but incorrect majority opinion.
+              <strong
+                >agentic sycophancy in Multi-Agent Debate (MAD) systems</strong
+              >, where LLM agents abandon their correct initial positions to
+              conform with a confidently-stated but incorrect majority opinion.
               <br /><br />
 
-              While debate systems aim to improve reasoning, sycophancy completely undermines this by 
-              causing the system to converge on confident hallucinations rather than ground truth. 
-              This is a critical failure mode in domains like:
-              <strong>scientific reasoning, healthcare, and high-stakes decision support.</strong>
+              While debate systems aim to improve reasoning, sycophancy
+              completely undermines this by causing the system to converge on
+              confident hallucinations rather than ground truth. This is a
+              critical failure mode in domains like:
+              <strong
+                >scientific reasoning, healthcare, and high-stakes decision
+                support.</strong
+              >
             </div>
           </details>
 
@@ -850,43 +985,64 @@
               Why is this problem important in real-world systems?
             </summary>
             <div class="faq-answer">
-              In high-stakes environments like <strong>clinical diagnosis</strong>, <strong>drug research</strong>, and <strong>scientific peer review</strong>, an AI system that converges on a wrong answer due to social pressure — not evidence — is <strong>more dangerous than one that simply doesn't know</strong>.
+              In high-stakes environments like
+              <strong>clinical diagnosis</strong>,
+              <strong>drug research</strong>, and
+              <strong>scientific peer review</strong>, an AI system that
+              converges on a wrong answer due to social pressure — not evidence
+              — is
+              <strong>more dangerous than one that simply doesn't know</strong>.
               <br /><br />
 
-              The specific danger: if a <strong>hallucinating majority of agents</strong> outvotes a
-              <strong>correct minority agent</strong>, the final system output is confidently wrong.
-              Standard MAD has <strong>no mechanism to detect or prevent this</strong>.
+              The specific danger: if a
+              <strong>hallucinating majority of agents</strong> outvotes a
+              <strong>correct minority agent</strong>, the final system output
+              is confidently wrong. Standard MAD has
+              <strong>no mechanism to detect or prevent this</strong>.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Why do current LLMs fail in scientific reasoning?</summary>
             <div class="faq-answer">
-              Current LLMs rely on <strong>parametric knowledge</strong> (frozen at training time) and
+              Current LLMs rely on <strong>parametric knowledge</strong> (frozen
+              at training time) and
               <strong>probabilistic next-token prediction</strong>. They lack:
               <br /><br />
 
-              <strong>1) Real-time evidence retrieval</strong> — they cannot verify claims against new literature.<br />
-              <strong>2) Claim-level grounding</strong> — they produce full paragraph outputs without per-claim verification.<br />
-              <strong>3) Social resistance</strong> — when framed with a confident majority, they conform rather than reason independently.
+              <strong>1) Real-time evidence retrieval</strong> — they cannot
+              verify claims against new literature.<br />
+              <strong>2) Claim-level grounding</strong> — they produce full
+              paragraph outputs without per-claim verification.<br />
+              <strong>3) Social resistance</strong> — when framed with a
+              confident majority, they conform rather than reason independently.
               <br /><br />
 
-              <strong>Huang et al. (2024)</strong> formally showed that LLMs <strong>cannot reliably self-correct reasoning
-              without external feedback</strong> — which is the core motivation for our RAG-grounded external verification module.
+              <strong>Huang et al. (2024)</strong> formally showed that LLMs
+              <strong
+                >cannot reliably self-correct reasoning without external
+                feedback</strong
+              >
+              — which is the core motivation for our RAG-grounded external
+              verification module.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Why is confidence calibration critical?</summary>
             <div class="faq-answer">
-              <strong>ECE (Expected Calibration Error)</strong> measures whether a model's confidence scores
-              match its actual empirical accuracy. A model with <strong>poor calibration</strong>
+              <strong>ECE (Expected Calibration Error)</strong> measures whether
+              a model's confidence scores match its actual empirical accuracy. A
+              model with <strong>poor calibration</strong>
               says "90% confident" when it is right only 50% of the time.
               <br /><br />
 
-              In our system, the <strong>trust score Ti must itself be calibrated</strong> — it is meaningless
-              to weight an agent highly if the trust score does not reflect its true probability of being correct.
-              That is why we evaluate trust quality using <strong>ECE &lt; 0.06</strong> as a target metric.
+              In our system, the
+              <strong>trust score Ti must itself be calibrated</strong> — it is
+              meaningless to weight an agent highly if the trust score does not
+              reflect its true probability of being correct. That is why we
+              evaluate trust quality using <strong>ECE &lt; 0.06</strong> as a
+              target metric.
             </div>
           </details>
         </div>
@@ -917,16 +1073,29 @@
           <details class="faq-item">
             <summary>What is your core novelty?</summary>
             <div class="faq-answer">
-              The core novelty is the <strong>Trust Calibration Function</strong>:
+              The core novelty is the
+              <strong>Trust Calibration Function</strong>: <br /><br />
+
+              <strong
+                >T<sub>i</sub><sup>(t+1)</sup> = T<sub>i</sub
+                ><sup>(t)</sup> &middot; &sigma;(&alpha; &middot; V<sub>i</sub
+                ><sup>(t)</sup> &minus; &beta; &middot; H<sub>i</sub
+                ><sup>(t)</sup>)</strong
+              >
               <br /><br />
 
-              <strong>T<sub>i</sub><sup>(t+1)</sup> = T<sub>i</sub><sup>(t)</sup> &middot; &sigma;(&alpha; &middot; V<sub>i</sub><sup>(t)</sup> &minus; &beta; &middot; H<sub>i</sub><sup>(t)</sup>)</strong>
-              <br /><br />
-
-              This is the <strong>first formally specified, session-scoped, evidence-driven
-              trust update rule</strong> for multi-agent debate systems. No existing MAD framework
-              (Du et al., Chan et al., Zhang et al.) contains any form of <strong>differential agent weighting
-              based on real-time evidence retrieval</strong>. This gap is both <strong>clear</strong> and <strong>consequential</strong>.
+              This is
+              <strong
+                >one of the first evidence-grounded, trust-calibrated frameworks
+                specifically targeting sycophantic consensus collapse</strong
+              >
+              for multi-agent debate systems. No existing MAD framework (Du et
+              al., Chan et al., Zhang et al.) contains any form of
+              <strong
+                >differential agent weighting based on real-time evidence
+                retrieval</strong
+              >. This gap is both <strong>clear</strong> and
+              <strong>consequential</strong>.
             </div>
           </details>
 
@@ -938,24 +1107,45 @@
               <strong>Key differences vs. each baseline:</strong>
               <br /><br />
 
-              <strong>vs. Du et al. (MAD):</strong> They use <strong>majority vote</strong>; we use <strong>trust-weighted adjudication</strong> — a hallucinating majority cannot override an evidence-grounded minority.<br /><br />
+              <strong>vs. Du et al. (MAD):</strong> They use
+              <strong>majority vote</strong>; we use
+              <strong>trust-weighted adjudication</strong> — a hallucinating
+              majority cannot override an evidence-grounded minority.<br /><br />
 
-              <strong>vs. Chan et al. (ChatEval):</strong> They assign <strong>fixed roles</strong> per round; we use <strong>dynamic trust weights</strong> that evolve based on empirical claim performance.<br /><br />
+              <strong>vs. Chan et al. (ChatEval):</strong> They assign
+              <strong>fixed roles</strong> per round; we use
+              <strong>dynamic trust weights</strong> that evolve based on
+              empirical claim performance.<br /><br />
 
-              <strong>vs. Zhang et al. (Static Judge):</strong> Their judge selects the <strong>most convincing</strong> argument; ours selects the <strong>most evidence-grounded</strong> argument via formal trust scores.<br /><br />
+              <strong>vs. Zhang et al. (Static Judge):</strong> Their judge
+              selects the <strong>most convincing</strong> argument; ours
+              selects the <strong>most evidence-grounded</strong> argument via
+              formal trust scores.<br /><br />
 
-              <strong>vs. Gou et al. (CRITIC):</strong> Single-agent tool-use; we operate at the <strong>multi-agent session level</strong> with <strong>cross-agent trust dynamics</strong>.
+              <strong>vs. Gou et al. (CRITIC):</strong> Single-agent tool-use;
+              we operate at the <strong>multi-agent session level</strong> with
+              <strong>cross-agent trust dynamics</strong>.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>What is the key contribution of this research?</summary>
             <div class="faq-answer">
-              <strong>Primary (Algorithmic):</strong> Mathematical formulation of the <strong>Trust Calibration Function</strong> — the first formally specified per-agent trust update rule in multi-agent debate.<br /><br />
+              <strong>Primary (Algorithmic):</strong> Trust-Calibrated
+              Evidence-Grounded Aggregation &mdash; one of the first
+              evidence-grounded, trust-calibrated frameworks specifically
+              targeting sycophantic consensus collapse in multi-agent
+              debate.<br /><br />
 
-              <strong>Secondary (System):</strong> A complete <strong>RAG-grounded claim verification pipeline</strong> using Semantic Scholar + cross-encoder reranker operating within a &lt;10s latency budget per turn.<br /><br />
+              <strong>Secondary (System):</strong> A complete
+              <strong>RAG-grounded claim verification pipeline</strong> using
+              Semantic Scholar + cross-encoder reranker operating within a
+              &lt;10s latency budget per turn.<br /><br />
 
-              <strong>Tertiary (Evaluation):</strong> A <strong>reproducible sycophancy measurement protocol</strong> using planted incorrect majority injection — applicable to any future multi-agent system.
+              <strong>Tertiary (Evaluation):</strong> A
+              <strong>reproducible sycophancy measurement protocol</strong>
+              using planted incorrect majority injection — applicable to any
+              future multi-agent system.
             </div>
           </details>
         </div>
@@ -966,19 +1156,21 @@
 
           <details class="faq-item" open>
             <summary>
-              What is your formal research hypothesis?
+              What is your primary research question?
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              Our hypothesis is:
+              Our primary research question is:
               <br /><br />
 
               <strong>
-                "Dynamically updating an agent's influence based on the real-time verifiability 
-                of its claims against an external corpus (Trust-Calibrated Adjudication) significantly 
-                reduces agentic sycophancy and improves final answer accuracy compared to standard 
-                majority-vote multi-agent debate systems."
+                "Can trust-calibrated evidence-grounded aggregation reduce
+                sycophantic consensus collapse?"
               </strong>
+              <br /><br />
+              This is the core of the paper. Everything else (progressive
+              retrieval, source partitioning) is secondary supporting
+              architecture.
             </div>
           </details>
 
@@ -987,16 +1179,35 @@
               Why is this considered a complex engineering problem?
             </summary>
             <div class="faq-answer">
-              The project requires solving <strong>four tightly interdependent engineering challenges simultaneously</strong>:
-              <br /><br />
+              The project requires solving
+              <strong
+                >four tightly interdependent engineering challenges
+                simultaneously</strong
+              >: <br /><br />
 
-              <strong>Challenge A — Real-time Verification:</strong> Decompose claims into <strong>atomic propositions</strong> and retrieve supporting evidence within a <strong>&lt;10s latency budget per debate turn</strong>.<br /><br />
+              <strong>Challenge A — Real-time Verification:</strong> Decompose
+              claims into <strong>atomic propositions</strong> and retrieve
+              supporting evidence within a
+              <strong>&lt;10s latency budget per debate turn</strong
+              >.<br /><br />
 
-              <strong>Challenge B — Trust Stability:</strong> Prevent <strong>degenerate equilibria</strong> where trust collapses to zero or becomes permanently dominated by the first correct agent. Solved via <strong>T<sub>min</sub>=0.1 and T<sub>max</sub>=0.9 bounds</strong>.<br /><br />
+              <strong>Challenge B — Trust Stability:</strong> Prevent
+              <strong>degenerate equilibria</strong> where trust collapses to
+              zero or becomes permanently dominated by the first correct agent.
+              Solved via
+              <strong>T<sub>min</sub>=0.1 and T<sub>max</sub>=0.9 bounds</strong
+              >.<br /><br />
 
-              <strong>Challenge C — Behavioural Effectiveness:</strong> Ensure trust weights <strong>actually change model outputs</strong> and are not silently ignored by the LLM's attention mechanism. This requires careful prompt engineering around trust injection.<br /><br />
+              <strong>Challenge C — Behavioural Effectiveness:</strong> Ensure
+              trust weights <strong>actually change model outputs</strong> and
+              are not silently ignored by the LLM's attention mechanism. This
+              requires careful prompt engineering around trust injection.<br /><br />
 
-              <strong>Challenge D — Heterogeneous Agents:</strong> The trust calibration must work across <strong>Llama-3, Mistral, and Phi-3</strong> without model-specific tuning — i.e., it must be <strong>model-agnostic</strong>.
+              <strong>Challenge D — Heterogeneous Agents:</strong> The trust
+              calibration must work across
+              <strong>Qwen-3.5, Mistral Small 4, and Phi-4-Reasoning</strong> without
+              model-specific tuning — i.e., it must be
+              <strong>model-agnostic</strong>.
             </div>
           </details>
 
@@ -1005,17 +1216,27 @@
               Why is this research and not just prompt engineering?
             </summary>
             <div class="faq-answer">
-              Prompt engineering would mean writing a better system prompt and hoping the model behaves differently.
+              Prompt engineering would mean writing a better system prompt and
+              hoping the model behaves differently.
               <br /><br />
 
               Our contribution is fundamentally different:
               <br /><br />
 
-              <strong>1) Formal mathematical specification</strong> — the trust update equation T<sub>i</sub><sup>(t+1)</sup> = T<sub>i</sub><sup>(t)</sup> &middot; &sigma;(&alpha;V &minus; &beta;H) is a computable function with <strong>measurable inputs and outputs</strong>.<br /><br />
+              <strong>1) Formal mathematical specification</strong> — the trust
+              update equation T<sub>i</sub><sup>(t+1)</sup> = T<sub>i</sub
+              ><sup>(t)</sup> &middot; &sigma;(&alpha;V &minus; &beta;H) is a
+              computable function with
+              <strong>measurable inputs and outputs</strong>.<br /><br />
 
-              <strong>2) Ablation separability</strong> — we can independently disable the RAG module, the trust function, or both, and measure each component's isolated contribution.<br /><br />
+              <strong>2) Ablation separability</strong> — we can independently
+              disable the RAG module, the trust function, or both, and measure
+              each component's isolated contribution.<br /><br />
 
-              <strong>3) Empirical falsifiability</strong> — we make a specific quantitative claim (<strong>&ge;20% sycophancy reduction</strong>) that can be confirmed or refuted, distinguishing this as hypothesis-driven research.
+              <strong>3) Empirical falsifiability</strong> — we make a specific
+              quantitative claim (<strong>&ge;20% sycophancy reduction</strong>)
+              that can be confirmed or refuted, distinguishing this as
+              hypothesis-driven research.
             </div>
           </details>
         </div>
@@ -1030,36 +1251,46 @@
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              The framework operates as a uniform multi-agent debate with a continuous trust-calibration loop:
+              The framework operates as a uniform multi-agent debate with a
+              continuous trust-calibration loop:
               <br /><br />
 
-              <strong> 1. Debate Pool: </strong> N agents debate a scientific problem, starting with equal trust weights.
-              <br /><br />
+              <strong> 1. Debate Pool: </strong> N agents debate a scientific
+              problem, starting with equal trust weights. <br /><br />
 
-              <strong> 2. RAG Verification: </strong> After each turn, claims are decomposed into atomic propositions and queried against Semantic Scholar APIs to retrieve evidence.
-              <br /><br />
+              <strong> 2. RAG Verification: </strong> After each turn, claims
+              are decomposed into atomic propositions and queried against
+              Semantic Scholar APIs to retrieve evidence. <br /><br />
 
-              <strong> 3. Trust Update: </strong> Each agent's trust score is mathematically updated (penalised for contradicted claims, rewarded for supported claims).
-              <br /><br />
+              <strong> 3. Trust Update: </strong> Each agent's trust score is
+              mathematically updated (penalised for contradicted claims,
+              rewarded for supported claims). <br /><br />
 
-              <strong> 4. Adjudication: </strong> The final answer is determined by a trust-weighted aggregation of all agents' final positions, rather than a simple majority vote.
+              <strong> 4. Adjudication: </strong> The final answer is determined
+              by a trust-weighted aggregation of all agents' final positions,
+              rather than a simple majority vote.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Why use multiple agents instead of one LLM?</summary>
             <div class="faq-answer">
-              A <strong>single LLM</strong> is bounded by its own training distribution and internal biases.
-              It cannot challenge itself with a genuinely independent perspective.
-              <br /><br />
+              A <strong>single LLM</strong> is bounded by its own training
+              distribution and internal biases. It cannot challenge itself with
+              a genuinely independent perspective. <br /><br />
 
               Multiple agents provide:
-              <strong>epistemic diversity</strong> — different models have different knowledge gaps and biases, so disagreements are <strong>informative signals</strong>, not noise.
-              <br /><br />
+              <strong>epistemic diversity</strong> — different models have
+              different knowledge gaps and biases, so disagreements are
+              <strong>informative signals</strong>, not noise. <br /><br />
 
-              Crucially, when one agent is tempted to conform (sycophancy),
-              our <strong>trust calibration function penalises that agent proportionally</strong> —
-              something impossible in a single-agent setting where there is no "other agent" to ground against.
+              Crucially, when one agent is tempted to conform (sycophancy), our
+              <strong
+                >trust calibration function penalises that agent
+                proportionally</strong
+              >
+              — something impossible in a single-agent setting where there is no
+              "other agent" to ground against.
             </div>
           </details>
 
@@ -1086,17 +1317,22 @@
           <details class="faq-item">
             <summary>How are trust scores calculated?</summary>
             <div class="faq-answer">
-              Trust scores are computed via a formal mathematical update rule after each round:
+              Trust scores are computed via a formal mathematical update rule
+              after each round:
               <br /><br />
 
               <strong>
-                - Verification Score (V): Proportion of claims explicitly supported by RAG evidence.<br />
-                - Hallucination Penalty (H): Proportion of claims explicitly contradicted.<br />
-                - Update Function: The previous trust is multiplied by a sigmoid function of (αV - βH), bounding trust in (0.1, 0.9).
+                - Verification Score (V): Proportion of claims explicitly
+                supported by RAG evidence.<br />
+                - Hallucination Penalty (H): Proportion of claims explicitly
+                contradicted.<br />
+                - Update Function: The previous trust is multiplied by a sigmoid
+                function of (αV - βH), bounding trust in (0.1, 0.9).
               </strong>
               <br /><br />
 
-              This ensures trust is session-scoped and dynamically prevents hallucinating agents from dominating the debate.
+              This ensures trust is session-scoped and dynamically prevents
+              hallucinating agents from dominating the debate.
             </div>
           </details>
         </div>
@@ -1111,21 +1347,19 @@
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              Evaluation will be performed using multi-step scientific reasoning
-              benchmarks where sycophancy is highly prevalent:
+              Evaluation will be performed using our full benchmark strategy:
               <br /><br />
 
               <strong>
-                - SciBench (Multi-step Physics/Chemistry/Maths)<br />
-                - GPQA (Graduate-level domain expertise)<br />
-                - QASper (NLP paper QA for ArXiv verification)
+                - BrokenMath, BrokenArXiv, HLE (Frontier sycophancy benchmarks)<br />
+                - GPQA, MMLU-Pro (Stable reasoning comparisons)
               </strong>
               <br /><br />
 
               We will explicitly measure:
               <strong>
-                sycophancy reduction rate against planted incorrect majorities, along with 
-                claim accuracy and trust calibration ECE.
+                CCR, MPR, and ECR against planted incorrect majorities, supported
+                by small-scale human evaluation on 5-point Likert scales.
               </strong>
             </div>
           </details>
@@ -1133,47 +1367,56 @@
           <details class="faq-item">
             <summary>What baselines will you compare against?</summary>
             <div class="faq-answer">
-              We use a <strong>6-condition ablation matrix</strong> to isolate contributions:
-              <br /><br />
+              We use a <strong>6-condition ablation matrix</strong> to isolate
+              contributions: <br /><br />
 
-              <strong>(a) Full System</strong> — Trust calibration + RAG grounding (our method).<br />
-              <strong>(b) Trust only, no RAG</strong> — Trust function active but no external evidence retrieval.<br />
-              <strong>(c) RAG only, no Trust</strong> — Evidence retrieved but equal-weighted majority vote.<br />
-              <strong>(d) Standard MAD</strong> — Du et al. (2023) majority-vote debate, no grounding.<br />
-              <strong>(e) Single-agent CoT</strong> — Chain-of-thought prompting, no debate.<br />
-              <strong>(f) GPT-4o Oracle</strong> — Ceiling baseline; budgeted at ~$150–200 USD for evaluation subset only.
+              <strong>(a) Full System</strong> — Trust calibration + RAG
+              grounding (our method).<br />
+              <strong>(b) Trust only, no RAG</strong> — Trust function active
+              but no external evidence retrieval.<br />
+              <strong>(c) RAG only, no Trust</strong> — Evidence retrieved but
+              equal-weighted majority vote.<br />
+              <strong>(d) Standard MAD</strong> — Du et al. (2023) majority-vote
+              debate, no grounding.<br />
+              <strong>(e) Single-agent CoT</strong> — Chain-of-thought
+              prompting, no debate.<br />
+              <strong>(f) Gemini 3.1 Pro Oracle</strong> — Ceiling baseline;
+              budgeted at ~$150–200 USD for evaluation subset only.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>What ablation studies will you perform?</summary>
             <div class="faq-answer">
-              The 6-condition matrix above <em>is</em> the ablation study.
-              Each condition independently answers one question:
+              We perform a rigorous ablation matrix to isolate the contribution
+              of each component. We will test the system:
               <br /><br />
 
-              <strong>(b) vs (a):</strong> How much does RAG grounding contribute beyond trust alone?<br />
-              <strong>(c) vs (a):</strong> How much does trust calibration contribute beyond RAG alone?<br />
-              <strong>(d) vs (c):</strong> Does RAG grounding improve standard debate at all?<br />
-              <strong>(e) vs (d):</strong> Is debate itself beneficial vs. single-agent?<br />
-              <strong>(f) vs (a):</strong> How close are we to the proprietary model ceiling?
-              <br /><br />
+              <strong>1) Without trust calibration</strong><br />
+              <strong>2) Without progressive retrieval</strong><br />
+              <strong>3) Without source partitioning</strong><br />
+              <strong>4) Without adaptive triggering</strong><br /><br />
 
-              Additionally, we sweep <strong>&alpha;, &beta; &isin; {0.5, 1.0, 2.0}</strong> and <strong>K &isin; {2, 3, 5} debate rounds</strong>
-              to understand hyperparameter sensitivity.
+              This is what makes the paper scientifically convincing, proving
+              that trust-calibrated aggregation is the primary driver of
+              sycophancy reduction.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>What metrics will you use?</summary>
             <div class="faq-answer">
+              We introduce a Sycophancy-Focused Evaluation Framework with three
+              core metrics:
+              <br /><br />
               <strong>
-                - Sycophancy Reduction Rate (%)<br />
-                - Claim Accuracy (EM Improvement)<br />
-                - Expected Calibration Error (ECE) for trust scores<br />
-                - Debate Convergence Rate<br />
-                - Hallucination Rate (% of false scientific claims)
+                - CCR (Consensus Collapse Rate)<br />
+                - MPR (Minority Preservation Rate)<br />
+                - ECR (Evidence Calibration Rate)<br />
               </strong>
+              <br />
+              These metrics elevate the work beyond standard accuracy reporting
+              and are strong contributions in themselves.
             </div>
           </details>
         </div>
@@ -1191,38 +1434,64 @@
               <strong>Yes</strong> — and we have concrete evidence for this:
               <br /><br />
 
-              <strong>Phase 1 (Sep–Oct 2026):</strong> Literature review + baseline MAD replication on SciBench + environment setup (vLLM, LangGraph).
-              <span style="color: var(--accent); font-weight: 600;"> ✓ Go/No-Go checkpoint: baseline sycophancy &ge;30% confirmed.</span><br /><br />
+              <strong>Phase 1 (Sep–Oct 2026):</strong> Literature review +
+              baseline MAD replication on BrokenMath / GPQA + environment setup
+              (vLLM, LangGraph).
+              <span style="color: var(--accent); font-weight: 600">
+                ✓ Go/No-Go checkpoint: baseline sycophancy &ge;30%
+                confirmed.</span
+              ><br /><br />
 
-              <strong>Phase 2 (Nov–Dec 2026):</strong> RAG module + atomic claim decomposition pipeline + cross-encoder integration + trust function v1.
-              <span style="color: var(--accent); font-weight: 600;"> ✓ Working prototype delivered.</span><br /><br />
+              <strong>Phase 2 (Nov–Dec 2026):</strong> RAG module + atomic claim
+              decomposition pipeline + cross-encoder integration + trust
+              function v1.
+              <span style="color: var(--accent); font-weight: 600">
+                ✓ Working prototype delivered.</span
+              ><br /><br />
 
-              <strong>Phase 3 (Jan–Mar 2027):</strong> Full experiment matrix (6 conditions &times; 3 datasets &times; 3 seeds). Mid-project report.
-              <span style="color: var(--accent); font-weight: 600;"> ✓ Go/No-Go: &ge;10% sycophancy reduction confirms hypothesis.</span><br /><br />
+              <strong>Phase 3 (Jan–Mar 2027):</strong> Full experiment matrix (6
+              conditions &times; 3 datasets &times; 3 seeds). Mid-project
+              report.
+              <span style="color: var(--accent); font-weight: 600">
+                ✓ Go/No-Go: &ge;10% sycophancy reduction confirms
+                hypothesis.</span
+              ><br /><br />
 
-              <strong>Phase 4 (Apr–May 2027):</strong> Ablation analysis, heterogeneous agent experiments, trust ECE evaluation.<br /><br />
+              <strong>Phase 4 (Apr–May 2027):</strong> Ablation analysis,
+              heterogeneous agent experiments, trust ECE evaluation.<br /><br />
 
-              <strong>Phase 5 (Jun–Aug 2027):</strong> Paper writing, thesis, reproducibility package, submission.
-              <br /><br />
+              <strong>Phase 5 (Jun–Aug 2027):</strong> Paper writing, thesis,
+              reproducibility package, submission. <br /><br />
 
-              <strong>Compute feasibility:</strong> 9 forward passes per question (N=3 agents, K=3 rounds). <strong>4-bit quantized 8B models via vLLM</strong> on a single A100. 500-question evaluation completes in &lt;12 hours. No special hardware access required.
+              <strong>Compute feasibility:</strong> 9 forward passes per
+              question (N=3 agents, K=3 rounds).
+              <strong>4-bit quantized 8B models via vLLM</strong> on a single
+              A100. 500-question evaluation completes in &lt;12 hours. No
+              special hardware access required.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>What tools and frameworks will you use?</summary>
             <div class="faq-answer">
-              <strong>Inference:</strong> vLLM (self-hosted, free) for Llama-3-8B-Instruct and Mistral-7B-v0.3 with 4-bit GPTQ quantization.<br /><br />
+              <strong>Inference:</strong> vLLM (self-hosted, free) for
+              Qwen-3.5, Mistral Small 4, and Phi-4-Reasoning with 4-bit GPTQ
+              quantization.<br /><br />
 
-              <strong>Agent Orchestration:</strong> LangGraph / AutoGen (open source, free).<br /><br />
+              <strong>Agent Orchestration:</strong> LangGraph / AutoGen (open
+              source, free).<br /><br />
 
-              <strong>Vector Retrieval:</strong> FAISS / ChromaDB for local embedding index.<br /><br />
+              <strong>Vector Retrieval:</strong> FAISS / ChromaDB for local
+              embedding index.<br /><br />
 
-              <strong>Evidence API:</strong> Semantic Scholar API (free academic tier) &rarr; PubMed/ArXiv abstracts.<br /><br />
+              <strong>Evidence APIs:</strong> Source-partitioned: PubMed, ArXiv,
+              and Semantic Scholar API (free academic tiers).<br /><br />
 
-              <strong>Reranker:</strong> cross-encoder/ms-marco-MiniLM-L6 for evidence relevance scoring.<br /><br />
+              <strong>Reranker:</strong> cross-encoder/ms-marco-MiniLM-L6 for
+              evidence relevance scoring.<br /><br />
 
-              <strong>Oracle Baseline:</strong> GPT-4o API (~$150–200 budget for ceiling comparison only).
+              <strong>Oracle Baseline:</strong> Gemini 3.1 Pro API (~$150–200
+              budget for ceiling comparison only).
             </div>
           </details>
         </div>
@@ -1237,16 +1506,40 @@
               <span class="badge badge-rose faq-badge">Most Important</span>
             </summary>
             <div class="faq-answer">
-              We identify <strong>four specific failure modes</strong> and mitigations:
-              <br /><br />
+              We identify <strong>four specific failure modes</strong> and
+              mitigations: <br /><br />
 
-              <strong>1) Correlated agent bias:</strong> If all N agents share the same pre-training distribution, they may all hallucinate the same thing. The trust function cannot detect this because all agents agree. <em>Mitigation: heterogeneous model families (Llama-3 + Mistral + Phi-3).</em><br /><br />
+              <strong>1) Correlated agent bias:</strong> If all N agents share
+              the same pre-training distribution, they may all hallucinate the
+              same thing. The trust function cannot detect this because all
+              agents agree.
+              <em
+                >Mitigation: heterogeneous model families (Qwen-3.5 + Mistral
+                Small 4 + Phi-4-Reasoning).</em
+              ><br /><br />
 
-              <strong>2) RAG retrieval noise:</strong> If the Semantic Scholar API returns low-quality or irrelevant evidence, the trust signal degrades. <em>Mitigation: cross-encoder reranker + citation-count filter (&gt;10 citations).</em><br /><br />
+              <strong>2) RAG retrieval noise:</strong> If the Semantic Scholar
+              API returns low-quality or irrelevant evidence, the trust signal
+              degrades.
+              <em
+                >Mitigation: cross-encoder reranker + citation-count filter
+                (&gt;10 citations).</em
+              ><br /><br />
 
-              <strong>3) Domain coverage gaps:</strong> For very recent or niche research questions, no supporting evidence may exist in PubMed/ArXiv. <em>Mitigation: claims flagged as &ldquo;unverifiable&rdquo; are excluded from trust updates; treated as abstentions.</em><br /><br />
+              <strong>3) Domain coverage gaps:</strong> For very recent or niche
+              research questions, no supporting evidence may exist in
+              PubMed/ArXiv.
+              <em
+                >Mitigation: claims flagged as &ldquo;unverifiable&rdquo; are
+                excluded from trust updates; treated as abstentions.</em
+              ><br /><br />
 
-              <strong>4) Latency overhead:</strong> RAG + reranking adds compute per debate turn. <em>Mitigation: 4-bit quantization, vLLM batched inference, &lt;10s per-turn budget enforced.</em>
+              <strong>4) Latency overhead:</strong> RAG + reranking adds compute
+              per debate turn.
+              <em
+                >Mitigation: 4-bit quantization, vLLM batched inference, &lt;10s
+                per-turn budget enforced.</em
+              >
             </div>
           </details>
 
@@ -1255,24 +1548,44 @@
               Can debate systems still generate incorrect answers?
             </summary>
             <div class="faq-answer">
-              <strong>Yes</strong> — our system reduces but cannot eliminate hallucinations.
-              <br /><br />
+              <strong>Yes</strong> — our system reduces but cannot eliminate
+              hallucinations. <br /><br />
 
-              The key claim is <strong>relative improvement</strong>: &ge;20% sycophancy reduction vs. standard MAD, and &lt;8% hallucination rate vs. GPT-4o baseline of 23.1%.
-              We explicitly acknowledge this <strong>domain-of-applicability boundary</strong> in the paper — on trivial questions where all agents agree, our system provides no benefit and we report this honestly.
+              The key claim is <strong>relative improvement</strong>: &ge;20%
+              sycophancy reduction vs. standard MAD, and &lt;8% hallucination
+              rate vs. the ungrounded MAD baseline. We explicitly acknowledge this
+              <strong>domain-of-applicability boundary</strong> in the paper —
+              on trivial questions where all agents agree, our system provides
+              no benefit and we report this honestly.
             </div>
           </details>
 
           <details class="faq-item">
             <summary>What ethical concerns exist in your system?</summary>
             <div class="faq-answer">
-              <strong>Risk 1 — Overconfident wrong outputs:</strong> Trust calibration reduces but cannot eliminate the risk that a high-trust agent is wrong. <em>Mitigation: ECE &lt;0.06 target ensures trust scores reflect true accuracy.</em><br /><br />
+              <strong>Risk 1 — Overconfident wrong outputs:</strong> Trust
+              calibration reduces but cannot eliminate the risk that a
+              high-trust agent is wrong.
+              <em
+                >Mitigation: ECE &lt;0.06 target ensures trust scores reflect
+                true accuracy.</em
+              ><br /><br />
 
-              <strong>Risk 2 — Biased evidence retrieval:</strong> Semantic Scholar may over-represent English-language or well-funded research institutions. <em>Mitigation: citation-count and venue-quality filters.</em><br /><br />
+              <strong>Risk 2 — Biased evidence retrieval:</strong> Semantic
+              Scholar may over-represent English-language or well-funded
+              research institutions.
+              <em>Mitigation: citation-count and venue-quality filters.</em
+              ><br /><br />
 
-              <strong>Risk 3 — Deployment misuse:</strong> End-users may treat system outputs as definitive scientific truth. <em>Mitigation: outputs clearly labelled with trust ECE and evidence source links.</em><br /><br />
+              <strong>Risk 3 — Deployment misuse:</strong> End-users may treat
+              system outputs as definitive scientific truth.
+              <em
+                >Mitigation: outputs clearly labelled with trust ECE and
+                evidence source links.</em
+              ><br /><br />
 
-              Importantly, all datasets are <strong>fully public</strong> with no IRB, HIPAA, or personal data requirements.
+              Importantly, all datasets are <strong>fully public</strong> with
+              no IRB, HIPAA, or personal data requirements.
             </div>
           </details>
 
@@ -1282,13 +1595,42 @@
               Extensions grounded in the current architecture:
               <br /><br />
 
-              <strong>1) Cross-session trust memory:</strong> Rather than resetting trust per question, accumulate trust across sessions to build <strong>long-term agent reputation scores</strong>.<br /><br />
+              <strong>1) Cross-session trust memory:</strong> Rather than
+              resetting trust per question, accumulate trust across sessions to
+              build
+              <strong>long-term agent reputation scores</strong>.<br /><br />
 
-              <strong>2) Multimodal evidence grounding:</strong> Extend RAG to retrieve <strong>figures, tables, and equations</strong> from papers — not just text abstracts — for richer claim verification.<br /><br />
+              <strong>2) Multimodal evidence grounding:</strong> Extend RAG to
+              retrieve <strong>figures, tables, and equations</strong> from
+              papers — not just text abstracts — for richer claim
+              verification.<br /><br />
 
-              <strong>3) Adversarial robustness:</strong> Stress-test the trust function against <strong>coordinated hallucination attacks</strong> (two agents colluding on a false claim).<br /><br />
+              <strong>3) Adversarial robustness:</strong> Stress-test the trust
+              function against
+              <strong>coordinated hallucination attacks</strong> (two agents
+              colluding on a false claim).<br /><br />
 
-              <strong>4) Test-time adaptation:</strong> Fine-tune agent models on domain-specific corpora to reduce the RAG latency bottleneck in specialised fields like <strong>rare disease diagnosis</strong>.
+              <strong>4) Test-time adaptation:</strong> Fine-tune agent models
+              on domain-specific corpora to reduce the RAG latency bottleneck in
+              specialised fields like <strong>rare disease diagnosis</strong>.
+            </div>
+          </details>
+          <details class="faq-item">
+            <summary>How will you conduct human evaluation?</summary>
+            <div class="faq-answer">
+              Human evaluators (20–30 samples, graduate students or domain
+              experts) will assess each system output on
+              <strong>5-point Likert scales</strong> for:
+              <br /><br />
+              <strong>1) Factual Grounding</strong> — Are claims supported by
+              retrievable evidence?<br />
+              <strong>2) Hallucination Severity</strong> — How frequently does
+              the output contain unsupported assertions?<br />
+              <strong>3) Reasoning Coherence</strong> — Is the deliberation
+              logically consistent?<br />
+              <strong>4) Trustworthiness</strong> — Would a domain expert rely
+              on this output?<br /><br />
+              Inter-annotator agreement will be measured using Cohen’s κ.
             </div>
           </details>
         </div>
