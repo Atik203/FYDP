@@ -68,20 +68,20 @@
         <h2><span class="section-icon">📊</span> At a Glance</h2>
         <div class="kpi-row">
           <div class="kpi-card">
-            <div class="kpi-val">≥20%</div>
-            <div class="kpi-label">Sycophancy Reduction Target</div>
+            <div class="kpi-val">20&ndash;30%</div>
+            <div class="kpi-label">CCR Reduction Target</div>
           </div>
           <div class="kpi-card green">
-            <div class="kpi-val">+6%</div>
-            <div class="kpi-label">Answer Accuracy Gain</div>
+            <div class="kpi-val">&gt;0.80</div>
+            <div class="kpi-label">ECR Evidence Calibration</div>
           </div>
           <div class="kpi-card sky">
-            <div class="kpi-val">3</div>
+            <div class="kpi-val">5</div>
             <div class="kpi-label">Evaluation Datasets</div>
           </div>
           <div class="kpi-card amber">
-            <div class="kpi-val">4</div>
-            <div class="kpi-label">Baseline Systems</div>
+            <div class="kpi-val">6</div>
+            <div class="kpi-label">Baseline Conditions</div>
           </div>
           <div class="kpi-card rose">
             <div class="kpi-val">12</div>
@@ -132,6 +132,9 @@
       <section>
         <h2><span class="section-icon">🔍</span> 2. Problem Statement</h2>
         <h3>2.1 The Real-World Problem</h3>
+        <p>
+          <strong>Scientific reasoning is selected as the target domain because it is evidence-intensive, high-stakes, and highly sensitive to hallucinated consensus</strong> — making it the ideal stress-test for sycophantic failure modes in multi-agent systems.
+        </p>
         <p>
           Multi-agent debate has emerged as a leading paradigm for improving LLM
           reasoning reliability (<strong
@@ -254,10 +257,11 @@
 
         <div class="callout callout-gap">
           <div class="callout-title">⚠ Explicit Research Gap</div>
-          <p class="mb-0">
+          <p>
+            <strong>Consensus frequency is not equivalent to empirical correctness under adversarial sycophancy conditions.</strong>
             No existing framework provides a
             <strong
-              >mathematically formalized, evidence-grounded trust
+              >formally specified, evidence-grounded trust
               mechanism</strong
             >
             that dynamically re-weights agent influence based on the
@@ -265,8 +269,7 @@
             not "multi-agent debate doesn't work" — it is that existing systems
             lack the <em>algorithmic infrastructure</em> to penalize
             hallucinating agents and reward evidence-aligned agents within the
-            same debate session. This is a missing piece that, once formalised,
-            generalises across any multi-agent reasoning system.
+            same debate session.
           </p>
         </div>
       </section>
