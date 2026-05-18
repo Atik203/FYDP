@@ -123,7 +123,8 @@ header .subtitle {
   margin-bottom: .15rem;
 }
 
-/* ── Nav ──────────────────────────────────────────────── */
+/* ── Nav — styles injected by nav.js (nav#site-nav) ──── */
+/* Fallback for pages without nav.js */
 nav {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -150,7 +151,7 @@ nav a {
   border-radius: var(--r-sm);
   transition: all .2s var(--ease);
 }
-nav a:hover { background: var(--accent-soft); color: var(--accent); }
+nav a:hover  { background: var(--accent-soft); color: var(--accent); }
 nav a.active { background: var(--accent); color: #fff; font-weight: 600; }
 
 /* ── Main ─────────────────────────────────────────────── */
