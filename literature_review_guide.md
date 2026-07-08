@@ -152,15 +152,7 @@ behavior — both of which are central to our FYDP idea.
 
 ## 🗂️ Google Docs Tab Structure (Suggested)
 
-Each member gets their own tab in the shared Google Doc:
-
-| Tab Name          | Assigned To         |
-| ----------------- | ------------------- |
-| Member 1 – [Name] | [Name]              |
-| Member 2 – [Name] | [Name]              |
-| Member 3 – [Name] | [Name]              |
-| Member 4 – [Name] | [Name]              |
-| Summary & Gaps    | All (fill together) |
+Each member gets their own tab in the shared Google Doc.
 
 > In the last **"Summary & Gaps"** tab, the team can collectively list all the major gaps found across all papers. This will be the foundation of our **research gap / motivation section** in the final report.
 
