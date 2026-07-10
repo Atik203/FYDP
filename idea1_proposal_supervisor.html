@@ -107,7 +107,8 @@
       @media print {
         body {
           background: #fff;
-          font-size: 10pt;
+          font-size: 9.5pt;
+          line-height: 1.32;
         }
         .screen-head {
           display: none;
@@ -116,8 +117,27 @@
           margin: 0;
           box-shadow: none;
           width: auto;
-          min-height: auto;
-          padding: 13mm 15mm;
+          min-height: 0;
+          padding: 11mm 14mm;
+          page-break-after: always;
+          break-after: page;
+        }
+        .page:last-of-type {
+          page-break-after: auto;
+          break-after: auto;
+        }
+        h2 {
+          font-size: 10pt;
+          margin: 7pt 0 3pt;
+        }
+        p {
+          margin: 0 0 4pt;
+        }
+        li {
+          margin-bottom: 2pt;
+        }
+        .refs {
+          font-size: 8.4pt;
         }
       }
     </style>
@@ -134,7 +154,6 @@
       <p class="sub">Final Year Design Project — Research Proposal</p>
       <div class="meta">
         Domain: Agentic AI · Multi-Agent Systems · Trustworthy NLP &nbsp;·&nbsp;
-        Runs on a single A100-class GPU (inference only)
       </div>
 
       <h2>1. Background and Motivation</h2>
@@ -319,8 +338,7 @@
 
       <h2>9. Scope and Feasibility</h2>
       <p>
-        The project is kept <strong>feasible for an FYDP</strong>: it is
-        <strong>inference-only</strong>, runs on a
+        It is <strong>inference-only</strong>, runs on a
         <strong>single A100-class GPU</strong>, and uses open-weight models with
         free academic retrieval APIs. It does <strong>not</strong> try to
         eliminate hallucination or solve alignment in general — it focuses on
@@ -358,11 +376,6 @@
           evidence-based trust.)
         </li>
       </ul>
-
-      <div class="footer">
-        Prepared for FYDP-1 supervision. This document focuses on the idea and
-        the problem; detailed experiments and schedule are kept separately.
-      </div>
     </div>
   </body>
 </html>
