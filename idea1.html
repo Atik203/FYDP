@@ -402,7 +402,9 @@
           <div class="col-box">
             <h4>Challenge D — Heterogeneous Agents</h4>
             <p class="mb-0">
-              Trust calibration must be model-agnostic across Qwen3.6-27B, Mistral-Small-3.2-24B, and Phi-4-Reasoning, with optional extension to larger models.
+              Trust calibration must be model-agnostic across Qwen3.6-27B,
+              Mistral-Small-3.2-24B, and Phi-4-Reasoning, with optional
+              extension to larger models.
             </p>
           </div>
         </div>
@@ -464,12 +466,44 @@
               <td>Equal-weight aggregation; no evidence-grounded trust</td>
             </tr>
             <tr>
-              <td><strong>iMAD</strong></td>
-              <td>2025</td>
-              <td>Iterative debate with implicit confidence</td>
+              <td><strong>iMAD</strong> (Fan et al., arXiv 2511.11306)</td>
+              <td>2025 · AAAI 2026 Oral</td>
               <td>
-                Confidence implicit and ungrounded; evaluated directly as
-                Baseline B9 (reimplemented; see Section 5.5)
+                Learned classifier (41 linguistic self-critique features)
+                decides <em>whether</em> to trigger debate; token-efficient
+              </td>
+              <td>
+                Optimises <em>when</em> to debate, not
+                <em>who to trust</em> during it; no external evidence grounding.
+                Overlaps our §4.1 trigger, not our trust core; used as Baseline
+                B9 (see §5.5)
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Peacemaker or Troublemaker</strong> (Yao et al., arXiv
+                2509.23055)
+              </td>
+              <td>2025</td>
+              <td>
+                First formal definition + metrics for inter-agent sycophancy in
+                debate
+              </td>
+              <td>
+                Diagnostic study only — measures the failure, proposes no
+                evidence-grounded mitigation mechanism
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Minority Sentinel</strong> (arXiv 2606.29270)</td>
+              <td>2026</td>
+              <td>
+                Post-hoc meta-classifier on debate logs recovers suppressed
+                correct minority
+              </td>
+              <td>
+                Post-hoc, external classifier on log features; not in-session,
+                not evidence-grounded
               </td>
             </tr>
           </tbody>
@@ -526,7 +560,8 @@
           <div class="col-box">
             <h4>4.2 Agent Pool (N = 3)</h4>
             <p class="mb-0">
-              One agent each from Qwen-3.5, Mistral-Small-3.2-24B or Mistral-Small-4-119B (if compute allows), Phi-4-Reasoning.
+              One agent each from Qwen3.6-27B, Mistral-Small-3.2-24B, and
+              Phi-4-Reasoning (Mistral-Small-4-119B optional if compute allows).
               Each maintains its position and a trust vector
               <code>T ∈ ℝ³</code>, initialised uniformly at <code>1/N</code>.
             </p>
@@ -566,7 +601,8 @@
         >
           S<sub>i</sub><sup>(t+1)</sup> = S<sub>i</sub><sup>(t)</sup> + α ·
           V<sub>i</sub><sup>(t)</sup> − β · H<sub>i</sub><sup>(t)</sup>; &nbsp;
-          T<sub>i</sub><sup>(t+1)</sup> = clamp(softmax(S)<sub>i</sub>, 0.1, 0.9)
+          T<sub>i</sub><sup>(t+1)</sup> = clamp(softmax(S)<sub>i</sub>, 0.1,
+          0.9)
         </div>
 
         <div class="two-col">
@@ -584,7 +620,10 @@
               <li>
                 <code>α, β</code> — reward / penalty scale (sweep 0.5–2.0)
               </li>
-              <li><code>Sᵢ</code> — latent evidence score; softmax normalizes trust across agents</li>
+              <li>
+                <code>Sᵢ</code> — latent evidence score; softmax normalizes
+                trust across agents
+              </li>
             </ul>
           </div>
           <div class="col-box">
@@ -609,8 +648,10 @@
         <!-- ─── Theoretical Properties ─── -->
         <h3>4.5 Theoretical Properties of the Trust Calibration Mechanism</h3>
         <p>
-          The trust update rule is a formally specified scoring-and-normalisation mechanism with boundedness and a probabilistic interpretation. Three
-          propositions ground the mechanism; full proofs are in Appendix A.
+          The trust update rule is a formally specified
+          scoring-and-normalisation mechanism with boundedness and a
+          probabilistic interpretation. Three propositions ground the mechanism;
+          full proofs are in Appendix A.
         </p>
 
         <!-- Prop 1 -->
@@ -638,14 +679,16 @@ Step:  softmax(S) maps finite evidence scores to (0,1) and sums to 1.
         <!-- Prop 2 -->
         <div class="prop-box">
           <div class="prop-label">
-            Proposition 2 — Monotonic Convergence (Evidence-Aligned Agent)
+            Proposition 2 — Monotonic Growth (Evidence-Aligned Agent)
           </div>
           <p style="margin-bottom: 0.4rem">
+            <em>Design property, not a global convergence theorem.</em>
             If <code>Vᵢ(t) &gt; 0.7</code> and
             <code>Hᵢ(t) &lt; 0.1</code> across all rounds in
-            <code>[t₀, T]</code>, then <code>{Tᵢ(t)}</code> is monotonically
-            non-decreasing and converges toward <code>T<sub>max</sub></code
-            >.
+            <code>[t₀, T]</code>, then the latent score <code>Sᵢ(t)</code> is
+            monotonically increasing and <code>Tᵢ(t)</code> is non-decreasing
+            toward the clamp ceiling <code>T<sub>max</sub></code> relative to
+            unsupported agents.
           </p>
           <pre>
 α·Vᵢ − β·Hᵢ &gt; 1.5(0.7) − 1.0(0.1) = 0.95
@@ -688,20 +731,22 @@ Minority trust grows   (Vᵢ    &gt; θ_v  →  Sᵢ increases)
           <code
             >Tᵢ(t) ≈ P̂(agent i correct | evidence retrieved up to round t)</code
           >
-          — a running empirical Bayesian estimate. The score increment acts like a bounded evidence log-likelihood update scaled by α and β; the softmax/clamp prevents degenerate posteriors. This
-          motivates using ECR (Expected Calibration of trust w.r.t. ground
-          truth) as a primary metric.
+          — a running empirical Bayesian estimate. The score increment acts like
+          a bounded evidence log-likelihood update scaled by α and β; the
+          softmax/clamp prevents degenerate posteriors. This motivates using ECR
+          (Expected Calibration of trust w.r.t. ground truth) as a primary
+          metric.
         </p>
 
         <!-- Hyperparameter sensitivity -->
         <h4>Hyperparameter Sensitivity</h4>
         <p>
           Grid search over <code>α, β ∈ {0.5, 1.0, 1.5, 2.0}</code> on a
-          200-question held-out BrokenMath split (after confirming no overlap with final evaluation). Selected α = 1.5, β = 1.0
-          (asymmetric: rewards correct retrieval more than it penalises
-          abstention). CCR varies &lt; 4% across all tested configurations — the
-          trust function is robust to hyperparameter choice. Full sensitivity
-          table in Appendix B.
+          200-question held-out BrokenMath split (after confirming no overlap
+          with final evaluation). Selected α = 1.5, β = 1.0 (asymmetric: rewards
+          correct retrieval more than it penalises abstention). CCR varies &lt;
+          4% across all tested configurations — the trust function is robust to
+          hyperparameter choice. Full sensitivity table in Appendix B.
         </p>
       </section>
 
@@ -715,12 +760,16 @@ Minority trust grows   (Vᵢ    &gt; θ_v  →  Sᵢ increases)
         <div class="info-grid">
           <div class="info-card">
             <div class="ic-label">Primary Agent</div>
-            <div class="ic-value">Qwen3.6-27B (primary) / Qwen3.6-35B-A3B (optional)</div>
+            <div class="ic-value">
+              Qwen3.6-27B (primary) / Qwen3.6-35B-A3B (optional)
+            </div>
             <div class="ic-sub">4-bit quantized, vLLM inference</div>
           </div>
           <div class="info-card">
             <div class="ic-label">Secondary Agent</div>
-            <div class="ic-value">Mistral-Small-3.2-24B or Mistral-Small-4-119B (if compute allows)</div>
+            <div class="ic-value">
+              Mistral-Small-3.2-24B or Mistral-Small-4-119B (if compute allows)
+            </div>
             <div class="ic-sub">Heterogeneous family</div>
           </div>
           <div class="info-card">
@@ -730,7 +779,9 @@ Minority trust grows   (Vᵢ    &gt; θ_v  →  Sᵢ increases)
           </div>
           <div class="info-card">
             <div class="ic-label">Oracle Ceiling</div>
-            <div class="ic-value">Gemini 2.5 Pro / strongest available API oracle</div>
+            <div class="ic-value">
+              Gemini 2.5 Pro / strongest available API oracle
+            </div>
             <div class="ic-sub">API; budgeted (~$150–200)</div>
           </div>
           <div class="info-card">
@@ -751,10 +802,17 @@ Minority trust grows   (Vᵢ    &gt; θ_v  →  Sᵢ increases)
           </thead>
           <tbody>
             <tr>
-              <td><strong>INSAIT-Institute/BrokenMath, MathArena BrokenArXiv monthly sets, cais/hle</strong></td>
+              <td>
+                <strong
+                  >INSAIT-Institute/BrokenMath, MathArena BrokenArXiv monthly
+                  sets, cais/hle</strong
+                >
+              </td>
               <td>Primary / Frontier</td>
               <td>
-                Versioned public/controlled-access benchmarks for math/scientific false-consensus stress tests; HLE requires dataset access approval
+                Versioned public/controlled-access benchmarks for
+                math/scientific false-consensus stress tests; HLE requires
+                dataset access approval
               </td>
             </tr>
             <tr>
@@ -880,10 +938,10 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           <strong>Pilot Validation</strong>
         </p>
         <p>
-          50-question stratified sample from INSAIT-Institute/BrokenMath. Two annotators (blind)
-          label each triple independently. Target κ &gt; 0.75; if κ &lt; 0.70
-          the protocol is revised before main experiments. Go/No-Go: baseline
-          CCR ≥ 0.30 required to confirm injection strength.
+          50-question stratified sample from INSAIT-Institute/BrokenMath. Two
+          annotators (blind) label each triple independently. Target κ &gt;
+          0.75; if κ &lt; 0.70 the protocol is revised before main experiments.
+          Go/No-Go: baseline CCR ≥ 0.30 required to confirm injection strength.
         </p>
 
         <p>
@@ -980,7 +1038,10 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           <tbody>
             <tr>
               <td>Layer 1 Proposers</td>
-              <td>Qwen-3.5, Mistral-Small-3.2-24B or Mistral-Small-4-119B (if compute allows), Phi-4-Reasoning</td>
+              <td>
+                Qwen3.6-27B, Mistral-Small-3.2-24B, Phi-4-Reasoning (same pool
+                as our system)
+              </td>
             </tr>
             <tr>
               <td>Layer 2 Aggregator</td>
@@ -1010,24 +1071,35 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           engineering.
         </p>
 
-        <h4>B9 — iMAD (Iterative Multi-Agent Debate, Reimplemented)</h4>
+        <h4>
+          B9 — iMAD (Intelligent Multi-Agent Debate, Fan et al., AAAI 2026,
+          Reimplemented)
+        </h4>
         <p>
-          <strong>Reference:</strong> iMAD (2025). Reimplemented from the
-          published description (original code unavailable).
+          <strong>Reference:</strong> Fan, Yoon &amp; Ji, "iMAD: Intelligent
+          Multi-Agent Debate for Efficient and Accurate LLM Inference," arXiv
+          2511.11306 (AAAI 2026 Oral). Reimplemented from the published
+          description.
         </p>
         <p>
-          <strong>Why this comparison is critical:</strong> iMAD is the closest
-          existing competitor — it uses iterative multi-agent debate and
-          confidence-weighted aggregation. The critical difference is the
-          confidence signal: iMAD uses implicit linguistic markers in agent
-          output, whereas our system uses explicit evidence-grounded trust
-          verified against external corpora.
+          <strong>Why this comparison is critical (corrected framing):</strong>
+          the published iMAD is a <em>token-efficiency</em> method: it trains a
+          lightweight classifier on 41 linguistic self-critique features to
+          decide <em>whether</em> to trigger debate at all. It is therefore the
+          closest competitor to our <strong>§4.1 adaptive-triggering</strong>
+          component, not to our trust core. We reimplement its trigger-decision
+          idea and additionally give it a confidence-weighted aggregation
+          variant so it can be scored on our anti-sycophancy metrics. The
+          decisive difference remains the confidence signal: iMAD's cues are
+          extracted from the same (potentially injected) context, whereas our
+          trust is grounded in external evidence.
         </p>
         <p><strong>Reimplementation specification:</strong></p>
         <ul>
           <li>
-            <strong>Debate structure:</strong> same 3 agents (Qwen3.6-27B, Mistral-Small-3.2-24B, Phi-4-Reasoning), same K=3 rounds, same prompts as B3
-            (standard MAD).
+            <strong>Debate structure:</strong> same 3 agents (Qwen3.6-27B,
+            Mistral-Small-3.2-24B, Phi-4-Reasoning), same K=3 rounds, same
+            prompts as B3 (standard MAD).
           </li>
           <li>
             <strong>Confidence extraction:</strong> linguistic hedging markers
@@ -1132,7 +1204,10 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             </tr>
             <tr>
               <td><span class="bl-pill">B7</span></td>
-              <td>Oracle — Gemini 2.5 Pro / strongest available API oracle (single-agent)</td>
+              <td>
+                Oracle — Gemini 2.5 Pro / strongest available API oracle
+                (single-agent)
+              </td>
               <td>Upper-bound ceiling reference</td>
             </tr>
             <tr
@@ -1154,13 +1229,14 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
               </td>
               <td>
                 <strong
-                  >iMAD — Iterative Multi-Agent Debate (reimplemented)</strong
+                  >iMAD — Intelligent Multi-Agent Debate (Fan et al., AAAI 2026;
+                  reimplemented)</strong
                 >
                 <br />
                 <span style="font-size: 0.78rem; color: #666">
-                  Iterative debate + implicit linguistic confidence signals. No
-                  external retrieval. No formal trust specification. Closest
-                  existing competitor to our system.
+                  Learned trigger-decision + implicit linguistic confidence
+                  signals. No external retrieval. No formal trust specification.
+                  Closest competitor to our §4.1 trigger + aggregation.
                 </span>
               </td>
               <td>
@@ -1320,7 +1396,9 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           </div>
         </div>
         <p>
-          Largest gains expected on adversarial conditions (INSAIT-Institute/BrokenMath, MathArena BrokenArXiv monthly sets, and cais/hle) where baseline sycophancy is highest and parametric
+          Largest gains expected on adversarial conditions
+          (INSAIT-Institute/BrokenMath, MathArena BrokenArXiv monthly sets, and
+          cais/hle) where baseline sycophancy is highest and parametric
           knowledge is weakest. On trivial questions where all agents agree
           correctly, trust overhead provides negligible benefit — reported
           honestly as a
@@ -1358,15 +1436,21 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             <h4>Reproducibility</h4>
             <p class="mb-0">
               Open-weight models, public datasets, fully specified trust
-              equations. Core replication on a single A100 within 72 hours; larger Mistral-Small-4 or oracle runs are reported as optional/API extensions.
+              equations. Core replication on a single A100 within 72 hours;
+              larger Mistral-Small-4 or oracle runs are reported as optional/API
+              extensions.
             </p>
           </div>
           <div class="col-box">
             <h4>Realistic Publication Path</h4>
             <p class="mb-0">
-              <strong>Primary:</strong> EMNLP Findings / TMLR / Information Processing &amp; Management-style Q1 journal if results are strong.<br />
-              <strong>Stretch:</strong> ACL Main / EMNLP Main only with clear gains over iMAD/MoA and strong ablations.<br />
-              <strong>Workshop:</strong> ACL / NeurIPS workshop is the safest first publication path.
+              <strong>Primary:</strong> EMNLP Findings / TMLR / Information
+              Processing &amp; Management-style Q1 journal if results are
+              strong.<br />
+              <strong>Stretch:</strong> ACL Main / EMNLP Main only with clear
+              gains over iMAD/MoA and strong ablations.<br />
+              <strong>Workshop:</strong> ACL / NeurIPS workshop is the safest
+              first publication path.
             </p>
           </div>
         </div>
@@ -1401,7 +1485,7 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             </tr>
             <tr>
               <td><strong>Ph 2</strong></td>
-              <td>2–3</td>
+              <td>3–4</td>
               <td>
                 RAG module; atomic claim decomposition; cross-encoder
                 integration; trust function v1; <strong>P1 Props 2–3</strong>;
@@ -1412,7 +1496,7 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             </tr>
             <tr>
               <td><strong>Ph 3</strong></td>
-              <td>4–6</td>
+              <td>5–6</td>
               <td>
                 Full experiment matrix (9 conditions × 5 datasets × 3 seeds);
                 ablations; hyperparameter sweep; N-scaling study
@@ -1471,7 +1555,10 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           <div class="callout-title">⚠ Risks &amp; Mitigations</div>
           <ul class="mb-0">
             <li>
-              <strong>Compute:</strong> 4-bit quantised 15B-27B open models via vLLM; N=3, K=3 cap. ≈ 9 forward passes per question — tractable on one A100 for a 500-question core run. Larger 119B/API models are optional extension conditions.
+              <strong>Compute:</strong> 4-bit quantised 15B-27B open models via
+              vLLM; N=3, K=3 cap. ≈ 9 forward passes per question — tractable on
+              one A100 for a 500-question core run. Larger 119B/API models are
+              optional extension conditions.
             </li>
             <li>
               <strong>RAG noise:</strong> Cross-encoder reranker +
@@ -1526,7 +1613,9 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
           <div class="info-card">
             <div class="ic-label">Oracle Budget</div>
             <div class="ic-value">~$150–200 USD</div>
-            <div class="ic-sub">Gemini 2.5 Pro / strongest available API oracle (ceiling only)</div>
+            <div class="ic-sub">
+              Gemini 2.5 Pro / strongest available API oracle (ceiling only)
+            </div>
           </div>
           <div class="info-card">
             <div class="ic-label">Framework</div>
@@ -1704,11 +1793,11 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             <div class="faq-answer">
               A formally specified, evidence-grounded trust calibration
               mechanism —
-              <strong>Sᵢ(t+1)=Sᵢ(t)+αVᵢ−βHᵢ; T=clamp(softmax(S))</strong> — that dynamically
-              re-weights agent influence within the same debate session based on
-              claim verifiability. No existing system (MAD, MoA, iMAD, PROClaim)
-              does this. Novel metrics CCR, MPR, ECR are independently usable
-              contributions.
+              <strong>Sᵢ(t+1)=Sᵢ(t)+αVᵢ−βHᵢ; T=clamp(softmax(S))</strong> — that
+              dynamically re-weights agent influence within the same debate
+              session based on claim verifiability. No existing system (MAD,
+              MoA, iMAD, PROClaim) does this. Novel metrics CCR, MPR, ECR are
+              independently usable contributions.
             </div>
           </details>
 
@@ -1751,9 +1840,10 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
               (1) Confidence estimator gates debate. (2) Three heterogeneous
               agents state initial positions. (3) Claims → atomic propositions →
               source-partitioned RAG retrieval → cross-encoder scoring. (4)
-              Trust updated via latent score increments Sᵢ(t+1)=Sᵢ(t)+αVᵢ−βHᵢ, then softmax/clamp normalisation. (5) Injection of
-              wrong consensus at t=1. (6) Agents revise positions. (7) Final
-              answer via trust-weighted aggregation (not majority vote).
+              Trust updated via latent score increments Sᵢ(t+1)=Sᵢ(t)+αVᵢ−βHᵢ,
+              then softmax/clamp normalisation. (5) Injection of wrong consensus
+              at t=1. (6) Agents revise positions. (7) Final answer via
+              trust-weighted aggregation (not majority vote).
             </div>
           </details>
 
@@ -1846,7 +1936,9 @@ C4 (No New Evidence):       No retrieved doc with relevance > 0.75
             <div class="faq-answer">
               1× A100 (HPC or Colab Pro+); vLLM + LangGraph (free); Semantic
               Scholar API (free); ~$150–200 for Gemini oracle API. All models
-              open-weight. Datasets are public or controlled-access public; HLE may require click-through approval. No private human-subject data is collected. Core replication targets 72 hrs on one A100.
+              open-weight. Datasets are public or controlled-access public; HLE
+              may require click-through approval. No private human-subject data
+              is collected. Core replication targets 72 hrs on one A100.
             </div>
           </details>
         </div>
