@@ -19,7 +19,9 @@
     { href: 'idea5.html',      label: 'Idea 5',      icon: '📊',  sub: 'Stat Verify'  },
     { href: 'conclusion.html', label: 'Conclusion',  icon: '🎯',  sub: null           },
     { href: 'topic.html',      label: 'Roadmap',     icon: '🗺️', sub: 'Idea 1',  accent: true },
+    { href: 'idea1_proposal_supervisor.html', label: 'Proposal', icon: '📄', sub: 'Idea 1', accent: true },
   ];
+
 
   /* ── Beautiful Nav CSS ──────────────────────────────── */
   const css = `
