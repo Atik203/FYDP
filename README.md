@@ -1,1 +1,1 @@
-# Research Ideas
+# FYDP Project Ideas
