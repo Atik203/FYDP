@@ -5,6 +5,7 @@ import { GanttTable } from '@/components/shared/GanttTable';
 import { Timeline } from '@/components/shared/Timeline';
 import { Callout } from '@/components/shared/Callout';
 import { ganttPhases, milestones } from '@/data/overview';
+import { Calendar, ClipboardList, BookOpen, Brain, Bot, Users, Search, Ruler } from 'lucide-react';
 
 /* ── Learning Roadmap Data (unchanged from original, Idea-1-specific) ─── */
 
@@ -17,9 +18,11 @@ interface RoadmapTopic {
   whyNeeded: string;
 }
 
+import type { LucideIcon } from 'lucide-react';
+
 interface RoadmapSection {
   id: string;
-  icon: string;
+  icon: LucideIcon;
   title: string;
   accent: 'teal' | 'blue' | 'amber' | 'rose' | 'none';
   topics: RoadmapTopic[];
@@ -27,7 +30,7 @@ interface RoadmapSection {
 
 const roadmapSections: RoadmapSection[] = [
   {
-    id: 'core', icon: '🧠', title: 'Core ML & Deep Learning', accent: 'teal',
+    id: 'core', icon: Brain, title: 'Core ML & Deep Learning', accent: 'teal',
     topics: [
       { num: 1, topic: 'Neural Networks', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Understand model structure and inference' },
       { num: 2, topic: 'Transformer Architecture', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Foundation of all LLM agents' },
@@ -38,7 +41,7 @@ const roadmapSections: RoadmapSection[] = [
     ],
   },
   {
-    id: 'llm', icon: '🤖', title: 'Large Language Models', accent: 'blue',
+    id: 'llm', icon: Bot, title: 'Large Language Models', accent: 'blue',
     topics: [
       { num: 1, topic: 'LLM Text Generation', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understand how models reason and fail' },
       { num: 2, topic: 'Chain-of-Thought (CoT)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Main baseline and reasoning style' },
@@ -54,7 +57,7 @@ const roadmapSections: RoadmapSection[] = [
     ],
   },
   {
-    id: 'agents', icon: '👥', title: 'Multi-Agent Systems', accent: 'amber',
+    id: 'agents', icon: Users, title: 'Multi-Agent Systems', accent: 'amber',
     topics: [
       { num: 1, topic: 'Multi-Agent Debate (MAD)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Main paradigm your work extends' },
       { num: 2, topic: 'Mixture of Agents (MoA)', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Important baseline (B6)' },
@@ -68,7 +71,7 @@ const roadmapSections: RoadmapSection[] = [
     ],
   },
   {
-    id: 'rag', icon: '🔍', title: 'Retrieval-Augmented Generation (RAG)', accent: 'rose',
+    id: 'rag', icon: Search, title: 'Retrieval-Augmented Generation (RAG)', accent: 'rose',
     topics: [
       { num: 1, topic: 'Dense Retrieval (DPR, Contriever)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Atomic claim retrieval backbone' },
       { num: 2, topic: 'Cross-Encoder Reranking', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Evidence scoring per claim (Phase 2)' },
@@ -79,7 +82,7 @@ const roadmapSections: RoadmapSection[] = [
     ],
   },
   {
-    id: 'eval', icon: '📐', title: 'Evaluation & Statistics', accent: 'none',
+    id: 'eval', icon: Ruler, title: 'Evaluation & Statistics', accent: 'none',
     topics: [
       { num: 1, topic: 'Statistical Significance Testing', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Paired bootstrap, McNemar tests for all main results' },
       { num: 2, topic: 'Effect Size Reporting', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: "Cohen's d, Cliff's delta for sycophancy reduction claims" },
@@ -143,7 +146,7 @@ export function RoadmapPage() {
 
         {/* ── SECTION A: Execution Plan (Blueprint §12–13) ── */}
         <Section accent="blue" className="animate-fade-up">
-          <SectionTitle icon="📅">A. Execution Plan (Blueprint §12)</SectionTitle>
+          <SectionTitle icon={Calendar}>A. Execution Plan (Blueprint §12)</SectionTitle>
           <p className="text-sm mb-4">
             Five phases over 10 months (Jul 2026 – Apr 2027) with explicit Gate checkpoints. Per blueprint §12.
           </p>
@@ -153,7 +156,7 @@ export function RoadmapPage() {
 
         {/* ── SECTION B: Implementation Order (Blueprint §13) ── */}
         <Section accent="teal" className="animate-fade-up animate-delay-1">
-          <SectionTitle icon="📋">B. Implementation Order (Blueprint §13)</SectionTitle>
+          <SectionTitle icon={ClipboardList}>B. Implementation Order (Blueprint §13)</SectionTitle>
           <p className="text-sm mb-4">
             Exact build sequence with dependency reasoning. Each step depends on the previous.
           </p>
@@ -194,7 +197,7 @@ export function RoadmapPage() {
 
         {/* ── SECTION C: Learning Level Guide ── */}
         <Section className="animate-fade-up animate-delay-2">
-          <SectionTitle icon="📘">C. Learning Level Guide</SectionTitle>
+          <SectionTitle icon={BookOpen}>C. Learning Level Guide</SectionTitle>
           <div className="overflow-x-auto rounded-lg shadow-sm">
             <table className="w-full border-collapse text-sm">
               <thead>

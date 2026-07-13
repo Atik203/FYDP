@@ -3,6 +3,7 @@ import { Section, SectionTitle } from '@/components/shared/Section';
 import { Callout } from '@/components/shared/Callout';
 import { GanttTable } from '@/components/shared/GanttTable';
 import { ganttPhases } from '@/data/overview';
+import { FileText } from 'lucide-react';
 
 export function ProposalPage() {
   return (
@@ -31,7 +32,7 @@ export function ProposalPage() {
         </div>
 
         <Section>
-          <SectionTitle icon="📄">Formal Supervisor Proposal</SectionTitle>
+          <SectionTitle icon={FileText}>Formal Supervisor Proposal</SectionTitle>
           <Callout variant="info" title="ℹ Document Purpose">
             This is the formal supervisor submission document for the FYDP Research Proposal on
             Trust-Calibrated Multi-Agent Scientific Deliberation. It is designed to be print-ready (A4 format)

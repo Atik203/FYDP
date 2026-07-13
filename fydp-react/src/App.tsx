@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteNav } from "@/components/layout/SiteNav";
+import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { IdeaDetailPage } from "@/pages/IdeaDetailPage";
 import { OverviewPage } from "@/pages/OverviewPage";
@@ -22,6 +23,7 @@ function App() {
             </Routes>
           </div>
           <SiteFooter />
+          <ScrollToTop />
         </div>
       </BrowserRouter>
     </ThemeProvider>

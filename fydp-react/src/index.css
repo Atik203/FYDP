@@ -122,21 +122,155 @@ html.dark a { color: #818cf8; }
 .animate-delay-4 { animation-delay: 0.4s; }
 .animate-delay-5 { animation-delay: 0.5s; }
 
+/* ── Micro-interactions ─────────────────────── */
+::selection {
+  background: rgba(99, 102, 241, 0.25);
+  color: inherit;
+}
+
+.dark ::selection {
+  background: rgba(129, 140, 248, 0.3);
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.dark .card-hover:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+/* Glass card for sections */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.dark .glass-card {
+  background: rgba(18, 22, 43, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.glass-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+.dark .glass-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Shimmer on hover for interactive elements */
+.shimmer-hover {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+.shimmer-hover:hover::after {
+  transform: translateX(100%);
+}
+
+/* Subtle border glow on focusable elements */
+.glow-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
 /* ── Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.25);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(129, 140, 248, 0.2);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(129, 140, 248, 0.35);
+}
+
 nav::-webkit-scrollbar,
 pre::-webkit-scrollbar {
   display: none;
 }
 
 @media print {
-  nav, footer, .print\:hidden { display: none !important; }
-  body { background: #fff !important; font-size: 11pt; color: #000; }
-  header { background: #fff !important; color: #000 !important; padding: 1.5rem 1rem !important; }
-  header h1, header p, header div { color: #000 !important; }
+  /* Hide chrome */
+  nav, footer, .print\:hidden, #theme-toggle { display: none !important; }
+  body {
+    background: #fff !important;
+    font-family: "Georgia", "Times New Roman", serif !important;
+    font-size: 10.5pt !important;
+    line-height: 1.45 !important;
+    color: #1a1a1a !important;
+  }
+  /* Reset header to academic style */
+  header {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    padding: 0 0 0.5rem 0 !important;
+    text-align: center !important;
+  }
+  header h1, header h2, header h3, header p {
+    color: #1a1a1a !important;
+    font-family: "Georgia", "Times New Roman", serif !important;
+  }
+  header h1 { font-size: 14pt !important; margin-bottom: 0 !important; }
+  header .opacity-85 { font-size: 9.5pt !important; color: #444 !important; }
   header div[style*="radial-gradient"],
-  header div[style*="linear-gradient(90deg"],
-  header div.bg-\[rgba\(255\,255\,255\,0\.12\)\],
-  header div.inline-block { display: none !important; }
-  section { break-inside: avoid; box-shadow: none !important; border: 1px solid #ddd !important; }
+  header div[style*="linear-gradient"],
+  header .bg-\[rgba\(255\,255\,255\,0\.12\)\],
+  header .inline-block:first-child,
+  header .bg-\[rgba\(255\,255\,255\,0\.1\)\],
+  header div[class*="rounded-full"],
+  header .flex.justify-center > div { display: none !important; }
+  /* Main content academic styling */
+  main { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+  section {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: none !important;
+    background: #fff !important;
+    padding: 0 !important;
+    margin-bottom: 1rem !important;
+  }
+  section h2 {
+    font-size: 11pt !important;
+    color: #1f3a5f !important;
+    border-bottom: 1.4px solid #1f3a5f !important;
+    padding-bottom: 2pt !important;
+    margin: 10pt 0 4pt !important;
+  }
   .shadow-sm, .shadow-md { box-shadow: none !important; }
+  p, li, td, th { font-size: 10pt !important; color: #1a1a1a !important; }
+  .text-\[#64748b\], .text-\[#94a3b8\] { color: #444 !important; }
+  a { color: #1f3a5f !important; text-decoration: underline !important; }
+  table { border-collapse: collapse !important; width: 100% !important; }
+  th, td { border: 1px solid #ccc !important; padding: 4pt 6pt !important; font-size: 9pt !important; }
+  th { background: #f5f5f5 !important; }
+  .bg-\[#f0f2f7\], .bg-\[#f1f5f9\], .bg-\[#f8fafc\] { background: #f9f9f9 !important; }
+  pre { background: #f9f9f9 !important; border: 1px solid #ddd !important; font-size: 8.5pt !important; }
+  code { font-size: 8.5pt !important; }
+  .rounded-\[10px\], .rounded-lg, .rounded-md { border-radius: 0 !important; }
+  .gap-3, .gap-4, .gap-5, .gap-6, .space-y-1, .space-y-2, .space-y-3 { margin: 0 !important; }
 }

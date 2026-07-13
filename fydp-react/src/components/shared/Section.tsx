@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type AccentVariant = 'blue' | 'teal' | 'amber' | 'rose' | 'none';
@@ -19,8 +20,7 @@ interface SectionProps {
 export function Section({ accent = 'none', className, children }: SectionProps) {
   return (
     <section className={cn(
-      'bg-white dark:bg-[#1a1d35] p-8 rounded-[10px] shadow-sm mb-7 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)]',
-      'hover:shadow-md hover:border-[#cbd5e1] dark:hover:border-[rgba(255,255,255,0.18)] transition-all duration-200',
+      'glass-card p-8 rounded-[10px] mb-7',
       accentBorder[accent],
       className
     )}>
@@ -30,14 +30,23 @@ export function Section({ accent = 'none', className, children }: SectionProps) 
 }
 
 interface SectionTitleProps {
-  icon?: string;
+  icon?: LucideIcon;
+  iconColor?: string;
+  className?: string;
   children: React.ReactNode;
 }
 
-export function SectionTitle({ icon, children }: SectionTitleProps) {
+export function SectionTitle({ icon: Icon, className, children }: SectionTitleProps) {
   return (
-    <h2 className="font-serif text-[1.35rem] font-bold text-[#12172b] dark:text-[#c7d2fe] mb-4 pb-2 border-b-2 border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)] tracking-[-0.01em] flex items-center gap-2">
-      {icon && <span className="text-[1.1rem] flex-shrink-0">{icon}</span>}
+    <h2 className={cn(
+      'font-serif text-[1.35rem] font-bold text-[#12172b] dark:text-[#c7d2fe] mb-4 pb-2 border-b-2 border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)] tracking-[-0.01em] flex items-center gap-2.5',
+      className
+    )}>
+      {Icon && (
+        <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#3b5bdb]/10 dark:bg-[#3b5bdb]/20 text-[#3b5bdb] dark:text-[#93c5fd] flex-shrink-0">
+          <Icon size={18} />
+        </span>
+      )}
       {children}
     </h2>
   );

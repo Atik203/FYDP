@@ -1,4 +1,5 @@
 import { Section, SectionTitle, ColBox, TwoCol } from '@/components/shared/Section';
+import { Lightbulb, Settings, Microscope, Target, Building2, Wrench, ArrowLeftRight, Hammer, BarChart3, Ruler, Shield, TriangleAlert, Calendar, ClipboardList, GraduationCap, Users, Trophy, Telescope, Search } from 'lucide-react';
 import { Callout } from '@/components/shared/Callout';
 import { InfoGrid } from '@/components/shared/InfoGrid';
 import { Badge } from '@/components/shared/Badge';
@@ -13,7 +14,7 @@ export function Idea1Content() {
 
       {/* ───────────── 1. Core Idea ───────────── */}
       <Section accent="blue" className="animate-fade-up">
-        <SectionTitle icon="💡">1. Core Idea</SectionTitle>
+        <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
         <p className="mb-3 text-sm sm:text-base">
           We propose a <strong>trust-calibrated multi-agent scientific deliberation</strong> framework to mitigate{' '}
           <strong>sycophantic consensus collapse</strong> in LLM reasoning. Agents whose claims are verified by
@@ -37,7 +38,7 @@ export function Idea1Content() {
 
       {/* ───────────── 0. Research Design Decisions & Assumptions ───────────── */}
       <Section accent="amber" className="animate-fade-up animate-delay-1">
-        <SectionTitle icon="⚙️">0. Research Design Decisions &amp; Assumptions</SectionTitle>
+        <SectionTitle icon={Settings}>0. Research Design Decisions &amp; Assumptions</SectionTitle>
 
         <TwoCol>
           <ColBox>
@@ -77,16 +78,36 @@ export function Idea1Content() {
         </p>
 
         <h4 className="text-sm font-bold mb-3">Core Research Assumptions</h4>
-        <div className="space-y-2 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
           {[
-            ['Assumption 1', 'Claims during debate can be decomposed into checkable atomic propositions (moderate risk — some claims are compound or context-dependent).'],
-            ['Assumption 2', 'Retrieval against PubMed/ArXiv/Semantic Scholar can reliably support/contradict claims within the debate time budget (moderate risk — retrieval noise, sparse coverage).'],
-            ['Assumption 3', 'Trust weight changes actually alter final output, not just sit in context ignored — highest risk, the whole mechanism lives or dies on this. Must be piloted in Month 1.'],
-            ['Assumption 4', 'Heterogeneous model families reduce, but don\'t eliminate, correlated hallucination (accepted as a named limitation).'],
-          ].map(([label, text]) => (
-            <div key={label} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3">
-              <span className="inline-flex items-center justify-center w-9 h-7 rounded bg-[#f08c00] text-white font-bold text-xs flex-shrink-0">{label}</span>
-              <p className="text-sm mb-0">{text}</p>
+            { num: 1, label: 'Claim Decomposition', text: 'Claims during debate can be decomposed into checkable atomic propositions.', risk: 'moderate', detail: 'Some claims are compound or context-dependent.' },
+            { num: 2, label: 'Retrieval Reliability', text: 'PubMed/ArXiv/Semantic Scholar retrieval can support/contradict claims within the debate time budget.', risk: 'moderate', detail: 'Retrieval noise, sparse coverage on niche topics.' },
+            { num: 3, label: 'Behavioral Effectiveness', text: 'Trust weight changes actually alter final output, not just sit in context ignored.', risk: 'critical', detail: 'The whole mechanism lives or dies on this — must be piloted Month 1.' },
+            { num: 4, label: 'Heterogeneity Benefit', text: 'Different model families reduce, but don\'t eliminate, correlated hallucination.', risk: 'low', detail: 'Accepted as a named limitation.' },
+          ].map((a) => (
+            <div key={a.num} className="group relative overflow-hidden bg-white dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-4 hover:shadow-md hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-all duration-200">
+              <div className={`absolute inset-0 opacity-[0.06] dark:opacity-[0.10] ${
+                a.risk === 'critical' ? 'bg-[#e03131]' : a.risk === 'moderate' ? 'bg-[#f08c00]' : 'bg-[#0ca678]'
+              }`} />
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-white font-bold text-xs ${
+                    a.risk === 'critical' ? 'bg-[#e03131]' : a.risk === 'moderate' ? 'bg-[#f08c00]' : 'bg-[#0ca678]'
+                  }`}>
+                    {a.num}
+                  </span>
+                  <span className={`text-[0.68rem] font-bold uppercase tracking-[0.08em] px-1.5 py-0.5 rounded ${
+                    a.risk === 'critical' ? 'bg-[#ffe3e3] dark:bg-[rgba(224,49,49,0.2)] text-[#e03131] dark:text-[#fca5a5]' :
+                    a.risk === 'moderate' ? 'bg-[#fff3bf] dark:bg-[rgba(240,140,0,0.2)] text-[#f08c00] dark:text-[#fcd34d]' :
+                    'bg-[#d3f9d8] dark:bg-[rgba(12,166,120,0.2)] text-[#0ca678] dark:text-[#6ee7b7]'
+                  }`}>
+                    {a.risk === 'critical' ? '🔴 Critical' : a.risk === 'moderate' ? '🟡 Moderate' : '🟢 Low'} Risk
+                  </span>
+                </div>
+                <div className="font-semibold text-sm mb-1">{a.label}</div>
+                <p className="text-sm mb-1">{a.text}</p>
+                <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">{a.detail}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -114,7 +135,7 @@ export function Idea1Content() {
 
       {/* ───────────── 2. Research Motivation ───────────── */}
       <Section className="animate-fade-up animate-delay-2">
-        <SectionTitle icon="🔬">2. Research Motivation</SectionTitle>
+        <SectionTitle icon={Microscope}>2. Research Motivation</SectionTitle>
         <TwoCol>
           <ColBox>
             <h4 className="text-sm font-bold mb-2">Why this problem matters</h4>
@@ -164,7 +185,7 @@ export function Idea1Content() {
 
       {/* ───────────── 3. Problem Statement ───────────── */}
       <Section accent="teal" className="animate-fade-up animate-delay-2">
-        <SectionTitle icon="🎯">3. Problem Statement</SectionTitle>
+        <SectionTitle icon={Target}>3. Problem Statement</SectionTitle>
         <p className="text-sm mb-4">
           <strong>Research hypothesis:</strong> If agent influence in aggregation is dynamically re-weighted during
           debate based on external evidence verification, sycophantic collapse will measurably decrease compared to
@@ -193,7 +214,7 @@ export function Idea1Content() {
 
       {/* ───────────── 4. Complete System Architecture ───────────── */}
       <Section className="animate-fade-up animate-delay-3">
-        <SectionTitle icon="🏗️">4. Complete System Architecture</SectionTitle>
+        <SectionTitle icon={Building2}>4. Complete System Architecture</SectionTitle>
         <div className="bg-[#f0f7ff] dark:bg-[rgba(59,91,219,0.08)] border border-[#bfdbfe] dark:border-[rgba(59,91,219,0.3)] rounded-lg p-4 sm:p-5 mb-5 overflow-x-auto">
           <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
 {`Input (scientific question)
@@ -256,7 +277,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 5. Detailed Multi-Agent Pipeline ───────────── */}
       <Section accent="blue" className="animate-fade-up animate-delay-4">
-        <SectionTitle icon="🔧">5. Detailed Multi-Agent Pipeline</SectionTitle>
+        <SectionTitle icon={Wrench}>5. Detailed Multi-Agent Pipeline</SectionTitle>
 
         <h4 className="text-sm font-bold mb-3">Agent 0 — Confidence Estimator (Gatekeeper)</h4>
         <div className="overflow-x-auto rounded-lg shadow-sm mb-5">
@@ -321,7 +342,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 6. Complete Data Flow ───────────── */}
       <Section className="animate-fade-up animate-delay-5">
-        <SectionTitle icon="↔️">6. Complete Data Flow</SectionTitle>
+        <SectionTitle icon={ArrowLeftRight}>6. Complete Data Flow</SectionTitle>
         <div className="bg-[#f8fafc] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-lg p-4 sm:p-5 overflow-x-auto">
           <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
 {`1. USER/EVAL-HARNESS SUBMITS QUESTION
@@ -362,7 +383,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 7. Models & Tools ───────────── */}
       <Section accent="teal" className="animate-fade-up">
-        <SectionTitle icon="🛠️">7. Models &amp; Tools</SectionTitle>
+        <SectionTitle icon={Hammer}>7. Models &amp; Tools</SectionTitle>
         <p className="text-sm mb-4">
           Full model stack per blueprint §7. All open-weight, inference-only, single A100.
         </p>
@@ -400,7 +421,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 8. Dataset Plan ───────────── */}
       <Section className="animate-fade-up animate-delay-1">
-        <SectionTitle icon="📊">8. Dataset Plan</SectionTitle>
+        <SectionTitle icon={BarChart3}>8. Dataset Plan</SectionTitle>
         <p className="text-sm mb-4">Five datasets across adversarial and stable categories. BrokenMath/BrokenArXiv are primary for sycophancy measurement.</p>
         <div className="overflow-x-auto rounded-lg shadow-sm">
           <table className="w-full border-collapse text-xs sm:text-sm">
@@ -431,7 +452,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 9. Evaluation Strategy ───────────── */}
       <Section accent="blue" className="animate-fade-up animate-delay-2">
-        <SectionTitle icon="📐">9. Evaluation Strategy</SectionTitle>
+        <SectionTitle icon={Ruler}>9. Evaluation Strategy</SectionTitle>
         <h4 className="text-sm font-bold mb-3">Metrics &amp; Primary Hypotheses</h4>
         <div className="overflow-x-auto rounded-lg shadow-sm mb-5">
           <table className="w-full border-collapse text-xs sm:text-sm">
@@ -514,7 +535,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 10. Edge Cases & Failure Handling ───────────── */}
       <Section className="animate-fade-up animate-delay-3">
-        <SectionTitle icon="🛡️">10. Edge Cases &amp; Failure Handling</SectionTitle>
+        <SectionTitle icon={Shield}>10. Edge Cases &amp; Failure Handling</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §10. Each failure mode has documented detection, prevention, mitigation, and recovery.
         </p>
@@ -543,7 +564,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 11. Risk Assessment ───────────── */}
       <Section accent="amber" className="animate-fade-up animate-delay-4">
-        <SectionTitle icon="⚠️">11. Risk Assessment</SectionTitle>
+        <SectionTitle icon={TriangleAlert}>11. Risk Assessment</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §11. The highest-likelihood risk (timeline overload in Phase 2) has a pre-planned mitigation:
           use iMAD's published numbers for easy-question conditions.
@@ -559,7 +580,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 12. Month-by-Month Roadmap ───────────── */}
       <Section className="animate-fade-up animate-delay-5">
-        <SectionTitle icon="📅">12. Month-by-Month Roadmap (Jul 2026 – Apr 2027)</SectionTitle>
+        <SectionTitle icon={Calendar}>12. Month-by-Month Roadmap (Jul 2026 – Apr 2027)</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §12. Five phases over 10 months. Gates 0–3 mark explicit go/no-go decisions.
         </p>
@@ -569,7 +590,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── 13. Implementation Order ───────────── */}
       <Section accent="teal" className="animate-fade-up">
-        <SectionTitle icon="📋">13. Implementation Order</SectionTitle>
+        <SectionTitle icon={ClipboardList}>13. Implementation Order</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §13 — exact build sequence with dependency reasoning. Never build step N before step N-1.
         </p>
@@ -611,25 +632,249 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
       {/* ───────────── Q1 Justification ───────────── */}
       <Section className="animate-fade-up animate-delay-1">
-        <SectionTitle icon="🎯">Q1 Publication Justification</SectionTitle>
+        <SectionTitle icon={Target}>Q1 Publication Justification</SectionTitle>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-[#d3f9d8] dark:bg-[rgba(12,166,120,0.15)] border border-[#0ca678] dark:border-[rgba(12,166,120,0.3)] rounded-md p-4">
-            <div className="font-bold text-xs uppercase tracking-wider text-[#0ca678] mb-1">Novel Mechanism</div>
+            <div className="font-bold text-xs uppercase tracking-wider text-[#0ca678] dark:text-[#6ee7b7] mb-1">Novel Mechanism</div>
             <p className="text-sm">No prior work provides an in-session, evidence-grounded trust calibration mechanism for multi-agent debate. CCR/MPR/ECR metrics are new.</p>
           </div>
           <div className="bg-[#dbe4ff] dark:bg-[rgba(28,126,214,0.15)] border border-[#1c7ed6] dark:border-[rgba(28,126,214,0.3)] rounded-md p-4">
-            <div className="font-bold text-xs uppercase tracking-wider text-[#1c7ed6] mb-1">Rigorous Evaluation</div>
+            <div className="font-bold text-xs uppercase tracking-wider text-[#1c7ed6] dark:text-[#93c5fd] mb-1">Rigorous Evaluation</div>
             <p className="text-sm">9-baseline suite, 5 benchmarks, 3 seeds, statistical testing with 95% CIs and effect sizes (Cohen's d).</p>
           </div>
           <div className="bg-[#d3f9d8] dark:bg-[rgba(12,166,120,0.15)] border border-[#0ca678] dark:border-[rgba(12,166,120,0.3)] rounded-md p-4">
-            <div className="font-bold text-xs uppercase tracking-wider text-[#0ca678] mb-1">Open Reproducibility</div>
+            <div className="font-bold text-xs uppercase tracking-wider text-[#0ca678] dark:text-[#6ee7b7] mb-1">Open Reproducibility</div>
             <p className="text-sm">Full protocol released as a benchmark for future sycophancy mitigation research. Evaluation harness independently reusable.</p>
           </div>
           <div className="bg-[#dbe4ff] dark:bg-[rgba(28,126,214,0.15)] border border-[#1c7ed6] dark:border-[rgba(28,126,214,0.3)] rounded-md p-4">
-            <div className="font-bold text-xs uppercase tracking-wider text-[#1c7ed6] mb-1">Timely Topic</div>
+            <div className="font-bold text-xs uppercase tracking-wider text-[#1c7ed6] dark:text-[#93c5fd] mb-1">Timely Topic</div>
             <p className="text-sm">Inter-agent sycophancy is actively studied in 2025–2026. This fills the missing mitigation piece at exactly the right time.</p>
           </div>
         </div>
+      </Section>
+
+      {/* ───────────── 14. Supervisor Explanation ───────────── */}
+      <Section accent="blue" className="animate-fade-up">
+        <SectionTitle icon={GraduationCap}>14. Supervisor Explanation (5-Minute Pitch)</SectionTitle>
+        <TwoCol>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">The Problem (1 Sentence)</h4>
+            <p className="text-sm leading-relaxed mb-0">
+              When AI systems debate each other to reach better answers, a confident-but-wrong majority can talk a
+              correct minority into changing its answer — even with no new evidence — defeating the whole purpose
+              of having them debate.
+            </p>
+          </ColBox>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">The Solution (1 Sentence)</h4>
+            <p className="text-sm leading-relaxed mb-0">
+              We make each AI's vote worth more or less depending on whether its claims actually check out against
+              real scientific papers — not based on how many other AIs agree with it.
+            </p>
+          </ColBox>
+        </TwoCol>
+        <h4 className="text-sm font-bold mt-4 mb-3">Internal Workflow (Plain Language)</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+          {[
+            { step: '1', title: 'Independent Answers', desc: 'Three different AI models each independently answer the question.' },
+            { step: '2', title: 'Fact-Check Claims', desc: 'Each one\'s claims get checked against real papers — like a fact-checker.' },
+            { step: '3', title: 'Adjust Credibility', desc: 'Whoever\'s claims hold up gains credibility; whoever gets contradicted loses it.' },
+            { step: '4', title: 'Revise & Debate', desc: 'They see each other\'s answers and revise — aware of their own credibility standing.' },
+            { step: '5', title: 'Repeat (K=3)', desc: 'This repeats for a few rounds, building an evidence trail.' },
+            { step: '6', title: 'Weighted Vote', desc: 'Final answer decided by credibility-weighted vote, not simple majority.' },
+          ].map((s) => (
+            <div key={s.step} className="bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3 text-center">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#3b5bdb] text-white font-bold text-sm mb-2 mx-auto shadow-[0_2px_8px_rgba(59,91,219,.35)]">
+                {s.step}
+              </span>
+              <div className="font-semibold text-xs mb-1">{s.title}</div>
+              <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">{s.desc}</p>
+            </div>
+          ))}
+        </div>
+        <Callout variant="info" title="📖 Worked Example">
+          Given one 2023 clinical trial paper and asked "Does Drug X lower blood pressure in adults over 60?" — three
+          reviewers give different answers. The system checks each claim against the actual paper. The paper shows a
+          modest effect in patients with a specific condition — matching Reviewer C. Their credibility goes up; A and
+          B's go down. <strong>Output:</strong> "Yes, but only in [that subgroup]" with citation.
+        </Callout>
+      </Section>
+
+      {/* ───────────── 15. Team Explanation ───────────── */}
+      <Section className="animate-fade-up animate-delay-1">
+        <SectionTitle icon={Users}>15. Team Explanation (Beginner-Friendly)</SectionTitle>
+        <p className="text-sm mb-4">
+          <strong>Simple overview:</strong> Think of three friends trying to answer a hard trivia question. Normally,
+          if two friends agree and one disagrees, you'd go with the two. Our system instead weights each friend's
+          opinion by how well they can back it up with real sources — so the one friend with solid evidence can
+          outvote the other two if they're just guessing confidently.
+        </p>
+        <TwoCol>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">🎯 How It Works</h4>
+            <ol className="text-sm space-y-1 mb-0 pl-4">
+              <li>Ask three different AI models the question</li>
+              <li>Each gives an answer with reasoning</li>
+              <li>We break their reasoning into individual claims</li>
+              <li>We look up real research papers to check each claim</li>
+              <li>Claims that check out earn trust points; contradicted claims lose them</li>
+              <li>The AIs see each other's answers and may revise</li>
+              <li>Repeat steps 3–6 a few times</li>
+              <li>Final answer is based on trust points, not just agreement</li>
+            </ol>
+          </ColBox>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">📖 Glossary</h4>
+            <div className="space-y-2 text-sm">
+              {[
+                ['LLM', 'The AI model doing the reasoning (e.g., Qwen, Mistral)'],
+                ['Multi-Agent Debate', 'Multiple AI models discussing a question together'],
+                ['Sycophancy', 'An AI changing its answer to agree with others without good reason'],
+                ['RAG', 'Looking up real documents to check an answer instead of relying on AI memory'],
+                ['Trust Score', 'Our system\'s running credibility scorecard for each AI, updated each round'],
+                ['Baseline', 'An existing method we compare against to prove ours is better'],
+                ['Ablation', 'Removing one piece of the system to measure how much it matters'],
+              ].map(([term, def]) => (
+                <div key={term} className="flex gap-2">
+                  <span className="font-semibold text-[#3b5bdb] dark:text-[#93c5fd] whitespace-nowrap">{term}:</span>
+                  <span className="text-[#64748b] dark:text-[#94a3b8]">{def}</span>
+                </div>
+              ))}
+            </div>
+          </ColBox>
+        </TwoCol>
+        <Callout variant="success" title="🧠 Analogy: Courtroom">
+          Majority-vote debate is like a jury that goes with whichever two jurors talk the loudest. Our system is
+          more like a judge who actually checks the evidence each juror cites — and rules based on whose evidence
+          holds up, not who's more persuasive or more numerous.
+        </Callout>
+      </Section>
+
+      {/* ───────────── 16. Expected Research Outcome ───────────── */}
+      <Section accent="teal" className="animate-fade-up animate-delay-2">
+        <SectionTitle icon={Trophy}>16. Expected Research Outcome</SectionTitle>
+        <TwoCol>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">Expected Improvements</h4>
+            <ul className="text-sm space-y-1 mb-0 pl-4">
+              <li><strong>20–30% CCR reduction</strong> vs. standard MAD on adversarial benchmarks</li>
+              <li><strong>ECR &gt; 0.80</strong> on HLE — trust scores track actual correctness</li>
+              <li><strong>No accuracy regression</strong> on GPQA/MMLU-Pro — anti-sycophancy gains don't cost baseline correctness</li>
+            </ul>
+          </ColBox>
+          <ColBox>
+            <h4 className="text-sm font-bold mb-2">Publication Potential</h4>
+            <p className="text-sm mb-0">
+              Realistic: <strong>EMNLP Findings / TMLR</strong>. Stretch: <strong>ACL/NeurIPS Main</strong> with clear
+              statistically significant gains over MoA (ICLR 2025 Spotlight) and iMAD (AAAI 2026 Oral).
+              Safe floor: workshop submission.
+            </p>
+          </ColBox>
+        </TwoCol>
+        <h4 className="text-sm font-bold mt-5 mb-3">Success Criteria (Concrete &amp; Falsifiable)</h4>
+        <div className="space-y-2">
+          {[
+            { icon: '📊', label: 'Statistically significant CCR reduction over iMAD and MoA on adversarial benchmarks, with 95% CIs not overlapping zero.' },
+            { icon: '📐', label: 'ECR > 0.80 achieved on at least the primary evaluation dataset.' },
+            { icon: '🧪', label: 'Month-1 pilot confirms trust weight causally affects aggregation output (necessary condition — reframes negative result if it fails).' },
+            { icon: '📝', label: 'Completed FYDP thesis + submitted paper (minimum workshop, target Findings-tier), fully reproducible codebase released.' },
+          ].map((c) => (
+            <div key={c.label} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3">
+              <span className="text-lg flex-shrink-0">{c.icon}</span>
+              <p className="text-sm mb-0">{c.label}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ───────────── 17. Future Extensions ───────────── */}
+      <Section className="animate-fade-up animate-delay-3">
+        <SectionTitle icon={Telescope}>17. Future Extensions</SectionTitle>
+        <TwoCol>
+          <ColBox>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[#3b5bdb] dark:text-[#93c5fd]">🎓</span>
+              <h4 className="text-sm font-bold mb-0">MSc/PhD Research</h4>
+            </div>
+            <p className="text-sm leading-relaxed mb-0">
+              The trust mechanism's convergence properties for N &gt; 3 agents are flagged as future work. A PhD-scope
+              extension could pursue formal convergence theorems rather than our bounded design-property propositions.
+            </p>
+          </ColBox>
+          <ColBox>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[#3b5bdb] dark:text-[#93c5fd]">🌐</span>
+              <h4 className="text-sm font-bold mb-0">Open-Source Framework</h4>
+            </div>
+            <p className="text-sm leading-relaxed mb-0">
+              The CCR/MPR/ECR evaluation harness is independently valuable as a released tool — other researchers
+              testing their own anti-sycophancy methods could adopt it as a standard benchmark.
+            </p>
+          </ColBox>
+          <ColBox>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[#3b5bdb] dark:text-[#93c5fd]">⚖️</span>
+              <h4 className="text-sm font-bold mb-0">Cross-Domain Generalization</h4>
+            </div>
+            <p className="text-sm leading-relaxed mb-0">
+              Source-partitioned retrieval + trust-calibration generalizes beyond scientific QA to legal reasoning
+              against case law, medical reasoning against clinical literature, and other domains with retrievable
+              ground-truth-adjacent evidence.
+            </p>
+          </ColBox>
+          <ColBox>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[#3b5bdb] dark:text-[#93c5fd]">🧠</span>
+              <h4 className="text-sm font-bold mb-0">Cross-Session Trust Memory</h4>
+            </div>
+            <p className="text-sm leading-relaxed mb-0">
+              Long-term trust memory across sessions, multimodal evidence grounding, and domain-specific calibration
+              — named in the original proposal's future-directions FAQ as canonical extensions.
+            </p>
+          </ColBox>
+        </TwoCol>
+      </Section>
+
+      {/* ───────────── 18. Final Critical Review ───────────── */}
+      <Section accent="rose" className="animate-fade-up animate-delay-4">
+        <SectionTitle icon={Search}>18. Final Critical Review (Reviewer #2 Mode)</SectionTitle>
+        <Callout variant="gap" title="⚠ Challenging Every Assumption">
+          <p className="mb-2">
+            <strong>"Your trust formula has two free hyperparameters (α, β) — how do I know you didn't just tune them until the result looked good?"</strong>
+            {' '}Mitigated by hyperparameter sensitivity analysis (grid search, CCR varies &lt;4% across configs). This section must be prominent in the paper, not buried in an appendix.
+          </p>
+          <p className="mb-2">
+            <strong>"Propositions 2–3 aren't real theorems — why call them Propositions at all?"</strong>
+            {' '}Already correctly reframed as "design properties, not global convergence theorems." Expect at least one reviewer to push on this framing.
+          </p>
+          <p className="mb-0">
+            <strong>"Is 20–30% CCR reduction actually a big number, or is it modest window-dressing?"</strong>
+            {' '}Needs contextualization against the baseline collapse rate (~45%) so readers understand the relative magnitude.
+          </p>
+        </Callout>
+        <h4 className="text-sm font-bold mt-4 mb-3">🧪 Missing Experiments a Sharp Reviewer Would Demand</h4>
+        <div className="space-y-2 mb-4">
+          {[
+            { icon: '⏱️', q: 'Latency/Cost-Benefit Analysis', a: 'System runs ~9 forward passes vs. 1 for single-agent. Add a compute-cost-vs-CCR-reduction table as a supplementary result.' },
+            { icon: '🔄', q: 'Paraphrase Robustness', a: 'Currently named as a known protocol limitation (L2) but not tested. A small (20–30 question) check would strengthen the paper.' },
+            { icon: '🔢', q: 'K-Sensitivity (Debate Rounds)', a: 'N-scaling is planned, but K is fixed at 3 throughout. Reviewer may ask if results are an artifact of this specific round count.' },
+          ].map((e) => (
+            <div key={e.q} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3">
+              <span className="text-base flex-shrink-0">{e.icon}</span>
+              <div>
+                <span className="font-semibold text-sm">{e.q}:</span>
+                <span className="text-sm text-[#64748b] dark:text-[#94a3b8]"> {e.a}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Callout variant="warning" title="🗣️ Reviewer Criticisms (Ranked by Severity)">
+          <ol className="text-sm space-y-1 mb-0 pl-4">
+            <li><strong>"How is this different from iMAD's confidence-weighted aggregation?"</strong> — External evidence vs. same-context confidence signal: stated in the first paragraph of the results section.</li>
+            <li><strong>"Your injection protocol is artificially explicit — real sycophancy is subtler."</strong> — Honest upper-bound scenario, stated early and confidently.</li>
+            <li><strong>"Two of four core citations aren't peer-reviewed."</strong> — Addressed via proactive disclosure; same framing in related-work section.</li>
+          </ol>
+        </Callout>
       </Section>
 
     </>

@@ -1,20 +1,27 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Bot, Route, FileText, Menu, X, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/context/ThemeContext';
+
+const navIconMap: Record<string, React.ReactNode> = {
+  overview: <LayoutDashboard size={18} />,
+  idea: <Bot size={18} />,
+  roadmap: <Route size={18} />,
+  proposal: <FileText size={18} />,
+};
 
 interface NavItem {
   to: string;
   label: string;
-  icon: string;
+  key: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/', label: 'Overview', icon: '⊞' },
-  { to: '/idea/1', label: 'Idea 1', icon: '🤖' },
-  { to: '/roadmap', label: 'Roadmap', icon: '🗺️' },
-  { to: '/proposal', label: 'Proposal', icon: '📄' },
+  { to: '/', label: 'Overview', key: 'overview' },
+  { to: '/idea/1', label: 'Idea 1', key: 'idea' },
+  { to: '/roadmap', label: 'Roadmap', key: 'roadmap' },
+  { to: '/proposal', label: 'Proposal', key: 'proposal' },
 ];
 
 export function SiteNav() {
@@ -54,7 +61,7 @@ export function SiteNav() {
         <div className="hidden md:flex items-center gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} end={item.to === '/'} className={linkClass}>
-              <span className="text-base">{item.icon}</span>
+              <span className="flex items-center">{navIconMap[item.key]}</span>
               {item.label}
             </NavLink>
           ))}
@@ -64,7 +71,7 @@ export function SiteNav() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggle}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-[#c7d2fe] hover:bg-[rgba(99,102,241,0.12)] transition-all min-h-[44px] min-w-[44px]"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
             aria-label="Toggle theme"
           >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
@@ -73,7 +80,7 @@ export function SiteNav() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-[#c7d2fe] hover:bg-[rgba(99,102,241,0.12)] transition-all min-h-[44px] min-w-[44px]"
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
             aria-label="Menu"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -108,7 +115,7 @@ export function SiteNav() {
                 )
               }
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="flex items-center">{navIconMap[item.key]}</span>
               {item.label}
             </NavLink>
           ))}

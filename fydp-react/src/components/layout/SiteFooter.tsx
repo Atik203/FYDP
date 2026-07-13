@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Globe, Mail } from 'lucide-react';
 
 const QUICK_LINKS = [
   { to: '/', label: 'Overview' },
@@ -10,8 +9,6 @@ const QUICK_LINKS = [
 
 const CONTACT_LINKS = [
   { icon: null, label: 'GitHub', href: 'https://github.com/atik203', value: '@atik203' },
-  { icon: Globe, label: 'Website', href: 'https://atikurrahaman.live', value: 'atikurrahaman.live' },
-  { icon: Mail, label: 'Email', href: 'mailto:atik203@example.com', value: 'atik203@example.com' },
 ];
 
 export function SiteFooter() {
@@ -54,22 +51,19 @@ export function SiteFooter() {
           <div>
             <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-3">Connect</h3>
             <ul className="space-y-2">
-              {CONTACT_LINKS.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-[rgba(255,255,255,0.55)] hover:text-[#93c5fd] transition-colors no-underline hover:underline min-h-[44px]"
-                    >
-                      {Icon ? <Icon size={16} /> : <span className="w-4 text-center">⌨</span>}
-                      {link.value}
-                    </a>
-                  </li>
-                );
-              })}
+              {CONTACT_LINKS.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-[rgba(255,255,255,0.55)] hover:text-[#93c5fd] transition-colors no-underline hover:underline min-h-[44px]"
+                  >
+                    <span className="w-4 text-center">⌨</span>
+                    {link.value}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

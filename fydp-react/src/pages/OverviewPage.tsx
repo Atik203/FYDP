@@ -7,6 +7,7 @@ import { GanttTable } from '@/components/shared/GanttTable';
 import { Timeline } from '@/components/shared/Timeline';
 import { ganttPhases, milestones, resources, risks } from '@/data/overview';
 import { ideaMetadata } from '@/data/ideas';
+import { ClipboardList, Target, Building2, Calendar, Wrench, TriangleAlert } from 'lucide-react';
 
 const idea = ideaMetadata[0];
 
@@ -28,7 +29,7 @@ export function OverviewPage() {
       <main className="max-w-[1150px] mx-auto my-10 px-4 sm:px-5">
         {/* Executive Summary */}
         <Section accent="blue" className="animate-fade-up">
-          <SectionTitle icon="📋">Executive Summary</SectionTitle>
+          <SectionTitle icon={ClipboardList}>Executive Summary</SectionTitle>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
@@ -63,7 +64,7 @@ export function OverviewPage() {
 
         {/* Problem & Research Gap */}
         <Section className="animate-fade-up animate-delay-1">
-          <SectionTitle icon="🎯">Problem &amp; Research Gap</SectionTitle>
+          <SectionTitle icon={Target}>Problem &amp; Research Gap</SectionTitle>
           <TwoCol>
             <ColBox>
               <h4 className="text-sm font-bold mb-2">The Problem</h4>
@@ -88,7 +89,7 @@ export function OverviewPage() {
 
         {/* Pipeline Overview */}
         <Section accent="teal" className="animate-fade-up animate-delay-2">
-          <SectionTitle icon="🏗️">System Pipeline</SectionTitle>
+          <SectionTitle icon={Building2}>System Pipeline</SectionTitle>
           <div className="bg-[#f0f7ff] dark:bg-[rgba(59,91,219,0.08)] border border-[#bfdbfe] dark:border-[rgba(59,91,219,0.3)] rounded-lg p-4 sm:p-5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto">
             <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap">
 {`Input (scientific question)
@@ -120,7 +121,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory`}</pre>
 
         {/* 12-Month Plan */}
         <Section accent="amber" className="animate-fade-up animate-delay-3">
-          <SectionTitle icon="📅">10-Month Execution Plan (Jul 2026 – Apr 2027)</SectionTitle>
+          <SectionTitle icon={Calendar}>10-Month Execution Plan (Jul 2026 – Apr 2027)</SectionTitle>
           <p className="text-sm mb-4">
             Phases aligned to the research master blueprint. Gates 0–3 mark explicit go/no-go decision points.
           </p>
@@ -130,13 +131,13 @@ Final Output: Answer + Evidence Citations + Trust Trajectory`}</pre>
 
         {/* Resources */}
         <Section className="animate-fade-up animate-delay-4">
-          <SectionTitle icon="🛠️">Models &amp; Tools</SectionTitle>
+          <SectionTitle icon={Wrench}>Models &amp; Tools</SectionTitle>
           <InfoGrid cards={resources} />
         </Section>
 
         {/* Risk Register */}
         <Section className="animate-fade-up animate-delay-5">
-          <SectionTitle icon="⚠️">Risk Register</SectionTitle>
+          <SectionTitle icon={TriangleAlert}>Risk Register</SectionTitle>
           <p className="text-sm mb-4">
             Risk assessment per blueprint §11. Highest-risk item (Challenge C — behavioral effectiveness)
             mitigated via Month 1 pilot before full build.
