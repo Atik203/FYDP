@@ -1,28 +1,8 @@
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Section, SectionTitle, TwoCol, ColBox } from '@/components/shared/Section';
-import { PipelineFlow } from '@/components/shared/PipelineFlow';
-import type { PipeStep } from '@/components/shared/PipelineFlow';
 import { KpiRow } from '@/components/shared/KpiRow';
-import { InfoGrid } from '@/components/shared/InfoGrid';
-import { RiskTable } from '@/components/shared/RiskTable';
-import { GanttTable } from '@/components/shared/GanttTable';
-import { Timeline } from '@/components/shared/Timeline';
-import { ganttPhases, milestones, resources, risks } from '@/data/overview';
 import { ideaMetadata } from '@/data/ideas';
-import { ClipboardList, Target, Building2, Calendar, Wrench, TriangleAlert, HelpCircle, Brain, FileSearch, BookOpen, Scale, RefreshCw, Gavel, Sparkles } from 'lucide-react';
-
-const pipelineSteps: PipeStep[] = [
-  { id: 'input', icon: HelpCircle, title: 'Input Question', desc: 'Scientific question enters the deliberation system', color: 'sky' },
-  { id: 'gate', icon: Brain, title: 'Confidence Gate', desc: 'Lightweight check if full debate is needed vs. direct answer', color: 'amber' },
-  { id: 'agents', icon: Sparkles, title: '3 Heterogeneous Agents', desc: 'Qwen3-32B, Mistral-Small-24B, Phi-4-Reasoning state initial positions', color: 'violet' },
-  { id: 'decomp', icon: FileSearch, title: 'Claim Decomposition', desc: 'Each answer split into atomic, verifiable propositions', color: 'indigo' },
-  { id: 'retrieval', icon: BookOpen, title: 'Source-Partitioned Retrieval', desc: 'Agent A→PubMed, B→ArXiv, C→Semantic Scholar — prevents narrow retrieval', color: 'teal' },
-  { id: 'scoring', icon: Scale, title: 'Evidence Scoring', desc: 'Cross-encoder reranker: supports / contradicts / no evidence per claim', color: 'emerald' },
-  { id: 'trust', icon: RefreshCw, title: 'Trust Update', desc: 'Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ → softmax → clamp[0.1, 0.9] → renormalize', color: 'rose' },
-  { id: 'revise', icon: RefreshCw, title: 'Revision Rounds (K=3)', desc: 'Agents see peer arguments + own trust standing; repeat retrieval → update loop', color: 'violet' },
-  { id: 'adjudicate', icon: Gavel, title: 'Trust-Weighted Adjudication', desc: 'Final answer = argmax over Σ(Tᵢ × positionᵢ) — NOT majority vote', color: 'indigo' },
-  { id: 'output', icon: Sparkles, title: 'Final Output', desc: 'Answer + evidence citations + trust trajectory + per-agent reasoning', color: 'teal' },
-];
+import { ClipboardList, Target, ArrowUpRight, FolderOpen, Cog, CheckCircle } from 'lucide-react';
 
 const idea = ideaMetadata[0];
 
@@ -30,21 +10,20 @@ export function OverviewPage() {
   return (
     <>
       <PageHeader
-        docType="Final Year Design Project · Formal Supervisor Proposal"
+        docType="Final Year Design Project · Trust-Calibrated Multi-Agent Scientific Deliberation"
         title={<>Trust-Calibrated Multi-Agent<br />Scientific Deliberation</>}
         subtitle="For Mitigating Sycophantic Consensus in LLM Reasoning · Agentic AI · ACL / EMNLP / NeurIPS 2027"
         coverItems={[
           { label: 'Prepared By', value: 'Md. Atikur Rahaman' },
           { label: 'GitHub', value: 'atik203', href: 'https://github.com/atik203' },
-          { label: 'Website', value: 'atikurrahaman.live', href: 'https://atikurrahaman.live' },
           { label: 'Timeline', value: 'Jul 2026 – Apr 2027' },
         ]}
       />
 
       <main className="max-w-[1150px] mx-auto my-10 px-4 sm:px-5">
-        {/* Executive Summary */}
+        {/* Executive Summary — the 30-second pitch */}
         <Section accent="blue" className="animate-fade-up">
-          <SectionTitle icon={ClipboardList}>Executive Summary</SectionTitle>
+          <SectionTitle icon={ClipboardList} className="border-0 mb-3">Executive Summary</SectionTitle>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
@@ -77,9 +56,28 @@ export function OverviewPage() {
           <KpiRow kpis={idea.kpis} />
         </Section>
 
+        {/* Quick understanding cards — 3 key points in 10 seconds */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7 animate-fade-up animate-delay-1">
+          {[
+            { icon: FolderOpen, title: 'The Problem', desc: 'Confident wrong majorities override correct minorities in AI debate — no existing fix.' },
+            { icon: Cog, title: 'Our Solution', desc: 'Evidence-grounded trust weighting: agents whose claims check out against real papers earn more influence.' },
+            { icon: CheckCircle, title: 'The Goal', desc: '≥20% sycophancy reduction on adversarial benchmarks, validated against 9 baselines.' },
+          ].map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="glass-card rounded-lg p-5 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)]">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#3b5bdb]/10 dark:bg-[#3b5bdb]/20 text-[#3b5bdb] dark:text-[#93c5fd]">
+                  <Icon size={18} />
+                </span>
+                <h3 className="text-sm font-bold text-[#1e2d3d] dark:text-[#e2e8f0]">{title}</h3>
+              </div>
+              <p className="text-xs text-[#64748b] dark:text-[#94a3b8] leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+
         {/* Problem & Research Gap */}
         <Section className="animate-fade-up animate-delay-1">
-          <SectionTitle icon={Target}>Problem &amp; Research Gap</SectionTitle>
+          <SectionTitle icon={Target} className="border-0 mb-3">Problem &amp; Research Gap</SectionTitle>
           <TwoCol>
             <ColBox>
               <h4 className="text-sm font-bold mb-2">The Problem</h4>
@@ -102,63 +100,22 @@ export function OverviewPage() {
           </TwoCol>
         </Section>
 
-        {/* Pipeline Overview */}
-        <Section accent="teal" className="animate-fade-up animate-delay-2">
-          <SectionTitle icon={Building2}>System Pipeline</SectionTitle>
-          <p className="text-sm mb-5">
-            End-to-end deliberation flow. <strong>Confident queries</strong> skip directly to answer; uncertain
-            queries trigger the full evidence-grounded debate pipeline.
-          </p>
-
-          {/* Phase indicators */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {[
-              { label: 'Init', color: 'bg-[#1c7ed6]' },
-              { label: 'Gate', color: 'bg-[#f08c00]' },
-              { label: 'Debate', color: 'bg-[#7c3aed]' },
-              { label: 'Evidence', color: 'bg-[#0ca678]' },
-              { label: 'Output', color: 'bg-[#6366f1]' },
-            ].map((p) => (
-              <span key={p.label} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: p.color }}>
-                <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
-                {p.label}
-              </span>
-            ))}
-          </div>
-
-          <PipelineFlow steps={pipelineSteps} />
-
-          <div className="mt-5 flex items-center gap-2 text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
-            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#0ca678] text-white text-[10px] font-bold flex-shrink-0">✓</span>
-            Confident queries bypass the debate loop and return a direct answer from the gate.
-          </div>
-        </Section>
-
-        {/* 12-Month Plan */}
-        <Section accent="amber" className="animate-fade-up animate-delay-3">
-          <SectionTitle icon={Calendar}>10-Month Execution Plan (Jul 2026 – Apr 2027)</SectionTitle>
-          <p className="text-sm mb-4">
-            Phases aligned to the research master blueprint. Gates 0–3 mark explicit go/no-go decision points.
-          </p>
-          <GanttTable phases={ganttPhases} />
-          <Timeline items={milestones} />
-        </Section>
-
-        {/* Resources */}
-        <Section className="animate-fade-up animate-delay-4">
-          <SectionTitle icon={Wrench}>Models &amp; Tools</SectionTitle>
-          <InfoGrid cards={resources} />
-        </Section>
-
-        {/* Risk Register */}
-        <Section className="animate-fade-up animate-delay-5">
-          <SectionTitle icon={TriangleAlert}>Risk Register</SectionTitle>
-          <p className="text-sm mb-4">
-            Risk assessment per blueprint §11. Highest-risk item (Challenge C — behavioral effectiveness)
-            mitigated via Month 1 pilot before full build.
-          </p>
-          <RiskTable rows={risks} />
-        </Section>
+        {/* Quick links to blueprint detail */}
+        <div className="flex flex-wrap gap-3 justify-center animate-fade-up animate-delay-2 print:hidden">
+          {[
+            { label: 'Full Blueprint →', href: '/idea/1' },
+            { label: 'Execution Roadmap →', href: '/roadmap' },
+            { label: 'Formal Proposal →', href: '/proposal' },
+          ].map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#3b5bdb]/10 dark:bg-[#3b5bdb]/20 text-[#3b5bdb] dark:text-[#93c5fd] text-sm font-semibold hover:bg-[#3b5bdb]/20 dark:hover:bg-[#3b5bdb]/30 transition-colors no-underline"
+            >
+              {link.label} <ArrowUpRight size={14} />
+            </a>
+          ))}
+        </div>
       </main>
     </>
   );

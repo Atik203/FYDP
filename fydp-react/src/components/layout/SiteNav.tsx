@@ -71,7 +71,7 @@ export function SiteNav() {
         <div className="flex items-center gap-2">
           <button
             onClick={toggle}
-            className="w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
+            className="w-9 h-9 flex items-center justify-center rounded-lg text-white/60 hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
             aria-label="Toggle theme"
           >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
@@ -80,7 +80,7 @@ export function SiteNav() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-[#94a3b8] hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg text-white/60 hover:text-white hover:bg-[rgba(99,102,241,0.18)] transition-all min-h-[44px] min-w-[44px]"
             aria-label="Menu"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
@@ -110,8 +110,8 @@ export function SiteNav() {
                 cn(
                   'flex items-center gap-3 px-4 py-3 rounded-lg no-underline transition-all min-h-[44px] text-sm font-semibold',
                   isActive
-                    ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white'
-                    : 'text-[#94a3b8] hover:text-white hover:bg-[rgba(99,102,241,0.12)]',
+                    ? 'bg-gradient-to-br from-[#6366f1] to-[#a78bfa] text-white'
+                    : 'text-white/60 hover:text-white hover:bg-[rgba(99,102,241,0.18)]',
                 )
               }
             >
