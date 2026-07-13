@@ -102,6 +102,7 @@ export function Idea1Content() {
             { num: 2, label: 'Retrieval Reliability', text: 'PubMed/ArXiv/Semantic Scholar retrieval can support/contradict claims within the debate time budget.', risk: 'moderate', detail: 'Retrieval noise, sparse coverage on niche topics.' },
             { num: 3, label: 'Behavioral Effectiveness', text: 'Trust weight changes actually alter final output, not just sit in context ignored.', risk: 'critical', detail: 'The whole mechanism lives or dies on this — must be piloted Month 1.' },
             { num: 4, label: 'Heterogeneity Benefit', text: 'Different model families reduce, but don\'t eliminate, correlated hallucination.', risk: 'low', detail: 'Accepted as a named limitation.' },
+            { num: 5, label: 'Competitor Differentiation', text: 'Our method must measurably outperform ConsensAgent\'s prompt-refinement approach, not just iMAD/MoA.', risk: 'moderate', detail: 'ConsensAgent (ACL Findings 2025) is the closest published mitigation — a written comparison paragraph is mandatory; full baseline reimplementation if Phase 2 capacity allows.' },
           ].map((a) => (
             <div key={a.num} className="group relative overflow-hidden bg-white dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-4 hover:shadow-md hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-all duration-200">
               <div className={`absolute inset-0 opacity-[0.06] dark:opacity-[0.10] ${
@@ -505,6 +506,7 @@ export function Idea1Content() {
                 ['B7', 'Oracle (Gemini 2.5 Pro)', 'Upper-bound ceiling'],
                 ['B8', 'Ours (trust-weighted)', 'Primary system'],
                 ['B9', 'iMAD', 'Closest published competitor'],
+                ['B10', 'ConsensAgent (if feasible)', 'Prompt-refinement mitigation — closest to ours in goal, most different in mechanism'],
               ].map(([id, bl, what], i) => (
                 <tr key={i} className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] last:border-0 hover:bg-[#dce4ff] dark:hover:bg-[rgba(59,91,219,0.12)] even:bg-[#f8fafc] dark:even:bg-[rgba(255,255,255,0.03)] transition-colors">
                   <td className="p-2.5 font-bold whitespace-nowrap">{id}</td>
@@ -515,6 +517,20 @@ export function Idea1Content() {
             </tbody>
           </table>
         </div>
+
+        <Callout variant="warning" title="🧪 Baseline B10 — ConsensAgent (Pitre et al., Findings of ACL 2025)">
+          <p className="text-sm mb-1">
+            <strong>Why included:</strong> ConsensAgent is the closest published mitigation to our work — it also
+            targets sycophancy in multi-agent debate, but via <strong>static/dynamic prompt refinement</strong>, not
+            evidence-grounded numeric trust. This is the sharpest differentiation line in our related-work section.
+          </p>
+          <p className="text-sm mb-0">
+            <strong>Implementation plan:</strong> Full reimplementation if Phase 2 capacity allows (~1 week). Minimum:
+            compare against published results (state-of-the-art on six reasoning datasets), with explicit mechanism
+            differentiation in the paper. If excluded, a written comparison paragraph explaining why (mechanism
+            difference: prompt-tuning vs. evidence-scoring) is mandatory.
+          </p>
+        </Callout>
 
         <h4 className="text-sm font-bold mb-3">Ablation Studies</h4>
         <p className="text-sm mb-3">Four ablations isolate each component's contribution:</p>
@@ -571,15 +587,25 @@ export function Idea1Content() {
         <SectionTitle icon={TriangleAlert}>11. Risk Assessment</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §11. The highest-likelihood risk (timeline overload in Phase 2) has a pre-planned mitigation:
-          use iMAD's published numbers for easy-question conditions.
+          use iMAD's published numbers for easy-question conditions. A new risk (novelty erosion) has emerged with the
+          publication of ConsensAgent (ACL Findings 2025) — see below.
         </p>
         <RiskTable rows={risks} />
-        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3">
-          <strong>Critical risk:</strong> Trust signal doesn't behaviorally change output (Challenge C) — mitigated
-          by Month 1 pilot (~20–30 toy questions) before full build-out. If pilot fails, the project reframes to
-          report the negative result honestly as a finding about when evidence-grounded trust does/doesn't influence
-          LLM aggregation behavior.
-        </p>
+        <div className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3 space-y-2">
+          <p className="mb-0">
+            <strong>Critical risk:</strong> Trust signal doesn't behaviorally change output (Challenge C) — mitigated
+            by Month 1 pilot (~20–30 toy questions) before full build-out. If pilot fails, the project reframes to
+            report the negative result honestly as a finding about when evidence-grounded trust does/doesn't influence
+            LLM aggregation behavior.
+          </p>
+          <p className="mb-0">
+            <strong>Novelty erosion (NEW):</strong> Published mitigation methods (ConsensAgent, ACL Findings 2025) now
+            exist where none were assumed at project outset. Differentiation argument must be sharper than originally
+            drafted. <strong>Mitigation:</strong> explicit comparison table + mechanism-level differentiation (prompt
+            refinement vs. evidence-grounded numeric trust) in the related-work section. See §9 for baseline inclusion
+            strategy.
+          </p>
+        </div>
       </Section>
 
       {/* ───────────── 12. Month-by-Month Roadmap ───────────── */}
@@ -587,6 +613,9 @@ export function Idea1Content() {
         <SectionTitle icon={Calendar}>12. Month-by-Month Roadmap (Jul 2026 – Apr 2027)</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §12. Five phases over 10 months. Gates 0–3 mark explicit go/no-go decisions.
+          <strong className="block mt-1">Note:</strong> If ConsensAgent is added as B10, budget ~1 week in
+          Phase 2 for a lightweight reimplementation or use of published numbers where directly comparable
+          (same mitigation strategy already planned for iMAD's easy-question conditions).
         </p>
         <GanttTable phases={ganttPhases} />
         <Timeline items={milestones} />
@@ -696,6 +725,13 @@ export function Idea1Content() {
             </div>
           ))}
         </div>
+        <Callout variant="warning" title="🔬 Why this is different from ConsensAgent">
+          There's now a published paper (ConsensAgent, ACL Findings 2025) that also tries to fix multi-agent
+          sycophancy — but it works by <strong>rewriting the prompts</strong>, not by scoring claims against
+          external evidence. We are the <strong>evidence-fact-checking approach</strong>; they are the
+          <strong>prompt-tuning approach</strong>. Both aim to reduce sycophancy; the mechanism difference
+          (external retrieval vs. textual refinement) is the key distinction.
+        </Callout>
         <Callout variant="info" title="📖 Worked Example">
           Given one 2023 clinical trial paper and asked "Does Drug X lower blood pressure in adults over 60?" — three
           reviewers give different answers. The system checks each claim against the actual paper. The paper shows a
@@ -747,6 +783,11 @@ export function Idea1Content() {
             </div>
           </ColBox>
         </TwoCol>
+        <Callout variant="info" title="🤔 How we differ from ConsensAgent">
+          Another team also published a sycophancy fix (ConsensAgent, ACL 2025). Their approach: <strong>rewrite
+          the prompts</strong> to reduce sycophancy. Ours: <strong>score each claim against real papers</strong>
+          and weight votes by evidence. Both reduce sycophancy; the mechanism is completely different.
+        </Callout>
         <Callout variant="success" title="🧠 Analogy: Courtroom">
           Majority-vote debate is like a jury that goes with whichever two jurors talk the loudest. Our system is
           more like a judge who actually checks the evidence each juror cites — and rules based on whose evidence
@@ -762,6 +803,7 @@ export function Idea1Content() {
             <h4 className="text-sm font-bold mb-2">Expected Improvements</h4>
             <ul className="text-sm space-y-1 mb-0 pl-4">
               <li><strong>20–30% CCR reduction</strong> vs. standard MAD on adversarial benchmarks</li>
+              <li><strong>Statistically significant improvement over ConsensAgent</strong> (closest published mitigation) on adversarial injection benchmarks</li>
               <li><strong>ECR &gt; 0.80</strong> on HLE — trust scores track actual correctness</li>
               <li><strong>No accuracy regression</strong> on GPQA/MMLU-Pro — anti-sycophancy gains don't cost baseline correctness</li>
             </ul>
@@ -769,16 +811,18 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">Publication Potential</h4>
             <p className="text-sm mb-0">
-              Realistic: <strong>EMNLP Findings / TMLR</strong>. Stretch: <strong>ACL/NeurIPS Main</strong> with clear
-              statistically significant gains over MoA (ICLR 2025 Spotlight) and iMAD (AAAI 2026 Oral).
-              Safe floor: workshop submission.
+              The field has moved faster than anticipated — ACL Findings 2025 already has a published mitigation
+              (ConsensAgent). This raises the bar but sharpens our contribution: we are the <em>only</em>
+              evidence-grounded, numeric, adversarially-tested approach. Realistic: <strong>EMNLP Findings /
+              TMLR</strong>. Stretch: <strong>ACL/NeurIPS Main</strong> with significant gains over ConsensAgent
+              <em>and</em> MoA/iMAD. Safe floor: workshop submission.
             </p>
           </ColBox>
         </TwoCol>
         <h4 className="text-sm font-bold mt-5 mb-3">Success Criteria (Concrete &amp; Falsifiable)</h4>
         <div className="space-y-2">
           {[
-            { icon: '📊', label: 'Statistically significant CCR reduction over iMAD and MoA on adversarial benchmarks, with 95% CIs not overlapping zero.' },
+            { icon: '📊', label: 'Statistically significant CCR reduction over iMAD, MoA, and ConsensAgent on adversarial benchmarks, with 95% CIs not overlapping zero.' },
             { icon: '📐', label: 'ECR > 0.80 achieved on at least the primary evaluation dataset.' },
             { icon: '🧪', label: 'Month-1 pilot confirms trust weight causally affects aggregation output (necessary condition — reframes negative result if it fails).' },
             { icon: '📝', label: 'Completed FYDP thesis + submitted paper (minimum workshop, target Findings-tier), fully reproducible codebase released.' },
@@ -872,6 +916,14 @@ export function Idea1Content() {
             </div>
           ))}
         </div>
+        <Callout variant="warning" title="📖 Pre-Phase 0 Reading Required">
+          Before the Phase 0 literature freeze, schedule one dedicated reading/discussion session on{' '}
+          <strong>ConsensAgent</strong> (Pitre et al., ACL Findings 2025) and{' '}
+          <strong>Estornell &amp; Liu</strong> (NeurIPS 2024 Main Track). Both are now load-bearing, not
+          optional background — ConsensAgent is our closest published competitor, and Estornell &amp; Liu
+          provides the formal theoretical context for our Propositions 1–3. This session must happen before
+          the Phase 0 freeze closes.
+        </Callout>
         <Callout variant="warning" title="🗣️ Reviewer Criticisms (Ranked by Severity)">
           <ol className="text-sm space-y-1 mb-0 pl-4">
             <li><strong>"How is this different from ConsensAgent's prompt-refinement mitigation?"</strong> — ConsensAgent uses static/dynamic prompt refinement (textual intervention); ours uses a numeric, formally bounded trust score grounded in <em>external</em> retrieved evidence, not prompt-level adjustment. We are tested against adversarial injected pressure; they target naturally occurring sycophancy. Differentiation must be explicit in §3 related-work table.</li>
