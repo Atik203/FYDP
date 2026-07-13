@@ -4,6 +4,7 @@ import { ScrollToTop } from "@/components/shared/ScrollToTop";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { IdeaDetailPage } from "@/pages/IdeaDetailPage";
 import { OverviewPage } from "@/pages/OverviewPage";
+import { PapersPage } from "@/pages/PapersPage";
 import { ProposalPage } from "@/pages/ProposalPage";
 import { RoadmapPage } from "@/pages/RoadmapPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -19,6 +20,7 @@ function App() {
               <Route path="/" element={<OverviewPage />} />
               <Route path="/idea/1" element={<IdeaDetailPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
+              <Route path="/papers" element={<PapersPage />} />
               <Route path="/proposal" element={<ProposalPage />} />
             </Routes>
           </div>

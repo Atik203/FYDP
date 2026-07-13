@@ -76,10 +76,13 @@ export function Idea1Content() {
 
         <Callout variant="gap" title="🕳️ Verified Research Gap" className="mt-4">
           <p className="mb-2">
-            <strong>No existing framework dynamically re-weights agent trust during a debate based on
-            external evidence.</strong> Diagnosis exists (Yao et al. 2025), efficiency optimisation exists
-            (iMAD, AAAI 2026), static aggregation exists (MoA, ICLR 2025 Spotlight) — but nothing ties
-            an agent's influence to <em>real-time verifiability of claims against external evidence</em>.
+            <strong>No existing framework provides numeric, evidence-grounded, in-session trust re-weighting
+            with formal boundedness guarantees.</strong> Diagnosis exists (Yao et al. 2025), efficiency
+            optimisation exists (iMAD, AAAI 2026), static aggregation exists (MoA, ICLR 2025 Spotlight),
+            and recent mitigation attempts use prompt refinement (ConsensAgent, Findings of ACL 2025),
+            uncertainty signals (DebUnc, Findings of EMNLP 2025), or theoretical pruning interventions
+            (Estornell &amp; Liu, NeurIPS 2024 Main Track) — but nothing ties an agent's influence to
+            <em>real-time, externally verified evidence with a formally bounded numeric trust score</em>.
           </p>
         </Callout>
 
@@ -163,9 +166,11 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">The specific gap</h4>
             <p className="text-sm leading-relaxed">
-              <strong>No existing framework dynamically re-weights agent influence within an active debate session
-              based on real-time verifiability of claims against external evidence.</strong> This is the exact,
-              verified gap.
+              <strong>No existing framework provides numeric, evidence-grounded, in-session trust re-weighting.
+              </strong> Prompt refinement (ConsensAgent, ACL Findings 2025), uncertainty signals (DebUnc,
+              EMNLP Findings 2025), and theoretical pruning interventions (Estornell &amp; Liu, NeurIPS 2024)
+              all address related problems — but none ties agent influence to real-time external evidence
+              verification with a formally bounded trust score. This is the exact, verified gap.
             </p>
           </ColBox>
         </TwoCol>
@@ -185,6 +190,9 @@ export function Idea1Content() {
                 ['He et al. (Minority Sentinel)', '2026', 'Post-hoc classifier on debate logs', 'Intervenes after debate ends, not during'],
                 ['iMAD (Fan et al.)', '2026', 'Decides when to debate (efficiency)', 'Doesn\'t decide whom to trust once debating'],
                 ['MoA (Wang et al.)', '2025', 'Static multi-model aggregation', 'No evidence grounding or dynamic trust'],
+                ['ConsensAgent (Pitre et al.)', '2025', 'Prompt-refinement sycophancy mitigation', 'Static/textual intervention — not numeric trust; no external evidence retrieval'],
+                ['DebUnc (Yoffe et al.)', '2025', 'Uncertainty-based in-loop weighting', 'Self-reported uncertainty signals — not grounded in external evidence verification'],
+                ['Estornell & Liu', '2024', 'Theoretical framework for majority convergence', 'Theoretical only — proposes pruning interventions, not a deployable system'],
               ].map(([work, yr, does, missing], i) => (
                 <tr key={i} className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] last:border-0 hover:bg-[#dce4ff] dark:hover:bg-[rgba(59,91,219,0.12)] even:bg-[#f8fafc] dark:even:bg-[rgba(255,255,255,0.03)] transition-colors">
                   <td className="p-3 font-medium whitespace-nowrap">{work}</td>
@@ -866,9 +874,10 @@ export function Idea1Content() {
         </div>
         <Callout variant="warning" title="🗣️ Reviewer Criticisms (Ranked by Severity)">
           <ol className="text-sm space-y-1 mb-0 pl-4">
+            <li><strong>"How is this different from ConsensAgent's prompt-refinement mitigation?"</strong> — ConsensAgent uses static/dynamic prompt refinement (textual intervention); ours uses a numeric, formally bounded trust score grounded in <em>external</em> retrieved evidence, not prompt-level adjustment. We are tested against adversarial injected pressure; they target naturally occurring sycophancy. Differentiation must be explicit in §3 related-work table.</li>
             <li><strong>"How is this different from iMAD's confidence-weighted aggregation?"</strong> — External evidence vs. same-context confidence signal: stated in the first paragraph of the results section.</li>
             <li><strong>"Your injection protocol is artificially explicit — real sycophancy is subtler."</strong> — Honest upper-bound scenario, stated early and confidently.</li>
-            <li><strong>"Two of four core citations aren't peer-reviewed."</strong> — Addressed via proactive disclosure; same framing in related-work section.</li>
+            <li><strong>"Two core citations aren't peer-reviewed."</strong> — Addressed via proactive disclosure; same framing in related-work section.</li>
           </ol>
         </Callout>
       </Section>
