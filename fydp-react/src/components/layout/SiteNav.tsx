@@ -19,7 +19,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Overview', key: 'overview' },
-  { to: '/idea/1', label: 'Idea 1', key: 'idea' },
+  { to: '/idea/1', label: 'Blueprint', key: 'idea' },
   { to: '/roadmap', label: 'Roadmap', key: 'roadmap' },
   { to: '/proposal', label: 'Proposal', key: 'proposal' },
 ];
@@ -33,10 +33,10 @@ export function SiteNav() {
       'flex items-center gap-2 px-3.5 py-2 rounded-lg no-underline flex-shrink-0 transition-all duration-200 min-h-[44px]',
       'text-sm font-semibold',
       isActive
-        ? 'bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] text-white shadow-[0_2px_14px_rgba(99,102,241,0.5)]'
-        : 'text-[#94a3b8] hover:text-[#c7d2fe] hover:bg-[rgba(99,102,241,0.12)]',
-      'dark:text-[#a0aec0] dark:hover:text-[#c7d2fe]',
-      isActive && 'dark:from-[#4f46e5] dark:to-[#7c3aed] dark:text-white',
+        ? 'bg-gradient-to-br from-[#6366f1] to-[#a78bfa] text-white shadow-[0_2px_14px_rgba(99,102,241,0.65)] ring-1 ring-[rgba(255,255,255,0.25)]'
+        : 'text-white/70 hover:text-white hover:bg-[rgba(99,102,241,0.18)]',
+      isActive && 'dark:from-[#6366f1] dark:to-[#a78bfa] dark:text-white dark:shadow-[0_2px_14px_rgba(129,140,248,0.5)]',
+      !isActive && 'dark:text-white/60 dark:hover:text-white',
     );
 
   return (

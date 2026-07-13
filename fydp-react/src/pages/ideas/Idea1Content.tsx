@@ -1,5 +1,7 @@
 import { Section, SectionTitle, ColBox, TwoCol } from '@/components/shared/Section';
-import { Lightbulb, Settings, Microscope, Target, Building2, Wrench, ArrowLeftRight, Hammer, BarChart3, Ruler, Shield, TriangleAlert, Calendar, ClipboardList, GraduationCap, Users, Trophy, Telescope, Search } from 'lucide-react';
+import { PipelineFlow } from '@/components/shared/PipelineFlow';
+import type { PipeStep } from '@/components/shared/PipelineFlow';
+import { Lightbulb, Settings, Microscope, Target, Building2, Wrench, ArrowLeftRight, Hammer, BarChart3, Ruler, Shield, TriangleAlert, Calendar, ClipboardList, GraduationCap, Users, Trophy, Telescope, Search, HelpCircle, Brain, FileSearch, BookOpen, Scale, RefreshCw, Gavel, Sparkles } from 'lucide-react';
 import { Callout } from '@/components/shared/Callout';
 import { InfoGrid } from '@/components/shared/InfoGrid';
 import { Badge } from '@/components/shared/Badge';
@@ -7,6 +9,19 @@ import { GanttTable } from '@/components/shared/GanttTable';
 import { Timeline } from '@/components/shared/Timeline';
 import { RiskTable } from '@/components/shared/RiskTable';
 import { datasets, failures, ganttPhases, milestones, resources, risks } from '@/data/overview';
+
+const detailPipeline: PipeStep[] = [
+  { id: 'input', icon: HelpCircle, title: 'Input Question', desc: 'Scientific question enters the system', color: 'sky' },
+  { id: 'gate', icon: Brain, title: 'Confidence Gate', desc: 'Single-pass check: self-reported confidence or 3-sample agreement', color: 'amber' },
+  { id: 'agents', icon: Sparkles, title: 'Agent Pool (N=3)', desc: 'Qwen3-32B, Mistral-Small-3.2-24B, Phi-4-Reasoning — heterogeneous families', color: 'violet' },
+  { id: 'decomp', icon: FileSearch, title: 'Claim Decomposition', desc: 'Each agent answer → atomic propositions for verification', color: 'indigo' },
+  { id: 'retrieval', icon: BookOpen, title: 'Source-Partitioned RAG', desc: 'Agent A→PubMed, B→ArXiv, C→Semantic Scholar + cross-encoder reranker', color: 'teal' },
+  { id: 'scoring', icon: Scale, title: 'Evidence Scoring', desc: 'Cross-encoder scores each claim: supports / contradicts / no evidence', color: 'emerald' },
+  { id: 'trust', icon: RefreshCw, title: 'Trust Update (Core)', desc: 'Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ → softmax → clamp[0.1, 0.9] → renormalize', color: 'rose' },
+  { id: 'revise', icon: RefreshCw, title: 'Revision Rounds (K=3)', desc: 'Agents see peer arguments + own trust; repeat retrieval → update loop', color: 'violet' },
+  { id: 'adjudicate', icon: Gavel, title: 'Trust-Weighted Adjudication', desc: 'Final answer = argmax over Σ(Tᵢ × positionᵢ) — not majority vote', color: 'indigo' },
+  { id: 'output', icon: Sparkles, title: 'Final Output', desc: 'Answer + evidence citations + trust trajectory + per-agent reasoning', color: 'teal' },
+];
 
 export function Idea1Content() {
   return (
@@ -215,33 +230,17 @@ export function Idea1Content() {
       {/* ───────────── 4. Complete System Architecture ───────────── */}
       <Section className="animate-fade-up animate-delay-3">
         <SectionTitle icon={Building2}>4. Complete System Architecture</SectionTitle>
-        <div className="bg-[#f0f7ff] dark:bg-[rgba(59,91,219,0.08)] border border-[#bfdbfe] dark:border-[rgba(59,91,219,0.3)] rounded-lg p-4 sm:p-5 mb-5 overflow-x-auto">
-          <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
-{`Input (scientific question)
-        ↓
-Confidence Estimator (gate: debate needed?)
-        ↓
-[IF confident] → Direct Answer → Output
-        ↓ [IF uncertain]
-Three Heterogeneous Agents state initial positions (Round 0)
-        ↓
-Claim Decomposition (each agent's answer → atomic propositions)
-        ↓
-Source-Partitioned Retrieval (Agent A→PubMed, B→ArXiv, C→Semantic Scholar)
-        ↓
-Evidence Scoring (cross-encoder reranker: supports / contradicts / no evidence)
-        ↓
-Trust Update (Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ → softmax → clamp[0.1,0.9] → renormalize)
-        ↓
-[Optional: Injection point for testing, between Round 1 and Round 2]
-        ↓
-Agents Revise Positions (Round 2, aware of each other's arguments + own trust standing)
-        ↓
-Repeat Retrieval → Trust Update → Revision for K rounds (K=3 default)
-        ↓
-Trust-Weighted Aggregation (final answer = argmax over trust-weighted positions)
-        ↓
-Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoning`}</pre>
+
+        <p className="text-sm mb-5">
+          The system processes each query through a confidence gate, then either returns a direct answer
+          or triggers the full evidence-grounded debate pipeline shown below.
+        </p>
+
+        <PipelineFlow steps={detailPipeline} className="mb-5" />
+
+        <div className="flex items-center gap-2 text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] mb-5">
+          <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#f08c00] text-white text-[10px] font-bold flex-shrink-0">⚡</span>
+          Over-triggering (confident queries entering debate) wastes compute but poses no correctness risk.
         </div>
 
         <TwoCol>
@@ -343,41 +342,38 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
       {/* ───────────── 6. Complete Data Flow ───────────── */}
       <Section className="animate-fade-up animate-delay-5">
         <SectionTitle icon={ArrowLeftRight}>6. Complete Data Flow</SectionTitle>
-        <div className="bg-[#f8fafc] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-lg p-4 sm:p-5 overflow-x-auto">
-          <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
-{`1. USER/EVAL-HARNESS SUBMITS QUESTION
-   → raw question string + ground truth (hidden from agents)
+        <p className="text-sm mb-4">
+          End-to-end data flow from question submission to final output. Every intermediate result is logged
+          for traceability, ECR calibration, and verification of Propositions 2–3.
+        </p>
 
-2. CONFIDENCE GATE CHECK
-   → intermediate output: debate=True/False
-   → [if False: skip to step 8 with direct answer]
-
-3. ROUND 0 — INITIAL POSITIONS
-   → 3× {agent_id, answer, reasoning_trace, initial_trust=1/3}
-
-4. CLAIM DECOMPOSITION
-   → 3× list of atomic claims, each tagged to source agent
-
-5. SOURCE-PARTITIONED RETRIEVAL
-   → per-claim {evidence_verdict, passage, relevance_score}
-   → first external signal enters the system
-
-6. TRUST UPDATE (Round 1)
-   → updated Sᵢ, Tᵢ per agent (logged for ECR calibration)
-   → [OPTIONAL: INJECTION — fabricated wrong "expert consensus"]
-
-7. REVISION ROUNDS (repeat steps 3–6 for K=3)
-   → full trust trajectory across rounds (needed for Propositions 2–3)
-
-8. TRUST-WEIGHTED AGGREGATION
-   → final answer = argmax over Σ(Tᵢ × positionᵢ) at round K
-
-9. FINAL RESULT PACKAGE
-   → answer + citations + trust trajectory + reasoning traces`}</pre>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          {[
+            { step: '01', title: 'Question Input', desc: 'Raw question string + ground truth (hidden from agents). Submitted by user or eval harness.', color: 'from-[#1c7ed6] to-[#4dabf7]' },
+            { step: '02', title: 'Confidence Gate', desc: 'Debate=True/False decision. If False → skip to step 08 with direct answer.', color: 'from-[#f08c00] to-[#ffd43b]' },
+            { step: '03', title: 'Round 0 — Positions', desc: '3× {agent_id, answer, reasoning_trace, initial_trust=⅓}. Agents state independent positions.', color: 'from-[#7c3aed] to-[#b197fc]' },
+            { step: '04', title: 'Claim Decomposition', desc: '3× list of atomic claims, each tagged to its source agent. Ready for verification.', color: 'from-[#3b5bdb] to-[#748ffc]' },
+            { step: '05', title: 'Source-Partitioned Retrieval', desc: 'Per-claim {evidence_verdict, passage, relevance_score}. First external signal enters the system.', color: 'from-[#0ca678] to-[#69db7c]' },
+            { step: '06', title: 'Trust Update (R1)', desc: 'Updated Sᵢ, Tᵢ per agent. [Optional: Injection point for fabricated wrong consensus].', color: 'from-[#e03131] to-[#ff8787]' },
+            { step: '07', title: 'Revision Rounds ×K', desc: 'Repeat steps 03–06 for K=3. Full trust trajectory across rounds — required for Propositions 2–3.', color: 'from-[#7c3aed] to-[#b197fc]' },
+            { step: '08', title: 'Trust-Weighted Agg.', desc: 'Final answer = argmax over Σ(Tᵢ × positionᵢ) at round K. NOT majority vote.', color: 'from-[#3b5bdb] to-[#748ffc]' },
+            { step: '09', title: 'Result Package', desc: 'Answer + evidence citations + trust trajectory + per-agent reasoning traces.', color: 'from-[#0ca678] to-[#69db7c]' },
+          ].map(({ step, title, desc, color }) => (
+            <div key={step} className="relative rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] bg-white dark:bg-[#1a1d35] p-4 transition-shadow hover:shadow-sm">
+              <div className={`inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br ${color} text-white text-[11px] font-bold mb-2 shadow-sm`}>
+                {step}
+              </div>
+              <h5 className="text-sm font-semibold mb-1 text-[#1e2d3d] dark:text-[#e2e8f0]">{title}</h5>
+              <p className="text-xs text-[#64748b] dark:text-[#94a3b8] leading-relaxed">{desc}</p>
+              {/* Connector arrow */}
+              <div className="hidden lg:block absolute -right-2 top-1/2 -translate-y-1/2 text-[#cbd5e1] dark:text-[rgba(255,255,255,0.15)] text-lg">→</div>
+            </div>
+          ))}
         </div>
-        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-2">
-          Every intermediate output is logged — trust trajectory (step 7) is required to verify Propositions 2–3
-          empirically; per-claim evidence verdicts (step 5) are required for ECR calibration.
+
+        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
+          <strong>Note:</strong> Every intermediate output is logged — trust trajectory (step 07) is required for
+          Propositions 2–3; per-claim evidence verdicts (step 05) are required for ECR calibration.
         </p>
       </Section>
 

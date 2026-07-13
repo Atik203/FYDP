@@ -1,139 +1,247 @@
-import { PageHeader } from '@/components/layout/PageHeader';
-import { Section, SectionTitle } from '@/components/shared/Section';
-import { Callout } from '@/components/shared/Callout';
-import { GanttTable } from '@/components/shared/GanttTable';
-import { ganttPhases } from '@/data/overview';
 import { FileText } from 'lucide-react';
+
+const docStyle: React.CSSProperties = {
+  fontFamily: "'Georgia', 'Times New Roman', serif",
+  color: '#1a1a1a',
+  lineHeight: 1.45,
+  fontSize: '10.5pt',
+};
+
+const h1Style: React.CSSProperties = {
+  fontSize: '14.5pt',
+  textAlign: 'center',
+  margin: '0 0 3pt',
+  color: '#1f3a5f',
+  lineHeight: 1.26,
+};
+
+const h2Style: React.CSSProperties = {
+  fontSize: '10.8pt',
+  color: '#1f3a5f',
+  borderBottom: '1.4px solid #1f3a5f',
+  paddingBottom: '1pt',
+  margin: '10pt 0 4pt',
+};
+
+const metaStyle: React.CSSProperties = {
+  textAlign: 'center',
+  fontSize: '8.6pt',
+  color: '#444',
+  borderTop: '1px solid #cfcfcf',
+  borderBottom: '1px solid #cfcfcf',
+  padding: '4pt 0',
+  marginBottom: '9pt',
+};
 
 export function ProposalPage() {
   return (
     <>
-      <PageHeader
-        docType="FYDP Research Proposal · Idea 1 · Formal Academic Document"
-        title="Research Proposal — Trust-Calibrated Multi-Agent Scientific Deliberation"
-        subtitle="For Mitigating Sycophantic Consensus in LLM Reasoning"
-        coverItems={[
-          { label: 'Author', value: 'Md. Atikur Rahaman' },
-          { label: 'Programme', value: 'Final Year Design Project (FYDP)' },
-          { label: 'Timeline', value: 'Jul 2026 – Apr 2027 (10 Months)' },
-          { label: 'Date', value: 'May 2026' },
-        ]}
-      />
+      {/* Screen-only header bar */}
+      <div
+        style={{
+          textAlign: 'center',
+          padding: '8px 12px 0',
+          fontFamily: 'system-ui, sans-serif',
+          fontSize: '12px',
+          color: '#64748b',
+        }}
+        className="print:hidden"
+      >
+        FYDP · Idea 1 — Research Proposal
+      </div>
 
-      <main className="max-w-[1150px] mx-auto my-10 px-4 sm:px-5">
-        {/* Print button */}
-        <div className="flex justify-end mb-4 print:hidden">
-          <button
-            onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#3b5bdb] text-white text-sm font-semibold rounded-md hover:bg-[#2d4ab8] transition-colors cursor-pointer shadow-sm"
-          >
-            🖨️ Print / Save as PDF
-          </button>
+      {/* Print button */}
+      <div
+        className="print:hidden"
+        style={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 100,
+        }}
+      >
+        <button
+          onClick={() => window.print()}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#3b5bdb] text-white text-sm font-semibold rounded-lg hover:bg-[#2d4ab8] transition-colors cursor-pointer shadow-lg"
+        >
+          <FileText size={16} />
+          Print / Save as PDF
+        </button>
+      </div>
+
+      {/* ═══════════════ DOCUMENT PAGE ═══════════════ */}
+      <div
+        className="proposal-doc"
+        style={{
+          background: '#fff',
+          width: 'min(210mm, calc(100% - 32px))',
+          minHeight: '297mm',
+          margin: '8mm auto 16mm',
+          padding: '16mm 18mm',
+          boxShadow: '0 1px 6px rgba(0, 0, 0, 0.15)',
+          ...docStyle,
+        }}
+      >
+        {/* ── Title Block ── */}
+        <h1 style={h1Style}>
+          Trust-Calibrated Multi-Agent Scientific Deliberation<br />
+          for Mitigating Sycophantic Consensus in LLM Reasoning
+        </h1>
+        <p style={{ textAlign: 'center', fontSize: '9.4pt', color: '#444', margin: '0 0 4pt' }}>
+          Final Year Design Project — Research Proposal
+        </p>
+        <div style={metaStyle}>
+          Domain: Agentic AI · Multi-Agent Systems · Trustworthy NLP &nbsp;|&nbsp; Author: Md. Atikur Rahaman
+          &nbsp;|&nbsp; Jul 2026 – Apr 2027
         </div>
 
-        <Section>
-          <SectionTitle icon={FileText}>Formal Supervisor Proposal</SectionTitle>
-          <Callout variant="info" title="ℹ Document Purpose">
-            This is the formal supervisor submission document for the FYDP Research Proposal on
-            Trust-Calibrated Multi-Agent Scientific Deliberation. It is designed to be print-ready (A4 format)
-            and submitted to the project supervisor for review and approval.
-          </Callout>
+        {/* ── 1. Background and Motivation ── */}
+        <h2 style={h2Style}>1. Background and Motivation</h2>
+        <p>
+          Getting several large language models (LLMs) to <strong>debate</strong> a question before agreeing on an
+          answer — called <strong>Multi-Agent Debate (MAD)</strong> — is a popular way to improve factual accuracy
+          (Du et al., 2023). But these debates have a real weakness: an agent often drops a correct answer just to
+          agree with a confident-sounding majority, and the group ends up with a{' '}
+          <strong>confidently wrong consensus</strong> (Yao et al., 2025). Because today's models are trained on
+          overlapping data, they tend to make the same mistakes, so a plain majority vote can quietly bury a correct
+          minority — in fact the minority turns out to be right in roughly one in four disagreements (He et al.,
+          2026). In scientific or clinical question answering, a confidently wrong group answer is more harmful
+          than an honest "I'm not sure."
+        </p>
+        <p>
+          Existing mitigation strategies fall into two camps: those that diagnose the problem (Yao et al., 2025;
+          He et al., 2026) and those that optimise for efficiency (iMAD, Fan et al., 2025).{' '}
+          <strong>None dynamically re-weights agent influence during a debate based on whether the agent's
+          claims can be verified against real evidence.</strong> This project targets that gap.
+        </p>
 
-          {/* Abstract */}
-          <div className="mt-6 bg-[#f8fafc] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-4 sm:p-6" style={{ fontFamily: "'Source Serif 4', Georgia, serif" }}>
-            <h1 className="text-lg sm:text-xl font-bold text-center text-[#1f3a5f] dark:text-[#c7d2fe] mb-1">
-              Trust-Calibrated Multi-Agent Scientific Deliberation<br />
-              for Mitigating Sycophantic Consensus in LLM Reasoning
-            </h1>
-            <p className="text-center text-sm text-[#64748b] dark:text-[#94a3b8] mb-1">Md. Atikur Rahaman · FYDP 2026–2027</p>
-            <p className="text-center text-xs text-[#94a3b8] mb-4">Supervisor: [Name] · Date: [Date]</p>
-            <hr className="border-[#cfcfcf] dark:border-[rgba(255,255,255,0.15)] mb-4" />
+        {/* ── 2. Problem Statement ── */}
+        <h2 style={h2Style}>2. Problem Statement</h2>
+        <p>
+          In current multi-agent debate systems, an agent's influence on the final answer depends on how many other
+          agents agree with it — not on whether what it says is factually supported. There is{' '}
+          <strong>no mechanism that adjusts each agent's trust score during the debate</strong> based on
+          verifiability of its claims against retrieved scientific literature. As a result, a hallucinating
+          majority can systematically override a correct, well-supported minority. This inter-agent sycophancy
+          undermines the reliability of MAD for high-stakes scientific and clinical applications.
+        </p>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Abstract</h2>
-            <p className="text-sm leading-relaxed mb-4">
-              Multi-agent debate (MAD) improves LLM reasoning but is susceptible to{' '}
-              <em>inter-agent sycophancy</em>: a confident hallucinating majority systematically suppresses correct
-              minority agents. No existing framework provides an in-session, evidence-grounded mechanism to prevent
-              this. We propose a <strong>trust-calibrated deliberation system</strong> that re-weights each agent's
-              influence dynamically based on the verifiability of its claims against retrieved scientific literature.
-              The core contribution is a formally specified trust update rule with proven boundedness properties and
-              a probabilistic interpretation. Secondary contribution is an open evaluation harness (CCR/MPR/ECR
-              metrics + 9-baseline suite) for future sycophancy mitigation research. We target ≥20% sycophancy
-              reduction (CCR metric) vs. vanilla MAD on adversarial benchmarks (BrokenMath, BrokenArXiv, HLE)
-              within a 10-month, single-A100 inference-only FYDP project.
-            </p>
+        {/* ── 3. Research Gap ── */}
+        <h2 style={h2Style}>3. Research Gap</h2>
+        <p>
+          The problem of inter-agent sycophancy has been formally diagnosed: Yao et al. (2025) introduced the term
+          and showed that agents become sycophantic in debate, while He et al. (2026) quantified that a correlated
+          majority suppresses the correct minority in approximately 25% of disagreements. On the efficiency front,
+          Fan et al. (2025) proposed iMAD, which learns when to trigger a debate rather than always running one.
+          However, <strong>no existing framework provides an in-session, evidence-grounded mechanism to prevent
+          sycophantic consensus collapse.</strong> Standard aggregation methods — majority vote, Mixture-of-Agents
+          equal-weight averaging (Wang et al., 2024) — treat all agents as equally trustworthy regardless of the
+          quality of their evidence. The specific, verified gap is the absence of a dynamic, evidence-weighted
+          trust calibration mechanism for multi-agent deliberation.
+        </p>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Research Gap</h2>
-            <p className="text-sm leading-relaxed mb-4">
-              Yao et al. (2025) formalised inter-agent sycophancy; He et al. (2026) quantified correct-minority
-              suppression. Neither provides a mitigation mechanism. Standard aggregation methods (majority vote,
-              MoA equal-weight averaging) treat all agents as equally trustworthy regardless of evidence quality.
-              This project closes the gap with the first dynamic, evidence-grounded trust calibration mechanism.
-            </p>
+        {/* ── 4. Core Idea ── */}
+        <h2 style={h2Style}>4. Core Idea (The Proposed Method)</h2>
+        <p>
+          We propose a <strong>trust-calibrated deliberation system</strong> in which a panel of open-weight LLMs
+          from different model families debate a question. As they argue, each agent's claims are decomposed into
+          atomic factual statements and checked against partitioned scientific sources (PubMed, arXiv, Semantic
+          Scholar). Each agent carries a <strong>trust score</strong> that increases when its claims are supported
+          by retrieved evidence and decreases when contradicted, bounded within [0.1, 0.9] so that no agent is
+          silenced and none dominates.
+        </p>
+        <p>
+          The core contribution is the <strong>trust update rule</strong>, formally specified as:
+          S<sub>i</sub><sup>(t+1)</sup> = S<sub>i</sub><sup>(t)</sup> + α·V<sub>i</sub><sup>(t)</sup> −
+          β·H<sub>i</sub><sup>(t)</sup>, followed by softmax normalization, clamp to [0.1, 0.9], and
+          renormalization. This rule has proven boundedness properties and a probabilistic interpretation as
+          approximate Bayesian evidence accumulation. Instead of a plain majority vote, the final answer is
+          produced by <strong>trust-weighted aggregation</strong>, which allows a well-supported minority to
+          survive against a confident but unsupported majority.
+        </p>
+        <p>
+          A lightweight confidence estimator acts as a gate: easy questions receive a direct answer without
+          triggering the full debate pipeline, preserving computational resources. The secondary contribution
+          is an open evaluation harness including the Controlled Consensus Rate (CCR) metric, Minority
+          Preservation Rate (MPR), Evidence-Confidence Reliability (ECR), and a 9-baseline comparison suite.
+        </p>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Proposed Method</h2>
-            <p className="text-sm leading-relaxed mb-2">
-              A heterogeneous 3-agent debate pipeline (Qwen ~32B / Mistral-Small-3.2-24B / Phi-4-Reasoning) with:
-            </p>
-            <ol className="list-decimal list-inside text-sm space-y-1 mb-4 ml-2">
-              <li><strong>Adaptive triggering:</strong> low-confidence queries activate the full pipeline</li>
-              <li><strong>Source-partitioned RAG:</strong> agents retrieve from separate corpora (PubMed, ArXiv, Semantic Scholar)</li>
-              <li><strong>Trust calibration:</strong> S<sub>i</sub><sup>(t+1)</sup> = S<sub>i</sub><sup>(t)</sup> + α·V<sub>i</sub><sup>(t)</sup> − β·H<sub>i</sub><sup>(t)</sup>; T̃<sub>i</sub> = softmax(S); clamp[0.1, 0.9]; renormalise</li>
-              <li><strong>Trust-weighted adjudication:</strong> final answer via trust-weighted, not majority-vote, aggregation</li>
-            </ol>
+        {/* ── 5. Research Question and Objectives ── */}
+        <h2 style={h2Style}>5. Research Question and Objectives</h2>
+        <p>
+          <strong>Research question:</strong> When a multi-agent debate faces a planted, confident-but-wrong
+          majority, does evidence-grounded trust weighting keep correct minority answers alive better than a
+          plain majority vote and other standard aggregation methods?
+        </p>
+        <p>To answer this, the objectives are to:</p>
+        <ol>
+          <li>Design a bounded, evidence-weighted trust-update rule driven by supported versus contradicted
+            claims, with formally specified mathematical properties.</li>
+          <li>Build the full pipeline: confidence gate, heterogeneous agent pool, claim decomposition,
+            source-partitioned retrieval, cross-encoder evidence scoring, trust update, and trust-weighted
+            adjudication.</li>
+          <li>Create a reproducible evaluation suite including a controlled sycophancy injection protocol
+            (κ &gt; 0.75 inter-rater agreement), three primary metrics (CCR, MPR, ECR), and statistical
+            testing infrastructure (paired bootstrap, effect sizes).</li>
+          <li>Compare the method against 9 baselines — including single-agent, vanilla MAD, Self-Consistency,
+            Mixture-of-Agents, and iMAD — across 5 benchmarks (BrokenMath, BrokenArXiv, HLE, GPQA Diamond,
+            MMLU-Pro STEM) and report results honestly, including failure cases.</li>
+        </ol>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Evaluation Plan</h2>
-            <p className="text-sm leading-relaxed mb-4">
-              9 baselines (incl. Self-Consistency, MoA, iMAD) across 5 benchmarks (BrokenMath, BrokenArXiv, HLE,
-              GPQA Diamond, MMLU-Pro STEM), 3 random seeds, paired bootstrap testing, 95% confidence intervals,
-              effect sizes (Cohen's d). Primary hypotheses: H1: CCR ↑≥20% vs. MAD on adversarial sets; H2: MPR
-              ↑≥15pp; H3: ECR &gt;0.80 on GPQA.
-            </p>
+        {/* ── 6. Build and Test Plan ── */}
+        <h2 style={h2Style}>6. How We Plan to Build and Test It</h2>
+        <p>
+          The system uses three <strong>heterogeneous open-weight agents</strong> from different model families
+          (targeting Qwen3-32B, Mistral-Small-3.2-24B, and Phi-4-Reasoning, confirmed via Phase 0
+          benchmarking). Everything runs at <strong>inference time only</strong> — no model training — keeping
+          the project feasible for a single-A100, 10-month FYDP timeline. The implementation follows a strict
+          12-step build order where each component is validated independently before integration.
+        </p>
+        <p>
+          <strong>Testing:</strong> We inject a controlled, validated (κ &gt; 0.75) sycophantic consensus into
+          the debate and measure how well each method resists it. Benchmarks target two adversarial sets
+          (BrokenMath, BrokenArXiv, HLE) and two general accuracy sets (GPQA Diamond, MMLU-Pro STEM). Three
+          random seeds are used per condition, with paired bootstrap testing, 95% confidence intervals, and
+          Cohen's d effect sizes. The primary hypotheses are:
+        </p>
+        <ul>
+          <li><strong>H1:</strong> CCR improves by ≥20% vs. vanilla MAD on adversarial benchmarks.</li>
+          <li><strong>H2:</strong> MPR improves by ≥15 percentage points vs. majority vote.</li>
+          <li><strong>H3:</strong> ECR &gt; 0.80 on GPQA Diamond (trust correlates with correctness).</li>
+        </ul>
+        <p>
+          <strong>Timeline (10 months):</strong> Phase 0 (Jul): Infrastructure &amp; vLLM serving; Phase 1
+          (Aug–Sep): Pilot study &amp; baseline implementation; Phase 2 (Oct–Nov): Core system prototype;
+          Phase 3 (Dec–Jan): Full experiments &amp; results freeze; Phase 4 (Feb–Apr): Paper writing, human
+          evaluation, defence preparation. Four explicit Gate checkpoints with go/no-go criteria.
+        </p>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Timeline</h2>
-            <div className="mb-4">
-              <GanttTable phases={ganttPhases} />
-            </div>
+        {/* ── 7. Expected Contributions and Outcomes ── */}
+        <h2 style={h2Style}>7. Expected Contributions and Outcomes</h2>
+        <ul>
+          <li>An <strong>evidence-grounded trust-weighting mechanism</strong> that reduces sycophantic
+            consensus collapse in multi-agent LLM debate, with formally specified mathematical properties.</li>
+          <li>A <strong>reproducible evaluation suite</strong> (injection protocol + CCR/MPR/ECR metrics +
+            9-baseline harness) for future sycophancy mitigation research.</li>
+          <li>A <strong>working prototype</strong> with honest failure analysis identifying when
+            evidence-grounded trust helps and when it does not.</li>
+          <li>A <strong>thesis and paper</strong> suitable for ACL 2027 Workshop (SRW), EMNLP 2027 Findings,
+            or IEEE Transactions on Neural Networks (extended version).</li>
+        </ul>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Feasibility</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              <div className="text-sm">
-                <p className="font-semibold mb-1">Resources Required:</p>
-                <ul className="list-disc list-inside space-y-0.5 text-[#444] dark:text-[#94a3b8]">
-                  <li>1× A100 80GB (inference only)</li>
-                  <li>All models open-weight (no API cost for inference)</li>
-                  <li>~$200–400 API budget (judge module only)</li>
-                  <li>All datasets publicly available</li>
-                </ul>
-              </div>
-              <div className="text-sm">
-                <p className="font-semibold mb-1">Key Milestones:</p>
-                <ul className="list-disc list-inside space-y-0.5 text-[#444] dark:text-[#94a3b8]">
-                  <li>Gate 0 (Jul): MAD reproduction</li>
-                  <li>Gate 1 (Aug): Pilot + baselines</li>
-                  <li>Gate 2 (Oct): Prototype done</li>
-                  <li>Gate 3 (Jan): Results freeze</li>
-                  <li>Apr 2027: Submit + defend</li>
-                </ul>
-              </div>
-            </div>
+        {/* ── 8. Key References ── */}
+        <h2 style={h2Style}>8. Key References</h2>
+        <ul style={{ fontSize: '9pt', paddingLeft: '16pt' }}>
+          <li style={{ marginBottom: '2.5pt' }}>Du et al. (2023) — <em>Improving Factuality and Reasoning in Language Models through Multiagent Debate.</em> Introduced MAD as a base method.</li>
+          <li style={{ marginBottom: '2.5pt' }}>Yao et al. (2025) — <em>Multi-Agent Debate is Replicable but Prone to Inter-Agent Sycophancy.</em> Defined the problem we mitigate.</li>
+          <li style={{ marginBottom: '2.5pt' }}>He et al. (2026) — <em>Correct Minority Suppression in Multi-Agent Debate.</em> Quantified the failure rate (~25% of disagreements).</li>
+          <li style={{ marginBottom: '2.5pt' }}>Fan et al. (2025), iMAD — <em>Intelligent Multi-Agent Debate.</em> Efficiency-focused baseline; decides <strong>when</strong> to debate.</li>
+          <li style={{ marginBottom: '2.5pt' }}>Wang et al. (2024), Mixture-of-Agents — <em>Mixture-of-Agents Enhances Large Language Model Capabilities.</em> Equal-weight aggregation baseline.</li>
+          <li style={{ marginBottom: '2.5pt' }}>Irving et al. (2018) — <em>AI Safety via Debate.</em> Theoretical foundation for debate as a truth-seeking protocol.</li>
+          <li style={{ marginBottom: '2.5pt' }}>Lewis et al. (2020) — <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.</em> Foundation of our source-partitioned RAG approach.</li>
+        </ul>
 
-            <h2 className="text-base font-bold text-[#1f3a5f] dark:text-[#c7d2fe] mb-2">Target Venue</h2>
-            <p className="text-sm leading-relaxed mb-4">
-              Primary: ACL 2027 Workshop (SRW) or EMNLP 2027 Findings — sufficient for a well-executed FYDP.
-              Stretch: NeurIPS 2027 main track (if CCR gain ≥25% and human study n≥50). Fallback: IEEE
-              Transactions on Neural Networks (Q1 journal) for extended version with full ablation.
-            </p>
-
-            <hr className="border-[#cfcfcf] dark:border-[rgba(255,255,255,0.15)] mb-4" />
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-[#64748b] dark:text-[#94a3b8]">
-              <div><p className="font-semibold text-[#1f3a5f] dark:text-[#c7d2fe] mb-1">Supervisor Signature:</p><p>_______________________</p></div>
-              <div><p className="font-semibold text-[#1f3a5f] dark:text-[#c7d2fe] mb-1">Decision:</p><p>☐ Approved  ☐ Revision Required  ☐ Declined</p></div>
-              <div><p className="font-semibold text-[#1f3a5f] dark:text-[#c7d2fe] mb-1">Date:</p><p>_______________________</p></div>
-            </div>
-          </div>
-        </Section>
-      </main>
+      </div>
     </>
   );
 }

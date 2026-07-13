@@ -1,5 +1,7 @@
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Section, SectionTitle, TwoCol, ColBox } from '@/components/shared/Section';
+import { PipelineFlow } from '@/components/shared/PipelineFlow';
+import type { PipeStep } from '@/components/shared/PipelineFlow';
 import { KpiRow } from '@/components/shared/KpiRow';
 import { InfoGrid } from '@/components/shared/InfoGrid';
 import { RiskTable } from '@/components/shared/RiskTable';
@@ -7,7 +9,20 @@ import { GanttTable } from '@/components/shared/GanttTable';
 import { Timeline } from '@/components/shared/Timeline';
 import { ganttPhases, milestones, resources, risks } from '@/data/overview';
 import { ideaMetadata } from '@/data/ideas';
-import { ClipboardList, Target, Building2, Calendar, Wrench, TriangleAlert } from 'lucide-react';
+import { ClipboardList, Target, Building2, Calendar, Wrench, TriangleAlert, HelpCircle, Brain, FileSearch, BookOpen, Scale, RefreshCw, Gavel, Sparkles } from 'lucide-react';
+
+const pipelineSteps: PipeStep[] = [
+  { id: 'input', icon: HelpCircle, title: 'Input Question', desc: 'Scientific question enters the deliberation system', color: 'sky' },
+  { id: 'gate', icon: Brain, title: 'Confidence Gate', desc: 'Lightweight check if full debate is needed vs. direct answer', color: 'amber' },
+  { id: 'agents', icon: Sparkles, title: '3 Heterogeneous Agents', desc: 'Qwen3-32B, Mistral-Small-24B, Phi-4-Reasoning state initial positions', color: 'violet' },
+  { id: 'decomp', icon: FileSearch, title: 'Claim Decomposition', desc: 'Each answer split into atomic, verifiable propositions', color: 'indigo' },
+  { id: 'retrieval', icon: BookOpen, title: 'Source-Partitioned Retrieval', desc: 'Agent A→PubMed, B→ArXiv, C→Semantic Scholar — prevents narrow retrieval', color: 'teal' },
+  { id: 'scoring', icon: Scale, title: 'Evidence Scoring', desc: 'Cross-encoder reranker: supports / contradicts / no evidence per claim', color: 'emerald' },
+  { id: 'trust', icon: RefreshCw, title: 'Trust Update', desc: 'Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ → softmax → clamp[0.1, 0.9] → renormalize', color: 'rose' },
+  { id: 'revise', icon: RefreshCw, title: 'Revision Rounds (K=3)', desc: 'Agents see peer arguments + own trust standing; repeat retrieval → update loop', color: 'violet' },
+  { id: 'adjudicate', icon: Gavel, title: 'Trust-Weighted Adjudication', desc: 'Final answer = argmax over Σ(Tᵢ × positionᵢ) — NOT majority vote', color: 'indigo' },
+  { id: 'output', icon: Sparkles, title: 'Final Output', desc: 'Answer + evidence citations + trust trajectory + per-agent reasoning', color: 'teal' },
+];
 
 const idea = ideaMetadata[0];
 
@@ -90,32 +105,32 @@ export function OverviewPage() {
         {/* Pipeline Overview */}
         <Section accent="teal" className="animate-fade-up animate-delay-2">
           <SectionTitle icon={Building2}>System Pipeline</SectionTitle>
-          <div className="bg-[#f0f7ff] dark:bg-[rgba(59,91,219,0.08)] border border-[#bfdbfe] dark:border-[rgba(59,91,219,0.3)] rounded-lg p-4 sm:p-5 font-mono text-xs sm:text-sm leading-relaxed overflow-x-auto">
-            <pre className="bg-transparent border-0 p-0 text-xs sm:text-sm whitespace-pre-wrap">
-{`Input (scientific question)
-        ↓
-Confidence Estimator (gate: debate needed?)
-        ↓
-[IF confident] → Direct Answer → Output
-        ↓ [IF uncertain]
-Three Heterogeneous Agents state initial positions (Round 0)
-        ↓
-Claim Decomposition (each agent's answer → atomic propositions)
-        ↓
-Source-Partitioned Retrieval (Agent A→PubMed, B→ArXiv, C→Semantic Scholar)
-        ↓
-Evidence Scoring (cross-encoder reranker: supports / contradicts / no evidence)
-        ↓
-Trust Update ── Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ
-              ── softmax → clamp[0.1, 0.9] → renormalize
-        ↓
-[Optional: Injection point for testing, between Round 1 and Round 2]
-        ↓
-Agents Revise Positions (Round 2) → Repeat for K=3 rounds
-        ↓
-Trust-Weighted Aggregation (NOT majority vote)
-        ↓
-Final Output: Answer + Evidence Citations + Trust Trajectory`}</pre>
+          <p className="text-sm mb-5">
+            End-to-end deliberation flow. <strong>Confident queries</strong> skip directly to answer; uncertain
+            queries trigger the full evidence-grounded debate pipeline.
+          </p>
+
+          {/* Phase indicators */}
+          <div className="flex flex-wrap gap-2 mb-6">
+            {[
+              { label: 'Init', color: 'bg-[#1c7ed6]' },
+              { label: 'Gate', color: 'bg-[#f08c00]' },
+              { label: 'Debate', color: 'bg-[#7c3aed]' },
+              { label: 'Evidence', color: 'bg-[#0ca678]' },
+              { label: 'Output', color: 'bg-[#6366f1]' },
+            ].map((p) => (
+              <span key={p.label} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-white" style={{ background: p.color }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
+                {p.label}
+              </span>
+            ))}
+          </div>
+
+          <PipelineFlow steps={pipelineSteps} />
+
+          <div className="mt-5 flex items-center gap-2 text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#0ca678] text-white text-[10px] font-bold flex-shrink-0">✓</span>
+            Confident queries bypass the debate loop and return a direct answer from the gate.
           </div>
         </Section>
 

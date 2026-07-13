@@ -263,7 +263,7 @@ pre::-webkit-scrollbar {
   }
   .shadow-sm, .shadow-md { box-shadow: none !important; }
   p, li, td, th { font-size: 10pt !important; color: #1a1a1a !important; }
-  .text-\[#64748b\], .text-\[#94a3b8\] { color: #444 !important; }
+  [class*="text-"] { color: #444 !important; }
   a { color: #1f3a5f !important; text-decoration: underline !important; }
   table { border-collapse: collapse !important; width: 100% !important; }
   th, td { border: 1px solid #ccc !important; padding: 4pt 6pt !important; font-size: 9pt !important; }
@@ -273,4 +273,16 @@ pre::-webkit-scrollbar {
   code { font-size: 8.5pt !important; }
   .rounded-\[10px\], .rounded-lg, .rounded-md { border-radius: 0 !important; }
   .gap-3, .gap-4, .gap-5, .gap-6, .space-y-1, .space-y-2, .space-y-3 { margin: 0 !important; }
+  /* Proposal document — always light, no dark interference */
+  .proposal-doc,
+  .proposal-doc * {
+    color: #1a1a1a !important;
+    background: #fff !important;
+    border-color: #cfcfcf !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .proposal-doc a { color: #1f3a5f !important; text-decoration: underline !important; }
+  .proposal-doc strong { color: #10233a !important; }
+  .proposal-doc h1, .proposal-doc h2 { color: #1f3a5f !important; }
 }
