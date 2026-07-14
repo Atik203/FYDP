@@ -1,3 +1,4 @@
+import { ArchitectureFlow } from "@/components/shared/ArchitectureFlow";
 import { Badge } from "@/components/shared/Badge";
 import { Callout } from "@/components/shared/Callout";
 import { GanttTable } from "@/components/shared/GanttTable";
@@ -5,6 +6,8 @@ import { InfoGrid } from "@/components/shared/InfoGrid";
 import type { PipeStep } from "@/components/shared/PipelineFlow";
 import { PipelineFlow } from "@/components/shared/PipelineFlow";
 import { RiskTable } from "@/components/shared/RiskTable";
+import { TrustSimulator } from "@/components/shared/TrustSimulator";
+import { Walkthrough } from "@/components/shared/Walkthrough";
 import {
   ColBox,
   Section,
@@ -544,10 +547,19 @@ export function Idea1Content() {
         <p className="text-sm mb-5">
           The system processes each query through a confidence gate, then either
           returns a direct answer or triggers the full evidence-grounded debate
-          pipeline shown below.
+          pipeline shown below. The diagram is fully interactive — pan, zoom, and
+          click any stage to read what it does in plain English.
         </p>
 
-        <PipelineFlow steps={detailPipeline} className="mb-5" />
+        {/* Interactive graph (screen only) */}
+        <div className="print:hidden mb-5">
+          <ArchitectureFlow />
+        </div>
+
+        {/* Static pipeline (print fallback) */}
+        <div className="hidden print:block">
+          <PipelineFlow steps={detailPipeline} className="mb-5" />
+        </div>
 
         <div className="flex items-center gap-2 text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] mb-5">
           <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#f08c00] text-white text-[10px] font-bold flex-shrink-0">
@@ -615,6 +627,14 @@ export function Idea1Content() {
             </p>
           </ColBox>
         </TwoCol>
+
+        {/* Interactive trust-score simulator (screen only) */}
+        <div className="print:hidden mt-6">
+          <h4 className="text-sm font-bold mb-3">
+            Try the Trust Update Yourself (§4.4)
+          </h4>
+          <TrustSimulator />
+        </div>
       </Section>
 
       {/* ───────────── 5. Detailed Multi-Agent Pipeline ───────────── */}
@@ -749,6 +769,14 @@ export function Idea1Content() {
           intermediate result is logged for traceability, ECR calibration, and
           verification of Propositions 2–3.
         </p>
+
+        {/* Interactive step-by-step walkthrough (screen only) */}
+        <div className="print:hidden mb-5">
+          <h4 className="text-sm font-bold mb-3">
+            Walk the Real Example, One Step at a Time
+          </h4>
+          <Walkthrough />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {[
