@@ -535,19 +535,94 @@ export const paperStages: PaperStage[] = [
       },
       {
         id: 29,
-        title: "Bayesian Assessment of Sycophancy in LLMs (Basil)",
-        authors: "Atwell et al.",
-        venue: "2026 — pre-print, verify current status",
-        verified: false,
+        title: "Bayesian Assessment of Sycophancy in LLMs (BASIL)",
+        authors: "Atwell, Heydari, Sicilia, Alikhani",
+        venue: "arXiv:2508.16846 — pre-print (2026)",
+        verified: true,
         priority: "medium",
         difficulty: "Advanced",
         readTime: "~1.5 hours",
         readSections: "Bayesian sycophancy measurement methodology",
         whyImportant: "Methodologically relevant to our ECR metric design (§9)",
         keyTakeaways:
-          "Bayesian framing of sycophancy measurement — potential methodological cross-reference",
+          "Bayesian framing of sycophancy measurement — potential methodological cross-reference for calibrating trust vs. correctness",
         phase: "experiments",
-        note: "Verify publication status",
+        note: "arXiv:2508.16846 — verify final venue before citing",
+      },
+      {
+        id: 36,
+        title:
+          "When Persuasion Overrides Truth in Multi-Agent LLM Debates (CW-POR)",
+        authors: "Agarwal & Khanna",
+        venue: "arXiv:2504.00374 — pre-print",
+        verified: true,
+        priority: "critical",
+        difficulty: "Advanced",
+        readTime: "~1.5 hours",
+        readSections:
+          "CW-POR metric definition; confidence-normalization procedure",
+        whyImportant:
+          "Directly motivates our CCR/ECR framing — shows an LLM judge endorses a persuasive falsehood over a correct answer WITH HIGH CONFIDENCE, the exact self-reported-confidence failure our external evidence signal is designed to bypass (§2, §9, §18)",
+        keyTakeaways:
+          "Confidence-Weighted Persuasion Override Rate; persuasive-but-wrong arguments override truth even in small models; underscores need for external calibration over self-reported confidence",
+        phase: "writing",
+        note: "NEW (Jul 2026 check) — cite as the sharpest evidence that self-reported confidence (iMAD-style) is manipulable; strengthens our external-evidence argument",
+      },
+      {
+        id: 37,
+        title:
+          "Heterogeneous LLM Debate Under Adversarial Peers: Honest Gains, Replacement Costs, and Resilience",
+        authors: "Nilayam, Ramanna, Tumbade, Nayak (ServiceNow)",
+        venue: "arXiv:2606.19826 — pre-print",
+        verified: true,
+        priority: "high",
+        difficulty: "Advanced",
+        readTime: "~2 hours",
+        readSections:
+          "Matched-panel methodology; harmful-revision vs corrective-revision measurement",
+        whyImportant:
+          "Empirically grounds our heterogeneity design choice (§5, Challenge D) — shows an honest heterogeneous peer cuts harmful revision (89%→35%) while an adversarial one reverses it. Directly informs our correlated-failure and 2-vs-1 injection analysis (§10)",
+        keyTakeaways:
+          "Heterogeneity is both an attack surface AND a defense when an adversary is already present; end-of-debate flip rate exposes damage that conditional revision rate hides",
+        phase: "experiments",
+        note: "NEW (Jul 2026 check) — supports our heterogeneous-family design and adversarial-injection framing",
+      },
+      {
+        id: 38,
+        title:
+          "PARROT: Persuasion and Agreement Robustness Rating of Output Truth — a Sycophancy Robustness Benchmark",
+        authors: "Çelebi, Ezerceli, El Hussieni",
+        venue: "arXiv:2511.17220 — pre-print (2025)",
+        verified: true,
+        priority: "high",
+        difficulty: "Intermediate",
+        readTime: "~1.5 hours",
+        readSections: "Benchmark construction; robustness rating protocol",
+        whyImportant:
+          "Recent standardized sycophancy-robustness benchmark — a candidate external comparison point / complementary stress set alongside our injection protocol (§8, §9)",
+        keyTakeaways:
+          "Standardized persuasion/agreement robustness rating; useful as an independent robustness axis to cross-check our CCR results against",
+        phase: "experiments",
+        note: "NEW (Jul 2026 check) — evaluate as a supplementary benchmark; verify venue before citing",
+      },
+      {
+        id: 39,
+        title:
+          "When Identity Skews Debate: Anonymization for Bias-Reduced Multi-Agent Reasoning",
+        authors: "(2025)",
+        venue: "arXiv:2510.07517 — pre-print",
+        verified: true,
+        priority: "medium",
+        difficulty: "Intermediate",
+        readTime: "~1.5 hours",
+        readSections:
+          "Identity-bias framing; anonymization mitigation and its limits",
+        whyImportant:
+          "Represents a THIRD mitigation family (anonymization / identity-bias removal) distinct from prompt-refinement (ConsensAgent) and our evidence-grounding — must be differentiated in related work: it removes identity cues, it does not verify claims against external evidence (§2, §3)",
+        keyTakeaways:
+          "Unifies sycophancy + self-bias as 'identity bias'; mitigates by anonymizing peer outputs — orthogonal to evidence verification, so complementary rather than competing",
+        phase: "writing",
+        note: "NEW (Jul 2026 check) — add to §3 related-work as a distinct mitigation family we position against",
       },
     ],
   },

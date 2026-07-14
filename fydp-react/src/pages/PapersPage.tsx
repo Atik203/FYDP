@@ -187,10 +187,10 @@ export function PapersPage() {
             Reading Roadmap
           </>
         }
-        subtitle="35 papers across 6 stages · Verified publication status · Reading timeline · Priority & difficulty"
+        subtitle="39 papers across 6 stages · Verified publication status · Reading timeline · Priority & difficulty"
         coverItems={[
-          { label: "Total Papers", value: "35" },
-          { label: "Critical Priority", value: "13" },
+          { label: "Total Papers", value: "39" },
+          { label: "Critical Priority", value: "14" },
           { label: "Last Verified", value: "Jul 2026" },
           { label: "Tracking Tool", value: "Zotero + Shared Matrix" },
         ]}
@@ -289,13 +289,13 @@ export function PapersPage() {
               {
                 pid: "p2",
                 label: "Before Experiments",
-                desc: "Papers 6, 18-20, 28-29, 32-34. Read before finalizing eval pipeline.",
+                desc: "Papers 6, 18-20, 28-29, 32-34, 37-38. Read before finalizing eval pipeline.",
                 color: "bg-[#f08c00]",
               },
               {
                 pid: "p3",
                 label: "Before Writing",
-                desc: "Papers 21-25, 27. Re-read for sharp related-work differentiation.",
+                desc: "Papers 21-25, 27, 36, 39. Re-read for sharp related-work differentiation.",
                 color: "bg-[#e03131]",
               },
             ].map((ph) => (

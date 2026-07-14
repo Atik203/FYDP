@@ -1,4 +1,3 @@
-import { ArchitectureFlow } from "@/components/shared/ArchitectureFlow";
 import { Badge } from "@/components/shared/Badge";
 import { Callout } from "@/components/shared/Callout";
 import { GanttTable } from "@/components/shared/GanttTable";
@@ -8,6 +7,22 @@ import { PipelineFlow } from "@/components/shared/PipelineFlow";
 import { RiskTable } from "@/components/shared/RiskTable";
 import { TrustSimulator } from "@/components/shared/TrustSimulator";
 import { Walkthrough } from "@/components/shared/Walkthrough";
+import { lazy, Suspense } from "react";
+
+// React Flow is heavy (~180 kB) and only used here — load it on demand.
+const ArchitectureFlow = lazy(() =>
+  import("@/components/shared/ArchitectureFlow").then((m) => ({
+    default: m.ArchitectureFlow,
+  })),
+);
+
+function FlowFallback() {
+  return (
+    <div className="rounded-xl border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] bg-[#f0f2f7] dark:bg-[#0f1225] h-[560px] flex items-center justify-center text-sm text-[#64748b] dark:text-[#94a3b8]">
+      Loading interactive diagram…
+    </div>
+  );
+}
 import {
   ColBox,
   Section,
@@ -553,7 +568,9 @@ export function Idea1Content() {
 
         {/* Interactive graph (screen only) */}
         <div className="print:hidden mb-5">
-          <ArchitectureFlow />
+          <Suspense fallback={<FlowFallback />}>
+            <ArchitectureFlow />
+          </Suspense>
         </div>
 
         {/* Static pipeline (print fallback) */}
