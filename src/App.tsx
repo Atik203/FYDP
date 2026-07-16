@@ -7,26 +7,37 @@ import { OverviewPage } from "@/pages/OverviewPage";
 import { PapersPage } from "@/pages/PapersPage";
 import { ProposalPage } from "@/pages/ProposalPage";
 import { RoadmapPage } from "@/pages/RoadmapPage";
+import { SlidePage } from "@/pages/SlidePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+function SiteLayout() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <SiteNav />
+      <div className="flex-1">
+        <Routes>
+          <Route path="/" element={<OverviewPage />} />
+          <Route path="/idea/1" element={<IdeaDetailPage />} />
+          <Route path="/roadmap" element={<RoadmapPage />} />
+          <Route path="/papers" element={<PapersPage />} />
+          <Route path="/proposal" element={<ProposalPage />} />
+        </Routes>
+      </div>
+      <SiteFooter />
+      <ScrollToTop />
+    </div>
+  );
+}
 
 function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col">
-          <SiteNav />
-          <div className="flex-1">
-            <Routes>
-              <Route path="/" element={<OverviewPage />} />
-              <Route path="/idea/1" element={<IdeaDetailPage />} />
-              <Route path="/roadmap" element={<RoadmapPage />} />
-              <Route path="/papers" element={<PapersPage />} />
-              <Route path="/proposal" element={<ProposalPage />} />
-            </Routes>
-          </div>
-          <SiteFooter />
-          <ScrollToTop />
-        </div>
+        <Routes>
+          {/* Standalone presentation deck — intentionally not in the navbar. Reach it via /slide */}
+          <Route path="/slide" element={<SlidePage />} />
+          <Route path="/*" element={<SiteLayout />} />
+        </Routes>
       </BrowserRouter>
     </ThemeProvider>
   );
