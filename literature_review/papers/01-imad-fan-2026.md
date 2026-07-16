@@ -64,7 +64,16 @@ iMAD addresses the inefficiency of running full MAD on every query. Their soluti
 - *Confidence Penalty (LCP):* Penalizes misalignment between predicted score and an auxiliary uncertainty score derived from semantic hesitation features.
 - *Expected Calibration Error (ECE):* Regularizes predicted scores toward empirical correctness.
 
-**Architecture:** Uses a two-headed MLP — one head produces the debate-triggering score p, the other produces the uncertainty score u (used only during training via LCP). The LLM confidence score p_LLM is integrated via a logit-space weighted combination.
+**Architecture (formal):** A shared MLP encoder f_e(z) feeds two heads — a correctness head f_p and a hesitation head f_u — producing logits ℓ_p and ℓ_u. The two output scores are:
+- p := σ(w₁·ℓ_LLM + w₂·ℓ_p + ε) — the debate-triggering score, fusing the scalar LLM self-reported confidence ℓ_LLM with the MLP logit ℓ_p in logit space (w₁, w₂, ε are learnable).
+- u := σ(ℓ_u) — the auxiliary uncertainty/hesitation score, used only during training via L_CP.
+
+**FocusCal loss (formal):** L_FC = L_AF + λ·L_CP + μ·ECE (λ, µ tuned by grid search on held-out validation).
+- *Asymmetric Focal Loss:* L_AF = −α₁(1−p)^γ log(p) if y=1; −α₀ p^γ log(1−p) if y=0. Focusing parameter γ down-weights easy cases; class weights set α₀ > α₁ so a *high p on a wrong answer* (y=0 — debate skipped when it was needed) is penalized hardest.
+- *Confidence Penalty (piecewise):* L_CP = u² if (y=0 and p>τ); (1−u)² if (y=1 and p<τ); 0 otherwise. Penalizes overconfidence on wrong answers and under-confidence on correct ones — the term that aligns p with semantic hesitation.
+- *ECE:* regularizes p toward empirical bin-wise correctness.
+
+Labels: y=1 if the single-agent answer matches ground truth, else y=0. The goal is *not* to reproduce y but to flag *recoverable* errors (wrong but fixable by debate); confidently-wrong-but-unrecoverable cases are deliberately left with low trigger priority.
 
 ### 3. Key Results (Extracted)
 
@@ -83,6 +92,26 @@ iMAD addresses the inefficiency of running full MAD on every query. Their soluti
 - When triggering debate, iMAD successfully recovers 7.1% (MEDQA) to 16.2% (GSM8K) of initially wrong answers — approaching the MAD upper bound.
 
 **Notable limitation for our comparison:** Their classifier skips debate in 3.5% of cases where it would help (MMLU near-miss) and triggers unnecessarily in ~5–10% of cases, showing the inherent limitation of a feature-based gating approach.
+
+**Baselines used (5, not including MoA).** iMAD is evaluated against exactly five baselines across three categories — this is the authoritative list for our related-work section:
+
+| Category | Baseline | Notes |
+|---|---|---|
+| Single-agent | **CoT** (Wei et al. 2022) | Chain-of-Thought, one pass |
+| Single-agent | **SC** (Self-Consistency, Wang et al. 2023) | CoT sampled ×5, majority vote |
+| Full-debate MAD | **MAD** (Liang et al. 2024) | 3 agents, distinct personas, debate every query |
+| Full-debate MAD | **GD** (GroupDebate, Liu et al. 2024) | 5 agents clustered into subgroups, 3 rounds inter-group consensus |
+| Selective MAD | **DOWN** (Eo et al. 2025) | Confidence-threshold gating; τ=0.8; *requires labeled eval data to tune* |
+
+*MoA is discussed in related work but is NOT an experimental baseline in iMAD — do not cite it as such.*
+
+**DOWN — iMAD's closest competitor (directly supports our Challenge C).** DOWN is the only other *selective* MAD method: it triggers debate when the LLM's self-reported confidence score falls below a tuned threshold (0.8). iMAD's published critique of DOWN is, in effect, a third-party endorsement of our thesis that self-reported confidence is an unreliable trust signal:
+- iMAD (line ~895): confidence scores "are often overconfident even when the answer is incorrect," so DOWN "frequently skips debate on instances where additional debate would be beneficial."
+- On OKVQA, DOWN's accuracy stays near the single-agent baseline — it fails to identify recoverable errors.
+- DOWN also violates the zero-shot assumption (needs labeled data to tune its threshold); iMAD uses a fixed classifier with no dataset-specific tuning and still beats DOWN by ~4.1% average accuracy under the stricter protocol.
+- Efficiency framing: DOWN and iMAD have comparable token cost and much higher ApT (accuracy-per-100k-tokens) than full-debate MAD/GD; iMAD has slightly lower ApT than DOWN (53.9 vs 58.6) because it correctly triggers *more* of the debates that actually matter.
+
+*Why this matters for us:* DOWN is the published precedent for "confidence-threshold-gated debate," and iMAD's own data shows why that signal is weak. Our evidence-grounded trust re-weighting targets exactly this failure — cite the iMAD-vs-DOWN result as external evidence that self-reported confidence is manipulable/unreliable (Challenge C).
 
 ### 4. Paper's Self-Admitted Limitations
 
@@ -142,11 +171,12 @@ From the paper directly:
 
 | Paper in this review | Relationship |
 |---|---|
-| **MoA (Wang et al., 2025)** | iMAD compares against MoA as B6 baseline; they outperform it in token efficiency |
-| **MAD (Liang et al., 2024)** | The vanilla MAD framework iMAD selectively triggers; our idea also builds on MAD |
-| **ConsensAgent (Pitre et al., 2025)** | Not cited in iMAD (different subproblem — sycophancy mitigation vs efficiency) |
+| **MoA (Wang et al., 2025)** | Discussed in iMAD's related work as a hierarchical multi-agent method, but **not** used as an experimental baseline. Do not cite iMAD as evaluating against MoA — its five baselines are CoT, SC, MAD, GD, DOWN (see §3 baseline table). |
+| **MAD (Liang et al., 2024)** | The vanilla three-persona MAD framework iMAD selectively triggers, and one of its baselines; our idea also builds on this MAD formulation. |
+| **DOWN (Eo et al., 2025)** | iMAD's closest competitor — the confidence-threshold selective-debate baseline. See the "DOWN" block in §3 for why this is our highest-value citation from this paper. |
+| **ConsensAgent (Pitre et al., 2025)** | Not cited in iMAD (different subproblem — sycophancy mitigation vs efficiency). |
 
-iMAD also cites the sycophancy diagnosis literature (though it doesn't cite our specific references like Yao et al. directly) and incorporates Du et al. 2023's MAD formulation.
+iMAD also cites the sycophancy diagnosis literature (though it doesn't cite our specific references like Yao et al. directly) and builds on the Liang et al. 2024 MAD formulation.
 
 ### 9. Relevance to FYDP
 
