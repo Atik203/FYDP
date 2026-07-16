@@ -1,1 +1,1 @@
-# FYDP Project Ideas
+# FYDP Project Idea
