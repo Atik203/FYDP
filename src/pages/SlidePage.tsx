@@ -282,10 +282,23 @@ function ImadSlideOne() {
               </div>
             </div>
             <div
-              className="text-center text-[2.2cqh] font-bold rounded-lg py-[0.8cqh]"
-              style={{ background: "#f1f5f9", color: DEEP_INK }}
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
+              style={{ background: "#f1f5f9" }}
             >
-              across 6 QA / VQA datasets
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: "#475569" }}
+              >
+                across 6 datasets
+              </div>
+              <div
+                className="text-[2cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                QA: MedQA · MMLU · GSM8K
+                <br />
+                VQA: OK-VQA · VQA-v2 · ScienceQA
+              </div>
             </div>
           </div>
         </Card>
@@ -358,7 +371,7 @@ function ImadSlideTwo() {
           title="Relevant to Our Idea"
           color={ACCENT}
         >
-          <ul>
+          <ul className="flex flex-col justify-between h-full">
             <Bullet>
               Our <b>closest published, efficiency-focused baseline (B9)</b>.
             </Bullet>
@@ -370,8 +383,16 @@ function ImadSlideTwo() {
               After triggering, it falls back to plain <b>majority vote</b>.
             </Bullet>
             <Bullet>
+              Trust rests on <b>self-reported confidence</b> — the exact signal
+              social pressure can manipulate.
+            </Bullet>
+            <Bullet>
               So it stays exposed to <b>sycophantic collapse</b>: a correct
               minority gives in to a confident wrong majority.
+            </Bullet>
+            <Bullet>
+              Shares our setting — <b>zero-shot, no fine-tuning</b> — so it is a
+              fair, directly comparable baseline.
             </Bullet>
           </ul>
         </Card>
@@ -381,14 +402,22 @@ function ImadSlideTwo() {
           title="Gap / Limitations"
           color={ROSE}
         >
-          <ul>
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>No evidence grounding</b> — influence is never tied to external
+              facts, only internal cues.
+            </Bullet>
             <Bullet>
               Classifier trained <b>offline &amp; fixed</b> — cannot adapt to
               model drift or new domains.
             </Bullet>
             <Bullet>
+              Needs <b>labeled data</b> to train its 41-feature gate per model
+              family.
+            </Bullet>
+            <Bullet>
               <b>Black-box API</b> limits: no streaming / token-level monitoring
-              (left as future work).
+              (future work).
             </Bullet>
             <Bullet>
               Majority vote after triggering ={" "}
