@@ -11,7 +11,7 @@ Authors & Year:
 Wei Fan, JinYi Yoon, Bo Ji — 2026
 
 Link:
-https://doi.org/10.1609/aaai.v40i1.12345 (AAAI 2026)
+https://doi.org/10.1609/AAAI.V40I35.40181 (AAAI 2026, Oral)
 arXiv: https://arxiv.org/abs/2511.11306
 
 Summary:
@@ -32,7 +32,7 @@ The paper does not address within-debate agent weighting or sycophantic collapse
 | Field | Value |
 |---|---|
 | **Venue** | AAAI 2026 (Oral) — Association for the Advancement of Artificial Intelligence |
-| **DOI** | See linked AAAI proceedings |
+| **DOI** | 10.1609/AAAI.V40I35.40181 (verified via DBLP, 2026-07-17) |
 | **arXiv** | 2511.11306v2 |
 | **Last verified** | 2026-07-17 — confirmed via paper copyright notice ("Copyright © 2026, AAAI") and conference listing |
 | **Code** | https://github.com/Fanwei100/iMAD |
@@ -44,6 +44,7 @@ The paper does not address within-debate agent weighting or sycophantic collapse
   author={Fan, Wei and Yoon, JinYi and Ji, Bo},
   booktitle={Proceedings of the 40th AAAI Conference on Artificial Intelligence (AAAI)},
   year={2026},
+  doi={10.1609/AAAI.V40I35.40181},
   note={Oral presentation}
 }
 ```
@@ -56,7 +57,7 @@ iMAD addresses the inefficiency of running full MAD on every query. Their soluti
 1. Single agent generates a structured self-critique response (initial CoT + counterargument + confidence scores for both perspectives).
 2. 41 interpretable features extracted from this response — surface-level stats, readability scores, POS counts, lexical uncertainty cues (hedging, contrast), confidence misalignment indicators.
 3. A 6-layer MLP (200 hidden units each, batch norm, ReLU, dropout 0.2) predicts a debate-triggering score.
-4. If score < threshold (τ=0.7), MAD is triggered; otherwise the original answer is kept.
+4. The classifier outputs a triggering score p. When p < τ (τ=0.7), MAD is triggered; otherwise the original answer is kept. Note the direction: a *low* score means the self-critique showed hesitation/uncertainty, so debate is triggered — a *high* score means the answer looks settled, so debate is skipped.
 
 **Training:** The classifier is trained on PubMedQA and GQA (held-out from evaluation) using FocusCal loss:
 - *Asymmetric Focal Loss (LAF):* Penalizes overconfident errors (high score, wrong answer) more than underconfident correct ones.
