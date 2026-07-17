@@ -2,27 +2,10 @@ import { Badge } from "@/components/shared/Badge";
 import { Callout } from "@/components/shared/Callout";
 import { GanttTable } from "@/components/shared/GanttTable";
 import { InfoGrid } from "@/components/shared/InfoGrid";
-import type { PipeStep } from "@/components/shared/PipelineFlow";
-import { PipelineFlow } from "@/components/shared/PipelineFlow";
 import { RiskTable } from "@/components/shared/RiskTable";
+import { ArchitectureDiagram } from "@/components/shared/ArchitectureDiagram";
 import { TrustSimulator } from "@/components/shared/TrustSimulator";
 import { Walkthrough } from "@/components/shared/Walkthrough";
-import { lazy, Suspense } from "react";
-
-// React Flow is heavy (~180 kB) and only used here — load it on demand.
-const ArchitectureFlow = lazy(() =>
-  import("@/components/shared/ArchitectureFlow").then((m) => ({
-    default: m.ArchitectureFlow,
-  })),
-);
-
-function FlowFallback() {
-  return (
-    <div className="rounded-xl border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] bg-[#f0f2f7] dark:bg-[#0f1225] h-[560px] flex items-center justify-center text-sm text-[#64748b] dark:text-[#94a3b8]">
-      Loading interactive diagram…
-    </div>
-  );
-}
 import {
   ColBox,
   Section,
@@ -67,79 +50,6 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-
-const detailPipeline: PipeStep[] = [
-  {
-    id: "input",
-    icon: HelpCircle,
-    title: "Input Question",
-    desc: "Scientific question enters the system",
-    color: "sky",
-  },
-  {
-    id: "gate",
-    icon: Brain,
-    title: "Confidence Gate",
-    desc: "Single-pass check: self-reported confidence or 3-sample agreement",
-    color: "amber",
-  },
-  {
-    id: "agents",
-    icon: Sparkles,
-    title: "Agent Pool (N=3)",
-    desc: "Qwen3-32B, Mistral-Small-3.2-24B, Phi-4-Reasoning — heterogeneous families",
-    color: "violet",
-  },
-  {
-    id: "decomp",
-    icon: FileSearch,
-    title: "Claim Decomposition",
-    desc: "Each agent answer → atomic propositions for verification",
-    color: "indigo",
-  },
-  {
-    id: "retrieval",
-    icon: BookOpen,
-    title: "Source-Partitioned RAG",
-    desc: "Agent A→PubMed, B→ArXiv, C→Semantic Scholar + cross-encoder reranker",
-    color: "teal",
-  },
-  {
-    id: "scoring",
-    icon: Scale,
-    title: "Evidence Scoring",
-    desc: "Cross-encoder scores each claim: supports / contradicts / no evidence",
-    color: "emerald",
-  },
-  {
-    id: "trust",
-    icon: RefreshCw,
-    title: "Trust Update (Core)",
-    desc: "Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ → softmax → clamp[0.1, 0.9] → renormalize",
-    color: "rose",
-  },
-  {
-    id: "revise",
-    icon: RefreshCw,
-    title: "Revision Rounds (K=3)",
-    desc: "Agents see peer arguments + own trust; repeat retrieval → update loop",
-    color: "violet",
-  },
-  {
-    id: "adjudicate",
-    icon: Gavel,
-    title: "Trust-Weighted Adjudication",
-    desc: "Final answer = argmax over Σ(Tᵢ × positionᵢ) — not majority vote",
-    color: "indigo",
-  },
-  {
-    id: "output",
-    icon: Sparkles,
-    title: "Final Output",
-    desc: "Answer + evidence citations + trust trajectory + per-agent reasoning",
-    color: "teal",
-  },
-];
 
 export function Idea1Content() {
   return (
@@ -562,20 +472,12 @@ export function Idea1Content() {
         <p className="text-sm mb-5">
           The system processes each query through a confidence gate, then either
           returns a direct answer or triggers the full evidence-grounded debate
-          pipeline shown below. The diagram is fully interactive — pan, zoom, and
-          click any stage to read what it does in plain English.
+          pipeline shown below. Tap any stage to read what it does in plain
+          English.
         </p>
 
-        {/* Interactive graph (screen only) */}
-        <div className="print:hidden mb-5">
-          <Suspense fallback={<FlowFallback />}>
-            <ArchitectureFlow />
-          </Suspense>
-        </div>
-
-        {/* Static pipeline (print fallback) */}
-        <div className="hidden print:block">
-          <PipelineFlow steps={detailPipeline} className="mb-5" />
+        <div className="mb-5">
+          <ArchitectureDiagram />
         </div>
 
         <div className="flex items-center gap-2 text-xs text-[#64748b] dark:text-[#94a3b8] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.03)] rounded-lg p-3 border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] mb-5">
