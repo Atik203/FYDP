@@ -223,7 +223,7 @@ export function ProposalPage() {
           proposing a mitigation; <em>efficiency optimisation</em> (iMAD, Fan et
           al., 2026, AAAI Oral), which learns <em>when</em> to trigger a debate
           rather than <em>whom to trust</em> during it; and{" "}
-          <em>static aggregation</em> (Mixture-of-Agents, Wang et al., 2024,
+          <em>static aggregation</em> (Mixture-of-Agents, Wang et al., 2025,
           ICLR Poster), which combines model outputs without dynamic
           evidence grounding. Crucially,{" "}
           <strong>
@@ -311,7 +311,7 @@ export function ProposalPage() {
               </td>
             </tr>
             <tr>
-              <td style={tdStyle}>MoA &mdash; Wang et al. (2024/25), ICLR Poster</td>
+              <td style={tdStyle}>MoA &mdash; Wang et al. (2025), ICLR Poster</td>
               <td style={tdStyle}>
                 Layered multi-agent aggregation of diverse LLMs.
               </td>
@@ -1060,7 +1060,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           <em>Findings of ACL 2025</em>, pp. 22112&ndash;22133.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
-          Wang, J., et al. (2024). Mixture-of-Agents: Leveraging diverse LLMs
+          Wang, J., et al. (2025). Mixture-of-Agents: Leveraging diverse LLMs
           for improved reasoning. <em>ICLR 2025 (Poster)</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>

@@ -1,8 +1,12 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Paper #3
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📄 Paper #3 — DebUnc
 
-STATUS: Competitor (closest on mechanism) | THREAT TO NOVELTY: Medium | LAST VERIFIED: 2026-07-17 via full paper text (ACL Anthology 2025.findings-emnlp.1265)
+![Paper](https://img.shields.io/badge/Paper-%233-1f6feb?style=for-the-badge)
+![Role](https://img.shields.io/badge/Role-Competitor%20(closest%20on%20mechanism)-d29922?style=for-the-badge)
+![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Medium-d29922?style=for-the-badge)
+![Venue](https://img.shields.io/badge/Venue-Findings%20of%20EMNLP%202025-6e40c9?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--07--17-8957e5?style=for-the-badge)
+
+> *Verified via full paper text (ACL Anthology 2025.findings-emnlp.1265).*
 
 Paper Title:
 DebUnc: Improving Large Language Model Agent Communication With Uncertainty Metrics
@@ -24,7 +28,7 @@ This is our nearest neighbor on mechanism — both DebUnc and our C1 dynamically
 Gap / Limitation Noted in Paper:
 The authors are explicit that performance is capped by uncertainty-metric quality: "performance continues to improve as uncertainty estimation becomes more reliable," and their Ground Truth oracle (which "cannot be used in real-world applications" because it needs the answer) far outperforms the deployable metrics. This is the exact gap we fill: DebUnc identifies that a better-than-self-reported trust signal is needed but has no real-world way to obtain one. Additionally, attention scaling requires white-box access to model internals (open-source weights, custom attention code) — it cannot run on closed API models — and token-probability uncertainty metrics are unavailable for most closed models. Their trust signal is also purely *internal*: it never consults any external ground truth, so a confidently-wrong-but-internally-consistent agent still receives high influence.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## Section 2 — Expert Detailed Analysis
 

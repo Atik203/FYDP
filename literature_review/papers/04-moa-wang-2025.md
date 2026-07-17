@@ -1,8 +1,12 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Paper #4
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📄 Paper #4 — Mixture-of-Agents (MoA)
 
-STATUS: Context (foundational architecture) | THREAT TO NOVELTY: Low | LAST VERIFIED: 2026-07-17 via full paper text + ICLR 2025 proceedings
+![Paper](https://img.shields.io/badge/Paper-%234-1f6feb?style=for-the-badge)
+![Role](https://img.shields.io/badge/Role-Context%20(foundational%20arch.)-2ea043?style=for-the-badge)
+![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
+![Venue](https://img.shields.io/badge/Venue-ICLR%202025%20(Poster)-6e40c9?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--07--17-8957e5?style=for-the-badge)
+
+> *Verified via full paper text + ICLR 2025 proceedings.*
 
 Paper Title:
 Mixture-of-Agents Enhances Large Language Model Capabilities
@@ -24,7 +28,7 @@ MoA is the canonical example of the "static multi-model aggregation" branch our 
 Gap / Limitation Noted in Paper:
 The authors' own analysis shows the final aggregator's quality strongly correlates with proposer quality and that a poor aggregator can degrade results (Table 4: e.g., LLaMA-3-70B scores 45.0% as aggregator vs 60.6% as proposer) — i.e., the synthesis step has no safeguard against a weak or misled aggregator beyond the base model's judgment. MoA also incurs substantial token/latency cost from multiple layers × multiple proposers, and its BLEU-vs-winrate correlation analysis is a weak proxy for *why* aggregation helps. Most importantly for us: MoA has no mechanism to detect or down-weight a confidently-wrong proposer, and no external verification — a confidently incorrect proposer's text enters the aggregator on equal footing with a correct one.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## Section 2 — Expert Detailed Analysis
 

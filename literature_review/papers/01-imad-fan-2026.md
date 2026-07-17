@@ -1,8 +1,12 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Paper #1
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📄 Paper #1 — iMAD
 
-STATUS: Baseline (B9) | THREAT TO NOVELTY: Low | LAST VERIFIED: 2026-07-17 via full paper text (AAAI proceedings)
+![Paper](https://img.shields.io/badge/Paper-%231-1f6feb?style=for-the-badge)
+![Role](https://img.shields.io/badge/Role-Baseline%20(B9)-2ea043?style=for-the-badge)
+![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
+![Venue](https://img.shields.io/badge/Venue-AAAI%202026%20(Oral)-6e40c9?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--07--17-8957e5?style=for-the-badge)
+
+> *Verified via full paper text (AAAI proceedings).*
 
 Paper Title:
 iMAD: Intelligent Multi-Agent Debate for Efficient and Accurate LLM Inference
@@ -23,7 +27,7 @@ iMAD is directly relevant as our closest published, efficiency-focused baseline 
 Gap / Limitation Noted in Paper:
 The authors note that the iMAD classifier is trained offline on static auxiliary datasets and remains fixed during deployment, making it unable to adapt to model behavior drift or domain shifts. They also highlight black-box API constraints as a bottleneck, leaving token-by-token monitoring during active generation (streaming) as future work. From our perspective, the framework's reliance on standard majority vote once triggered highlights a critical, unaddressed vulnerability to sycophantic collapse that our dynamic trust update mechanism is designed to solve.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## Section 2 — Expert Detailed Analysis
 

@@ -1,8 +1,12 @@
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Paper #2
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📄 Paper #2 — CONSENSAGENT
 
-STATUS: Competitor (nearest neighbor) | THREAT TO NOVELTY: High | LAST VERIFIED: 2026-07-17 via full paper text (ACL Anthology 2025.findings-acl.1141)
+![Paper](https://img.shields.io/badge/Paper-%232-1f6feb?style=for-the-badge)
+![Role](https://img.shields.io/badge/Role-Competitor%20(nearest%20neighbor)-d29922?style=for-the-badge)
+![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-High-cf222e?style=for-the-badge)
+![Venue](https://img.shields.io/badge/Venue-Findings%20of%20ACL%202025-6e40c9?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--07--17-8957e5?style=for-the-badge)
+
+> *Verified via full paper text (ACL Anthology 2025.findings-acl.1141).*
 
 Paper Title:
 CONSENSAGENT: Towards Efficient and Effective Consensus in Multi-Agent LLM Interactions Through Sycophancy Mitigation
@@ -23,7 +27,7 @@ This is the single most important paper for our positioning — it is our neares
 Gap / Limitation Noted in Paper:
 The authors explicitly state their method reduces sycophancy largely *as a side effect of reaching consensus in fewer rounds* — they concede "further work is required (potentially looking into the training of the LLM and specification gaming) to understand what causes it and how to deal with the root cause." It requires training/fine-tuning a separate GPT-4o prompt-optimization model per dataset (added cost + a labeled training set of 150 samples), assumes a single correct answer, and does not generalize to open-ended tasks. Most importantly for us: it has **no within-debate trust weighting** — once a prompt is optimized, agents still aggregate by confidence + consistency, leaving the correct-minority-suppression failure mode only partially addressed. This is precisely the gap our evidence-grounded trust update fills.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+---
 
 ## Section 2 — Expert Detailed Analysis
 
