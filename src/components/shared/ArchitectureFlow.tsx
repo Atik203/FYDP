@@ -125,7 +125,7 @@ const NODES: Node<StageData>[] = [
     "In: easy question · Out: answer straight to output",
     "None — only affects throughput, never correctness of the studied cases."),
   mk("agents", 210, 240, "Agent Pool (N=3)", "Uncertain path", "#7c3aed",
-    "Three DIFFERENT model families (Qwen3-32B, Mistral-Small-3.2, Phi-4-Reasoning) each answer independently. Different families make different mistakes, reducing shared blind spots.",
+    "Three DIFFERENT model families (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2) each answer independently. Different families make different mistakes, reducing shared blind spots.",
     "In: question · Out: 3 positions + reasoning, each starting at trust 1/3",
     "Unparseable output → fallback extraction. Timeout → retry once, else mark INCONCLUSIVE for that round."),
   mk("decomp", 210, 350, "Claim Decomposition", "Atomic claims", "#3b5bdb",

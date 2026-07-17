@@ -34,7 +34,7 @@ const INITIAL_AGENTS: AgentState[] = [
   {
     id: "a",
     name: "Agent A",
-    model: "Qwen3-32B",
+    model: "Qwen3.6-27B",
     position: "X",
     supported: 0.2,
     contradicted: 0.6,
@@ -44,7 +44,7 @@ const INITIAL_AGENTS: AgentState[] = [
   {
     id: "b",
     name: "Agent B",
-    model: "Mistral-Small-3.2",
+    model: "Gemma 4 26B",
     position: "X",
     supported: 0.3,
     contradicted: 0.5,
@@ -54,7 +54,7 @@ const INITIAL_AGENTS: AgentState[] = [
   {
     id: "c",
     name: "Agent C",
-    model: "Phi-4-Reasoning",
+    model: "Mistral Small 3.2",
     position: "Y",
     supported: 0.9,
     contradicted: 0.05,
