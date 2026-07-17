@@ -454,7 +454,277 @@ function ImadSlideTwo() {
   );
 }
 
-/* ── Slide 4: Thank you ──────────────────────────────────────────── */
+/* ── Slide 4: ConsensAgent — Summary + Method + Results ──────────── */
+function ConsensSlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      {/* Header */}
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#ccfbf1", color: TEAL }}
+        >
+          Paper Review · Nearest Neighbor
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          CONSENSAGENT: Efficient &amp; Effective Consensus via Sycophancy
+          Mitigation
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Priya Pitre, Naren Ramakrishnan, Xuan Wang · 2025</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
+            Findings of ACL 2025
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            aclanthology.org/2025.findings-acl.1141
+          </span>
+        </div>
+      </div>
+
+      {/* Body: summary + results */}
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              <b>First to study sycophancy inside multi-agent debate</b> — agents
+              copy/swap answers instead of reasoning.
+            </Bullet>
+            <Bullet>
+              The correct answer is present but <b>ignored in &gt;20%</b> of
+              wrong-answer cases — lost to conformity.
+            </Bullet>
+            <Bullet>
+              A <b>trigger</b> detects stalling or copying (explanation cosine
+              similarity &gt; 0.8).
+            </Bullet>
+            <Bullet>
+              On trigger, a fine-tuned GPT-4o <b>rewrites the task prompt</b> to
+              remove ambiguity → re-debate.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[2cqh]">
+            <div className="text-center">
+              <div
+                className="text-[7cqh] font-extrabold leading-none"
+                style={{ color: TEAL }}
+              >
+                ↓ 7–30%
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                less sycophancy
+              </div>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-[7cqh] font-extrabold leading-none"
+                style={{ color: ACCENT }}
+              >
+                SOTA
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                on all 6 datasets
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
+              style={{ background: "#f1f5f9" }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: "#475569" }}
+              >
+                consensus in 1–2 rounds
+              </div>
+              <div
+                className="text-[2cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                KITAB · CLUTRR · HotpotQA
+                <br />
+                Ethics · GSM8K · TriviaQA
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      {/* Method flow strip */}
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          Four-Phase Pipeline
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Independent answers + confidence",
+            "Multi-round debate",
+            "Trigger: stall / sycophancy?",
+            "Prompt optimization (fine-tuned GPT-4o)",
+            "Team answer (confidence + consistency)",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 5: ConsensAgent — Relevance + Gap ─────────────────────── */
+function ConsensSlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#ccfbf1", color: TEAL }}
+        >
+          ConsensAgent · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Our Closest Competitor — Same Problem, Different Fix
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              Our <b>nearest published neighbor</b> — same target: sycophantic
+              collapse in debate.
+            </Bullet>
+            <Bullet>
+              Shares our motivation: a <b>correct minority is overwhelmed</b> by
+              a confident majority.
+            </Bullet>
+            <Bullet>
+              Its <b>&gt;20% correct-but-ignored</b> finding is our strongest
+              empirical hook.
+            </Bullet>
+            <Bullet>
+              Its sycophancy metric (copy/swap via cosine similarity) is a{" "}
+              <b>ready baseline</b> for our eval harness.
+            </Bullet>
+            <Bullet>
+              Beats strong baselines including <b>ReConcile</b> — a likely
+              baseline for us too.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              Fixes sycophancy <b>indirectly</b> — rewrites the prompt{" "}
+              <b>before</b> debate, no in-debate trust weighting.
+            </Bullet>
+            <Bullet>
+              Fails when the prompt is <b>clear but the majority is confidently
+              wrong</b>.
+            </Bullet>
+            <Bullet>
+              Final vote still uses <b>self-reported confidence</b> — the
+              manipulable signal.
+            </Bullet>
+            <Bullet>
+              Needs a <b>per-dataset fine-tuned</b> GPT-4o + labeled samples.
+            </Bullet>
+            <Bullet>
+              Authors admit it treats the <b>symptom, not the root cause</b>.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      {/* Our contribution banner */}
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            We calibrate trust <i>during</i> the debate using external retrieved
+            evidence — not pre-debate prompt clarity or self-reported confidence.
+            Prompt clarification ≠ agent trust calibration.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 6: Thank you ──────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -486,7 +756,14 @@ function ThankYouSlide() {
   );
 }
 
-const SLIDES = [GroupSlide, ImadSlideOne, ImadSlideTwo, ThankYouSlide];
+const SLIDES = [
+  GroupSlide,
+  ImadSlideOne,
+  ImadSlideTwo,
+  ConsensSlideOne,
+  ConsensSlideTwo,
+  ThankYouSlide,
+];
 
 export function SlidePage() {
   const [index, setIndex] = useState(0);
