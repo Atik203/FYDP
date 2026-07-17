@@ -115,11 +115,11 @@ const STEPS: Step[] = [
     color: "#7c3aed",
     body: (
       <div className="space-y-2">
-        <AgentLine color={A} name="A · Qwen" text="Yes — significant effect." tag="Answer X" />
-        <AgentLine color={B} name="B · Mistral" text="No effect found." tag="Answer X" />
+        <AgentLine color={A} name="A · Qwen3.6" text="Yes — significant effect." tag="Answer X" />
+        <AgentLine color={B} name="B · Gemma 4" text="No effect found." tag="Answer X" />
         <AgentLine
           color={C}
-          name="C · Phi-4"
+          name="C · Mistral"
           text="Yes, but only in a specific subgroup."
           tag="Answer Y"
         />

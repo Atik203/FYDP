@@ -160,7 +160,16 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 - **Alternative implementation:** could use a trained classifier instead of self-report; rejected for FYDP scope as unnecessary added complexity — self-report is sufficient and matches this gate's low-stakes role.
 - **What happens if removed:** debate runs on every question. No correctness impact, only extra compute (~9 forward passes instead of ~1 on easy questions) — acceptable fallback if the gate proves unreliable.
 
-### Agents 1–3 — Debate Agents (Qwen3-32B, Mistral-Small-3.2-24B, Phi-4-Reasoning)
+### Agents 1–3 — Debate Agents (two-phase model strategy)
+
+Empirically, the debate pipeline behaves identically regardless of which models sit in the agent slots — the trust math, claim decomposition, retrieval, and aggregation are all model-agnostic. This allows a **two-phase model strategy** that minimises GPU cost while preserving experimental rigour:
+
+| Phase | Agent 1 | Agent 2 | Agent 3 | GPU | Est. Cost |
+|-------|---------|---------|---------|-----|-----------|
+| **Dev** (Ph 0–2) | Qwen3.5-9B | Gemma 4 12B | Phi-4-Reasoning 14B | RTX 4090 24GB ($0.20–0.40/hr) | ~$100–200 |
+| **Final** (Ph 3–5) | Qwen3.6-27B | Gemma 4 26B A4B | Mistral-Small-3.2-24B | A100 80GB ($0.68–1.50/hr) | ~$400–800 |
+
+During development, all pipeline code (claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol) is written and debugged using the smaller Dev models on a cheap RTX 4090. The final experiment matrix is then run once on the full-scale models using an A100 — no code changes needed, only a model-name swap in the config.
 
 - **Purpose:** independently reason about the question, then defend or revise positions across rounds based on evidence and each other's arguments.
 - **Responsibilities:** (1) produce an initial answer + reasoning trace, (2) decompose own claims into atomic propositions for retrieval, (3) revise position in light of evidence and peer arguments, (4) maintain awareness of own accumulating trust score.
@@ -235,16 +244,34 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
 ## Section 7 — Models & Tools
 
-| Component          | Selected                                     | Why Selected                                                                                                                   | Open-Source Alt.    | Commercial Alt.    | Limitations                                                                                              | Upgrade Path                                                    |
-| ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------ | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **Agent 1**        | Qwen3-32B (4-bit)                            | Strong reasoning, open-weight, fits single A100 quantized                                                                      | Qwen2.5-32B (older) | GPT-4o             | Quantization may lose some reasoning fidelity — mitigated by validating against fp16 on a small subset   | Swap to larger Qwen if compute allows                           |
-| **Agent 2**        | Mistral-Small-3.2-24B                        | Different training lineage → genuine heterogeneity, not just a second Qwen checkpoint                                          | Mixtral variants    | Claude Haiku-tier  | Smaller than Agent 1 — asymmetry is intentional (mirrors real-world heterogeneous deployment) not a flaw | —                                                               |
-| **Agent 3**        | Phi-4-Reasoning                              | Reasoning-specialized training — adds a third distinct "cognitive style"                                                       | —                   | o1-mini-tier       | Newer/less battle-tested in MAD literature                                                               | —                                                               |
-| **Oracle (B7)**    | Gemini 2.5 Pro / strongest available         | Upper-bound ceiling reference only, not part of the core mechanism                                                             | —                   | GPT-4o, Claude     | API cost (~$150–200 budgeted)                                                                            | Not upgraded — ceiling role only                                |
-| **Reranker**       | ms-marco-MiniLM cross-encoder                | Standard, fast, well-validated for passage reranking                                                                           | BGE-reranker        | Cohere Rerank API  | Domain-general, not science-specific — acceptable since retrieval is domain-partitioned upstream         | Swap to SciBERT-based reranker if evidence quality issues arise |
-| **Inference**      | vLLM                                         | Free, fast, standard for local multi-model serving                                                                             | TGI (HuggingFace)   | Together AI hosted | Setup complexity on first use                                                                            | —                                                               |
-| **Orchestration**  | LangGraph                                    | State-machine model fits round-based debate + injection point control precisely; reused for B9 (iMAD) for codebase consistency | AutoGen             | —                  | Learning curve if unfamiliar                                                                             | —                                                               |
-| **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar (free tiers) | Domain coverage matches scientific QA target; free academic access                                                             | —                   | —                  | Rate limits, coverage gaps in niche subfields                                                            | Caching layer already planned as mitigation                     |
+| Component           | Dev (Ph 0–2)               | Final (Ph 3–5)              | Why Selected                                                                                                                   | Limitations & Upgrade Path                                       |
+| ------------------- | -------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| **Agent 1**         | Qwen3.5-9B                 | Qwen3.6-27B                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | Q4 ~17 GB (final); validated on dev models before A100 run       |
+| **Agent 2**         | Gemma 4 12B                | Gemma 4 26B A4B             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 26B requires all params in memory despite 3.8B active per token  |
+| **Agent 3**         | Phi-4-Reasoning 14B        | Mistral-Small-3.2-24B      | Dev: Phi-4 reasoning specialisation. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | Pipeline code is model-agnostic — only the config changes         |
+| **Oracle (B7)**     | Gemini 3.5 Pro             | Gemini 3.5 Pro              | Upper-bound ceiling reference only, not part of the core mechanism. One API call per question — ~$1–3 total for the oracle pass | API cost (~$150–200 budgeted) is far more than needed             |
+| **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is domain-partitioned upstream. Upgrade to SciBERT-based if evidence quality issues arise |
+| **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for both Dev (4090) and Final (A100)                           | Setup complexity on first use only                                                                                                |
+| **Orchestration**  | LangGraph                      | LangGraph                      | State-machine model fits round-based debate + injection point control precisely; reused for B9 (iMAD) for codebase consistency | Learning curve if unfamiliar                                                                                                      |
+| **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar| PubMed, ArXiv, Semantic Scholar| Domain coverage matches scientific QA target; free academic access                                                             | Rate limits, coverage gaps in niche subfields — caching layer already planned                                                      |
+
+### GPU Budget & Cost Breakdown
+
+The two-phase strategy keeps compute costs manageable for a student team. All pipeline code is model-agnostic, so no engineering time is spent reconfiguring between Dev and Final — only the model names in a config file change.
+
+| Item | Dev (Ph 0–2) | Final (Ph 3–5) | Notes |
+|------|-------------|----------------|-------|
+| **GPU** | RTX 4090 24GB | A100 80GB | Consumer vs datacenter |
+| **Provider** | Vast.ai (spot) / RunPod | Vast.ai / JarvisLabs | Spot ~$0.68/hr A100, on-demand ~$1.50/hr |
+| **Rate** | $0.20–0.40/hr | $0.68–1.50/hr | |
+| **Est. GPU hours** | 300–600 | 250–500 | See §13 for build-order milestones |
+| **Subtotal** | **$100–200** | **$400–800** | |
+| **Oracle API (B7)** | — | $1–3 | Gemini 3.5 Pro, ~1,000 questions × 500 tokens |
+| **Total budget** | | | **~$500–1,000** |
+
+**Why this works:** The Dev models (9B–14B) fit on an RTX 4090 24GB with room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B) require 4-bit quantisation on an A100 80GB, but the code is identical; only the model checkpoints change. See §13 for the exact build sequence.
+
+**Contingency:** If the A100 budget is tight, the Final experiment matrix can be run at half precision (fp16) on 2× A100 for ~$2.50–3.00/hr, reducing wall-clock time by ~30–40% compared to 4-bit sequential inference on 1× A100. If the RTX 4090 budget is tight, all Dev work can be done locally on a single GPU workstation with ≥16 GB VRAM (e.g., RTX 3090/4070, M4 Max).
 
 **Implementation difficulty ranking (easiest → hardest):**
 
@@ -349,13 +376,15 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 | **Timeline**       | Phase 2 (Sep–Oct) overloaded — new mechanism + 3 baselines + replication                                                    | **High**                                     | High                                 | Previously flagged; mitigation: use iMAD's own published numbers for easy-question conditions where directly comparable, reserve full reimplementation effort for adversarial conditions where it matters most                                                          |
 | **Publication**    | Two of four core related-work citations are preprint/workshop-tier, not main-conference                                     | Medium (perception risk, not technical risk) | Moderate                             | Disclose proactively and precisely (see prior meeting-prep guidance) — actually strengthens credibility if handled this way                                                                                                                                             |
 | **Implementation** | iMAD reimplementation fidelity to original paper                                                                            | Medium                                       | Moderate                             | ~10-day dedicated estimate already budgeted; explicit divergence documentation required                                                                                                                                                                                 |
-| **Implementation** | Single A100 compute ceiling under full 9-baseline × multi-dataset × 3-seed matrix                                           | Medium                                       | Moderate                             | 4-bit quantization already planned; core replication targeted at 72 hours — monitor actual usage against this budget starting Phase 1                                                                                                                                   |
+| **Implementation** | Single A100 compute ceiling under full 9-baseline × multi-dataset × 3-seed matrix                                           | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX 4090 ($0.20–0.40/hr), Final on A100 ($0.68–1.50/hr). Core replication ~250–500 A100-hrs; total GPU budget ~$500–1,000                                                                                                                |
 
 ---
 
 ## Section 12 — Month-by-Month Roadmap (July 2026 – April 2027)
 
 _(Carries forward the original 10-month Gantt structure exactly, with the Month 1 behavioral-effectiveness pilot inserted as an explicit new deliverable — this is the one substantive timeline change from the original plan, justified in Section 0.)_
+
+**GPU economics:** Development (Ph 0–2) runs on a rented RTX 4090 24GB (~$0.20–0.40/hr) using the Dev model stack (Qwen3.5-9B, Gemma 4 12B, Phi-4-Reasoning 14B). The final experiment matrix (Ph 3) runs on an A100 80GB (~$0.68–1.50/hr) using the Final model stack (Qwen3.6-27B, Gemma 4 26B A4B, Mistral-Small-3.2-24B). Total GPU budget: ~$500–1,000.
 
 | Month                   | Objectives                                               | Development                                                           | Experiments                                                    | Deliverables                                                                                                                                                                       |
 | ----------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -380,7 +409,7 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 **Exact build sequence, with dependency reasoning:**
 
-1. **vLLM multi-model serving setup** — nothing else can be tested without this. Verify all three model checkpoints (Qwen3-32B, Mistral-Small-3.2-24B, Phi-4-Reasoning) load and generate correctly in 4-bit quantization before writing any orchestration code.
+1. **vLLM multi-model serving setup** — nothing else can be tested without this. Start with the Dev models (Qwen3.5-9B, Gemma 4 12B, Phi-4-Reasoning 14B) on an RTX 4090; verify all three load and generate correctly before writing any orchestration code. The Final models (Qwen3.6-27B, Gemma 4 26B A4B, Mistral-Small-3.2-24B) are validated on the A80 A100 only once the pipeline is stable.
 
 2. **Vanilla MAD reproduction (Du et al. 2023)** — must come before any of our own additions. This is Gate 0. It validates the base debate loop works at all, independent of our contribution, so any later bugs can be isolated to _our_ additions rather than the underlying framework.
 

@@ -92,16 +92,35 @@ export const milestones: TimelineItem[] = [
   },
 ];
 
-// Blueprint §7 — Models & Tools
+// Blueprint §7 — Models & Tools (two-phase strategy)
 export const resources: ResourceCard[] = [
-  { label: 'Agent 1', value: 'Qwen3-32B (4-bit)', sub: 'vLLM inference, single A100' },
-  { label: 'Agent 2', value: 'Mistral-Small-3.2-24B', sub: 'Different training lineage → genuine heterogeneity' },
-  { label: 'Agent 3', value: 'Phi-4-Reasoning', sub: 'Reasoning-specialized, third cognitive style' },
-  { label: 'Oracle (B7)', value: 'Gemini 2.5 Pro', sub: 'Upper-bound ceiling only, ~$150–200 budget' },
+  { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX 4090' },
+  { label: 'Agent 1 (Final)', value: 'Qwen3.6-27B', sub: 'Full-scale 27B dense, caps flagship MoE in coding' },
+  { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour' },
+  { label: 'Agent 2 (Final)', value: 'Gemma 4 26B A4B', sub: 'MoE (3.8B active), matches 31B quality' },
+  { label: 'Agent 3 (Dev)', value: 'Phi-4-Reasoning 14B', sub: 'Reasoning-specialised, third cognitive style' },
+  { label: 'Agent 3 (Final)', value: 'Mistral Small 3.2 24B', sub: 'Distinct training lineage from Qwen/Gemma' },
+  { label: 'Oracle (B7)', value: 'Gemini 3.5 Pro', sub: 'Upper-bound ceiling only, ~$150–200 budget' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
   { label: 'Inference', value: 'vLLM', sub: 'Free, fast, multi-model serving' },
   { label: 'Orchestration', value: 'LangGraph', sub: 'State-machine fits round-based debate' },
   { label: 'Retrieval APIs', value: 'PubMed, ArXiv, Semantic Scholar', sub: 'Free academic API access' },
+];
+
+// Blueprint §7 — Two-Phase Model Strategy + Cost Estimate
+export interface CostRow {
+  phase: string;
+  models: string;
+  gpu: string;
+  rate: string;
+  estHours: string;
+  totalRange: string;
+}
+
+export const costEstimates: CostRow[] = [
+  { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Phi-4 14B', gpu: 'RTX 4090 24GB', rate: '$0.20–0.40/hr', estHours: '300–600', totalRange: '$100–200' },
+  { phase: 'Final (Ph 3–5)', models: 'Qwen3.6-27B / Gemma 4 26B / Mistral 24B', gpu: 'A100 80GB', rate: '$0.68–1.50/hr', estHours: '250–500', totalRange: '$400–800' },
+  { phase: 'Total', models: '—', gpu: '—', rate: '—', estHours: '550–1,100', totalRange: '~$500–1,000' },
 ];
 
 // Blueprint §11 — Risk Assessment

@@ -64,7 +64,7 @@ const STAGES: StageInfo[] = [
     label: "Agent Pool (N=3)",
     short: "Uncertain path",
     color: "#7c3aed",
-    plain: "Three DIFFERENT model families (Qwen3-32B, Mistral-Small-3.2, Phi-4-Reasoning) each answer independently. Different families make different mistakes, reducing shared blind spots.",
+    plain: "Three DIFFERENT model families (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2) each answer independently. Different families make different mistakes, reducing shared blind spots.",
     io: "In: question · Out: 3 positions + reasoning, each starting at trust 1/3",
     fail: "Unparseable output → fallback extraction. Timeout → retry once, else mark INCONCLUSIVE for that round.",
   },

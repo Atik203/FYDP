@@ -51,7 +51,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 6, topic: 'Hallucination in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your main failure mode' },
       { num: 7, topic: 'Sycophancy in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Core research problem' },
       { num: 8, topic: 'Model Calibration (ECE)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of trust calibration' },
-      { num: 9, topic: 'Open-Weight Models Ecosystem', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Choosing Qwen / Mistral-Small / Phi models (Phase 0–1)' },
+      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev (Qwen3.5-9B / Gem4 12B / Phi-4) → Final (Qwen3.6-27B / Gem4 26B / Mistral 24B) models (Ph 0–1)' },
       { num: 10, topic: 'Sycophancy Injection Protocol Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'CCR operationalization; κ > 0.75 pilot check (Phase 1–2)' },
       { num: 11, topic: 'LLM Uncertainty & Confidence Estimation', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Lightweight confidence gating (Phase 2)' },
     ],

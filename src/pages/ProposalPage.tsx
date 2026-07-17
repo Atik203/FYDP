@@ -513,13 +513,16 @@ export function ProposalPage() {
           heterogeneity in reasoning styles and failure modes. This is critical
           because same-family model copies share correlated blind spots and
           hallucination patterns, reducing the diversity benefit of multi-agent
-          debate. The three selected models are <strong>Qwen3-32B</strong> (4-bit
-          quantized), <strong>Mistral-Small-3.2-24B</strong>, and{" "}
-          <strong>Phi-4-Reasoning</strong>, each offering a distinct training
-          lineage and reasoning approach. The asymmetry in model size is
-          intentional, mirroring real-world heterogeneous deployments. All three
-          models fit on a single A100 GPU under 4-bit quantization using vLLM
-          for efficient serving. The <em>N</em> = 3 configuration is chosen as
+          debate. We use a two-phase model strategy: during development
+          (Ph 0–2) the pipeline runs <strong>Qwen3.5-9B</strong>,{" "}
+          <strong>Gemma 4 12B</strong>, and <strong>Phi-4-Reasoning 14B</strong>{" "}
+          on an RTX 4090 24GB (~$0.20–0.40/hr), keeping iteration cost low.
+          For the final experiment matrix (Ph 3–5) we swap to{" "}
+          <strong>Qwen3.6-27B</strong>, <strong>Gemma 4 26B A4B</strong>, and{" "}
+          <strong>Mistral Small 3.2 24B</strong> on an A100 80GB (~$0.68–1.50/hr).
+          All three families (Alibaba, Google, Mistral) are genuinely distinct
+          for true heterogeneity. The pipeline code is model-agnostic — only
+          the model config changes between phases. The <em>N</em> = 3 configuration is chosen as
           the minimum needed to create a genuine &ldquo;1 vs 2&rdquo;
           minority-suppression scenario, which is the core phenomenon under
 study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
@@ -652,22 +655,22 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <tbody>
             <tr>
               <td style={tdStyle}>Agent 1</td>
-              <td style={tdStyle}>Qwen3-32B (4-bit)</td>
-              <td style={tdStyle}>Strong reasoning, open-weight, fits single A100 quantized</td>
+              <td style={tdStyle}>Qwen3.5-9B (Dev) → Qwen3.6-27B (Final)</td>
+              <td style={tdStyle}>Two-phase: fast dev on RTX 4090, flagship 27B for final experiments</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 2</td>
-              <td style={tdStyle}>Mistral-Small-3.2-24B</td>
-              <td style={tdStyle}>Different training lineage, genuine heterogeneity</td>
+              <td style={tdStyle}>Gemma 4 12B (Dev) → Gemma 4 26B A4B (Final)</td>
+              <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, 256K context</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 3</td>
-              <td style={tdStyle}>Phi-4-Reasoning</td>
-              <td style={tdStyle}>Reasoning-specialised training, third distinct cognitive style</td>
+              <td style={tdStyle}>Phi-4-Reasoning 14B (Dev) → Mistral Small 3.2 24B (Final)</td>
+              <td style={tdStyle}>Dev: reasoning-specialised. Final: third distinct family for heterogeneity</td>
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
-              <td style={tdStyle}>Gemini 2.5 Pro</td>
+              <td style={tdStyle}>Gemini 3.5 Pro</td>
               <td style={tdStyle}>Upper-bound ceiling reference only, not core mechanism</td>
             </tr>
             <tr>

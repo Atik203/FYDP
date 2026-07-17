@@ -6,6 +6,7 @@ import { RiskTable } from "@/components/shared/RiskTable";
 import { ArchitectureDiagram } from "@/components/shared/ArchitectureDiagram";
 import { TrustSimulator } from "@/components/shared/TrustSimulator";
 import { Walkthrough } from "@/components/shared/Walkthrough";
+import { CostTable } from "@/components/shared/CostTable";
 import {
   ColBox,
   Section,
@@ -501,7 +502,7 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">4.2 Agent Pool (N=3)</h4>
             <p className="text-sm leading-relaxed mb-0">
-              Qwen3-32B, Mistral-Small-3.2-24B, Phi-4-Reasoning — three
+              Qwen3.6-27B, Gemma 4 26B A4B, Mistral Small 3.2 24B — three
               different families for genuine heterogeneity. Each tracks own
               trust vector T ∈ ℝ³, initialized uniformly at 1/N.
             </p>
@@ -620,30 +621,31 @@ export function Idea1Content() {
           </table>
         </div>
 
-        <h4 className="text-sm font-bold mb-3">Agents 1–3 — Debate Agents</h4>
+        <h4 className="text-sm font-bold mb-3">Agents 1–3 — Debate Agents (Two-Phase Strategy)</h4>
         <TwoCol>
           <ColBox>
-            <h4 className="text-sm font-semibold mb-1">Qwen3-32B (4-bit)</h4>
+            <h4 className="text-sm font-semibold mb-1">Dev: Qwen3.5-9B → Final: Qwen3.6-27B</h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Strong reasoning, open-weight, fits single A100 quantized. Upgrade
-              path: larger Qwen if compute allows.
+              Dev: cheap iterative testing on RTX 4090. Final: 27B dense,
+              262K context, caps prior 397B MoE flagship in coding. Apache 2.0.
             </p>
           </ColBox>
           <ColBox>
             <h4 className="text-sm font-semibold mb-1">
-              Mistral-Small-3.2-24B
+              Dev: Gemma 4 12B → Final: Gemma 4 26B A4B
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Different training lineage → genuine heterogeneity, not just a
-              second Qwen checkpoint. Smaller size is intentional (mirrors
-              real-world heterogeneous deployment).
+              Dev: encoder-free 12B proxy. Final: MoE (3.8B active),
+              256K context, matches 31B quality at fraction of compute.
             </p>
           </ColBox>
           <ColBox>
-            <h4 className="text-sm font-semibold mb-1">Phi-4-Reasoning</h4>
+            <h4 className="text-sm font-semibold mb-1">
+              Dev: Phi-4-Reasoning 14B → Final: Mistral Small 3.2 24B
+            </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Reasoning-specialized training — adds a third distinct "cognitive
-              style." Newer model, less battle-tested in MAD literature.
+              Dev: reasoning-specialised Phi-4. Final: Mistral adds third
+              distinct family (non-Qwen, non-Gemma) for true heterogeneity.
             </p>
           </ColBox>
           <ColBox>
@@ -792,6 +794,14 @@ export function Idea1Content() {
           single A100.
         </p>
         <InfoGrid cards={resources} />
+
+        <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
+        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
+          Two-phase strategy: develop on RTX 4090 ($0.20–0.40/hr) with smaller
+          models, then run final experiments on A100 80GB ($0.68–1.50/hr) with
+          the full-scale stack. Use the sliders below to estimate your budget.
+        </p>
+        <CostTable />
 
         <h4 className="text-sm font-bold mt-5 mb-3">
           Implementation Difficulty Ranking (easiest → hardest)
@@ -997,7 +1007,7 @@ export function Idea1Content() {
                 ["B4", "MAD + RAG", "Debate with evidence"],
                 ["B5", "Self-Consistency", "k samples, majority vote"],
                 ["B6", "MoA (equal-weight)", "Multi-model, static aggregation"],
-                ["B7", "Oracle (Gemini 2.5 Pro)", "Upper-bound ceiling"],
+                ["B7", "Oracle (Gemini 3.5 Pro)", "Upper-bound ceiling"],
                 ["B8", "Ours (trust-weighted)", "Primary system"],
                 ["B9", "iMAD", "Closest published competitor"],
                 [
