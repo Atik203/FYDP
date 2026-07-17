@@ -145,7 +145,7 @@ export function OverviewPage() {
               <p className="text-sm leading-relaxed">
                 Diagnosis exists (Yao et al. 2025; He et al. 2026). Efficiency
                 optimization exists (iMAD, AAAI 2026). Static aggregation exists
-                (MoA, ICLR 2025 Spotlight).{" "}
+                (MoA, ICLR 2025 Poster).{" "}
                 <strong>
                   Nothing existing dynamically re-weights agent trust during a
                   debate based on external evidence.

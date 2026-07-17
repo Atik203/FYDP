@@ -226,7 +226,7 @@ export function Idea1Content() {
             </strong>{" "}
             Diagnosis exists (Yao et al. 2025), efficiency optimisation exists
             (iMAD, AAAI 2026), static aggregation exists (MoA, ICLR 2025
-            Spotlight), and recent mitigation attempts use prompt refinement
+            Poster), and recent mitigation attempts use prompt refinement
             (ConsensAgent, Findings of ACL 2025), uncertainty signals (DebUnc,
             Findings of EMNLP 2025), or theoretical pruning interventions
             (Estornell &amp; Liu, NeurIPS 2024 Main Track) — but nothing ties an

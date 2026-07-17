@@ -724,7 +724,505 @@ function ConsensSlideTwo() {
   );
 }
 
-/* ── Slide 6: Thank you ──────────────────────────────────────────── */
+/* ── Slide 6: DebUnc — Summary + Method + Results ────────────────── */
+function DebUncSlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#ccfbf1", color: TEAL }}
+        >
+          Paper Review · Closest on Mechanism
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          DebUnc: LLM Agent Communication with Uncertainty Metrics
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Luke Yoffe, Alfonso Amayuelas, William Yang Wang · 2025</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
+            Findings of EMNLP 2025
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            aclanthology.org/2025.findings-emnlp.1265
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              In debate, a <b>confidently-wrong</b> agent misleads peers who{" "}
+              <b>can't tell how confident</b> each other is.
+            </Bullet>
+            <Bullet>
+              Measures each agent's confidence with a{" "}
+              <b>token-level uncertainty metric</b> (entropy / TokenSAR).
+            </Bullet>
+            <Bullet>
+              Shares confidence two ways: <b>in the prompt</b> (1–10 score) or by{" "}
+              <b>attention-scaling</b> peer tokens.
+            </Bullet>
+            <Bullet>
+              Attention-scaling <b>beats</b> prompt-based; both beat standard
+              debate.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[2cqh]">
+            <div className="text-center">
+              <div
+                className="text-[6.5cqh] font-extrabold leading-none"
+                style={{ color: TEAL }}
+              >
+                0.63 → 0.73
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                avg accuracy with a perfect signal
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[1.2cqh] px-[1cqw]"
+              style={{ background: "#fef2f2" }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: ROSE }}
+              >
+                The Ground-Truth Oracle
+              </div>
+              <div
+                className="text-[2.1cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                A signal that knows correctness gains
+                <b> +10%</b> — but needs the answer, so it
+                <b> can't be deployed</b>.
+              </div>
+            </div>
+            <div
+              className="text-center text-[1.9cqh] font-semibold"
+              style={{ color: "#475569" }}
+            >
+              MMLU · GSM8K · TruthfulQA · Arithmetic
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          Per-Round Pipeline
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Agents answer",
+            "Measure uncertainty (entropy / TokenSAR)",
+            "Convert to 1–10 confidence",
+            "Communicate: prompt or attention-scaling",
+            "Peers weight confident agents more",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 7: DebUnc — Relevance + Gap ───────────────────────────── */
+function DebUncSlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#ccfbf1", color: TEAL }}
+        >
+          DebUnc · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Right Lever, Wrong Signal — Confidence Isn't Correctness
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>Closest on mechanism</b> — reweights agent influence{" "}
+              <b>during</b> the debate, exactly like our TCM.
+            </Bullet>
+            <Bullet>
+              Same diagnosis: a confident agent shouldn't automatically win.
+            </Bullet>
+            <Bullet>
+              Its <b>Ground-Truth oracle</b> is our strongest proof that a
+              better-than-self-reported signal is the key.
+            </Bullet>
+            <Bullet>
+              Confidence-in-prompt mode is <b>API-portable</b> → a clean baseline
+              (B-DebUnc).
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              Trust signal is <b>internal &amp; self-reported</b> — reflects how
+              a model <i>feels</i>, not whether it's <i>right</i>.
+            </Bullet>
+            <Bullet>
+              A <b>confidently-wrong</b> agent still earns high influence.
+            </Bullet>
+            <Bullet>
+              Attention-scaling needs <b>white-box</b> model access — no closed
+              APIs.
+            </Bullet>
+            <Bullet>
+              Authors admit the ceiling is set by the{" "}
+              <b>uncertainty metric's quality</b>.
+            </Bullet>
+            <Bullet>
+              <b>No external verification</b> anywhere in the loop.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            We replace internal self-confidence with an external,
+            evidence-grounded trust score — the deployable instantiation of
+            DebUnc's Ground-Truth oracle.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 8: MoA — Summary + Method + Results ───────────────────── */
+function MoaSlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#e0e7ff", color: ACCENT }}
+        >
+          Paper Review · Foundational Architecture
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Mixture-of-Agents Enhances Large Language Model Capabilities
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Junlin Wang et al. (Together AI) · 2025</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: ACCENT }} />
+            ICLR 2025 (Poster)
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            arxiv.org/abs/2406.04692
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              LLMs are <b>collaborative</b> — a model answers better when shown
+              other models' outputs, even weaker ones.
+            </Bullet>
+            <Bullet>
+              <b>Layered pipeline</b>: proposer LLMs generate → an aggregator LLM
+              synthesizes → repeat across layers.
+            </Bullet>
+            <Bullet>
+              <b>No fine-tuning</b> — pure prompting with off-the-shelf models.
+            </Bullet>
+            <Bullet>
+              An ensemble-by-synthesis, <b>not a debate</b> — proposers never
+              revise in response to peers.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[2cqh]">
+            <div className="text-center">
+              <div
+                className="text-[7cqh] font-extrabold leading-none"
+                style={{ color: TEAL }}
+              >
+                65.1%
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                AlpacaEval 2.0 (open-source only)
+              </div>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-[4cqh] font-extrabold leading-none"
+                style={{ color: ACCENT }}
+              >
+                &gt; GPT-4 Omni
+              </div>
+              <div
+                className="text-[2.1cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                57.5% — beaten at ~2× lower cost
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw] text-[2cqh] font-bold"
+              style={{ background: "#f1f5f9", color: DEEP_INK }}
+            >
+              More diverse proposers → monotonically better
+              <br />
+              (n=1 → 6 : 47.8% → 61.3%)
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          Layered Architecture
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Layer 1 proposers answer",
+            "Concatenate all outputs",
+            "Aggregator synthesizes",
+            "Feed into next layer",
+            "Final aggregator → answer",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 9: MoA — Relevance + Gap ──────────────────────────────── */
+function MoaSlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#e0e7ff", color: ACCENT }}
+        >
+          MoA · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Aggregation Works — But It's Trust-Blind and Evidence-Free
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              The canonical proof that <b>multi-model aggregation works</b> —
+              motivates using multiple agents at all.
+            </Bullet>
+            <Bullet>
+              <b>Diversity helps</b>: more varied proposers give better answers.
+            </Bullet>
+            <Bullet>
+              Defines the <b>trust-blind baseline</b> our mechanism improves on.
+            </Bullet>
+            <Bullet>
+              A different paradigm (ensemble, not debate) → cited as{" "}
+              <b>context</b>, not a competitor.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>No per-agent trust</b> — every proposer's text enters on equal
+              footing.
+            </Bullet>
+            <Bullet>
+              <b>No external evidence</b> — the aggregator uses only its own
+              judgment.
+            </Bullet>
+            <Bullet>
+              A weak aggregator <b>degrades</b> everything (e.g. 60.6% → 45.0%).
+            </Bullet>
+            <Bullet>
+              Cannot detect or down-weight a <b>confidently-wrong</b> proposer.
+            </Bullet>
+            <Bullet>
+              Feed-forward → <b>can't model</b> round-over-round sycophancy.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            We add what MoA lacks: an explicit, evidence-grounded trust weight per
+            agent — so a confidently-wrong proposer is down-weighted, not blindly
+            synthesized in.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 10: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -762,6 +1260,10 @@ const SLIDES = [
   ImadSlideTwo,
   ConsensSlideOne,
   ConsensSlideTwo,
+  DebUncSlideOne,
+  DebUncSlideTwo,
+  MoaSlideOne,
+  MoaSlideTwo,
   ThankYouSlide,
 ];
 

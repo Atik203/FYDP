@@ -224,7 +224,7 @@ export function ProposalPage() {
           al., 2026, AAAI Oral), which learns <em>when</em> to trigger a debate
           rather than <em>whom to trust</em> during it; and{" "}
           <em>static aggregation</em> (Mixture-of-Agents, Wang et al., 2024,
-          ICLR Spotlight), which combines model outputs without dynamic
+          ICLR Poster), which combines model outputs without dynamic
           evidence grounding. Crucially,{" "}
           <strong>
             none dynamically re-weights agent influence during a debate based on
@@ -311,7 +311,7 @@ export function ProposalPage() {
               </td>
             </tr>
             <tr>
-              <td style={tdStyle}>MoA &mdash; Wang et al. (2024/25), ICLR Spotlight</td>
+              <td style={tdStyle}>MoA &mdash; Wang et al. (2024/25), ICLR Poster</td>
               <td style={tdStyle}>
                 Layered multi-agent aggregation of diverse LLMs.
               </td>
@@ -1061,16 +1061,16 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
           Wang, J., et al. (2024). Mixture-of-Agents: Leveraging diverse LLMs
-          for improved reasoning. <em>ICLR 2025 (Spotlight)</em>.
+          for improved reasoning. <em>ICLR 2025 (Poster)</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
           Yao, B., et al. (2025). Multi-agent sycophancy: Definition,
           measurement, and analysis. <em>arXiv:2502.0xxxx</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
-          Yoffe, I., Amayuelas, A., &amp; Wang, W. Y. (2025). DebUnc: Dynamic
-          uncertainty weighting for multi-agent debate. <em>Findings of EMNLP
-          2025</em>.
+          Yoffe, L., Amayuelas, A., &amp; Wang, W. Y. (2025). DebUnc: Improving
+          large language model agent communication with uncertainty metrics.{" "}
+          <em>Findings of EMNLP 2025</em>, 23299&ndash;23315.
         </p>
       </div>
     </>

@@ -194,7 +194,7 @@ export const paperStages: PaperStage[] = [
         id: 10,
         title: "Mixture-of-Agents Enhances LLM Capabilities",
         authors: "Wang et al.",
-        venue: "ICLR 2025 (Spotlight)",
+        venue: "ICLR 2025 (Poster)",
         verified: true,
         priority: "critical",
         difficulty: "Intermediate",
