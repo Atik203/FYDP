@@ -27,6 +27,20 @@ The authors note that the iMAD classifier is trained offline on static auxiliary
 
 ## Section 2 — Expert Detailed Analysis
 
+### Q1–Q9 Quick Reference
+
+| # | Question | Short Answer |
+|---|---|---|
+| Q1 | What problem and why important? | MAD is accurate but token-expensive; iMAD selectively triggers debate only when it will likely correct a wrong single-agent answer, saving up to 92% tokens. |
+| Q2 | What data (source, size, splits, ethics)? | 6 datasets: MEDQA, MMLU, GSM8K, OKVQA, VQA-v2, ScienceQA. Classifier trained on PubMedQA + GQA (held-out from eval). No ethics/consent discussion (public benchmarks). |
+| Q3 | What features/inputs, how engineered? | 41 interpretable linguistic + semantic features from a structured self-critique response: surface stats, readability, POS counts, hedging/contrast cues, confidence misalignment indicators. |
+| Q4 | What methods/models, overall pipeline? | (1) Single-agent → structured self-critique; (2) 41-feature extraction; (3) 6-layer MLP (200 units, BN, ReLU, dropout 0.2) predicts debate score p; (4) if p < 0.7 → trigger 3-agent MAD, else keep original answer. Trained with FocusCal loss (Asymmetric Focal + Confidence Penalty + ECE). |
+| Q5 | What baselines and why chosen? | CoT (single-agent), SC (self-consistency ×5), MAD (full debate every query), GD (GroupDebate 5 agents), DOWN (confidence-threshold gating). Covers single-agent → full-debate → selective-debate spectrum. |
+| Q6 | How evaluated (metrics, setup, tests)? | Accuracy + token cost per dataset. Beneficial decision rate (✗→✓ / ✓→✗ breakdown). No statistical significance tests. No user studies. |
+| Q7 | Key results vs baselines? | iMAD matches or exceeds MAD accuracy on 5/6 datasets (e.g., GSM8K: 84.8% vs MAD 76.4%) while using 57–70% fewer tokens. Max 92% reduction vs GD. Up to 95.9% beneficial decision rate. |
+| Q8 | Limitations and biases? | Classifier trained offline (no adaptation); 41 hand-crafted features may miss cues; no within-debate intervention (majority vote only); fails on short/factual MMLU questions with few hesitation cues. |
+| Q9 | Code/data/artifacts available? | Code: https://github.com/Fanwei100/iMAD (PyTorch, Gemini API). No dataset releases (all public benchmarks). License not explicitly stated. |
+
 ### 1. Publication Status & Citation
 
 | Field | Value |
