@@ -37,13 +37,20 @@ The aim is to **identify what has already been done**, spot **gaps in existing r
 
 Use these sources to search for relevant papers:
 
-| Source              | Link                            |
-| ------------------- | ------------------------------- |
-| Google Scholar      | https://scholar.google.com      |
-| Semantic Scholar    | https://www.semanticscholar.org |
-| ArXiv (AI/ML)       | https://arxiv.org               |
-| ACL Anthology (NLP) | https://aclanthology.org        |
-| Papers With Code    | https://paperswithcode.com      |
+| Source                 | Link                            | Type          |
+| ---------------------- | ------------------------------- | ------------- |
+| Google Scholar         | https://scholar.google.com      | 🔍 Indexer    |
+| Semantic Scholar       | https://www.semanticscholar.org | 🔍 Indexer    |
+| IEEE Xplore            | https://ieeexplore.ieee.org     | ✅ Publisher  |
+| ACM Digital Library    | https://dl.acm.org              | ✅ Publisher  |
+| Springer LNCS          | https://link.springer.com       | ✅ Publisher  |
+| ScienceDirect (Elsevier)| https://www.sciencedirect.com  | ✅ Publisher  |
+| ACL Anthology (NLP)    | https://aclanthology.org        | ✅ Publisher  |
+| DBLP                   | https://dblp.org                | 🔍 Indexer    |
+| PubMed                 | https://pubmed.ncbi.nlm.nih.gov | 🔍 Indexer    |
+| Papers With Code       | https://paperswithcode.com      | 🔍 Indexer    |
+| ⚠️ ArXiv               | https://arxiv.org               | 📄 Preprint   |
+| 📄 Zenodo              | https://zenodo.org              | 📄 Preprint   |
 
 ### 🤖 Recommended AI Tools to Understand Papers Faster
 
@@ -174,24 +181,34 @@ behavior — both of which are central to our FYDP idea.
 - ❌ Do NOT write more than 5–6 sentences per paper — we want brief, useful summaries, not full reports
 
 > [!IMPORTANT]
-> **Very Important: Verify peer-reviewed publication status.** 
-> Before citing any paper, check whether it has been published in a reputable, peer-reviewed journal or conference (e.g., ACL, EMNLP, NAACL, NeurIPS, ICML, ICLR, AAAI, IJCAI, IEEE, ACM — see full list below). arXiv.org is a preprint repository, not a peer-reviewed publication venue. While many papers on arXiv are later published after peer review, others remain unpublished preprints. Always check for a peer-reviewed published version and cite that version whenever possible. When you find a paper on arXiv, search for it on Google Scholar or the conference website to confirm if it was accepted at a peer-reviewed venue. If it has been published, use the published citation/DOI instead of the arXiv link.
+> **Verify peer-reviewed publication status before citing (see warnings below).** 
+> Prefer published venue citations (with DOI) over arXiv links. When a paper has both an arXiv preprint and a published version use the DOI from the journal/conference proceedings.
 
 ### ✅ Valid Peer-Reviewed Venues (Conference & Journal)
 
-| Area              | Venues                                                                 |
-| ----------------- | ---------------------------------------------------------------------- |
-| NLP / CL          | ACL, EMNLP, NAACL, EACL, COLING, TACL, Computational Linguistics      |
-| ML / AI           | NeurIPS, ICML, ICLR, AISTATS, COLT, UAI, JMLR, Machine Learning journal |
-| AI General        | AAAI, IJCAI, ECAI, Artificial Intelligence journal                     |
-| CS / Engineering  | IEEE (various), ACM (various), Springer LNCS                           |
-| HCI / Interdisc.  | CHI, CSCW, UIST, IUI                                                  |
-| Robotics          | ICRA, IROS, RSS, IEEE Transactions on Robotics                        |
-| Vision            | CVPR, ICCV, ECCV, IJCV, IEEE TPAMI, BMVC                              |
+| Area                 | Venues                                                                                       |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| **NLP / CL**         | ACL, EMNLP, NAACL, EACL, COLING, *TACL, Computational Linguistics*, *JNLP*, *LREC*          |
+| **ML / AI**          | NeurIPS, ICML, ICLR, AISTATS, COLT, UAI, *JMLR*, *Machine Learning journal*, *MLJ*, *TMLR*  |
+| **AI General**       | AAAI, IJCAI, ECAI, *Artificial Intelligence journal*                                         |
+| **Vision**           | CVPR, ICCV, ECCV, *IJCV*, *IEEE TPAMI*, BMVC, *WACV*, *ACCV*                                |
+| **Robotics**         | ICRA, IROS, RSS, *IEEE Transactions on Robotics*, *IJRR*, *AuRo*, *CoRL*                     |
+| **HCI / Interdisc.** | CHI, CSCW, UIST, IUI, *DIS*, *IMWUT/UbiComp*, *MobileHCI*                                   |
+| **Security**         | IEEE S&P (Oakland), ACM CCS, USENIX Security, NDSS, *IEEE TIFS*, *Computers & Security*      |
+| **Systems**          | SOSP, OSDI, ASPLOS, USENIX ATC, EuroSys, *ACM TOCS*, *IEEE TC*, *VLDB Journal*               |
+| **Databases**        | SIGMOD, VLDB, ICDE, PODS, *ACM TODS*, *IEEE TKDE*                                           |
+| **Networking**       | SIGCOMM, NSDI, MobiCom, INFOCOM, CoNEXT, *IEEE/ACM ToN*                                     |
+| **Software Eng.**    | ICSE, FSE, ASE, ISSTA, OOPSLA, *ACM TOSEM*, *IEEE TSE*                                      |
+| **Theory**           | STOC, FOCS, SODA, LICS, *ACM JACM*, *Information & Computation*, *SICOMP*                    |
+| **CS / Engineering** | IEEE (various), ACM (various), Springer LNCS/LNIP/LNAI, Elsevier, *PLOS ONE* (peer-reviewed) |
 
-> If a paper only exists on arXiv with no record of peer-reviewed publication, note this in your entry and treat it as a preprint (proceed with caution).
+> [!WARNING]
+> ⚠️ **ArXiv is NOT peer-reviewed.** It is a preprint repository. Many papers on arXiv are later published at peer-reviewed venues, but many remain unpublished preprints. Always verify publication status before citing. If a paper has been published at a peer-reviewed venue, cite that version (with DOI) instead of the arXiv link. If it only exists on arXiv, mark it clearly as a preprint in your entry.
+> 
+> Markings: ✅ = Publisher platform (peer-reviewed), 🔍 = Indexer/aggregator, 📄 = Preprint repository
 
 ---
+
 
 ## 🗂️ Google Docs Tab Structure (Suggested)
 
