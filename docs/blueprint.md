@@ -249,7 +249,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 | **Agent 1**         | Qwen3.5-9B                 | Qwen3.6-27B                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | Q4 ~17 GB (final); validated on dev models before A100 run       |
 | **Agent 2**         | Gemma 4 12B                | Gemma 4 26B A4B             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 26B requires all params in memory despite 3.8B active per token  |
 | **Agent 3**         | Phi-4-Reasoning 14B        | Mistral-Small-3.2-24B      | Dev: Phi-4 reasoning specialisation. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | Pipeline code is model-agnostic — only the config changes         |
-| **Oracle (B7)**     | Gemini 3.5 Pro             | Gemini 3.5 Pro              | Upper-bound ceiling reference only, not part of the core mechanism. One API call per question — ~$1–3 total for the oracle pass | API cost (~$150–200 budgeted) is far more than needed             |
+| **Oracle (B7)**     | Gemini 3.1 Pro Preview     | Gemini 3.1 Pro Preview      | Upper-bound ceiling reference only, not part of the core mechanism. One API call per question — ~$5–7 total for the oracle pass | API cost (~$150–200 budgeted) is far more than needed             |
 | **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is domain-partitioned upstream. Upgrade to SciBERT-based if evidence quality issues arise |
 | **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for both Dev (4090) and Final (A100)                           | Setup complexity on first use only                                                                                                |
 | **Orchestration**  | LangGraph                      | LangGraph                      | State-machine model fits round-based debate + injection point control precisely; reused for B9 (iMAD) for codebase consistency | Learning curve if unfamiliar                                                                                                      |
@@ -266,7 +266,7 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 | **Rate** | $0.20–0.40/hr | $0.68–1.50/hr | |
 | **Est. GPU hours** | 300–600 | 250–500 | See §13 for build-order milestones |
 | **Subtotal** | **$100–200** | **$400–800** | |
-| **Oracle API (B7)** | — | $1–3 | Gemini 3.5 Pro, ~1,000 questions × 500 tokens |
+| **Oracle API (B7)** | — | $5–7 | Gemini 3.1 Pro Preview, ~1,000 questions × 1,000 tokens |
 | **Total budget** | | | **~$500–1,000** |
 
 **Why this works:** The Dev models (9B–14B) fit on an RTX 4090 24GB with room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B) require 4-bit quantisation on an A100 80GB, but the code is identical; only the model checkpoints change. See §13 for the exact build sequence.

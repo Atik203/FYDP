@@ -123,7 +123,7 @@ export function CostTable() {
       </div>
 
       <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-        Oracle API (Gemini 3.5 Pro, ~1,000 questions) adds ~$1–3 — negligible. The Dev phase uses Qwen3.5-9B / Gemma 4 12B / Phi-4-Reasoning 14B on an RTX 4090. The Final phase uses Qwen3.6-27B / Gemma 4 26B A4B / Mistral Small 3.2 24B on an A100 80GB. Pipeline code is identical between phases — only the model config changes.
+        Oracle API (Gemini 3.1 Pro Preview, ~1,000 questions) adds ~$5–7 — negligible. The Dev phase uses Qwen3.5-9B / Gemma 4 12B / Phi-4-Reasoning 14B on an RTX 4090. The Final phase uses Qwen3.6-27B / Gemma 4 26B A4B / Mistral Small 3.2 24B on an A100 80GB. Pipeline code is identical between phases — only the model config changes.
       </p>
     </div>
   );

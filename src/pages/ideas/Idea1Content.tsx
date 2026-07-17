@@ -1007,7 +1007,7 @@ export function Idea1Content() {
                 ["B4", "MAD + RAG", "Debate with evidence"],
                 ["B5", "Self-Consistency", "k samples, majority vote"],
                 ["B6", "MoA (equal-weight)", "Multi-model, static aggregation"],
-                ["B7", "Oracle (Gemini 3.5 Pro)", "Upper-bound ceiling"],
+                ["B7", "Oracle (Gemini 3.1 Pro Preview)", "Upper-bound ceiling"],
                 ["B8", "Ours (trust-weighted)", "Primary system"],
                 ["B9", "iMAD", "Closest published competitor"],
                 [

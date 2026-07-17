@@ -100,7 +100,7 @@ export const resources: ResourceCard[] = [
   { label: 'Agent 2 (Final)', value: 'Gemma 4 26B A4B', sub: 'MoE (3.8B active), matches 31B quality' },
   { label: 'Agent 3 (Dev)', value: 'Phi-4-Reasoning 14B', sub: 'Reasoning-specialised, third cognitive style' },
   { label: 'Agent 3 (Final)', value: 'Mistral Small 3.2 24B', sub: 'Distinct training lineage from Qwen/Gemma' },
-  { label: 'Oracle (B7)', value: 'Gemini 3.5 Pro', sub: 'Upper-bound ceiling only, ~$150–200 budget' },
+  { label: 'Oracle (B7)', value: 'Gemini 3.1 Pro Preview', sub: 'Upper-bound ceiling only, ~$5–7 for full oracle pass' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
   { label: 'Inference', value: 'vLLM', sub: 'Free, fast, multi-model serving' },
   { label: 'Orchestration', value: 'LangGraph', sub: 'State-machine fits round-based debate' },

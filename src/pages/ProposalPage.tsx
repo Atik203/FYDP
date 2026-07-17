@@ -670,7 +670,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
-              <td style={tdStyle}>Gemini 3.5 Pro</td>
+              <td style={tdStyle}>Gemini 3.1 Pro Preview</td>
               <td style={tdStyle}>Upper-bound ceiling reference only, not core mechanism</td>
             </tr>
             <tr>
