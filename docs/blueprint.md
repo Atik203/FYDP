@@ -429,9 +429,11 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 10. **Baseline B9 (iMAD reimplementation)** — deliberately sequenced _last_ among baselines because it's the highest-difficulty component (Section 7's difficulty ranking) and benefits from the team having already built confidence-scoring-adjacent code (the confidence estimator, step 1 of the pipeline) that shares some logic.
 
-11. **Full experiment matrix execution** — only after every component above passes its own validation gate.
+11. **Model-swap smoke test (NEW — critical two-phase gate)** — before committing to the expensive Final experiment matrix, rent an A100 for ~2 hours (~$3). Load all three Final models (Qwen3.6-27B, Gemma 4 26B A4B, Mistral-Small-3.2-24B). Run a 20-question smoke test from each dataset — verify (a) claim tags parse correctly for every model, (b) injection protocol affects all three as expected, (c) trust math runs without NaNs, (d) the LangGraph state machine completes K=3 rounds for every model combination. Fix any model-specific issues found. This step is cheap insurance against discovering at full scale that Mistral's output format differs from Phi-4's in a way the claim extractor doesn't handle.
 
-12. **Human evaluation + failure analysis** — last, since it requires completed experimental results to annotate against.
+12. **Full experiment matrix execution** — only after step 11 passes.
+
+13. **Human evaluation + failure analysis** — last, since it requires completed experimental results to annotate against.
 
 **What should never be built before another module:**
 

@@ -1248,11 +1248,16 @@ export function Idea1Content() {
             },
             {
               step: 11,
-              title: "Full experiment matrix",
-              desc: "Only after every component passes its validation gate.",
+              title: "Model-swap smoke test (two-phase gate)",
+              desc: "~$3, 2-hour A100 rental. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. Fix any model-specific issues before full matrix.",
             },
             {
               step: 12,
+              title: "Full experiment matrix",
+              desc: "Only after step 11 passes. Dev models off, Final models on.",
+            },
+            {
+              step: 13,
               title: "Human evaluation + failure analysis",
               desc: "Last — requires completed experimental results to annotate against.",
             },
@@ -1289,8 +1294,12 @@ export function Idea1Content() {
               (steps 1–7) — B9 reuses debate-loop infrastructure.
             </li>
             <li>
-              Never run full experiment matrix (step 11) <strong>before</strong>{" "}
+              Never run full experiment matrix (step 12) <strong>before</strong>{" "}
               Month-1 pilot (step 4) confirms the core assumption.
+            </li>
+            <li>
+              Never skip the model-swap smoke test (step 11) — a 2-hour/$3
+              check prevents discovering model-specific issues at full scale.
             </li>
           </ul>
         </Callout>
