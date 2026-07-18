@@ -1,8 +1,8 @@
 # Trust-Calibrated Multi-Agent Scientific Deliberation
 
-FYDP 2026–2027 research proposal site — a static React app presenting the proposal for **Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning**.
+FYDP 2026 research proposal site — a static React app presenting the proposal for **Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning**.
 
-The core idea: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer. This project proposes re-weighting each agent's influence *during* the debate based on how well its claims hold up against retrieved external evidence — an evidence-grounded trust score, not a majority vote.
+The core idea: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer. This project proposes re-weighting each agent's influence _during_ the debate based on how well its claims hold up against retrieved external evidence — an evidence-grounded trust score, not a majority vote.
 
 ## Tech stack
 
@@ -24,22 +24,22 @@ The dev server runs at the URL Vite prints (default `http://localhost:5173`).
 
 ## Scripts
 
-| Script | What it does |
-| --- | --- |
-| `npm run dev` | Start the Vite dev server with HMR |
-| `npm run build` | Type-check (`tsc -b`), build, then prerender all routes to static HTML |
-| `npm run preview` | Serve the production build locally |
-| `npm run lint` | Run Oxlint |
+| Script            | What it does                                                           |
+| ----------------- | ---------------------------------------------------------------------- |
+| `npm run dev`     | Start the Vite dev server with HMR                                     |
+| `npm run build`   | Type-check (`tsc -b`), build, then prerender all routes to static HTML |
+| `npm run preview` | Serve the production build locally                                     |
+| `npm run lint`    | Run Oxlint                                                             |
 
 ## Routes
 
-| Path | Page |
-| --- | --- |
-| `/` | Overview |
-| `/idea/1` | Idea 1 detail — the trust-calibrated deliberation proposal |
-| `/roadmap` | Project roadmap / timeline |
-| `/papers` | Literature review |
-| `/proposal` | Full proposal |
+| Path        | Page                                                       |
+| ----------- | ---------------------------------------------------------- |
+| `/`         | Overview                                                   |
+| `/idea/1`   | Idea 1 detail — the trust-calibrated deliberation proposal |
+| `/roadmap`  | Project roadmap / timeline                                 |
+| `/papers`   | Literature review                                          |
+| `/proposal` | Full proposal                                              |
 
 ## Project structure
 
