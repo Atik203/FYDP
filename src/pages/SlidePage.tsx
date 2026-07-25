@@ -43,8 +43,8 @@ const MEMBERS: { name: string; id: string; leader?: boolean }[] = [
 /* ── Slide 1: Group info ─────────────────────────────────────────── */
 function GroupSlide() {
   return (
-    <div className="w-full h-full flex flex-col justify-center px-[7cqw] py-[5cqh]">
-      <div className="text-center mb-[4cqh]">
+    <div className="w-full h-full flex flex-col justify-center px-[7cqw] py-[4cqh]">
+      <div className="text-center mb-[2.6cqh]">
         <div
           className="inline-block rounded-full px-[2.4cqw] py-[0.9cqh] text-[1.9cqh] font-bold uppercase tracking-[0.18em]"
           style={{ background: ACCENT, color: "#ffffff" }}
@@ -52,13 +52,14 @@ function GroupSlide() {
           CSE 4000A (B) · Final Year Design Project – I · Section B
         </div>
         <h1
-          className="mt-[3.2cqh] text-[6.2cqh] font-extrabold leading-tight"
+          className="mt-[2cqh] text-[4cqh] font-extrabold leading-tight"
           style={{ color: NEAR_BLACK }}
         >
-          Literature Review Presentation
+          Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating
+          Sycophantic Consensus in LLM Reasoning
         </h1>
         <div
-          className="mt-[1.6cqh] flex items-center justify-center gap-[2cqw] text-[3cqh] font-bold"
+          className="mt-[1.4cqh] flex items-center justify-center gap-[2cqw] text-[2.7cqh] font-bold"
           style={{ color: DEEP_INK }}
         >
           <span
@@ -68,9 +69,16 @@ function GroupSlide() {
             Group No. 6
           </span>
           <span className="flex items-center gap-[0.8cqw]">
-            <Users size="2.8cqh" style={{ color: ACCENT }} />
+            <Users size="2.6cqh" style={{ color: ACCENT }} />
             Team&nbsp;<span style={{ color: ACCENT }}>Phantom Devs</span>
           </span>
+        </div>
+        <div
+          className="mt-[1.4cqh] inline-flex items-center gap-[1cqw] rounded-lg px-[2.2cqw] py-[0.8cqh] text-[2.4cqh] font-bold"
+          style={{ background: "#ccfbf1", color: TEAL }}
+        >
+          Supervisor:&nbsp;
+          <span style={{ color: NEAR_BLACK }}>Dr. Mohammad Nurul Huda</span>
         </div>
       </div>
 
@@ -543,10 +551,10 @@ function ConsensSlideOne() {
             </div>
             <div className="text-center">
               <div
-                className="text-[7cqh] font-extrabold leading-none"
+                className="text-[4.6cqh] font-extrabold leading-none"
                 style={{ color: ACCENT }}
               >
-                SOTA
+                Best in Class
               </div>
               <div
                 className="text-[2.3cqh] font-semibold"
