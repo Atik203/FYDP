@@ -6,50 +6,54 @@
 
 **Opening:**
 
-The paper is **ConsensAgent** by Pitre, Ramakrishnan, and Wang from Virginia Tech. It was published at **Findings of ACL 2025** — that's the Association for Computational Linguistics, one of the top venues for NLP research.
+My paper is **ConsensAgent: Towards Efficient and Effective Consensus in Multi-Agent LLM Interactions Through Sycophancy Mitigation**. It was published at **ACL 2025** — one of the top conferences in NLP.
 
-**The problem they identified:**
+**The problem:**
 
-Before this paper, sycophancy was studied only in human-to-AI settings — a human pressuring a model to change its answer. ConsensAgent was the **first** to show that sycophancy happens between AI agents inside multi-agent debate. They found that agents copy or swap each other's answers instead of reasoning independently.
+Before this paper, people studied sycophancy only between a human and an AI. This paper was the **first** to show that sycophancy also happens between AI agents in multi-agent debate. Agents copy each other's answers instead of thinking independently.
 
-And here is their most important finding: in over **20% of wrong-answer cases**, the correct answer was actually **present in the discussion** — but it was ignored. The correct minority agent was pressured into abandoning its position. This is the hard evidence that our problem is real.
+Their most important finding: in **more than 20% of wrong answers**, the correct answer was already there in the discussion — but it was ignored. The right answer was silenced by social pressure. This is the proof that our problem is real.
 
-**How they fixed it:**
+**Their solution — four phases:**
 
-Their solution has four phases. First, each agent gives an independent answer with a confidence score. Then they debate for up to five rounds. If a trigger detects stalling or copying — they use a cosine similarity threshold of 0.8 on explanations — a fine-tuned GPT-4o model **rewrites the task prompt** to remove ambiguity. Then agents re-debate and converge quickly, usually in one to two rounds.
+**Phase 1** — Each agent gives an independent answer plus a confidence score.
+
+**Phase 2** — They debate for up to five rounds.
+
+**Trigger** — If the system detects stalling or copying, using a cosine similarity threshold of 0.8...
+
+**Phase 3** — A fine-tuned GPT-4o rewrites the task prompt to make it clearer. Agents debate again.
+
+**Phase 4** — Final answer is a weighted vote using confidence and consistency.
 
 **Results:**
 
-Their method reduced sycophancy by **7 to 30 percent** and achieved **best-in-class accuracy** on all six benchmarks — KITAB, CLUTRR, HotpotQA, Ethics, GSM8K, and TriviaQA — beating strong baselines like ReConcile.
+Sycophancy dropped **7 to 30 percent**. They got **best results on all six datasets** — KITAB, CLUTRR, HotpotQA, Ethics, GSM8K, and TriviaQA. After the trigger, consensus happens in **one to two rounds**.
 
 ---
 
 ## Slide 2 — Relevance & Gap
 
-**How it helps our work:**
+**How this helps our work:**
 
-ConsensAgent is our **nearest published neighbor** — it is the closest existing work to what we are proposing. It shares our exact motivation: a correct minority gets overwhelmed by a confident majority.
+ConsensAgent is our **closest competitor**. Same problem — sycophantic collapse. Same motivation — a correct minority is overwhelmed by a confident majority.
 
-Critically, their **20-percent correct-but-ignored** finding is our strongest **proof that the problem is real**. Without them, we would be claiming a problem exists based only on theory. With them, we cite a peer-reviewed ACL paper.
+Their **20% correct-but-ignored** finding is our strongest **proof that the problem exists**. Without this paper, we can only say the problem might exist. With it, we have peer-reviewed evidence.
 
-We also adopt their sycophancy metric — measuring copy and swap behaviour via cosine similarity — as a baseline comparison for our own evaluation harness.
+Their sycophancy metric — detecting copy and swap behaviour — is a **baseline for our own evaluation system**.
 
-**Where it falls short — and why we are different:**
+**Where it falls short:**
 
-But ConsensAgent has a fundamental gap. It fixes sycophancy **indirectly** — by rewriting the prompt **before** debate. It has **no mechanism to re-weight who to trust during the debate itself**.
+But ConsensAgent fixes sycophancy **indirectly**. It rewrites the prompt **before** debate. It has **no way to change who to trust during the debate**.
 
-This means it fails exactly when the prompt is perfectly clear but a confidently wrong majority simply out-persuades a correct minority.
+So it fails when the prompt is clear but a confident majority is simply wrong.
 
-Its final vote still relies on **self-reported confidence** — which is precisely the signal that gets distorted under social pressure.
+The final vote still uses **self-reported confidence** — the same signal we know gets distorted under pressure.
 
-It also requires a **per-dataset fine-tuned GPT-4o** with 150 labelled samples, which is expensive and doesn't generalise.
+It also needs a **fine-tuned GPT-4o for each dataset**, which costs money and doesn't generalise.
 
-And the authors themselves admit their method treats the **symptom, not the root cause** — sycophancy reduction is largely a side effect of reaching consensus faster.
+The authors themselves say their fix treats the **symptom, not the root cause**.
 
-**Our contribution fills this gap:**
+**Our contribution:**
 
-We calibrate trust **during** the debate using **external retrieved evidence** — not pre-debate prompt clarity, not self-reported confidence. Prompt clarification is not the same as agent trust calibration. That is the key difference.
-
----
-
-*Estimated delivery: ~1 min 45 sec at natural speaking pace.*
+We calibrate trust **during** the debate using **real external evidence** — not prompt rewriting, not self-reported confidence. Prompt clarification is not the same as trust calibration. That is the key difference.
