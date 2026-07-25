@@ -511,8 +511,8 @@ function ConsensSlideOne() {
         >
           <ul>
             <Bullet>
-              <b>First to study sycophancy inside multi-agent debate</b> — agents
-              copy/swap answers instead of reasoning.
+              <b>First to study sycophancy inside multi-agent debate</b> —
+              agents copy/swap answers instead of reasoning.
             </Bullet>
             <Bullet>
               The correct answer is present but <b>ignored in &gt;20%</b> of
@@ -671,8 +671,8 @@ function ConsensSlideTwo() {
               <b>ready baseline</b> for our eval harness.
             </Bullet>
             <Bullet>
-              Beats strong baselines including <b>ReConcile</b> — a likely
-              baseline for us too.
+              Beats strong baselines including <b>ReConcile</b> (Chen et al.,
+              2024)
             </Bullet>
           </ul>
         </Card>
@@ -688,8 +688,8 @@ function ConsensSlideTwo() {
               <b>before</b> debate, no in-debate trust weighting.
             </Bullet>
             <Bullet>
-              Fails when the prompt is <b>clear but the majority is confidently
-              wrong</b>.
+              Fails when the prompt is{" "}
+              <b>clear but the majority is confidently wrong</b>.
             </Bullet>
             <Bullet>
               Final vote still uses <b>self-reported confidence</b> — the
@@ -723,8 +723,8 @@ function ConsensSlideTwo() {
             style={{ color: "#ffffff" }}
           >
             We calibrate trust <i>during</i> the debate using external retrieved
-            evidence — not pre-debate prompt clarity or self-reported confidence.
-            Prompt clarification ≠ agent trust calibration.
+            evidence — not pre-debate prompt clarity or self-reported
+            confidence. Prompt clarification ≠ agent trust calibration.
           </div>
         </div>
       </div>
@@ -786,8 +786,8 @@ function DebUncSlideOne() {
               <b>token-level uncertainty metric</b> (entropy / TokenSAR).
             </Bullet>
             <Bullet>
-              Shares confidence two ways: <b>in the prompt</b> (1–10 score) or by{" "}
-              <b>attention-scaling</b> peer tokens.
+              Shares confidence two ways: <b>in the prompt</b> (1–10 score) or
+              by <b>attention-scaling</b> peer tokens.
             </Bullet>
             <Bullet>
               Attention-scaling <b>beats</b> prompt-based; both beat standard
@@ -924,8 +924,8 @@ function DebUncSlideTwo() {
               better-than-self-reported signal is the key.
             </Bullet>
             <Bullet>
-              Confidence-in-prompt mode is <b>API-portable</b> → a clean baseline
-              (B-DebUnc).
+              Confidence-in-prompt mode is <b>API-portable</b> → a clean
+              baseline (B-DebUnc).
             </Bullet>
           </ul>
         </Card>
@@ -1034,8 +1034,8 @@ function MoaSlideOne() {
               other models' outputs, even weaker ones.
             </Bullet>
             <Bullet>
-              <b>Layered pipeline</b>: proposer LLMs generate → an aggregator LLM
-              synthesizes → repeat across layers.
+              <b>Layered pipeline</b>: proposer LLMs generate → an aggregator
+              LLM synthesizes → repeat across layers.
             </Bullet>
             <Bullet>
               <b>No fine-tuning</b> — pure prompting with off-the-shelf models.
@@ -1220,9 +1220,9 @@ function MoaSlideTwo() {
             className="text-[2.7cqh] font-extrabold leading-snug"
             style={{ color: "#ffffff" }}
           >
-            We add what MoA lacks: an explicit, evidence-grounded trust weight per
-            agent — so a confidently-wrong proposer is down-weighted, not blindly
-            synthesized in.
+            We add what MoA lacks: an explicit, evidence-grounded trust weight
+            per agent — so a confidently-wrong proposer is down-weighted, not
+            blindly synthesized in.
           </div>
         </div>
       </div>
