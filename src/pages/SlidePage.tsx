@@ -664,7 +664,7 @@ function ConsensSlideTwo() {
             </Bullet>
             <Bullet>
               Its <b>&gt;20% correct-but-ignored</b> finding is our strongest
-              empirical hook.
+              proof the problem is real.
             </Bullet>
             <Bullet>
               Its sycophancy metric (copy/swap via cosine similarity) is a{" "}
