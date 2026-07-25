@@ -596,11 +596,11 @@ function ConsensSlideOne() {
         </div>
         <div className="flex items-stretch gap-[0.6cqw]">
           {[
-            "Independent answers + confidence",
-            "Multi-round debate",
-            "Trigger: stall / sycophancy?",
-            "Prompt optimization (fine-tuned GPT-4o)",
-            "Team answer (confidence + consistency)",
+            "Phase 1: Zero-shot CoT answers + confidence",
+            "Phase 2: Multi-round debate (≤5 rounds)",
+            "Trigger: stall / copy detected (cos sim > 0.8)",
+            "Phase 3: Fine-tuned GPT-4o rewrites task prompt",
+            "Phase 4: Weighted vote (confidence × consistency)",
           ].map((step, i, arr) => (
             <div key={step} className="flex items-center flex-1">
               <div
@@ -1355,13 +1355,7 @@ export function SlidePage() {
           <Slide />
         </div>
 
-        {/* Slide counter (bottom-right, subtle) */}
-        <div
-          className="absolute bottom-[2cqh] right-[2.5cqw] text-[2cqh] font-bold tabular-nums select-none"
-          style={{ color: "#94a3b8" }}
-        >
-          {index + 1} / {SLIDES.length}
-        </div>
+
       </div>
 
       {/* Fullscreen toggle — only shown when NOT in fullscreen (use Esc / F to exit) */}
