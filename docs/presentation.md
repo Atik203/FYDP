@@ -12,7 +12,7 @@ My paper is **ConsensAgent: Towards Efficient and Effective Consensus in Multi-A
 
 Before this paper, people studied sycophancy only between a human and an AI. This paper was the **first** to show that sycophancy also happens between AI agents in multi-agent debate. Agents copy each other's answers instead of thinking independently.
 
-Their most important finding: in **more than 20% of wrong answers**, the correct answer was already there in the discussion — but it was ignored. The right answer was silenced by social pressure. This is the proof that our problem is real.
+Their most important finding: in **more than 20% of cases where the final answer was wrong**, the correct answer was already there in the discussion — but it was ignored. The right answer was lost just because the majority disagreed. This is the proof that our problem is real.
 
 **Their solution — four phases:**
 
