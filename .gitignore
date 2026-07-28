@@ -26,6 +26,9 @@ dist-ssr
 /markdowns/
 /pdfs/
 
-/FYDP_Thesis
+/FYDP_Summer
 
 /262_012/
+
+.claude
+.agents
