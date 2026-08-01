@@ -64,7 +64,7 @@ We calibrate trust **during** the debate using **real external evidence** — no
 
 **Opening:**
 
-The third paper is **DebUnc: Improving Large Language Model Agent Communication With Uncertainty Metrics**. It was published in **Findings of EMNLP 2025**. This is the paper closest to our mechanism.
+I am presenting **DebUnc: Improving Large Language Model Agent Communication With Uncertainty Metrics**. It was published in **Findings of EMNLP 2025**. Unlike ConsensAgent, it changes agent influence during the debate, so it is the paper closest to our mechanism.
 
 **The problem:**
 
