@@ -64,21 +64,19 @@ We calibrate trust **during** the debate using **real external evidence** — no
 
 **Opening:**
 
-I am presenting **DebUnc: Improving Large Language Model Agent Communication With Uncertainty Metrics**. It was published in **Findings of EMNLP 2025**.it changes agent influence during the debate, so it is the paper closest to our mechanism.
+I am presenting **DebUnc**, published in **Findings of EMNLP 2025**. Unlike ConsensAgent, it changes agent influence during the debate, so it is the closest paper to our mechanism.
 
 **The problem:**
 
-In normal debate, agents see each other's answers, but they do not know how certain those answers are. A wrong answer can sound very confident and influence the other agents.
+In normal debate, agents cannot see how certain each other is, so a confident-sounding wrong answer can still influence them.
 
 **Their solution:**
 
-After each round, DebUnc measures each agent's uncertainty using token-level metrics such as **Mean Token Entropy** and **TokenSAR**.
+After each round, DebUnc measures uncertainty with token-level metrics like **Mean Token Entropy** or **TokenSAR**, converted to a confidence score from 1 to 10.
 
-It converts the result into a confidence score from 1 to 10. The score is either added to the prompt or used to scale the attention given to peer tokens.
+It shares the score in the prompt, or uses **attention-scaling** to change how much peer words count. Attention-scaling works better, but the gain is small: **0.63** for standard debate, about **0.64** for the best deployable metric.
 
-Attention-scaling works better than putting the score in the prompt. But with real, deployable metrics, the improvement is small: average accuracy goes from **0.63** for standard debate to about **0.64**.
-
-Then they test a **Ground Truth oracle**. This oracle knows which answers are correct, so it reaches **0.73** average accuracy, about 10 points higher. But it needs the correct answer in advance, so it is only a diagnostic and cannot be deployed.
+Then they test a **Ground Truth oracle** that knows the correct answer in advance. It reaches **0.73**, about 10 points higher, but it cannot be deployed.
 
 ---
 
@@ -86,18 +84,18 @@ Then they test a **Ground Truth oracle**. This oracle knows which answers are co
 
 **How this helps our work:**
 
-DebUnc uses the same lever as us: it changes agent influence **during** the debate, not only at the final vote.
+DebUnc uses the same lever as us: it changes agent influence **during** the debate, not just at the final vote.
 
-Its oracle result gives us an important lesson. The communication method is not enough. The trust signal must be close to the truth.
+Its oracle result teaches an important lesson: the trust signal, not the communication method, is the limit.
 
 **Where it falls short:**
 
-Its real signal is internal uncertainty. It tells us how the model feels, not whether its claim is correct. It does not check external evidence.
+Its real signal is internal uncertainty. It tells us how the model feels, not whether its claim is correct.
 
-The attention-scaling method also needs white-box access to model internals. That does not work with closed API models. Token-level probability metrics are also unavailable for many closed APIs.
+Attention-scaling also needs white-box access and token probabilities, which closed APIs do not expose.
 
 **Our contribution:**
 
-We use external scientific evidence to estimate whether an agent's claim is supported. We update trust at the message level, so the method can work with closed APIs.
+We use external scientific evidence to check whether an agent's claim is supported, updating trust at the message level so it works with closed APIs.
 
-In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** DebUnc's confidence-in-prompt version is also a direct baseline for our experiments.
+In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** Its confidence-in-prompt mode is also our B-DebUnc baseline.
