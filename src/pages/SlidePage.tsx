@@ -830,8 +830,8 @@ function DebUncSlideOne() {
                 className="text-[2.1cqh] font-bold leading-snug"
                 style={{ color: DEEP_INK }}
               >
-                <b>0.73 average accuracy</b> (+0.10), but it needs the gold
-                answer, so it is <b>diagnostic only</b>.
+                <b>0.73 average accuracy</b> (+0.10), but it needs the
+                correct answer in advance, so it cannot be deployed.
               </div>
             </div>
             <div
@@ -913,7 +913,8 @@ function DebUncSlideTwo() {
           <ul className="flex flex-col justify-between h-full">
             <Bullet>
               <b>Closest on mechanism</b> — reweights agent influence{" "}
-              <b>during debate rounds</b>, exactly like our TCM.
+              <b>during debate rounds</b>, exactly like our Trust Calibration
+              Module.
             </Bullet>
             <Bullet>
               It validates the lever: attention-scaling beats prompt-based
