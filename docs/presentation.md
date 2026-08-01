@@ -1,5 +1,7 @@
 # Presentation Script — ConsensAgent Slides (~1.5–2 min)
 
+> Timing note: DebUnc script is trimmed for ~120 words per minute (comfortable for non-native speakers), so each DebUnc section fits within 2 minutes at a relaxed pace.
+
 ---
 
 ## Slide 1 — ConsensAgent: What It Does & Results
@@ -64,19 +66,19 @@ We calibrate trust **during** the debate using **real external evidence** — no
 
 **Opening:**
 
-I am presenting **DebUnc**, published in **Findings of EMNLP 2025**. Unlike ConsensAgent, it changes agent influence during the debate, so it is the closest paper to our mechanism.
+I am presenting **DebUnc**, from **Findings of EMNLP 2025**. Unlike ConsensAgent, it changes agent influence during the debate.
 
 **The problem:**
 
-In normal debate, agents cannot see how certain each other is, so a confident-sounding wrong answer can still influence them.
+In debate, agents cannot see how certain each other is, so a confident-sounding wrong answer can still win.
 
 **Their solution:**
 
-After each round, DebUnc measures uncertainty with token-level metrics like **Mean Token Entropy** or **TokenSAR**, converted to a confidence score from 1 to 10.
+Each round, DebUnc measures uncertainty with token-level metrics and converts it to a confidence score from 1 to 10.
 
-It shares the score in the prompt, or uses **attention-scaling** to change how much peer words count. Attention-scaling works better, but the gain is small: **0.63** for standard debate, about **0.64** for the best deployable metric.
+It shares the score in the prompt, or scales attention to peer tokens. Attention-scaling works better, but the gain is small: **0.63** to about **0.64**.
 
-Then they test a **Ground Truth oracle** that knows the correct answer in advance. It reaches **0.73**, about 10 points higher, but it cannot be deployed.
+Then they test a **Ground Truth oracle** that knows the correct answer in advance: it reaches **0.73**, about 10 points higher, but it cannot be deployed.
 
 ---
 
@@ -84,18 +86,18 @@ Then they test a **Ground Truth oracle** that knows the correct answer in advanc
 
 **How this helps our work:**
 
-DebUnc uses the same lever as us: it changes agent influence **during** the debate, not just at the final vote.
+DebUnc uses the same lever as us: influence changes during the debate, not just at the final vote.
 
 Its oracle result teaches an important lesson: the trust signal, not the communication method, is the limit.
 
 **Where it falls short:**
 
-Its real signal is internal uncertainty. It tells us how the model feels, not whether its claim is correct.
+Its real signal is internal uncertainty: how the model feels, not whether its claim is correct.
 
 Attention-scaling also needs white-box access and token probabilities, which closed APIs do not expose.
 
 **Our contribution:**
 
-We use external scientific evidence to check whether an agent's claim is supported, updating trust at the message level so it works with closed APIs.
+We use external scientific evidence to check whether an agent's claim is supported, updating trust at the message level for closed APIs.
 
-In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** Its confidence-in-prompt mode is also our B-DebUnc baseline.
+In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** Its prompt mode is our B-DebUnc baseline.
