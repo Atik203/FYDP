@@ -205,7 +205,6 @@ INPUT 1.intro.tex
 INPUT ./2.back.tex
 INPUT ./2.back.tex
 INPUT 2.back.tex
-INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT ./3.design.tex
 INPUT ./3.design.tex
 INPUT 3.design.tex
@@ -221,6 +220,7 @@ INPUT 6.conclusion.tex
 INPUT ./fydp.bbl
 INPUT ./fydp.bbl
 INPUT fydp.bbl
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmti10.tfm
 INPUT fydp.aux
 INPUT ./fydp.out
 INPUT ./fydp.out
