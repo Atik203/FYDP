@@ -1,8 +1,10 @@
-# Presentation Script — ConsensAgent and DebUnc Slides (~3–4 min)
+# Presentation Script (~3–4 min)
 
 ---
 
-## Slide 1 — ConsensAgent: What It Does & Results
+## ConsensAgent
+
+### Slide 1 — What It Does & Results
 
 **Opening:**
 
@@ -32,7 +34,7 @@ Sycophancy dropped **7 to 30 percent**. They got **best results on all six datas
 
 ---
 
-## Slide 2 — Relevance & Gap
+### Slide 2 — Relevance & Gap
 
 **How this helps our work:**
 
@@ -60,7 +62,9 @@ We calibrate trust **during** the debate using **real external evidence** — no
 
 ---
 
-## Slide 3 — DebUnc: What It Does & Results
+## DebUnc
+
+### Slide 3 — What It Does & Results
 
 **Opening:**
 
@@ -82,7 +86,7 @@ Then they test a **Ground Truth oracle**. This oracle knows which answers are co
 
 ---
 
-## Slide 4 — Relevance & Gap
+### Slide 4 — Relevance & Gap
 
 **How this helps our work:**
 
