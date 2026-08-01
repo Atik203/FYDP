@@ -74,9 +74,9 @@ In debate, agents cannot see how certain each other is, so a confident-sounding 
 
 **Their solution:**
 
-Each round, DebUnc measures uncertainty with token-level metrics and converts it to a confidence score from 1 to 10.
+The per-round pipeline: agents answer, uncertainty is measured, converted to a 1-to-10 confidence, and shared by prompt or attention-scaling, so peers give confident agents more weight.
 
-It shares the score in the prompt, or scales attention to peer tokens. Attention-scaling works better, but the gain is small: **0.63** to about **0.64**.
+Attention-scaling works better, but the gain is small: **0.63** to about **0.64**.
 
 Then they test a **Ground Truth oracle** that knows the correct answer in advance: it reaches **0.73**, about 10 points higher, but it cannot be deployed.
 
