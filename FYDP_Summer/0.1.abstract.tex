@@ -11,13 +11,17 @@ Large language models now answer hard scientific questions, yet they still hallu
 
 The weakness is in how these debates settle. Most systems pick a winner by majority vote or by which agent sounds most confident. When a confident majority is simply wrong, it can pull a correct minority agent off its answer, and the group lands on the wrong conclusion. No current method checks whether an agent's claims actually hold up against outside scientific evidence before letting that agent sway the room.
 
-We address this with a Trust-Calibrated Multi-Agent Scientific Deliberation framework that adjusts how much each agent counts as the debate unfolds.
+The framework addresses this problem by adjusting how much each agent counts as
+the debate unfolds.
 
 The framework breaks every agent response into small factual claims. For each claim it retrieves relevant scientific literature and checks whether the evidence backs the claim or contradicts it. Every agent then carries a trust score that moves up or down as these checks accumulate over the rounds of debate. The final answer is built from trust-weighted aggregation rather than a raw count of votes.
 
-Tying trust to real evidence means unsupported claims lose weight, so a correct but outnumbered agent is far less likely to be silenced.
+The trust update assigns less influence to unsupported claims, allowing a correct
+minority agent to retain influence even when outnumbered.
 
-We expect the approach to cut hallucination and keep reasoning tied to verifiable sources. It should also stop the debate from settling too early on a wrong answer, giving more reliable scientific results, and it does this without any model fine-tuning.
+The framework is expected to reduce hallucinations and keep reasoning tied to
+verifiable sources. It may also reduce premature agreement on a wrong answer while
+operating without model fine-tuning.
 
 \clearpage
 \setlength{\headheight}{12pt}
