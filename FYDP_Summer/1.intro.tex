@@ -16,10 +16,10 @@ answer is selected~\cite{du2024improving}. Chain-of-thought prompting gives each
 agent a way to expose its intermediate steps~\cite{wei2022chain}, which makes the
 reasoning inside a debate easier to inspect.
 The real difficulty is the final step, where the separate answers are combined.
-Most debate systems settle disagreements by majority vote. Every agent gets equal
-weight, and the most common answer wins. This is simple, but it treats popularity
-as a stand-in for correctness. In scientific reasoning the better answer is the
-one backed by evidence, not the one repeated by more agents. The study examines a
+Most debate systems settle disagreements by majority vote. Each agent receives the
+same weight, so the most common answer wins. This rule treats popularity as a
+stand-in for correctness. In scientific reasoning, a better answer should be
+backed by evidence rather than repeated by more agents. The study examines a
 trust-calibrated multi-agent deliberation framework that
 adjusts each agent's influence during the debate based on how well its claims match retrieved external
 evidence. The final answer then depends on evidence-grounded trust rather than a
@@ -52,15 +52,14 @@ the study.
 
 The main objective of this project is to reduce sycophantic consensus in
 multi-agent LLM debate by replacing plain majority voting with evidence-grounded
-trust calibration. This objective involves studying how majority-vote debate fails
-when a confident wrong majority pressures a correct minority agent into changing
-its answer, designing a bounded trust score that rises when an agent's claims are
-supported by external evidence and falls when they are contradicted, and applying
-that score during the debate before the final answer is fixed. The work also
-compares the proposed method with standard majority voting and other relevant
-debate and aggregation baselines, then evaluates the framework using answer
-accuracy together with consensus-collapse, minority-preservation, and
-evidence-calibration metrics.
+trust calibration. This requires examining how a confident wrong majority can
+pressure a correct minority agent into changing its answer. It also involves
+designing a bounded trust score that rises when an agent's claims are supported by
+external evidence and falls when they are contradicted, then applying that score
+before the final answer is fixed. The study compares the proposed method with
+standard majority voting and other relevant debate and aggregation baselines, and
+evaluates it using answer accuracy together with consensus-collapse,
+minority-preservation, and evidence-calibration metrics.
 
 \section{Methodology}\label{sec:methodology}
 
