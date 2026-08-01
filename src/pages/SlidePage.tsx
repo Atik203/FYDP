@@ -946,8 +946,8 @@ function DebUncSlideTwo() {
               not whether its claim is <i>right</i>.
             </Bullet>
             <Bullet>
-              The Ground-Truth oracle needs the gold answer, so it is{" "}
-              <b>not deployable</b>.
+              The Ground-Truth oracle needs the correct answer in advance, so
+              it is <b>not deployable</b>.
             </Bullet>
             <Bullet>
               Attention-scaling needs <b>white-box</b> model access; token-level
