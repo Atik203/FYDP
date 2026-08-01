@@ -116,4 +116,11 @@ Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei
   Natural Language Processing}, pages 15979--15998. Association for
   Computational Linguistics, 2025.
 
+\bibitem{pitre2026diagnostic}
+Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan
+  Wang.
+\newblock A diagnostic study of multi-agent llms for real-world debates.
+\newblock In {\em Proceedings of the 43rd International Conference on Machine
+  Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
+
 \end{thebibliography}
