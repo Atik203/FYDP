@@ -1,4 +1,4 @@
-# Presentation Script — ConsensAgent Slides (~1.5–2 min)
+# Presentation Script — ConsensAgent and DebUnc Slides (~3–4 min)
 
 ---
 
@@ -57,3 +57,47 @@ The authors themselves say their fix treats the **symptom, not the root cause**.
 **Our contribution:**
 
 We calibrate trust **during** the debate using **real external evidence** — not prompt rewriting, not self-reported confidence. Prompt clarification is not the same as trust calibration. That is the key difference.
+
+---
+
+## Slide 3 — DebUnc: What It Does & Results
+
+**Opening:**
+
+The third paper is **DebUnc: Improving Large Language Model Agent Communication With Uncertainty Metrics**. It was published in **Findings of EMNLP 2025**. This is the paper closest to our mechanism.
+
+**The problem:**
+
+In normal debate, agents see each other's answers, but they do not know how certain those answers are. A wrong answer can sound very confident and influence the other agents.
+
+**Their solution:**
+
+After each round, DebUnc measures each agent's uncertainty using token-level metrics such as **Mean Token Entropy** and **TokenSAR**.
+
+It converts the result into a confidence score from 1 to 10. The score is either added to the prompt or used to scale the attention given to peer tokens.
+
+Attention-scaling works better than putting the score in the prompt. But with real, deployable metrics, the improvement is small: average accuracy goes from **0.63** for standard debate to about **0.64**.
+
+Then they test a **Ground Truth oracle**. This oracle knows which answers are correct, so it reaches **0.73** average accuracy, about 10 points higher. But it needs the correct answer in advance, so it is only a diagnostic and cannot be deployed.
+
+---
+
+## Slide 4 — Relevance & Gap
+
+**How this helps our work:**
+
+DebUnc uses the same lever as us: it changes agent influence **during** the debate, not only at the final vote.
+
+Its oracle result gives us an important lesson. The communication method is not enough. The trust signal must be close to the truth.
+
+**Where it falls short:**
+
+Its real signal is internal uncertainty. It tells us how the model feels, not whether its claim is correct. It does not check external evidence.
+
+The attention-scaling method also needs white-box access to model internals. That does not work with closed API models. Token-level probability metrics are also unavailable for many closed APIs.
+
+**Our contribution:**
+
+We use external scientific evidence to estimate whether an agent's claim is supported. We update trust at the message level, so the method can work with closed APIs.
+
+In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** DebUnc's confidence-in-prompt version is also a direct baseline for our experiments.
