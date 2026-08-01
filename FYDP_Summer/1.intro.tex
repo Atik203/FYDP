@@ -1,0 +1,110 @@
+\chapter{Introduction}\label{chapter:introduction}
+
+This chapter introduces the project. It presents the background and problem,
+the motivation behind the work, the objectives, a short summary of the
+methodology, the expected outcome, and the structure of the rest of the report.
+
+\section{Project Overview}\label{sec:project-overview}
+
+Large language models now handle many reasoning tasks, from scientific question
+answering to tutoring and decision support. A single model can still be
+confidently wrong. It may state an incorrect answer in fluent and assured
+language, which makes the mistake hard to catch. Multi-agent debate was proposed
+to reduce this problem. Several agents answer the same question, read each
+other's reasoning, and revise their positions over a few rounds before a final
+answer is selected~\cite{du2024improving}. Chain-of-thought prompting gives each
+agent a way to expose its intermediate steps~\cite{wei2022chain}, which makes the
+reasoning inside a debate easier to inspect.
+The real difficulty is the final step, where the separate answers are combined.
+Most debate systems settle disagreements by majority vote. Every agent gets equal
+weight, and the most common answer wins. This is simple, but it treats popularity
+as a stand-in for correctness. In scientific reasoning the better answer is the
+one backed by evidence, not the one repeated by more agents. The study examines a
+trust-calibrated multi-agent deliberation framework that
+adjusts each agent's influence during the debate based on how well its claims match retrieved external
+evidence. The final answer then depends on evidence-grounded trust rather than a
+raw headcount.
+
+\section{Motivation}\label{sec:motivation}
+
+Majority voting can fail in a way that is easy to miss. A debate may look like it
+reached agreement while it has quietly dropped a correct answer held by one
+agent. Recent studies of multi-agent debate report that agents often copy or
+switch answers under social pressure instead of reasoning on their own, and that
+the correct answer is present in the discussion but ignored in more than twenty
+percent of wrong-answer cases~\cite{pitre-etal-2025-consensagent}. Work on model
+behaviour points to a related tendency, where models trained to be agreeable grow
+more sycophantic and less accurate~\cite{ibrahim2026training}. When a confident
+majority pushes a correct minority agent to give up its answer, majority voting
+does more than pick the wrong result. It hides the failure behind an appearance
+of consensus.
+This matters most for scientific questions, where a wrong but confident consensus
+can mislead a user into trusting an answer that deserved a closer check. Existing
+methods approach this failure from different directions. iMAD decides when a
+debate is worth running~\cite{fan2026imad}, DebUnc uses self-reported confidence to
+adjust agent influence~\cite{yoffe-etal-2025-debunc}, and Mixture-of-Agents combines
+outputs through static aggregation~\cite{wang2025mixture}. These methods are
+useful, yet none ties an agent's influence to whether its claims hold up against
+external evidence while the debate is still active. That gap is what motivates
+the study.
+
+\section{Objectives}\label{sec:objectives}
+
+The main objective of this project is to reduce sycophantic consensus in
+multi-agent LLM debate by replacing plain majority voting with evidence-grounded
+trust calibration. This objective involves studying how majority-vote debate fails
+when a confident wrong majority pressures a correct minority agent into changing
+its answer, designing a bounded trust score that rises when an agent's claims are
+supported by external evidence and falls when they are contradicted, and applying
+that score during the debate before the final answer is fixed. The work also
+compares the proposed method with standard majority voting and other relevant
+debate and aggregation baselines, then evaluates the framework using answer
+accuracy together with consensus-collapse, minority-preservation, and
+evidence-calibration metrics.
+
+\section{Methodology}\label{sec:methodology}
+
+The study follows an experimental methodology. A baseline multi-agent debate
+system is built first, where several heterogeneous LLM agents answer the same
+scientific question, share their reasoning, and revise across rounds. The
+baseline uses majority voting so the usual failure mode can be observed and
+measured.
+Each agent's reasoning is then broken into smaller factual claims. These claims
+are checked against scientific evidence retrieved from external sources such as
+academic papers and reference databases. Any contradiction between a claim and
+the retrieved evidence is detected and scored~\cite{kushwaha2026agentbased},
+building on the idea that external tools can verify and correct model
+output~\cite{gou2024critic}. The verdicts are turned into trust updates.
+Supported claims raise an agent's trust, contradicted claims lower it, and
+uncertain claims are handled conservatively. The trust score is bounded so that
+no agent gains unlimited influence or drops out of the debate completely.
+The final answer is chosen through trust-weighted aggregation rather than a
+simple count. The framework is evaluated on scientific reasoning datasets such as
+GPQA and MMLU-Pro. The evaluation checks whether the mechanism lowers consensus
+collapse, keeps correct minority answers, and holds overall accuracy without any
+model fine-tuning.
+
+\section{Project Outcome}\label{sec:project-outcome}
+
+The main outcome is a reproducible framework for trust-calibrated multi-agent
+scientific deliberation. It shows how retrieved evidence
+can update agent influence during a debate, and how the final answer can be
+decided by evidence-weighted trust instead of a majority vote. Alongside it, the
+study produces an evaluation protocol that detects sycophantic consensus,
+measures how often correct minority answers survive, and compares the method
+against established baselines.
+The study is expected to show whether dynamic trust calibration makes multi-agent
+debate more dependable on scientific questions. Even where the method does not
+remove every wrong answer, it should make the decision more transparent by
+recording which agents were supported or contradicted by the evidence.
+
+\section{Organization of the Report}\label{sec:organization-of-the-report}
+
+The rest of this report is arranged as follows. Chapter 2 covers the background,
+the related work on multi-agent debate and sycophancy, and the gap this project
+addresses. Chapter 3 presents the requirement analysis, the detailed methodology,
+the system design, and the project plan. Chapter 4 describes the implementation
+setup, the testing and evaluation procedure, and the results with discussion.
+Chapter 5 discusses the relevant standards, the impact of the work,
+sustainability, and the complex engineering problem analysis. Chapter 6 concludes
+the report, notes its limitations, and gives recommendations for future work.
