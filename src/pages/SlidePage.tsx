@@ -778,20 +778,20 @@ function DebUncSlideOne() {
         >
           <ul>
             <Bullet>
-              In debate, a <b>confidently-wrong</b> agent misleads peers who{" "}
-              <b>can't tell how confident</b> each other is.
+              In standard debate, a <b>confidently-wrong</b> agent can mislead
+              peers because they cannot see how confident one another is.
             </Bullet>
             <Bullet>
-              Measures each agent's confidence with a{" "}
-              <b>token-level uncertainty metric</b> (entropy / TokenSAR).
+              After each round, it scores uncertainty with token-level metrics:
+              <b> Mean Token Entropy</b> or <b>TokenSAR</b>.
             </Bullet>
             <Bullet>
-              Shares confidence two ways: <b>in the prompt</b> (1–10 score) or
-              by <b>attention-scaling</b> peer tokens.
+              It shares a 1–10 confidence score in the prompt, or uses{" "}
+              <b>attention-scaling</b> to change the weight of peer tokens.
             </Bullet>
             <Bullet>
-              Attention-scaling <b>beats</b> prompt-based; both beat standard
-              debate.
+              Attention-scaling beats prompt-based confidence, but deployable
+              metrics add only a <b>small gain</b> over standard debate.
             </Bullet>
           </ul>
         </Card>
@@ -807,13 +807,13 @@ function DebUncSlideOne() {
                 className="text-[6.5cqh] font-extrabold leading-none"
                 style={{ color: TEAL }}
               >
-                0.63 → 0.73
+                0.63 → 0.64
               </div>
               <div
                 className="text-[2.3cqh] font-semibold"
                 style={{ color: NEAR_BLACK }}
               >
-                avg accuracy with a perfect signal
+                standard → best deployable metric
               </div>
             </div>
             <div
@@ -824,15 +824,14 @@ function DebUncSlideOne() {
                 className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
                 style={{ color: ROSE }}
               >
-                The Ground-Truth Oracle
+                Ground-Truth oracle
               </div>
               <div
                 className="text-[2.1cqh] font-bold leading-snug"
                 style={{ color: DEEP_INK }}
               >
-                A signal that knows correctness gains
-                <b> +10%</b> — but needs the answer, so it
-                <b> can't be deployed</b>.
+                <b>0.73 average accuracy</b> (+0.10), but it needs the gold
+                answer, so it is <b>diagnostic only</b>.
               </div>
             </div>
             <div
@@ -914,14 +913,15 @@ function DebUncSlideTwo() {
           <ul className="flex flex-col justify-between h-full">
             <Bullet>
               <b>Closest on mechanism</b> — reweights agent influence{" "}
-              <b>during</b> the debate, exactly like our TCM.
+              <b>during debate rounds</b>, exactly like our TCM.
             </Bullet>
             <Bullet>
-              Same diagnosis: a confident agent shouldn't automatically win.
+              It validates the lever: attention-scaling beats prompt-based
+              confidence.
             </Bullet>
             <Bullet>
-              Its <b>Ground-Truth oracle</b> is our strongest proof that a
-              better-than-self-reported signal is the key.
+              Its <b>Ground-Truth oracle</b> adds <b>+0.10</b> average accuracy,
+              showing that signal quality is the bottleneck.
             </Bullet>
             <Bullet>
               Confidence-in-prompt mode is <b>API-portable</b> → a clean
@@ -937,22 +937,24 @@ function DebUncSlideTwo() {
         >
           <ul className="flex flex-col justify-between h-full">
             <Bullet>
-              Trust signal is <b>internal &amp; self-reported</b> — reflects how
-              a model <i>feels</i>, not whether it's <i>right</i>.
+              Deployable entropy/TokenSAR gives only a <b>small gain</b> (about
+              +0.01 average on Llama-3).
             </Bullet>
             <Bullet>
-              A <b>confidently-wrong</b> agent still earns high influence.
+              The signal is <b>internal</b>: it reflects how a model <i>feels</i>,
+              not whether its claim is <i>right</i>.
             </Bullet>
             <Bullet>
-              Attention-scaling needs <b>white-box</b> model access — no closed
-              APIs.
+              The Ground-Truth oracle needs the gold answer, so it is{" "}
+              <b>not deployable</b>.
             </Bullet>
             <Bullet>
-              Authors admit the ceiling is set by the{" "}
-              <b>uncertainty metric's quality</b>.
+              Attention-scaling needs <b>white-box</b> model access; token-level
+              metrics also need logits that most closed APIs hide.
             </Bullet>
             <Bullet>
-              <b>No external verification</b> anywhere in the loop.
+              There is <b>no external evidence</b>, so a confidently-wrong agent
+              can still receive high influence.
             </Bullet>
           </ul>
         </Card>
@@ -974,9 +976,9 @@ function DebUncSlideTwo() {
             className="text-[2.7cqh] font-extrabold leading-snug"
             style={{ color: "#ffffff" }}
           >
-            We replace internal self-confidence with an external,
-            evidence-grounded trust score — the deployable instantiation of
-            DebUnc's Ground-Truth oracle.
+            We use retrieved external evidence as a deployable proxy for the
+            missing truth signal, with message-level weighting that works with
+            closed APIs.
           </div>
         </div>
       </div>
