@@ -1,8 +1,8 @@
 \chapter{Background}\label{chapter:background}
 
-This chapter introduces the concepts needed to understand the proposed system and
-reviews research on multi-agent debate, sycophancy, and agent influence. It then
-explains the gap addressed by this project.
+The chapter introduces the concepts needed to understand the system described in
+the report and reviews research on multi-agent debate, sycophancy, and agent
+influence. It then explains the gap addressed by the study.
 
 \section{Preliminaries}\label{sec:preliminaries}
 
@@ -22,22 +22,21 @@ errors and allow one agent to question another agent's reasoning. The way those
 answers are combined still matters. A common method is majority voting, where
 each agent has the same weight and the most frequent answer is selected. If
 several agents repeat the same mistake, the vote can strengthen the mistake
-instead of correcting it. In this report, \textit{sycophantic consensus} refers to
-an agent copying or abandoning a correct position because a wrong position has
-greater support. Confidence may be supplied by an agent or estimated from its
-token distribution, but neither signal directly verifies a claim. DebUnc shows
-this difference by comparing deployable uncertainty measures with a diagnostic
-Ground Truth measure that uses the correct answer~\cite{yoffe-etal-2025-debunc}.
-The proposed framework therefore defines trust through support from retrieved
-scientific evidence. Zhang et al. (2025) provide a broader survey of reasoning-
-oriented LLMs~\cite{zhang2025from}.
+instead of correcting it. Sycophantic consensus refers to an agent copying or
+abandoning a correct position because a wrong position has greater support.
+Confidence may be supplied by an agent or estimated from its token distribution,
+but neither signal directly verifies a claim. DebUnc shows this difference by
+comparing deployable uncertainty measures with a diagnostic Ground Truth measure
+that uses the correct answer~\cite{yoffe-etal-2025-debunc}. The framework therefore
+defines trust through support from retrieved scientific evidence. Zhang et al.
+(2025) provide a broader survey of reasoning-oriented LLMs~\cite{zhang2025from}.
 
 \section{Literature Review}\label{sec:literature-review}
 
 The review covers studies that address debate construction, external verification,
 sycophancy, uncertainty, and debate evaluation. The main comparison is between
 methods that decide when to debate, methods that change agent interaction, and the
-proposed method that changes agent influence using retrieved evidence.
+method that changes agent influence using retrieved evidence.
 
 \subsection{Similar Applications}\label{subsec:similar-applications}
 
@@ -45,12 +44,64 @@ The system is not a conventional web or mobile application. It is an experimenta
 deliberation layer that could support a scientific question-answering tool, a
 research assistant, or another decision-support interface. The closest related
 systems are multi-agent LLM applications that generate several candidate answers
-and combine them before returning a result. This project differs by also recording
-evidence checks and the changing trust of each agent.
+and combine them before returning a result. The framework also records evidence
+checks and the changing trust of each agent.
 
 \subsection{Related Research}\label{subsec:related-research}
 
-Wei et al. (2022) showed that chain-of-thought prompting can improve reasoning in large language models~\cite{wei2022chain}. Du et al. (2024) extended this idea through multi-agent debate, where agents answer a question, examine peer reasoning, and revise their positions~\cite{du2024improving}. Gou et al. (2024) proposed CRITIC, which uses external tools to check and improve model responses~\cite{gou2024critic}. The method supports external verification, but it does not use several models debating the same question. Wang et al. (2025) introduced Mixture-of-Agents, a layered method that combines outputs from several proposer models~\cite{wang2025mixture}. It shows the value of multiple LLMs, but it uses static aggregation without an explicit evidence-based trust value. Fan, Yoon, and Ji (2026) proposed iMAD to reduce the cost of running debate on every question~\cite{fan2026imad}. Their method extracts 41 features from a structured self-critique and uses a classifier to decide whether debate should start. It reports token savings of up to 92 percent compared with GroupDebate and an accuracy improvement of up to 13.5 percentage points over a single-agent baseline. However, it does not change agent influence after debate begins. Pitre, Ramakrishnan, and Wang (2025) studied sycophancy inside multi-agent debate~\cite{pitre-etal-2025-consensagent}. Their work found that the correct answer can be present but ignored in more than 20 percent of wrong-answer cases. CONSENSAGENT detects stalling and answer copying, then rewrites the task prompt before another debate stage. It reduces measured sycophancy, but its final aggregation still uses self-reported confidence and consistency. Yoffe, Amayuelas, and Wang (2025) proposed DebUnc, which shares agent uncertainty through prompts or attention scaling during debate~\cite{yoffe-etal-2025-debunc}. Its deployable uncertainty measures give small gains, while a diagnostic Ground Truth signal gives a much larger gain. This result shows that the trust signal itself is a major limitation. Kushwaha and Madhavan (2026) described an eight-agent MAS-RAG architecture that detects contradictions among retrieved documents and ranks evidence by credibility~\cite{kushwaha2026agentbased}. Its source credibility is fixed by a human curator and is not updated during deliberation. Cau et al. (2025) examined opinion convergence in LLM interactions and found that selective persuasion can influence convergence~\cite{cau2025selective}. Yeow et al. (2025) compared several decision architectures and reported that feedback between agents can allow early errors to spread~\cite{yeow2025reliable}. Wang et al. (2024) found that a single LLM with strong in-context examples can sometimes match multi-agent discussion systems, and they identified judge errors and peer conformity as weaknesses~\cite{wang-etal-2024-rethinking-bounds}. Choi, Zhu, and Li (2025) separated debate communication from voting and argued that majority voting accounts for much of the usual improvement~\cite{choi2025debate}. Cui et al. (2026) proposed FREE-MAD, which avoids final consensus and uses anti-conformity prompts with trajectory scoring~\cite{cui2026freemad}. Zhou et al. (2025) proposed ReSo, a reward-driven system that selects agents through dynamic task graphs~\cite{zhou2025reso}. These works study coordination and agent selection, but they do not verify scientific claims before changing agent influence. Ibrahim et al. (2026) reported that tuning models to sound warm and agreeable can reduce factual accuracy and increase sycophancy~\cite{ibrahim2026training}. Pitre et al. (2026) proposed process-level diagnostics for engagement, responsiveness, influence asymmetry, balance, stability, and agent utility in debates where ground truth may be unavailable~\cite{pitre2026diagnostic}. Their work shows that final agreement alone is not enough to judge a debate. Overall, the literature provides methods for debate, external checking, uncertainty sharing, prompt correction, and process evaluation. The remaining gap is a system that continuously updates an agent's influence during scientific deliberation according to claim-level support from retrieved evidence. This project addresses that gap with a bounded trust score.
+Wei et al. (2022) showed that chain-of-thought prompting can improve reasoning in
+large language models~\cite{wei2022chain}. Du et al. (2024) extended this idea
+through multi-agent debate, where agents answer a question, examine peer reasoning,
+and revise their positions~\cite{du2024improving}. Gou et al. (2024) proposed
+CRITIC, which uses external tools to check and improve model responses~\cite{gou2024critic}.
+The method supports external verification, but it does not use several models
+debating the same question. Wang et al. (2025) introduced Mixture-of-Agents, a
+layered method that combines outputs from several proposer models~\cite{wang2025mixture}.
+It shows the value of multiple LLMs, but it uses static aggregation without an
+explicit evidence-based trust value. Fan, Yoon, and Ji (2026) proposed iMAD to
+reduce the cost of running debate on every question~\cite{fan2026imad}. Their
+method extracts 41 features from a structured self-critique and uses a classifier
+to decide whether debate should start. It reports token savings of up to 92 percent
+compared with GroupDebate and an accuracy improvement of up to 13.5 percentage
+points over a single-agent baseline. It does not change agent influence after
+debate begins. Pitre, Ramakrishnan, and Wang (2025) studied sycophancy inside
+multi-agent debate~\cite{pitre-etal-2025-consensagent}. Their work found that the
+correct answer can be present but ignored in more than 20 percent of wrong-answer
+cases. CONSENSAGENT detects stalling and answer copying, then rewrites the task
+prompt before another debate stage. It reduces measured sycophancy, but its final
+aggregation still uses self-reported confidence and consistency. Yoffe, Amayuelas,
+and Wang (2025) proposed DebUnc, which shares agent uncertainty through prompts
+or attention scaling during debate~\cite{yoffe-etal-2025-debunc}. Its deployable
+uncertainty measures give small gains, while a diagnostic Ground Truth signal gives
+a much larger gain. The result shows that the quality of the trust signal is a
+major limitation. Kushwaha and Madhavan (2026) described an eight-agent MAS-RAG
+architecture that detects contradictions among retrieved documents and ranks
+evidence by credibility~\cite{kushwaha2026agentbased}. Its source credibility is
+fixed by a human curator and is not updated during deliberation. Cau et al. (2025)
+examined opinion convergence in LLM interactions and found that selective
+persuasion can influence convergence~\cite{cau2025selective}. Yeow et al. (2025)
+compared several decision architectures and reported that feedback between agents
+can allow early errors to spread~\cite{yeow2025reliable}. Wang et al. (2024) found
+that a single LLM with strong in-context examples can sometimes match multi-agent
+discussion systems, and they identified judge errors and peer conformity as
+weaknesses~\cite{wang-etal-2024-rethinking-bounds}. Choi, Zhu, and Li (2025)
+separated debate communication from voting and argued that majority voting accounts
+for much of the usual improvement~\cite{choi2025debate}. Cui et al. (2026) proposed
+FREE-MAD, which avoids final consensus and uses anti-conformity prompts with
+trajectory scoring~\cite{cui2026freemad}. Zhou et al. (2025) proposed ReSo, a
+reward-driven system that selects agents through dynamic task graphs~\cite{zhou2025reso}.
+These works study coordination and agent selection, but they do not verify
+scientific claims before changing agent influence. Ibrahim et al. (2026) reported
+that tuning models to sound warm and agreeable can reduce factual accuracy and
+increase sycophancy~\cite{ibrahim2026training}. Pitre et al. (2026) proposed
+process-level diagnostics for engagement, responsiveness, influence asymmetry,
+balance, stability, and agent utility in debates where ground truth may be
+unavailable~\cite{pitre2026diagnostic}. Their work shows that final agreement alone
+is not enough to judge a debate. These studies address debate construction,
+external checking, uncertainty sharing, prompt correction, and process evaluation.
+None continuously updates an agent's influence according to claim-level support
+from retrieved scientific evidence. The framework addresses that gap with a
+bounded trust score.
 
 \section{Gap Analysis}\label{sec:gap-analysis}
 
@@ -61,24 +112,24 @@ when the agents disagree. iMAD mainly addresses the first need. CONSENSAGENT
 addresses the second through prompt optimization. DebUnc addresses the third with
 an in-debate weighting mechanism, but its practical signals are internal
 uncertainty estimates. The remaining gap is an in-session trust update based on
-independently checkable evidence. The proposed framework addresses this gap by
-decomposing an agent's response into smaller claims, retrieving relevant
-scientific passages, and classifying each claim as supported, contradicted, or
-unverifiable. The verdicts update a bounded trust score after each debate round.
-An agent can therefore be in the numerical majority and still lose influence if
-the claims supporting its position are contradicted. A correct minority agent can
-retain influence when its claims are better supported. No evidence is recorded as
-an unresolved case, while direct contradiction is handled separately. The
-evaluation therefore uses consensus-collapse rate, minority-preservation rate,
-and evidence-calibration rate alongside ordinary answer accuracy. Retrieval
-sparsity, imperfect claim decomposition, and correlated errors between agents
-remain limitations of the proposed approach.
+independently checkable evidence. The framework addresses this gap by decomposing
+an agent's response into smaller claims, retrieving relevant scientific passages,
+and classifying each claim as supported, contradicted, or unverifiable. The
+verdicts update a bounded trust score after each debate round. An agent can
+therefore be in the numerical majority and still lose influence if the claims
+supporting its position are contradicted. A correct minority agent can retain
+influence when its claims are better supported. No evidence is recorded as an
+unresolved case, while direct contradiction is handled separately. The evaluation
+therefore uses consensus-collapse rate, minority-preservation rate, and
+evidence-calibration rate alongside ordinary answer accuracy. Retrieval sparsity,
+imperfect claim decomposition, and correlated errors between agents remain
+limitations of the approach.
 
 \section{Summary}\label{sec:background-summary}
 
-This chapter introduced LLM reasoning, chain-of-thought prompting, multi-agent
-debate, and sycophantic consensus. The literature review covered debate efficiency,
-prompt correction, uncertainty weighting, external verification, process
-evaluation, and agent coordination. The reviewed methods do not continuously
-update agent influence from claim-level scientific evidence. The next chapter uses
-this gap to define the system requirements, detailed methodology, and project plan.
+The chapter introduced LLM reasoning, chain-of-thought prompting, multi-agent
+debate, and sycophantic consensus. The reviewed studies cover debate efficiency,
+prompt correction, uncertainty weighting, external verification, process evaluation,
+and agent coordination. They do not continuously update agent influence from
+claim-level scientific evidence. The next chapter uses this gap to define the
+system requirements, detailed methodology, and project plan.
