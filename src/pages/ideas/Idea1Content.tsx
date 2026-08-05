@@ -502,7 +502,9 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">4.2 Agent Pool (N=3)</h4>
             <p className="text-sm leading-relaxed mb-0">
-              Qwen3.6-27B, Gemma 4 26B A4B, Mistral Small 3.2 24B — three
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a>,{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a>,{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> — three
               different families for genuine heterogeneity. Each tracks own
               trust vector T ∈ ℝ³, initialized uniformly at 1/N.
             </p>
@@ -624,15 +626,19 @@ export function Idea1Content() {
         <h4 className="text-sm font-bold mb-3">Agents 1–3 — Debate Agents (Two-Phase Strategy)</h4>
         <TwoCol>
           <ColBox>
-            <h4 className="text-sm font-semibold mb-1">Dev: Qwen3.5-9B → Final: Qwen3.6-27B</h4>
+            <h4 className="text-sm font-semibold mb-1">
+              Dev: <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> → Final:{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a>
+            </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Dev: cheap iterative testing on RTX 4090. Final: 27B dense,
+              Dev: cheap iterative testing on RTX A6000 48GB. Final: 27B dense,
               262K context, caps prior 397B MoE flagship in coding. Apache 2.0.
             </p>
           </ColBox>
           <ColBox>
             <h4 className="text-sm font-semibold mb-1">
-              Dev: Gemma 4 12B → Final: Gemma 4 26B A4B
+              Dev: <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> → Final:{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a>
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
               Dev: encoder-free 12B proxy. Final: MoE (3.8B active),
@@ -641,11 +647,14 @@ export function Idea1Content() {
           </ColBox>
           <ColBox>
             <h4 className="text-sm font-semibold mb-1">
-              Dev: Phi-4-Reasoning 14B → Final: Mistral Small 3.2 24B
+              Dev: <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> → Final:{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a>
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Dev: reasoning-specialised Phi-4. Final: Mistral adds third
-              distinct family (non-Qwen, non-Gemma) for true heterogeneity.
+              Dev: Mistral-family 14B with official FP8 weights (~14GB,
+              near-lossless) — same lineage as Final Agent 3. Final: Mistral
+              adds third distinct family (non-Qwen, non-Gemma) for true
+              heterogeneity.
             </p>
           </ColBox>
           <ColBox>
@@ -791,13 +800,13 @@ export function Idea1Content() {
         <SectionTitle icon={Hammer}>7. Models &amp; Tools</SectionTitle>
         <p className="text-sm mb-4">
           Full model stack per blueprint §7. All open-weight, inference-only,
-          single A100.
+          served via vLLM.
         </p>
         <InfoGrid cards={resources} />
 
         <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
-          Two-phase strategy: develop on RTX 4090 ($0.20–0.40/hr) with smaller
+          Two-phase strategy: develop on RTX A6000 48GB ($0.53/hr) with smaller
           models, then run final experiments on A100 80GB ($0.68–1.50/hr) with
           the full-scale stack. Use the sliders below to estimate your budget.
         </p>

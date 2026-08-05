@@ -29,6 +29,7 @@ export interface ResourceCard {
   label: string;
   value: string;
   sub: string;
+  href?: string;
 }
 
 export interface RiskRow {
@@ -94,12 +95,12 @@ export const milestones: TimelineItem[] = [
 
 // Blueprint §7 — Models & Tools (two-phase strategy)
 export const resources: ResourceCard[] = [
-  { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX 4090' },
-  { label: 'Agent 1 (Final)', value: 'Qwen3.6-27B', sub: 'Full-scale 27B dense, caps flagship MoE in coding' },
-  { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour' },
-  { label: 'Agent 2 (Final)', value: 'Gemma 4 26B A4B', sub: 'MoE (3.8B active), matches 31B quality' },
-  { label: 'Agent 3 (Dev)', value: 'Phi-4-Reasoning 14B', sub: 'Reasoning-specialised, third cognitive style' },
-  { label: 'Agent 3 (Final)', value: 'Mistral Small 3.2 24B', sub: 'Distinct training lineage from Qwen/Gemma' },
+  { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX A6000 48GB', href: 'https://huggingface.co/Qwen/Qwen3.5-9B' },
+  { label: 'Agent 1 (Final)', value: 'Qwen3.6-27B', sub: 'Full-scale 27B dense, caps flagship MoE in coding', href: 'https://huggingface.co/Qwen/Qwen3.6-27B' },
+  { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour', href: 'https://huggingface.co/google/gemma-4-12B' },
+  { label: 'Agent 2 (Final)', value: 'Gemma 4 26B A4B', sub: 'MoE (3.8B active), matches 31B quality', href: 'https://huggingface.co/google/gemma-4-26B-A4B' },
+  { label: 'Agent 3 (Dev)', value: 'Ministral-3-14B-Instruct', sub: 'Mistral-family 14B (FP8), matches Final Agent 3 lineage', href: 'https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512' },
+  { label: 'Agent 3 (Final)', value: 'Mistral Small 3.2 24B', sub: 'Distinct training lineage from Qwen/Gemma', href: 'https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506' },
   { label: 'Oracle (B7)', value: 'Gemini 3.1 Pro Preview', sub: 'Upper-bound ceiling only, ~$5–7 for full oracle pass' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
   { label: 'Inference', value: 'vLLM', sub: 'Free, fast, multi-model serving' },
@@ -118,9 +119,9 @@ export interface CostRow {
 }
 
 export const costEstimates: CostRow[] = [
-  { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Phi-4 14B', gpu: 'RTX 4090 24GB', rate: '$0.20–0.40/hr', estHours: '300–600', totalRange: '$100–200' },
+  { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B', gpu: 'RTX A6000 48GB', rate: '$0.53/hr', estHours: '300–600', totalRange: '$160–320' },
   { phase: 'Final (Ph 3–5)', models: 'Qwen3.6-27B / Gemma 4 26B / Mistral 24B', gpu: 'A100 80GB', rate: '$0.68–1.50/hr', estHours: '250–500', totalRange: '$400–800' },
-  { phase: 'Total', models: '—', gpu: '—', rate: '—', estHours: '550–1,100', totalRange: '~$500–1,000' },
+  { phase: 'Total', models: '—', gpu: '—', rate: '—', estHours: '550–1,100', totalRange: '~$560–1,100' },
 ];
 
 // Blueprint §11 — Risk Assessment

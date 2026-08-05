@@ -41,6 +41,12 @@ const metaStyle: React.CSSProperties = {
   marginBottom: "9pt",
 };
 
+const linkStyle: React.CSSProperties = {
+  color: "#1f3a5f",
+  textDecoration: "underline",
+  textUnderlineOffset: "2pt",
+};
+
 function Eqn({
   children,
   num,
@@ -514,12 +520,14 @@ export function ProposalPage() {
           because same-family model copies share correlated blind spots and
           hallucination patterns, reducing the diversity benefit of multi-agent
           debate. We use a two-phase model strategy: during development
-          (Ph 0–2) the pipeline runs <strong>Qwen3.5-9B</strong>,{" "}
-          <strong>Gemma 4 12B</strong>, and <strong>Phi-4-Reasoning 14B</strong>{" "}
-          on an RTX 4090 24GB (~$0.20–0.40/hr), keeping iteration cost low.
+          (Ph 0–2) the pipeline runs <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a></strong>,{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a></strong>, and{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a></strong>{" "}
+          on an RTX A6000 48GB (~$0.53/hr), keeping iteration cost low.
           For the final experiment matrix (Ph 3–5) we swap to{" "}
-          <strong>Qwen3.6-27B</strong>, <strong>Gemma 4 26B A4B</strong>, and{" "}
-          <strong>Mistral Small 3.2 24B</strong> on an A100 80GB (~$0.68–1.50/hr).
+          <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a></strong>,{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a></strong>, and{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a></strong> on an A100 80GB (~$0.68–1.50/hr).
           All three families (Alibaba, Google, Mistral) are genuinely distinct
           for true heterogeneity. The pipeline code is model-agnostic — only
           the model config changes between phases. The <em>N</em> = 3 configuration is chosen as
@@ -655,18 +663,18 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <tbody>
             <tr>
               <td style={tdStyle}>Agent 1</td>
-              <td style={tdStyle}>Qwen3.5-9B (Dev) → Qwen3.6-27B (Final)</td>
-              <td style={tdStyle}>Two-phase: fast dev on RTX 4090, flagship 27B for final experiments</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a> (Final)</td>
+              <td style={tdStyle}>Two-phase: fast dev on RTX A6000 48GB, flagship 27B for final experiments</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 2</td>
-              <td style={tdStyle}>Gemma 4 12B (Dev) → Gemma 4 26B A4B (Final)</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a> (Final)</td>
               <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, 256K context</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 3</td>
-              <td style={tdStyle}>Phi-4-Reasoning 14B (Dev) → Mistral Small 3.2 24B (Final)</td>
-              <td style={tdStyle}>Dev: reasoning-specialised. Final: third distinct family for heterogeneity</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> (Final)</td>
+              <td style={tdStyle}>Dev: Mistral-family 14B (FP8), same lineage as Final. Final: third distinct family for heterogeneity</td>
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>

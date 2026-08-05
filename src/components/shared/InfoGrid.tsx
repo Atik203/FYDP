@@ -10,7 +10,20 @@ export function InfoGrid({ cards }: InfoGridProps) {
       {cards.map((card, i) => (
         <div key={i} className="bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-4">
           <div className="text-[0.7rem] uppercase tracking-wider text-[#64748b] dark:text-[#94a3b8] mb-1 font-semibold">{card.label}</div>
-          <div className="text-[0.93rem] font-semibold text-[#12172b] dark:text-[#c7d2fe]">{card.value}</div>
+          <div className="text-[0.93rem] font-semibold text-[#12172b] dark:text-[#c7d2fe]">
+            {card.href ? (
+              <a
+                href={card.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#7c3aed] dark:hover:text-[#a5b4fc] transition-colors"
+              >
+                {card.value} ↗
+              </a>
+            ) : (
+              card.value
+            )}
+          </div>
           <div className="text-[0.78rem] text-[#64748b] dark:text-[#94a3b8] mt-0.5">{card.sub}</div>
         </div>
       ))}
