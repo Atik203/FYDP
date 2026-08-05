@@ -5,7 +5,7 @@ import { GanttTable } from '@/components/shared/GanttTable';
 import { Timeline } from '@/components/shared/Timeline';
 import { Callout } from '@/components/shared/Callout';
 import { ganttPhases, milestones } from '@/data/overview';
-import { Calendar, ClipboardList, BookOpen, Brain, Bot, Users, Search, Ruler } from 'lucide-react';
+import { Calendar, ClipboardList, BookOpen, Brain, Bot, Users, Search, Ruler, GraduationCap, ExternalLink } from 'lucide-react';
 
 /* ── Learning Roadmap Data (unchanged from original, Idea-1-specific) ─── */
 
@@ -99,6 +99,105 @@ const importanceBadge = (imp: string) => {
   if (imp === 'High') return <Badge variant="amber">High</Badge>;
   return <Badge variant="blue">Medium</Badge>;
 };
+
+/* ── Honest month-by-month learning plan (aligned with blueprint §12–13) ─── */
+
+interface MonthPlan {
+  month: string;
+  phase: string;
+  hours: string;
+  learn: string;
+  build: string;
+  links: { label: string; href: string }[];
+}
+
+const monthPlan: MonthPlan[] = [
+  {
+    month: 'Jul 2026',
+    phase: 'Ph 0',
+    hours: '~15 hr/wk',
+    learn: 'Only the Transformer / attention / quantization units from the ML/DL playlists (skip what you know); structured prompting for tagged output; vLLM + HF Hub basics.',
+    build: 'Repo skeleton per docs/project_structure.md; one model served on the A6000; single-agent script returning tagged claims; setup.sh.',
+    links: [
+      { label: '100 Days of DL (Transformer units only)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' },
+      { label: 'vLLM docs', href: 'https://docs.vllm.ai/' },
+    ],
+  },
+  {
+    month: 'Aug 2026',
+    phase: 'Ph 1',
+    hours: '~20 hr/wk',
+    learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX LangGraph playlist, videos 1–6 only); Du et al. 2023 read once, carefully.',
+    build: 'serve.sh with 3 vLLM instances; MAD reproduction loop (Gate 0); injection protocol v1; 50-question pilot + κ check.',
+    links: [
+      { label: 'Agentic AI using LangGraph (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' },
+      { label: 'Du et al. 2023 — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
+      { label: 'LangGraph docs', href: 'https://langchain-ai.github.io/langgraph/' },
+    ],
+  },
+  {
+    month: 'Sep–Oct 2026',
+    phase: 'Ph 2',
+    hours: '~20 hr/wk',
+    learn: 'The 3 retrieval API docs (PubMed / ArXiv / Semantic Scholar) directly — no tutorials needed; cross-encoder reranking (sentence-transformers); calibration (ECE) + trust math from blueprint §5.6.',
+    build: 'Claim decomposition + source-partitioned RAG; trust update as pure functions + boundedness unit tests; baselines B5/B6; iMAD reimplementation (~10 days).',
+    links: [
+      { label: 'RAG playlist (first 3–4 videos, CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_Rmva0dRLWEHLznSHKbFD_RJfX' },
+      { label: 'sentence-transformers (cross-encoder)', href: 'https://www.sbert.net/' },
+      { label: 'Self-Consistency (Wang et al.)', href: 'https://arxiv.org/abs/2203.11171' },
+    ],
+  },
+  {
+    month: 'Nov 2026',
+    phase: 'Ph 2→3',
+    hours: '~15 hr/wk',
+    learn: 'Only the stats you will actually run: paired bootstrap, McNemar, Cohen\'s d, Cohen\'s κ — short scipy walkthroughs, no full stats course.',
+    build: 'Dry-run matrix on one dataset; results tables with CIs; mid-report; FYDP-1 defence.',
+    links: [
+      { label: 'MoA paper (Wang et al.)', href: 'https://arxiv.org/abs/2406.04692' },
+    ],
+  },
+  {
+    month: 'Dec 2026 – Jan 2027',
+    phase: 'Ph 3',
+    hours: '~20 hr/wk',
+    learn: 'Nothing new — debugging discipline and log inspection only. If you need a concept, look it up on demand.',
+    build: 'Main experiment matrix; 4 ablations; α/β sweep; N∈{2,3,5}; V1–V3 validity checks. Exit: Gate 3 results freeze.',
+    links: [],
+  },
+  {
+    month: 'Feb–Apr 2027',
+    phase: 'Ph 4–5',
+    hours: '~15 hr/wk',
+    learn: 'Inter-annotator agreement (κ) for the human eval; venue writing guides.',
+    build: 'n=60 human evaluation; failure analysis; thesis + paper + reproducibility package; final defence.',
+    links: [],
+  },
+];
+
+/* ── Verified learning resources ─── */
+
+interface ResourceLink {
+  title: string;
+  desc: string;
+  href: string;
+}
+
+const resources: ResourceLink[] = [
+  { title: 'CampusX — channel', desc: 'Best single source for ML/DL/agentic concepts in depth (Hindi + English).', href: 'https://youtube.com/@campusx-official' },
+  { title: 'CampusX — Agentic AI using LangGraph', desc: 'The one playlist worth watching — but only videos 1–6 (StateGraph, nodes/edges, conditional edges, memory). The rest is on-demand reference.', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' },
+  { title: 'CampusX — 100 Days of Machine Learning', desc: 'Pick individual concept videos as needed; do not binge the playlist.', href: 'https://youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH' },
+  { title: 'CampusX — 100 Days of Deep Learning', desc: 'Neural nets → Transformer → attention units only; skip the rest.', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' },
+  { title: 'CampusX — RAG playlist', desc: 'First 3–4 videos for retrieval + reranking intuition; you are writing thin API clients, not a RAG framework.', href: 'https://www.youtube.com/playlist?list=PLKnIA16_Rmva0dRLWEHLznSHKbFD_RJfX' },
+  { title: 'LangGraph docs (official)', desc: 'The StateGraph quickstart + reference is your real textbook for the orchestrator.', href: 'https://langchain-ai.github.io/langgraph/' },
+  { title: 'vLLM docs (official)', desc: 'Serving, quantization (Q4/FP8), and API reference — read before every serving task.', href: 'https://docs.vllm.ai/' },
+  { title: 'Hugging Face docs (official)', desc: 'Model hub, quantization, tokenizers.', href: 'https://huggingface.co/docs' },
+  { title: 'OpenAI Python SDK (GitHub)', desc: 'The client library used to talk to vLLM (base_url swap).', href: 'https://github.com/openai/openai-python' },
+  { title: 'Du et al. 2023 — Multi-Agent Debate', desc: 'Gate 0 reproduction target.', href: 'https://arxiv.org/abs/2305.14325' },
+  { title: 'Wang et al. — Self-Consistency (B5)', desc: 'Baseline reference.', href: 'https://arxiv.org/abs/2203.11171' },
+  { title: 'Wang et al. — Mixture-of-Agents (B6)', desc: 'Baseline reference.', href: 'https://arxiv.org/abs/2406.04692' },
+  { title: 'Local literature review', desc: 'Your own paper matrix + iMAD review — always check here before googling.', href: '/papers' },
+];
 
 function RoadmapTable({ topics }: { topics: RoadmapTopic[] }) {
   return (
@@ -195,9 +294,84 @@ export function RoadmapPage() {
           </Callout>
         </Section>
 
-        {/* ── SECTION C: Learning Level Guide ── */}
-        <Section className="animate-fade-up animate-delay-2">
-          <SectionTitle icon={BookOpen}>C. Learning Level Guide</SectionTitle>
+        {/* ── SECTION C: Month-by-Month Learning Plan (honest) ── */}
+        <Section accent="amber" className="animate-fade-up animate-delay-2">
+          <SectionTitle icon={GraduationCap}>C. Month-by-Month Learning Plan (Honest)</SectionTitle>
+          <p className="text-sm mb-4">
+            What you actually need to learn, when, and how much — mapped to the blueprint's build order. The rule:{" "}
+            <strong>~30% watching, ~70% building</strong>. Every month ends with a running script, not notes.
+          </p>
+          <div className="overflow-x-auto rounded-lg shadow-sm">
+            <table className="w-full border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr>
+                  {['Month', 'Phase', 'Effort', 'Learn (only this)', 'Build / Exit check', 'Links'].map((h) => (
+                    <th key={h} className="p-3 text-left font-bold bg-[#f1f5f9] dark:bg-[rgba(255,255,255,0.06)] border-b-2 border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)] whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {monthPlan.map((m) => (
+                  <tr key={m.month} className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] last:border-0 hover:bg-[#dce4ff] dark:hover:bg-[rgba(59,91,219,0.12)] even:bg-[#f8fafc] dark:even:bg-[rgba(255,255,255,0.03)] transition-colors align-top">
+                    <td className="p-3 font-medium whitespace-nowrap">{m.month}</td>
+                    <td className="p-3 whitespace-nowrap">{m.phase}</td>
+                    <td className="p-3 whitespace-nowrap">{m.hours}</td>
+                    <td className="p-3 text-[#64748b] dark:text-[#94a3b8]">{m.learn}</td>
+                    <td className="p-3 text-[#64748b] dark:text-[#94a3b8]">{m.build}</td>
+                    <td className="p-3">
+                      {m.links.length === 0 ? (
+                        <span className="text-[#94a3b8]">—</span>
+                      ) : (
+                        <ul className="space-y-1">
+                          {m.links.map((l) => (
+                            <li key={l.href}>
+                              <a className="underline decoration-dotted underline-offset-2" href={l.href} target="_blank" rel="noopener noreferrer">{l.label} ↗</a>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Callout variant="warning" title="How not to waste the month" className="mt-4">
+            <ul className="text-sm space-y-1">
+              <li><strong>Do not binge-watch playlists.</strong> Binge-watching is the #1 way to spend a month learning nothing you can reproduce. Watch the one video for the concept you are about to implement, then implement it.</li>
+              <li><strong>Do not take a full stats or ML course.</strong> This project needs ~6 statistical tests and ~4 architecture concepts. Learn them on demand.</li>
+              <li><strong>Skip if you already know it:</strong> Python (skip 100 Days of Python entirely), basic ML concepts, and any LangChain content — you need LangGraph only, and only its StateGraph core.</li>
+              <li><strong>If you fall behind:</strong> cut Week 3's reranker to a simple overlap score and catch up in Ph 1 — never skip the Gate 0 MAD reproduction or the Month-1 pilot.</li>
+            </ul>
+          </Callout>
+        </Section>
+
+        {/* ── SECTION D: Learning Resources (verified links) ── */}
+        <Section className="animate-fade-up animate-delay-3">
+          <SectionTitle icon={ExternalLink}>D. Learning Resources (Verified Links)</SectionTitle>
+          <p className="text-sm mb-4">
+            A short shelf, not a library. Prefer the official docs for everything you build; use the playlists
+            for concepts only. All links verified.
+          </p>
+          <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+            {resources.map((r) => (
+              <a
+                key={r.href}
+                href={r.href}
+                target={r.href.startsWith('/') ? undefined : '_blank'}
+                rel="noopener noreferrer"
+                className="bg-[#f0f2f7] dark:bg-[rgba(255,255,255,0.04)] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3 hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-colors block"
+              >
+                <div className="font-semibold text-sm text-[#12172b] dark:text-[#c7d2fe]">{r.title} ↗</div>
+                <div className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-0.5">{r.desc}</div>
+              </a>
+            ))}
+          </div>
+        </Section>
+
+        {/* ── SECTION E: Learning Level Guide ── */}
+        <Section className="animate-fade-up animate-delay-4">
+          <SectionTitle icon={BookOpen}>E. Learning Level Guide</SectionTitle>
           <div className="overflow-x-auto rounded-lg shadow-sm">
             <table className="w-full border-collapse text-sm">
               <thead>
@@ -223,7 +397,7 @@ export function RoadmapPage() {
           </div>
         </Section>
 
-        {/* ── SECTION D: Topic Roadmaps ── */}
+        {/* ── SECTION F: Topic Roadmaps ── */}
         {roadmapSections.map((sec, i) => (
           <Section key={sec.id} accent={sec.accent} className={`animate-fade-up animate-delay-${(i % 5) + 1}`}>
             <SectionTitle icon={sec.icon}>{sec.title}</SectionTitle>
