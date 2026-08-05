@@ -16,6 +16,7 @@ interface RoadmapTopic {
   levelEmoji: string;
   importance: string;
   whyNeeded: string;
+  link?: { label: string; href: string };
 }
 
 import type { LucideIcon } from 'lucide-react';
@@ -32,64 +33,64 @@ const roadmapSections: RoadmapSection[] = [
   {
     id: 'core', icon: Brain, title: 'Core ML & Deep Learning', accent: 'teal',
     topics: [
-      { num: 1, topic: 'Neural Networks', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Understand model structure and inference' },
-      { num: 2, topic: 'Transformer Architecture', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Foundation of all LLM agents' },
-      { num: 3, topic: 'Attention Mechanism', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understanding trust influence and context handling' },
-      { num: 4, topic: 'Embeddings & Vector Representations', level: 'Intermediate', levelEmoji: '🟢', importance: 'Critical', whyNeeded: 'Core of RAG and retrieval pipelines' },
-      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient local inference on A100' },
-      { num: 6, topic: 'Inference vs Fine-Tuning', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Your work focuses on inference orchestration' },
+      { num: 1, topic: 'Neural Networks', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Understand model structure and inference', link: { label: '100 Days of DL (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
+      { num: 2, topic: 'Transformer Architecture', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Foundation of all LLM agents', link: { label: '100 Days of DL — Transformer units', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
+      { num: 3, topic: 'Attention Mechanism', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understanding trust influence and context handling', link: { label: '100 Days of DL (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
+      { num: 4, topic: 'Embeddings & Vector Representations', level: 'Intermediate', levelEmoji: '🟢', importance: 'Critical', whyNeeded: 'Core of RAG and retrieval pipelines', link: { label: '100 Days of ML (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH' } },
+      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient local inference on A100', link: { label: 'vLLM quantization docs', href: 'https://docs.vllm.ai/' } },
+      { num: 6, topic: 'Inference vs Fine-Tuning', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Your work focuses on inference orchestration', link: { label: 'HF docs', href: 'https://huggingface.co/docs' } },
     ],
   },
   {
     id: 'llm', icon: Bot, title: 'Large Language Models', accent: 'blue',
     topics: [
-      { num: 1, topic: 'LLM Text Generation', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understand how models reason and fail' },
-      { num: 2, topic: 'Chain-of-Thought (CoT)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Main baseline and reasoning style' },
-      { num: 3, topic: 'Self-Consistency Decoding', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Major experimental baseline (B5)' },
-      { num: 4, topic: 'Prompt Engineering', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Agent orchestration and structured prompting' },
-      { num: 5, topic: 'Temperature & Sampling', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Generating agent diversity' },
-      { num: 6, topic: 'Hallucination in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your main failure mode' },
-      { num: 7, topic: 'Sycophancy in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Core research problem' },
-      { num: 8, topic: 'Model Calibration (ECE)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of trust calibration' },
-      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → Final (Qwen3.6-27B / Gemma 4 26B / Mistral 24B) models (Ph 0–1)' },
-      { num: 10, topic: 'Sycophancy Injection Protocol Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'CCR operationalization; κ > 0.75 pilot check (Phase 1–2)' },
-      { num: 11, topic: 'LLM Uncertainty & Confidence Estimation', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Lightweight confidence gating (Phase 2)' },
+      { num: 1, topic: 'LLM Text Generation', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understand how models reason and fail', link: { label: 'HF docs', href: 'https://huggingface.co/docs' } },
+      { num: 2, topic: 'Chain-of-Thought (CoT)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Main baseline and reasoning style', link: { label: 'Wei et al. 2022', href: 'https://arxiv.org/abs/2201.11903' } },
+      { num: 3, topic: 'Self-Consistency Decoding', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Major experimental baseline (B5)', link: { label: 'Wang et al. 2022', href: 'https://arxiv.org/abs/2203.11171' } },
+      { num: 4, topic: 'Prompt Engineering', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Agent orchestration and structured prompting', link: { label: 'OpenAI prompt guide', href: 'https://platform.openai.com/docs/guides/prompt-engineering' } },
+      { num: 5, topic: 'Temperature & Sampling', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Generating agent diversity', link: { label: 'HF docs', href: 'https://huggingface.co/docs' } },
+      { num: 6, topic: 'Hallucination in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your main failure mode', link: { label: 'Your literature review', href: '/papers' } },
+      { num: 7, topic: 'Sycophancy in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Core research problem', link: { label: 'Sharma et al. 2023', href: 'https://arxiv.org/abs/2310.13548' } },
+      { num: 8, topic: 'Model Calibration (ECE)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of trust calibration', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
+      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → Final (Qwen3.6-27B / Gemma 4 26B / Mistral 24B) models (Ph 0–1)', link: { label: 'Proposal §7', href: '/idea/1' } },
+      { num: 10, topic: 'Sycophancy Injection Protocol Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'CCR operationalization; κ > 0.75 pilot check (Phase 1–2)', link: { label: 'Proposal §5.4', href: '/idea/1' } },
+      { num: 11, topic: 'LLM Uncertainty & Confidence Estimation', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Lightweight confidence gating (Phase 2)', link: { label: 'Your literature review', href: '/papers' } },
     ],
   },
   {
     id: 'agents', icon: Users, title: 'Multi-Agent Systems', accent: 'amber',
     topics: [
-      { num: 1, topic: 'Multi-Agent Debate (MAD)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Main paradigm your work extends' },
-      { num: 2, topic: 'Mixture of Agents (MoA)', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Important baseline (B6)' },
-      { num: 3, topic: 'iMAD Framework', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Closest competitor baseline' },
+      { num: 1, topic: 'Multi-Agent Debate (MAD)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Main paradigm your work extends', link: { label: 'Du et al. 2023', href: 'https://arxiv.org/abs/2305.14325' } },
+      { num: 2, topic: 'Mixture of Agents (MoA)', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Important baseline (B6)', link: { label: 'Wang et al. 2024', href: 'https://arxiv.org/abs/2406.04692' } },
+      { num: 3, topic: 'iMAD Framework', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Closest competitor baseline', link: { label: 'Your iMAD review', href: '/papers' } },
       { num: 4, topic: 'Consensus Mechanisms', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Understanding majority-vote limitations' },
-      { num: 5, topic: 'Trust & Reputation Systems', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of your contribution' },
-      { num: 6, topic: 'Agentic AI Paradigm', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Broader research positioning' },
-      { num: 7, topic: 'Debate Prompt Design', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Structuring adversarial reasoning (Phase 1–2)' },
-      { num: 8, topic: 'Adaptive Triggering / Confidence Gating', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Gate full debate pipeline (Phase 2)' },
-      { num: 9, topic: 'Heterogeneous Multi-Model Agent Design', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Reducing correlated hallucinations' },
+      { num: 5, topic: 'Trust & Reputation Systems', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of your contribution', link: { label: 'Your iMAD review', href: '/papers' } },
+      { num: 6, topic: 'Agentic AI Paradigm', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Broader research positioning', link: { label: 'LangGraph playlist (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' } },
+      { num: 7, topic: 'Debate Prompt Design', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Structuring adversarial reasoning (Phase 1–2)', link: { label: 'LangGraph playlist (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' } },
+      { num: 8, topic: 'Adaptive Triggering / Confidence Gating', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Gate full debate pipeline (Phase 2)', link: { label: 'Proposal §5.2', href: '/idea/1' } },
+      { num: 9, topic: 'Heterogeneous Multi-Model Agent Design', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Reducing correlated hallucinations', link: { label: 'Proposal §5.4', href: '/idea/1' } },
     ],
   },
   {
     id: 'rag', icon: Search, title: 'Retrieval-Augmented Generation (RAG)', accent: 'rose',
     topics: [
-      { num: 1, topic: 'Dense Retrieval (DPR, Contriever)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Atomic claim retrieval backbone' },
-      { num: 2, topic: 'Cross-Encoder Reranking', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Evidence scoring per claim (Phase 2)' },
-      { num: 3, topic: 'FAISS Vector Index', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient similarity search at scale' },
-      { num: 4, topic: 'Source-Partitioned Retrieval', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your novel retrieval strategy (Phase 2–3)' },
-      { num: 5, topic: 'Atomic Claim Decomposition', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Breaking agent utterances into verifiable propositions (Phase 2)' },
-      { num: 6, topic: 'RAG Evaluation Metrics', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Measuring retrieval quality (Phase 3–4)' },
+      { num: 1, topic: 'Dense Retrieval (DPR, Contriever)', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Atomic claim retrieval backbone', link: { label: 'sentence-transformers', href: 'https://www.sbert.net/' } },
+      { num: 2, topic: 'Cross-Encoder Reranking', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Evidence scoring per claim (Phase 2)', link: { label: 'sentence-transformers', href: 'https://www.sbert.net/' } },
+      { num: 3, topic: 'FAISS Vector Index', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient similarity search at scale', link: { label: 'FAISS (GitHub)', href: 'https://github.com/facebookresearch/faiss' } },
+      { num: 4, topic: 'Source-Partitioned Retrieval', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your novel retrieval strategy (Phase 2–3)', link: { label: 'Proposal §5.5', href: '/idea/1' } },
+      { num: 5, topic: 'Atomic Claim Decomposition', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Breaking agent utterances into verifiable propositions (Phase 2)', link: { label: 'Proposal §5.5', href: '/idea/1' } },
+      { num: 6, topic: 'RAG Evaluation Metrics', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Measuring retrieval quality (Phase 3–4)', link: { label: 'lm-eval-harness', href: 'https://github.com/EleutherAI/lm-evaluation-harness' } },
     ],
   },
   {
     id: 'eval', icon: Ruler, title: 'Evaluation & Statistics', accent: 'none',
     topics: [
-      { num: 1, topic: 'Statistical Significance Testing', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Paired bootstrap, McNemar tests for all main results' },
+      { num: 1, topic: 'Statistical Significance Testing', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Paired bootstrap, McNemar tests for all main results', link: { label: 'SciPy docs', href: 'https://docs.scipy.org/doc/scipy/' } },
       { num: 2, topic: 'Effect Size Reporting', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: "Cohen's d, Cliff's delta for sycophancy reduction claims" },
       { num: 3, topic: 'Inter-rater Agreement (κ)', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Validating sycophancy injection protocol (Phase 1 pilot)' },
-      { num: 4, topic: 'Ablation Study Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Isolating each component contribution; required for Q1 submission' },
-      { num: 5, topic: 'Calibration Metrics (ECE, ECR)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your primary ECR metric' },
-      { num: 6, topic: 'Benchmark Evaluation Harness', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Reproducible multi-benchmark evaluation' },
+      { num: 4, topic: 'Ablation Study Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Isolating each component contribution; required for Q1 submission', link: { label: 'Proposal §11', href: '/idea/1' } },
+      { num: 5, topic: 'Calibration Metrics (ECE, ECR)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your primary ECR metric', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
+      { num: 6, topic: 'Benchmark Evaluation Harness', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Reproducible multi-benchmark evaluation', link: { label: 'lm-eval-harness', href: 'https://github.com/EleutherAI/lm-evaluation-harness' } },
     ],
   },
 ];
@@ -205,7 +206,7 @@ function RoadmapTable({ topics }: { topics: RoadmapTopic[] }) {
       <table className="w-full border-collapse text-xs sm:text-sm">
         <thead>
           <tr>
-            {['#', 'Topic', 'Level Needed', 'Importance', 'Why Needed'].map((h) => (
+            {['#', 'Topic', 'Level Needed', 'Importance', 'Why Needed', 'Learn'].map((h) => (
               <th key={h} className="p-3 text-left font-bold bg-[#f1f5f9] dark:bg-[rgba(255,255,255,0.06)] border-b-2 border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)] whitespace-nowrap">{h}</th>
             ))}
           </tr>
@@ -218,6 +219,20 @@ function RoadmapTable({ topics }: { topics: RoadmapTopic[] }) {
               <td className="p-3 whitespace-nowrap">{t.levelEmoji} {t.level}</td>
               <td className="p-3">{importanceBadge(t.importance)}</td>
               <td className="p-3 text-[#64748b] dark:text-[#94a3b8]">{t.whyNeeded}</td>
+              <td className="p-3 whitespace-nowrap">
+                {t.link ? (
+                  <a
+                    className="underline decoration-dotted underline-offset-2"
+                    href={t.link.href}
+                    target={t.link.href.startsWith('/') ? undefined : '_blank'}
+                    rel="noopener noreferrer"
+                  >
+                    {t.link.label} ↗
+                  </a>
+                ) : (
+                  <span className="text-[#94a3b8]">—</span>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
