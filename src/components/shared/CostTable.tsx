@@ -2,10 +2,10 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const PROVIDERS = [
-  { name: "Vast.ai (spot)", devRate: 0.15, finalRate: 0.68 },
-  { name: "Vast.ai (on-demand)", devRate: 0.30, finalRate: 1.20 },
-  { name: "RunPod", devRate: 0.35, finalRate: 1.49 },
-  { name: "JarvisLabs", devRate: 0.40, finalRate: 1.49 },
+  { name: "Vast.ai (spot)", devRate: 0.25, finalRate: 0.68 },
+  { name: "Vast.ai (on-demand)", devRate: 0.45, finalRate: 1.20 },
+  { name: "RunPod", devRate: 0.53, finalRate: 1.49 },
+  { name: "JarvisLabs", devRate: 0.55, finalRate: 1.49 },
 ] as const;
 
 export function CostTable() {
@@ -37,7 +37,7 @@ export function CostTable() {
       <div>
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-semibold text-[#1e2d3d] dark:text-[#e2e8f0]">
-            Dev GPU hours <span className="font-normal text-[#64748b]">(RTX 4090 @ ${p.devRate.toFixed(2)}/hr)</span>
+            Dev GPU hours <span className="font-normal text-[#64748b]">(RTX A6000 48GB @ ${p.devRate.toFixed(2)}/hr)</span>
           </span>
           <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded text-[#7c3aed] bg-[rgba(124,58,237,0.12)]">
             {devHours}h
@@ -102,7 +102,7 @@ export function CostTable() {
           <tbody>
             <tr className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
               <td className="p-2.5 font-medium">Dev (Ph 0–2)</td>
-              <td className="p-2.5">RTX 4090 24GB</td>
+              <td className="p-2.5">RTX A6000 48GB</td>
               <td className="p-2.5 font-mono">${p.devRate.toFixed(2)}/hr</td>
               <td className="p-2.5 font-mono">{devHours}</td>
               <td className="p-2.5 font-mono font-bold text-[#7c3aed]">${devCost.toFixed(0)}</td>
@@ -123,7 +123,13 @@ export function CostTable() {
       </div>
 
       <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-        Oracle API (Gemini 3.1 Pro Preview, ~1,000 questions) adds ~$5–7 — negligible. The Dev phase uses Qwen3.5-9B / Gemma 4 12B / Phi-4-Reasoning 14B on an RTX 4090. The Final phase uses Qwen3.6-27B / Gemma 4 26B A4B / Mistral Small 3.2 24B on an A100 80GB. Pipeline code is identical between phases — only the model config changes.
+        Oracle API (Gemini 3.1 Pro Preview, ~1,000 questions) adds ~$5–7 — negligible. The Dev phase uses{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> /{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> /{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> on an RTX A6000 48GB. The Final phase uses{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a> /{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a> /{" "}
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> on an A100 80GB. Pipeline code is identical between phases — only the model config changes.
       </p>
     </div>
   );
