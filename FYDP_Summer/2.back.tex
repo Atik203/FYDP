@@ -8,7 +8,7 @@ influence. It then explains the gap addressed by the study.
 
 Large language models (LLMs) generate answers one token at a time, but their
 outputs can still contain unsupported or incorrect reasoning. Fluent wording does
-not guarantee that an answer is correct. Chain-of-thought prompting asks a model
+not guarantee that an answer is correct~\cite{zhang2025from}. Chain-of-thought prompting asks a model
 to expose intermediate reasoning steps before giving a final answer, which makes
 the reasoning easier to inspect and gives later components more information to
 evaluate~\cite{wei2022chain}. These steps are useful evidence about how an answer
@@ -22,14 +22,14 @@ errors and allow one agent to question another agent's reasoning. The way those
 answers are combined still matters. A common method is majority voting, where
 each agent has the same weight and the most frequent answer is selected. If
 several agents repeat the same mistake, the vote can strengthen the mistake
-instead of correcting it. Sycophantic consensus refers to an agent copying or
-abandoning a correct position because a wrong position has greater support.
+instead of correcting it~\cite{wang-etal-2024-rethinking-bounds}. Sycophantic consensus refers to an agent copying or
+abandoning a correct position because a wrong position has greater
+support~\cite{pitre-etal-2025-consensagent}.
 Confidence may be supplied by an agent or estimated from its token distribution,
-but neither signal directly verifies a claim. DebUnc shows this difference by
+but neither signal directly verifies a claim~\cite{yoffe-etal-2025-debunc}. DebUnc shows this difference by
 comparing deployable uncertainty measures with a diagnostic Ground Truth measure
 that uses the correct answer~\cite{yoffe-etal-2025-debunc}. The framework therefore
-defines trust through support from retrieved scientific evidence. Zhang et al.
-(2025) provide a broader survey of reasoning-oriented LLMs~\cite{zhang2025from}.
+defines trust through support from retrieved scientific evidence.
 
 \section{Literature Review}\label{sec:literature-review}
 
@@ -40,7 +40,7 @@ method that changes agent influence using retrieved evidence. Recent advances in
 reasoning-oriented LLMs have shown that improving reasoning quality requires more
 than increasing the size of the model. Research has increasingly focused on structured
 reasoning, multi-agent collaboration, and external verification to improve the
-reliability of generated responses~\cite{zhang2025from}. The Multi-agent debate has
+reliability of generated responses~\cite{zhang2025from}. Multi-agent debate has
 emerged as one of the most widely studied approaches because it enables agents to
 challenge each other's reasoning before producing a final answer~\cite{du2024improving}.
 The following review examines representative studies in these areas and identifies

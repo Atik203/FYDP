@@ -1,14 +1,155 @@
 \chapter{Project Design}
 
-[Must be present in FYDP-1 Report and also in Final Report]
+This chapter defines the system requirements, presents the detailed methodology and the design decisions behind the framework, and lays out the project plan with the task allocation for the team. The first section records the functional and nonfunctional requirements together with the context diagram, the level-one data flow diagram, and the interface design.
 
-Every chapter should start with 1-2 sentences on the outline of the chapter.
+\section{Requirement Analysis}\label{sec:requirement-analysis}
 
-\section{Requirement Analysis}
-\subsection{Functional and Nonfunctional Requirements}
-\subsection{Context Diagram}
-\subsection{Data Flow Diagram Level 1}
-\subsection{UI Design}
+Requirement analysis fixes what the framework must do before any code is written. The system is an experimental deliberation layer rather than a conventional application, so the requirements are framed around the research pipeline. A question enters, agents debate it over a fixed number of rounds, the claims are checked against external evidence, and a trust-weighted answer comes out. Multi-agent debate was chosen because it has been shown to improve factuality over single-model answers~\cite{du2024improving}. The trust mechanism exists because a confident wrong majority can push a correct minority agent into abandoning its answer~\cite{pitre-etal-2025-consensagent}. The subsections below define the requirements, the system boundary, the data flows, and the interface through which the framework is operated.
+
+\subsection{Functional and Nonfunctional Requirements}\label{subsec:requirements}
+
+Functional requirements describe the services the framework must provide. Each item carries an identifier so that it can be traced during testing.
+
+\begin{enumerate}
+\item \textbf{FR-1 Question intake.} The system must accept a scientific question from a user or the evaluation harness and keep the ground truth hidden from all agents.
+\item \textbf{FR-2 Confidence gate.} The system must decide for each question whether a debate is needed, send easy questions to a direct answer, and route the remaining questions into the debate pipeline.
+\item \textbf{FR-3 Bounded debate orchestration.} The system must run three heterogeneous LLM agents over at most three revision rounds, with a retry cap of three, using a state machine to sequence the rounds.
+\item \textbf{FR-4 Claim decomposition.} The system must split each agent's reasoning into atomic factual claims tagged to their source agent, with a fallback extraction pass when structured tagging fails.
+\item \textbf{FR-5 Source-partitioned retrieval.} The system must search each agent's claims in a different database, PubMed for the first agent, arXiv for the second, and Semantic Scholar for the third, with OpenAlex as a fallback when a source is unavailable.
+\item \textbf{FR-6 Evidence verification.} The system must rerank retrieved passages with a cross-encoder and assign every claim a verdict of supported, contradicted, unverifiable, or contested.
+\item \textbf{FR-7 Trust updates.} The system must update each agent's trust after every round using $S_i(t+1) = S_i(t) + \alpha V_i - \beta H_i$, then apply softmax, clamp the values between 0.1 and 0.9, and renormalize so that no agent is silenced or dominant.
+\item \textbf{FR-8 Injection point.} The system must allow a fabricated wrong consensus to be injected between rounds so that sycophantic collapse can be measured under controlled pressure.
+\item \textbf{FR-9 Trust-weighted aggregation.} The system must select the final answer by weighted aggregation of trust and position at the last round, not by majority vote.
+\item \textbf{FR-10 Result packaging.} The system must return the answer, the supporting citations, the full trust trajectory, and each agent's reasoning trace.
+\item \textbf{FR-11 Evaluation support.} The system must compute answer accuracy, consensus-collapse rate, minority-preservation rate, and evidence-calibration rate, and compare the framework with majority voting and with the MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc} baselines.
+\item \textbf{FR-12 Failure recovery.} The system must recover unparseable model output with a fallback extraction pass, retry a timeout once before marking the round inconclusive, and fall back to cached evidence or OpenAlex when a retrieval API is down.
+\end{enumerate}
+
+Nonfunctional requirements describe the qualities of the system rather than its functions.
+
+\begin{enumerate}
+\item \textbf{NFR-1 Performance.} The debate must respect the round cap of three and the retry cap of three so that latency stays bounded on the target hardware.
+\item \textbf{NFR-2 Reliability.} A failure in one component must not block the whole debate. Every failure path must degrade locally and keep the pipeline moving.
+\item \textbf{NFR-3 Compatibility.} The framework must work with closed APIs and locally served models through the OpenAI-compatible vLLM interface.
+\item \textbf{NFR-4 Portability.} The pipeline must run unchanged on the development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) and on the final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B).
+\item \textbf{NFR-5 Cost.} Inference must fit within a single A100 80GB rental at about USD 0.68 to 1.50 per hour, with no fine-tuning.
+\item \textbf{NFR-6 Reproducibility.} Every run must be seeded and every intermediate result logged so that any experiment can be repeated and checked.
+\item \textbf{NFR-7 Transparency.} The output must record which agent was supported or contradicted by the evidence so that the decision trail can be audited.
+\item \textbf{NFR-8 Ethics.} The ground truth must never be exposed to the agents, and the final output must cite the evidence behind the answer.
+\end{enumerate}
+
+\subsection{Context Diagram}\label{subsec:context-diagram}
+
+The context diagram in Figure~\ref{fig:context-diagram} shows the system boundary and the external actors it exchanges data with. The framework sits in the middle of the diagram. It receives questions from the user or the evaluation harness, retrieves scientific passages from three external databases, and calls off-the-shelf language models through the vLLM server running on a rented A100 GPU. The evaluation harness receives the scores produced by the framework, and the user receives the final result package with the answer, the evidence, and the trust trajectory.
+
+\begin{figure}[ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  entity/.style={draw, rounded corners=2pt, text width=2.4cm, align=center, minimum height=1.0cm, font=\scriptsize},
+  sysbox/.style={draw, thick, rounded corners=4pt, text width=3.6cm, align=center, font=\scriptsize\bfseries},
+  flow/.style={->, >=stealth, shorten >=2pt, shorten <=2pt, font=\tiny}
+]
+  \node[sysbox] (sys) at (0,0) {Trust-Calibrated\\Multi-Agent\\Deliberation\\Framework};
+  \node[entity] (user) at (0,3.4) {User /\\Researcher};
+  \node[entity] (eval) at (-5.6,0) {Evaluation\\Harness\\GPQA, MMLU-Pro};
+  \node[entity] (src) at (5.6,0) {Evidence Sources\\PubMed, arXiv,\\Semantic Scholar};
+  \node[entity] (models) at (-3.2,-3.6) {Model Serving\\vLLM + 3 LLMs};
+  \node[entity] (gpu) at (3.2,-3.6) {GPU Cloud\\A100 80GB};
+
+  \draw[flow] (user) -- node[right, pos=0.7] {question} (sys);
+  \draw[flow] (sys) -- node[right, pos=0.3] {answer, evidence, trace} (user);
+  \draw[flow] (eval) -- node[above] {questions, hidden truth} (sys);
+  \draw[flow] (sys) -- node[below] {scores, metrics} (eval);
+  \draw[flow] (sys) -- node[above] {claim queries} (src);
+  \draw[flow] (src) -- node[below] {passages} (sys);
+  \draw[flow] (sys) -- node[left, pos=0.65] {inference requests} (models);
+  \draw[flow] (models) -- node[left, pos=0.35] {responses} (sys);
+  \draw[flow,dashed] (gpu) -- node[below] {GPU compute} (models);
+\end{tikzpicture}}
+\caption{Context diagram of the trust-calibrated multi-agent deliberation framework.}
+\label{fig:context-diagram}
+\end{figure}
+
+\subsection{Data Flow Diagram Level 1}\label{subsec:dfd-level1}
+
+The level-one data flow diagram in Figure~\ref{fig:dfd-level1} decomposes the framework into seven processes. A question enters through the intake and gate process, which decides between a direct answer and a debate. The orchestration process runs the revision rounds, sends inference requests to the external models, and reads and writes the debate state. Each position is decomposed into atomic claims and verified against the external sources. The verdicts drive the trust update, which writes the new trust values back into the debate state. At the last round the weighted aggregation process selects the answer, and the packaging process logs the result and returns it to the user. Three data stores hold the debate state, the evidence and verdict log, and the results log.
+
+\begin{figure}[ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  entity/.style={draw, rounded corners=2pt, text width=2.2cm, align=center, minimum height=0.9cm, font=\scriptsize},
+  process/.style={draw, circle, minimum size=1.5cm, align=center, font=\scriptsize},
+  flow/.style={->, >=stealth, shorten >=2pt, shorten <=2pt, font=\tiny}
+]
+  \node[entity] (eval) at (-6,2.4) {Evaluation\\Harness\\GPQA, MMLU-Pro};
+  \node[entity] (src) at (6,-1.6) {Evidence\\Sources};
+  \node[entity] (user) at (6,2.4) {User /\\Researcher};
+  \node[entity] (models) at (0,-3.6) {Model Serving\\vLLM + 3 LLMs};
+
+  \node[process] (p1) at (-3,2.4) {P1\\Intake and\\Gate};
+  \node[process] (p2) at (-3,0.4) {P2\\Debate\\Orchestration};
+  \node[process] (p3) at (-3,-1.6) {P3\\Claim\\Decomposition};
+  \node[process] (p4) at (3,-1.6) {P4\\Retrieval and\\Verification};
+  \node[process] (p5) at (3,0.4) {P5\\Trust\\Update};
+  \node[process] (p6) at (3,2.4) {P6\\Weighted\\Aggregation};
+  \node[process] (p7) at (0,0.4) {P7\\Result\\Packaging};
+
+  \draw[thick] (-1.1,2.4) -- (1.1,2.4);
+  \draw[thick] (-1.1,2.15) -- (1.1,2.15);
+  \node[font=\scriptsize, align=center] at (0,1.6) {D1 Debate\\State};
+  \coordinate (D1) at (0,2.4);
+
+  \draw[thick] (4.9,0.4) -- (7.1,0.4);
+  \draw[thick] (4.9,0.15) -- (7.1,0.15);
+  \node[font=\scriptsize, align=center] at (6,-0.35) {D2 Evidence and\\Verdict Log};
+  \coordinate (D2) at (6,0.4);
+
+  \draw[thick] (1.9,-3.6) -- (4.1,-3.6);
+  \draw[thick] (1.9,-3.85) -- (4.1,-3.85);
+  \node[font=\scriptsize, align=center] at (3,-4.45) {D3 Results\\Log};
+  \coordinate (D3) at (3,-3.6);
+
+  \draw[flow] (eval) -- node[above] {question, hidden truth} (p1);
+  \draw[flow] (p1) -- node[right] {debate = yes} (p2);
+  \draw[flow] (p2) -- node[right] {positions} (p3);
+  \draw[flow] (p3) -- node[above] {atomic claims} (p4);
+  \draw[flow] (p4) -- node[below] {queries} (src);
+  \draw[flow] (src) -- node[above] {passages} (p4);
+  \draw[flow] (p4) -- node[right] {verdicts} (p5);
+  \draw[flow] (p5) -- node[right] {trust updates} (p6);
+  \draw[flow] (p6) -- node[above, pos=0.3] {chosen answer} (p7);
+  \draw[flow] (p7) -- node[above] {answer, citations, trajectory} (user);
+  \draw[flow] (p7) -- node[right] {result package} (D3);
+  \draw[flow] (p2) -- node[left, pos=0.6] {positions, trust} (D1);
+  \draw[flow] (D1) -- node[right, pos=0.4] {state} (p2);
+  \draw[flow] (p5) -- node[above, pos=0.75] {trust} (D1);
+  \draw[flow] (p2) -- node[left, pos=0.65] {inference requests} (models);
+  \draw[flow] (models) -- node[right, pos=0.35] {responses} (p2);
+\end{tikzpicture}}
+\caption{Level-one data flow diagram of the trust-calibrated multi-agent deliberation framework.}
+\label{fig:dfd-level1}
+\end{figure}
+
+\subsection{UI Design}\label{subsec:ui-design}
+
+The framework is operated through a command-line interface and a small web dashboard. The command-line interface starts experiments, points the pipeline at the evaluation datasets, and writes the result of every run to a JSON package. It is the primary interface because the system runs in batches on a rented GPU, where a graphical interface adds little value. The web dashboard is used afterwards to inspect single debates. It shows the agents as cards with their current positions, a chart of the trust trajectory across rounds, and the verdict of every claim with the passage that supports or contradicts it. This is where the transparency of the framework becomes visible, because a user can trace exactly why an agent lost influence. Figure~\ref{fig:cli} and Figure~\ref{fig:dashboard} show the intended layout of both interfaces. The screenshots will be replaced with the real output of the system once the implementation is complete.
+
+\begin{figure}[ht]
+\centering
+\fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the command-line experiment interface.}}
+\caption{Command-line interface for running experiments and writing JSON result packages.}
+\label{fig:cli}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the debate inspection dashboard.}}
+\caption{Web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}
+\label{fig:dashboard}
+\end{figure}
+
 \section{Detailed Methodology and Design}
 You have to mention alternate solutions that you have considered. Why you have selected the specific solution, etc.
 \section{Project Plan}
