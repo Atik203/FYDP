@@ -36,16 +36,49 @@ defines trust through support from retrieved scientific evidence. Zhang et al.
 The review covers studies that address debate construction, external verification,
 sycophancy, uncertainty, and debate evaluation. The main comparison is between
 methods that decide when to debate, methods that change agent interaction, and the
-method that changes agent influence using retrieved evidence.
+method that changes agent influence using retrieved evidence. Recent advances in
+reasoning-oriented LLMs have shown that improving reasoning quality requires more
+than increasing the size of the model. Research has increasingly focused on structured
+reasoning, multi-agent collaboration, and external verification to improve the
+reliability of generated responses~\cite{zhang2025from}. The Multi-agent debate has
+emerged as one of the most widely studied approaches because it enables agents to
+challenge each other's reasoning before producing a final answer~\cite{du2024improving}.
+The following review examines representative studies in these areas and identifies
+the remaining research gap addressed by the proposed framework.
 
 \subsection{Similar Applications}\label{subsec:similar-applications}
 
-The system is not a conventional web or mobile application. It is an experimental
-deliberation layer that could support a scientific question-answering tool, a
-research assistant, or another decision-support interface. The closest related
-systems are multi-agent LLM applications that generate several candidate answers
-and combine them before returning a result. The framework also records evidence
-checks and the changing trust of each agent.
+The system is not a conventional web or mobile application. Instead, it is an
+experimental deliberation layer that can be integrated into scientific
+question-answering systems, research assistants, evidence-based decision-support
+tools, or other applications that require reliable reasoning. Rather than relying
+on a single model response, these systems generate multiple candidate solutions,
+allow the candidates to interact, and aggregate the results before returning a
+final answer to the user. Du et al. demonstrated that structured debate among
+multiple agents can improve factuality and reasoning compared with a single-agent
+approach~\cite{du2024improving}. Wang et al. further showed that combining the
+outputs of several models through layered aggregation can improve overall model
+capability without requiring explicit debate~\cite{wang2025mixture}.
+Existing multi-agent applications differ mainly in how they coordinate agents and
+combine their outputs. Some systems focus on structured debate to encourage
+reasoning refinement between agents~\cite{du2024improving}. Other systems organize
+multiple agents into hierarchical aggregation pipelines where later models refine
+or combine earlier responses~\cite{wang2025mixture}. Zhou et al. proposed a
+self-organizing architecture that dynamically selects reasoning agents according
+to the task being solved rather than using a fixed workflow~\cite{zhou2025reso}.
+Kushwaha and Madhavan introduced a retrieval-augmented multi-agent system that
+identifies contradictions among retrieved documents and ranks evidence according
+to source credibility before generating a final response~\cite{kushwaha2026agentbased}.
+These studies demonstrate that distributing reasoning across multiple specialized
+agents can improve robustness and factual consistency, although their aggregation
+strategies remain largely fixed once deliberation begins.
+The proposed framework shares the objective of improving answer reliability but
+differs in how agent influence evolves during discussion. Rather than assigning
+equal influence throughout the debate or relying only on confidence estimates,
+the framework records evidence verification results after every debate round and
+continuously updates each agent's trust score according to claim-level scientific
+evidence. This enables the system to preserve well-supported minority opinions
+while reducing the influence of unsupported majority consensus.
 
 \subsection{Related Research}\label{subsec:related-research}
 
@@ -105,25 +138,37 @@ bounded trust score.
 
 \section{Gap Analysis}\label{sec:gap-analysis}
 
-The reviewed papers leave three needs in multi-agent debate. A system must decide
-whether the extra cost of debate is justified, detect when a discussion is moving
-toward unsupported agreement, and decide which agent should have more influence
-when the agents disagree. iMAD mainly addresses the first need. CONSENSAGENT
-addresses the second through prompt optimization. DebUnc addresses the third with
-an in-debate weighting mechanism, but its practical signals are internal
-uncertainty estimates. The remaining gap is an in-session trust update based on
-independently checkable evidence. The framework addresses this gap by decomposing
-an agent's response into smaller claims, retrieving relevant scientific passages,
-and classifying each claim as supported, contradicted, or unverifiable. The
-verdicts update a bounded trust score after each debate round. An agent can
-therefore be in the numerical majority and still lose influence if the claims
-supporting its position are contradicted. A correct minority agent can retain
-influence when its claims are better supported. No evidence is recorded as an
-unresolved case, while direct contradiction is handled separately. The evaluation
-therefore uses consensus-collapse rate, minority-preservation rate, and
-evidence-calibration rate alongside ordinary answer accuracy. Retrieval sparsity,
-imperfect claim decomposition, and correlated errors between agents remain
-limitations of the approach.
+The reviewed literature reveals three remaining needs in multi-agent debate
+systems. First, a system should determine whether the additional computational
+cost of the debate is justified. Fan et al. addressed this through iMAD by predicting
+whether a debate is necessary before it begins~\cite{fan2026imad}. Second, a system
+should detect unsupported agreement caused by conformity or sycophancy.
+CONSENSAGENT mitigates this problem through prompt optimization during
+debate~\cite{pitre-etal-2025-consensagent}. Third, a system should determine which
+agents deserve greater influence when disagreement remains. DebUnc introduces
+uncertainty-based weighting, but its trust signals rely on internal model
+uncertainty rather than independently verifiable
+evidence~\cite{yoffe-etal-2025-debunc}.
+Previous studies also show that agreement does not necessarily indicate
+correctness. Cau et al. found that selective persuasion influences opinion
+convergence~\cite{cau2025selective}. Wang et al. identified peer conformity as a
+limitation of multi-agent debate~\cite{wang-etal-2024-rethinking-bounds}. Existing
+retrieval-based systems verify retrieved information or improve aggregation, but
+they do not continuously update an agent's influence according to verified
+scientific evidence during debate~\cite{gou2024critic}. Dynamic coordination
+methods also focus on agent selection rather than evidence-driven trust
+updates~\cite{zhou2025reso}.
+The remaining gap is therefore an evidence-grounded mechanism that continuously
+updates agent influence during an ongoing debate. The proposed framework
+addresses this gap by decomposing an agent's response into factual claims,
+retrieving relevant scientific passages, and classifying each claim as supported,
+contradicted, or unverifiable. These verification results update a bounded trust
+score after every debate round, allowing well-supported minority agents to retain
+influence while reducing the impact of unsupported majority consensus. The
+framework is evaluated using consensus-collapse rate, minority-preservation rate,
+and evidence-calibration rate alongside conventional answer accuracy. Retrieval
+sparsity, imperfect claim decomposition, and correlated reasoning errors between
+agents remain limitations of the proposed approach.
 
 \section{Summary}\label{sec:background-summary}
 
