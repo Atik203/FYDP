@@ -830,8 +830,8 @@ function DebUncSlideOne() {
                 className="text-[2.1cqh] font-bold leading-snug"
                 style={{ color: DEEP_INK }}
               >
-                <b>0.73 average accuracy</b> (+0.10), but it needs the
-                correct answer in advance, so it cannot be deployed.
+                <b>0.73 average accuracy</b> (+0.10), but it needs the correct
+                answer in advance, so it cannot be deployed.
               </div>
             </div>
             <div
@@ -942,12 +942,12 @@ function DebUncSlideTwo() {
               +0.01 average on Llama-3).
             </Bullet>
             <Bullet>
-              The signal is <b>internal</b>: it reflects how a model <i>feels</i>,
-              not whether its claim is <i>right</i>.
+              The signal is <b>internal</b>: it reflects how a model{" "}
+              <i>feels</i>, not whether its claim is <i>right</i>.
             </Bullet>
             <Bullet>
-              The Ground-Truth oracle needs the correct answer in advance, so
-              it is <b>not deployable</b>.
+              The Ground-Truth oracle needs the correct answer in advance, so it
+              is <b>not deployable</b>.
             </Bullet>
             <Bullet>
               Attention-scaling needs <b>white-box</b> model access; token-level
@@ -1012,7 +1012,7 @@ function MoaSlideOne() {
           <span style={{ color: "#94a3b8" }}>|</span>
           <span className="flex items-center gap-[0.5cqw]">
             <BarChart3 size="2.3cqh" style={{ color: ACCENT }} />
-            ICLR 2025 (Poster)
+            ICLR 2025
           </span>
           <span style={{ color: "#94a3b8" }}>|</span>
           <span
@@ -1020,7 +1020,7 @@ function MoaSlideOne() {
             style={{ color: ACCENT }}
           >
             <Link2 size="2.3cqh" />
-            arxiv.org/abs/2406.04692
+            https://doi.org/10.48550/arXiv.2406.04692
           </span>
         </div>
       </div>
@@ -1357,8 +1357,6 @@ export function SlidePage() {
         <div key={index} className="w-full h-full animate-fade-in">
           <Slide />
         </div>
-
-
       </div>
 
       {/* Fullscreen toggle — only shown when NOT in fullscreen (use Esc / F to exit) */}
