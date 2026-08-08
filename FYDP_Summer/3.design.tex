@@ -49,49 +49,11 @@ The context diagram in Figure~\ref{fig:context-diagram} shows the system boundar
 
 The level-one data flow diagram in Figure~\ref{fig:dfd-level1} decomposes the framework into seven processes. A question enters through the intake and gate process, which decides between a direct answer and a debate. The orchestration process runs the revision rounds, sends inference requests to the external models, and reads and writes the debate state. Each position is decomposed into atomic claims and verified against the external sources. The verdicts drive the trust update, which writes the new trust values back into the debate state. At the last round the weighted aggregation process selects the answer, and the packaging process logs the result and returns it to the user. Three data stores hold the debate state, the evidence and verdict log, and the results log.
 
-The diagram was drawn with Mermaid. The code below can be pasted directly into mermaid.live to regenerate it, and the exported image is placed in Figure~\ref{fig:dfd-level1}.
-
-\begin{verbatim}
-flowchart LR
-    EH["Evaluation Harness<br/>GPQA, MMLU-Pro"]
-    US["User / Researcher"]
-    ES["Evidence Sources<br/>PubMed, arXiv,<br/>Semantic Scholar"]
-    MS["Model Serving<br/>vLLM + 3 LLMs"]
-
-    P1(("P1 Intake and Gate"))
-    P2(("P2 Debate Orchestration"))
-    P3(("P3 Claim Decomposition"))
-    P4(("P4 Retrieval and Verification"))
-    P5(("P5 Trust Update"))
-    P6(("P6 Weighted Aggregation"))
-    P7(("P7 Result Packaging"))
-
-    D1[("D1 Debate State")]
-    D2[("D2 Evidence and Verdict Log")]
-    D3[("D3 Results Log")]
-
-    EH -->|question| P1
-    P1 -->|debate = yes| P2
-    P2 -->|positions| P3
-    P3 -->|atomic claims| P4
-    P4 -->|queries| ES
-    ES -->|passages| P4
-    P4 -->|verdicts| P5
-    P4 -->|verdicts| D2
-    P5 -->|trust updates| P6
-    P5 -->|trust| D1
-    P2 -->|positions| D1
-    D1 -->|state| P2
-    P6 -->|answer| P7
-    P7 -->|result package| US
-    P7 -->|log| D3
-    P2 -->|inference requests| MS
-    MS -->|responses| P2
-\end{verbatim}
+The diagram was drawn with Mermaid and exported as a vector image. It reads from left to right and top to bottom. The evaluation harness submits a question, the confidence gate decides whether the debate is worth running, and the orchestration process asks the model server for the agent positions. Each position is decomposed into atomic claims, the retrieval process verifies them against the external sources, and the verdicts are stored in the evidence log before they drive the trust update. The updated trust is written back into the debate state, so the next round starts from the corrected influence values. At the last round the aggregation process selects the answer, the packaging process logs it in the results log, and the result package with the answer and the citations returns to the user.
 
 \begin{figure}[ht]
 \centering
-\fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Generated data flow diagram (paste the code above into mermaid.live, export the image, and place it here).}}
+\includegraphics[width=\textwidth]{data-flow.pdf}
 \caption{Level-one data flow diagram of the trust-calibrated multi-agent deliberation framework.}
 \label{fig:dfd-level1}
 \end{figure}
