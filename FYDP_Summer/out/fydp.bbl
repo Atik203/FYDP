@@ -50,6 +50,11 @@ D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng, X.~C
 \newblock From system 1 to system 2: a survey of reasoning large language models.
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, pages 1--20, 2025.
 
+\bibitem{wang-etal-2024-rethinking-bounds}
+Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
+\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions the key?
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
+
 \bibitem{zhou2025reso}
 Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei Yin, and Lei Bai.
 \newblock Reso: A reward-driven self-organizing llm-based multi-agent system for reasoning tasks.
@@ -64,11 +69,6 @@ E.~Cau, V.~Pansanella, D.~Pedreschi, et~al.
 Xian Yeow, Shunichi Lee, Lasitha Akatsuka, Vidyaratne Aman, A~Hareesh Kumar, Chetan Farahat, and A~Gupta.
 \newblock Reliable decision-making for multi-agent {LLM} systems.
 \newblock {\em arXiv preprint arXiv:2406.04092}, 2025.
-
-\bibitem{wang-etal-2024-rethinking-bounds}
-Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
-\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions the key?
-\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
 
 \bibitem{choi2025debate}
 Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.

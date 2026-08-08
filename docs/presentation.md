@@ -24,7 +24,11 @@ Important: MoA is an **ensemble**, not a debate. The proposers never talk to eac
 
 **Key results:**
 
-MoA reaches **65.1%** on AlpacaEval 2.0, using only open-source models. This is higher than **GPT-4 Omni**, which scores 57.5%. And it does this at about **2 times lower cost**.
+MoA reaches **65.1%** on AlpacaEval 2.0, using only open-source models. This is higher than **GPT-4 Omni**, which scores 57.5%. It also **leads MT-Bench and FLASK**. With a **GPT-4o aggregator**, the score goes up to **65.7%**. The framework matches **GPT-4 Turbo** at about **2 times lower cost**.
+
+**Models and benchmarks:**
+
+The system was tested on **AlpacaEval 2.0, MT-Bench, and FLASK**. It was compared against **GPT-4 Omni, GPT-4 Turbo, and GPT-4o**. The proposers were all open-source: **Qwen1.5, WizardLM, Mixtral, LLaMA-3-70B, and dbrx**.
 
 One more result: **more diverse proposers give better answers**. The score goes from 47.8% with one proposer to 61.3% with six.
 

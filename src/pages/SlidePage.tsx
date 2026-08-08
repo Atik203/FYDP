@@ -1037,17 +1037,22 @@ function MoaSlideOne() {
               other models' outputs, even weaker ones.
             </Bullet>
             <Bullet>
-              <b>Layered pipeline</b>: proposer LLMs generate → an aggregator
-              LLM synthesizes → repeat across layers.
-            </Bullet>
-            <Bullet>
-              <b>No fine-tuning</b> — pure prompting with off-the-shelf models.
+              <b>Layered pipeline</b>: proposers generate → aggregator
+              synthesizes → repeat; <b>no fine-tuning</b>, prompt-only.
             </Bullet>
             <Bullet>
               An ensemble-by-synthesis, <b>not a debate</b> — proposers never
               revise in response to peers.
             </Bullet>
           </ul>
+          <div className="mt-[1.4cqh] rounded-lg px-[1.4cqw] py-[1cqh]" style={{ background: "#f1f5f9" }}>
+            <div className="text-[1.9cqh] font-bold" style={{ color: DEEP_INK }}>
+              Compared with: GPT-4 Omni · GPT-4 Turbo · GPT-4o · Qwen1.5-110B/72B
+            </div>
+            <div className="text-[1.9cqh] font-bold" style={{ color: DEEP_INK }}>
+              · WizardLM-8x22B · Mixtral-8x22B · LLaMA-3-70B · dbrx
+            </div>
+          </div>
         </Card>
 
         <Card
@@ -1055,37 +1060,51 @@ function MoaSlideOne() {
           title="Key Results"
           color={TEAL}
         >
-          <div className="flex flex-col justify-center h-full gap-[2cqh]">
+          <div className="flex flex-col justify-center h-full gap-[1.8cqh]">
             <div className="text-center">
               <div
-                className="text-[7cqh] font-extrabold leading-none"
+                className="text-[6.4cqh] font-extrabold leading-none"
                 style={{ color: TEAL }}
               >
                 65.1%
               </div>
               <div
-                className="text-[2.3cqh] font-semibold"
+                className="text-[2.1cqh] font-semibold"
                 style={{ color: NEAR_BLACK }}
               >
-                AlpacaEval 2.0 (open-source only)
+                AlpacaEval 2.0 · MT-Bench · FLASK (open-source only)
               </div>
             </div>
             <div className="text-center">
               <div
-                className="text-[4cqh] font-extrabold leading-none"
+                className="text-[3.2cqh] font-extrabold leading-none"
                 style={{ color: ACCENT }}
               >
-                &gt; GPT-4 Omni
+                &gt; GPT-4 Omni &amp; GPT-4 Turbo
               </div>
               <div
                 className="text-[2.1cqh] font-semibold"
                 style={{ color: NEAR_BLACK }}
               >
-                57.5% — beaten at ~2× lower cost
+                GPT-4 Omni 57.5% beaten · GPT-4 Turbo matched at ~2× lower cost
+              </div>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-[3.2cqh] font-extrabold leading-none"
+                style={{ color: AMBER }}
+              >
+                65.7%
+              </div>
+              <div
+                className="text-[2.1cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                MoA w/ GPT-4o aggregator
               </div>
             </div>
             <div
-              className="text-center rounded-lg py-[0.9cqh] px-[1cqw] text-[2cqh] font-bold"
+              className="text-center rounded-lg py-[0.8cqh] px-[1cqw] text-[2cqh] font-bold"
               style={{ background: "#f1f5f9", color: DEEP_INK }}
             >
               More diverse proposers → monotonically better
@@ -1187,11 +1206,8 @@ function MoaSlideTwo() {
         >
           <ul className="flex flex-col justify-between h-full">
             <Bullet>
-              <b>No per-agent trust</b> — every proposer's text enters on equal
-              footing.
-            </Bullet>
-            <Bullet>
-              <b>No external evidence</b> — the aggregator uses only its own
+              <b>No per-agent trust and no external evidence</b> — every
+              proposer's text enters on equal footing under the aggregator's own
               judgment.
             </Bullet>
             <Bullet>
