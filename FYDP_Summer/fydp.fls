@@ -313,6 +313,7 @@ INPUT ./3.design.tex
 INPUT ./3.design.tex
 INPUT 3.design.tex
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx8.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmtt10.tfm
 INPUT ./4.implementation.tex
 INPUT ./4.implementation.tex
 INPUT 4.implementation.tex
@@ -340,3 +341,4 @@ INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb
+INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
