@@ -1,103 +1,59 @@
-# Presentation Script — ConsensAgent Slides (~1.5–2 min)
+# Presentation Script — MoA Slides 8 & 9 (~1.5–2 min)
 
-> Timing note: DebUnc script is trimmed for ~120 words per minute (comfortable for non-native speakers), so each DebUnc section fits within 2 minutes at a relaxed pace.
+> Written for non-native speakers: short sentences, one idea per sentence, ~120 words per minute.
 
 ---
 
-## Slide 1 — ConsensAgent: What It Does & Results
+## Slide 8 — MoA: Summary + Method + Results
 
 **Opening:**
 
-My paper is **ConsensAgent: Towards Efficient and Effective Consensus in Multi-Agent LLM Interactions Through Sycophancy Mitigation**. It was published at **ACL 2025** — one of the top conferences in NLP.
+I am presenting **Mixture-of-Agents**, or **MoA** for short. It was published at **ICLR 2025**. The first author is Junlin Wang from Together AI.
 
-**The problem:**
+**The main idea:**
 
-Before this paper, people studied sycophancy only between a human and an AI. This paper was the **first** to show that sycophancy also happens between AI agents in multi-agent debate. Agents copy each other's answers instead of thinking independently.
+The paper shows that LLMs are **collaborative**. A model answers better when it sees other models' answers. This is true even when the other models are weaker.
 
-Their most important finding: in **more than 20% of cases where the final answer was wrong**, the correct answer was already there in the discussion — but it was ignored. The right answer was lost just because the majority disagreed. This is the proof that our problem is real.
+**How it works:**
 
-**Their solution — four phases:**
+MoA uses a **layered pipeline**. First, several "proposer" models answer the question. Then, an "aggregator" model reads all the answers and combines them. The result goes to the next layer. The final layer produces the final answer.
 
-**Phase 1** — Each agent gives an independent answer plus a confidence score.
+There is **no fine-tuning**. MoA only uses prompting with existing models.
 
-**Phase 2** — They debate for up to five rounds.
+Important: MoA is an **ensemble**, not a debate. The proposers never talk to each other. They never change their answers.
 
-**Trigger** — If the system detects stalling or copying, using a cosine similarity threshold of 0.8...
+**Key results:**
 
-**Phase 3** — A fine-tuned GPT-4o rewrites the task prompt to make it clearer. Agents debate again.
+MoA reaches **65.1%** on AlpacaEval 2.0, using only open-source models. This is higher than **GPT-4 Omni**, which scores 57.5%. And it does this at about **2 times lower cost**.
 
-**Phase 4** — Final answer is a weighted vote using confidence and consistency.
-
-**Results:**
-
-Sycophancy dropped **7 to 30 percent**. They got **best results on all six datasets** — KITAB, CLUTRR, HotpotQA, Ethics, GSM8K, and TriviaQA. After the trigger, consensus happens in **one to two rounds**.
+One more result: **more diverse proposers give better answers**. The score goes from 47.8% with one proposer to 61.3% with six.
 
 ---
 
-## Slide 2 — Relevance & Gap
+## Slide 9 — MoA: Relevance & Gap
 
-**How this helps our work:**
+**Why it matters to us:**
 
-ConsensAgent is our **closest competitor**. Same problem — sycophantic collapse. Same motivation — a correct minority is overwhelmed by a confident majority.
+MoA is the best-known proof that **multi-model aggregation works**. This motivates our own idea of using multiple agents.
 
-Their **20% correct-but-ignored** finding is our strongest **proof that the problem exists**. Without this paper, we can only say the problem might exist. With it, we have peer-reviewed evidence.
+It also shows that **diversity helps**. Different models add different perspectives. We keep this idea in our design.
 
-Their sycophancy metric — detecting copy and swap behaviour — is a **baseline for our own evaluation system**.
+But MoA is a **trust-blind baseline**. Our mechanism improves on it.
 
-**Where it falls short:**
+MoA is not our competitor. It uses a different paradigm — an ensemble, not a debate. So we cite it as **context**.
 
-But ConsensAgent fixes sycophancy **indirectly**. It rewrites the prompt **before** debate. It has **no way to change who to trust during the debate**.
+**The gap:**
 
-So it fails when the prompt is clear but a confident majority is simply wrong.
+First, MoA has **no per-agent trust**. Every proposer's text enters on equal footing. Good answers and bad answers have the same weight.
 
-The final vote still uses **self-reported confidence** — the same signal we know gets distorted under pressure.
+Second, there is **no external evidence**. The aggregator uses only its own judgment.
 
-It also needs a **fine-tuned GPT-4o for each dataset**, which costs money and doesn't generalise.
+Third, a **weak aggregator can degrade everything**. The paper shows a score drop from 60.6% to 45.0%.
 
-The authors themselves say their fix treats the **symptom, not the root cause**.
+Fourth, MoA **cannot detect a confidently-wrong proposer**. A confident wrong answer is synthesized in like any other.
+
+Fifth, because it is feed-forward, it **cannot model round-over-round sycophancy**. Agents never respond to each other, so social pressure never appears.
 
 **Our contribution:**
 
-We calibrate trust **during** the debate using **real external evidence** — not prompt rewriting, not self-reported confidence. Prompt clarification is not the same as trust calibration. That is the key difference.
-
----
-
-## Slide 1 — DebUnc: What It Does & Results
-
-**Opening:**
-
-I am presenting **DebUnc**, from **Findings of EMNLP 2025**. Unlike ConsensAgent, it changes agent influence during the debate.
-
-**The problem:**
-
-In debate, agents cannot see how certain each other is, so a confident-sounding wrong answer can still win.
-
-**Their solution:**
-
-The per-round pipeline: agents answer, uncertainty is measured, converted to a 1-to-10 confidence, and shared by prompt or attention-scaling, so peers give confident agents more weight.
-
-Attention-scaling works better, but the gain is small: **0.63** to about **0.64**.
-
-Then they test a **Ground Truth oracle** that knows the correct answer in advance: it reaches **0.73**, about 10 points higher, but it cannot be deployed.
-
----
-
-## Slide 2 — DebUnc: Relevance & Gap
-
-**How this helps our work:**
-
-DebUnc uses the same lever as us: influence changes during the debate, not just at the final vote.
-
-Its oracle result teaches an important lesson: the trust signal, not the communication method, is the limit.
-
-**Where it falls short:**
-
-Its real signal is internal uncertainty: how the model feels, not whether its claim is correct.
-
-Attention-scaling also needs white-box access and token probabilities, which closed APIs do not expose.
-
-**Our contribution:**
-
-We use external scientific evidence to check whether an agent's claim is supported, updating trust at the message level for closed APIs.
-
-In simple words, DebUnc asks, **"How sure are you?"** We ask, **"What evidence supports your answer?"** Its prompt mode is our B-DebUnc baseline.
+We add what MoA lacks. We give each agent an **explicit, evidence-grounded trust weight**. A confidently-wrong proposer is **down-weighted**, not blindly synthesized in.
