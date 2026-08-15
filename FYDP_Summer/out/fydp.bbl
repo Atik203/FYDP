@@ -35,6 +35,27 @@ Junlin Wang, Jue Wang, Ben Athiwaratkun, Ce~Zhang, and James~Y Zou.
 \newblock Mixture-of-agents enhances large language model capabilities.
 \newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em International Conference on Learning Representations}, volume 2025, pages 33944--33963, 2025.
 
+\bibitem{he2026minority}
+Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong Wen, and Guanfeng Liu.
+\newblock Minority sentinel: When to overturn majority voting in multi-agent {LLM} debates.
+\newblock In {\em Proceedings of the AgentSearch Workshop at SIGIR 2026}, Melbourne, Australia, 2026.
+\newblock arXiv:2606.29270.
+
+\bibitem{choi2025debate}
+Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
+\newblock Debate or vote: Which yields better decisions in multi-agent large language models?
+\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+
+\bibitem{wang-etal-2024-rethinking-bounds}
+Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
+\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions the key?
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
+
+\bibitem{karpukhin2020dense}
+Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih.
+\newblock Dense passage retrieval for open-domain question answering.
+\newblock In {\em Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, pages 6769--6781, Online, 2020. Association for Computational Linguistics.
+
 \bibitem{kushwaha2026agentbased}
 Pranjal Kushwaha and S.~Akshat Madhavan.
 \newblock Agent-based contradiction detection and resolution for multi-source retrieval augmented generation systems.
@@ -50,10 +71,10 @@ D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng, X.~C
 \newblock From system 1 to system 2: a survey of reasoning large language models.
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, pages 1--20, 2025.
 
-\bibitem{wang-etal-2024-rethinking-bounds}
-Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
-\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions the key?
-\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
+\bibitem{li2024survey}
+Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.
+\newblock A survey on {LLM}-based multi-agent systems: workflow, infrastructure, and challenges.
+\newblock {\em Vicinagearth}, 1(9), 2024.
 
 \bibitem{zhou2025reso}
 Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei Yin, and Lei Bai.
@@ -70,15 +91,15 @@ Xian Yeow, Shunichi Lee, Lasitha Akatsuka, Vidyaratne Aman, A~Hareesh Kumar, Che
 \newblock Reliable decision-making for multi-agent {LLM} systems.
 \newblock {\em arXiv preprint arXiv:2406.04092}, 2025.
 
-\bibitem{choi2025debate}
-Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
-\newblock Debate or vote: Which yields better decisions in multi-agent large language models?
-\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
-
 \bibitem{cui2026freemad}
 Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
 \newblock {FREE-MAD}: Consensus-free multi-agent debate.
 \newblock In {\em Findings of the Association for Computational Linguistics: ACL 2026}, 2026.
+
+\bibitem{chen2025self}
+Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
+\newblock Self-augmented preference alignment for sycophancy reduction in {LLMs}.
+\newblock In {\em Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pages 12379--12391, Suzhou, China, 2025. Association for Computational Linguistics.
 
 \bibitem{pitre2026diagnostic}
 Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan Wang.
