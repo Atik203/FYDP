@@ -1045,11 +1045,21 @@ function MoaSlideOne() {
               revise in response to peers.
             </Bullet>
           </ul>
-          <div className="mt-[1.4cqh] rounded-lg px-[1.4cqw] py-[1cqh]" style={{ background: "#f1f5f9" }}>
-            <div className="text-[1.9cqh] font-bold" style={{ color: DEEP_INK }}>
-              Compared with: GPT-4 Omni · GPT-4 Turbo · GPT-4o · Qwen1.5-110B/72B
+          <div
+            className="mt-[1.4cqh] rounded-lg px-[1.4cqw] py-[1cqh]"
+            style={{ background: "#f1f5f9" }}
+          >
+            <div
+              className="text-[1.9cqh] font-bold"
+              style={{ color: DEEP_INK }}
+            >
+              Compared with: GPT-4 Omni · GPT-4 Turbo · GPT-4o ·
+              Qwen1.5-110B/72B
             </div>
-            <div className="text-[1.9cqh] font-bold" style={{ color: DEEP_INK }}>
+            <div
+              className="text-[1.9cqh] font-bold"
+              style={{ color: DEEP_INK }}
+            >
               · WizardLM-8x22B · Mixtral-8x22B · LLaMA-3-70B · dbrx
             </div>
           </div>
@@ -1264,8 +1274,8 @@ function MinoritySlideOne() {
           className="mt-[1.2cqh] text-[4.2cqh] font-extrabold leading-tight"
           style={{ color: NEAR_BLACK }}
         >
-          Minority Sentinel: When to Overturn Majority Voting in Multi-Agent
-          LLM Debates
+          Minority Sentinel: When to Overturn Majority Voting in Multi-Agent LLM
+          Debates
         </h1>
         <div
           className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
@@ -1283,7 +1293,7 @@ function MinoritySlideOne() {
             style={{ color: ACCENT }}
           >
             <Link2 size="2.3cqh" />
-            arXiv:2606.29270
+            https://doi.org/10.48550/arXiv.2606.29270
           </span>
         </div>
       </div>
