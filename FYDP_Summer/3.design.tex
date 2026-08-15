@@ -17,32 +17,32 @@ The nonfunctional requirements describe the qualities of the system rather than 
 The context diagram in Figure~\ref{fig:context-diagram} shows the system boundary and the external actors it exchanges data with. The framework sits in the middle of the diagram. Questions arrive from the user or the evaluation harness. Scientific passages come back from three external databases, and off-the-shelf language models are called through the vLLM server on a rented RTX PRO 6000 Blackwell GPU. The evaluation harness receives the scores, and the user gets the final result package with the answer, the citations, the trust trajectory, and each reasoning trace.
 
 \begin{figure}[ht]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  entity/.style={draw, rounded corners=2pt, text width=2.4cm, align=center, minimum height=1.0cm, font=\scriptsize},
-  sysbox/.style={draw, thick, circle, text width=3.0cm, align=center, font=\scriptsize\bfseries},
-  flow/.style={->, >=stealth, shorten >=2pt, shorten <=2pt, font=\tiny}
-]
-  \node[sysbox] (sys) at (0,0) {Trust-Calibrated\\Multi-Agent\\Deliberation\\Framework};
-  \node[entity] (user) at (0,3.8) {User /\\Researcher};
-  \node[entity] (eval) at (-6.4,0) {Evaluation\\Harness\\GPQA, MMLU-Pro};
-  \node[entity] (src) at (6.4,0) {Evidence Sources\\PubMed, arXiv,\\Semantic Scholar};
-  \node[entity] (models) at (-3.4,-4.0) {Model Serving\\vLLM + 3 LLMs};
-  \node[entity] (gpu) at (3.4,-4.0) {GPU Cloud\\RTX PRO 6000\\96GB Blackwell};
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        entity/.style={draw, rounded corners=2pt, text width=2.4cm, align=center, minimum height=1.0cm, font=\scriptsize},
+        sysbox/.style={draw, thick, circle, text width=3.0cm, align=center, font=\scriptsize\bfseries},
+        flow/.style={->, >=stealth, shorten >=2pt, shorten <=2pt, font=\tiny}
+      ]
+      \node[sysbox] (sys) at (0,0) {Trust-Calibrated\\Multi-Agent\\Deliberation\\Framework};
+      \node[entity] (user) at (0,3.8) {User /\\Researcher};
+      \node[entity] (eval) at (-6.4,0) {Evaluation\\Harness\\GPQA, MMLU-Pro};
+      \node[entity] (src) at (6.4,0) {Evidence Sources\\PubMed, arXiv,\\Semantic Scholar};
+      \node[entity] (models) at (-3.4,-4.0) {Model Serving\\vLLM + 3 LLMs};
+      \node[entity] (gpu) at (3.4,-4.0) {GPU Cloud\\RTX PRO 6000\\96GB Blackwell};
 
-  \draw[flow] (user) -- node[right, pos=0.3] {question} (sys);
-  \draw[flow] (sys) -- node[left, pos=0.7] {result package} (user);
-  \draw[flow] (eval) -- node[above, pos=0.4] {questions} (sys);
-  \draw[flow] (sys) -- node[below, pos=0.4] {scores, metrics} (eval);
-  \draw[flow] (sys) -- node[above, pos=0.4] {claim queries} (src);
-  \draw[flow] (src) -- node[below, pos=0.4] {passages} (sys);
-  \draw[flow] (sys) -- node[left, pos=0.6] {requests} (models);
-  \draw[flow] (models) -- node[right, pos=0.35] {responses} (sys);
-  \draw[flow,dashed] (gpu) -- node[below, pos=0.5] {GPU compute} (models);
-\end{tikzpicture}}
-\caption{Context diagram of the trust-calibrated multi-agent deliberation framework.}
-\label{fig:context-diagram}
+      \draw[flow] (user) -- node[right, pos=0.3] {question} (sys);
+      \draw[flow] (sys) -- node[left, pos=0.7] {result package} (user);
+      \draw[flow] (eval) -- node[above, pos=0.4] {questions} (sys);
+      \draw[flow] (sys) -- node[below, pos=0.4] {scores, metrics} (eval);
+      \draw[flow] (sys) -- node[above, pos=0.4] {claim queries} (src);
+      \draw[flow] (src) -- node[below, pos=0.4] {passages} (sys);
+      \draw[flow] (sys) -- node[left, pos=0.6] {requests} (models);
+      \draw[flow] (models) -- node[right, pos=0.35] {responses} (sys);
+      \draw[flow,dashed] (gpu) -- node[below, pos=0.5] {GPU compute} (models);
+    \end{tikzpicture}}
+  \caption{Context diagram of the trust-calibrated multi-agent deliberation framework.}
+  \label{fig:context-diagram}
 \end{figure}
 
 \subsection{Data Flow Diagram Level 1}\label{subsec:dfd-level1}
@@ -52,10 +52,10 @@ The level-one data flow diagram in Figure~\ref{fig:dfd-level1} decomposes the fr
 The diagram reads from left to right and top to bottom. The evaluation harness submits a question, and the confidence gate decides whether the debate is worth running. The orchestration process then asks the model server for the agent positions. Positions are decomposed into atomic claims, and the retrieval process verifies them against the external sources. The verdicts are stored in the evidence log before they drive the trust update. The updated trust is written back into the debate state, so the next round starts from the corrected influence values. At the last round the aggregation process selects the answer. The packaging process logs it in the results log, and the result package with the answer and the citations returns to the user.
 
 \begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{data-flow.png}
-\caption{Level-one data flow diagram of the trust-calibrated multi-agent deliberation framework.}
-\label{fig:dfd-level1}
+  \centering
+  \includegraphics[width=\textwidth]{data-flow.png}
+  \caption{Level-one data flow diagram of the trust-calibrated multi-agent deliberation framework.}
+  \label{fig:dfd-level1}
 \end{figure}
 
 \subsection{UI Design}\label{subsec:ui-design}
@@ -63,17 +63,17 @@ The diagram reads from left to right and top to bottom. The evaluation harness s
 The framework is operated through a command-line interface and a small web dashboard. The command-line interface starts experiments and points the pipeline at the evaluation datasets. Every run is written to a JSON package. It is the primary interface because the system runs in batches on a rented GPU, where a graphical interface adds little value. The web dashboard is used afterwards to inspect single debates. It shows the agents as cards with their current positions, plus a chart of the trust trajectory across rounds and the verdict of every claim with the passage that supports or contradicts it. This is where the transparency of the framework becomes visible, because a user can trace exactly why an agent lost influence. Figure~\ref{fig:cli} and Figure~\ref{fig:dashboard} show the intended layout of both interfaces. The screenshots will be replaced with the real output of the system once the implementation is complete.
 
 \begin{figure}[ht]
-\centering
-\fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the command-line experiment interface.}}
-\caption{Command-line interface for running experiments and writing JSON result packages.}
-\label{fig:cli}
+  \centering
+  \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the command-line experiment interface.}}
+  \caption{Command-line interface for running experiments and writing JSON result packages.}
+  \label{fig:cli}
 \end{figure}
 
 \begin{figure}[ht]
-\centering
-\fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the debate inspection dashboard.}}
-\caption{Web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}
-\label{fig:dashboard}
+  \centering
+  \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Screenshot of the debate inspection dashboard.}}
+  \caption{Web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}
+  \label{fig:dashboard}
 \end{figure}
 
 \section{Detailed Methodology and Design}
@@ -110,47 +110,47 @@ checkpoints. This report covers the work through the mid-project review, while
 the later phases carry the project to the final defence.
 
 \begin{center}
-    \begin{table}[ht]
-        \centering
-        \caption{Project phases with week-level durations and deliverables.}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.20\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
-        \hline
-        Phase & Duration & Deliverables\\
-        \hline
-        Ph 0: Literature and Setup & Month 1 (Wk 1--4) & Literature freeze, vLLM and LangGraph setup, model identification, vanilla MAD reproduction\\
-        Ph 1: Injection and Baselines & Month 2 (Wk 5--8) & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot\\
-        Ph 2: Trust Mechanism Build & Months 3--4 (Wk 9--16) & Claim decomposition, source-partitioned RAG, trust function version 1, B5/B6/B9\\
-        Ph 2 to 3: Mid-Project & Month 5 (Wk 17--20) & Design freeze, dry run on one dataset, FYDP-1 defence preparation\\
-        Ph 3a: Main Experiments & Month 6 (Wk 21--24) & Core conditions on primary datasets, three seeds, 95\% confidence intervals\\
-        Ph 3b: Ablations and Scaling & Month 7 (Wk 25--28) & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, results freeze\\
-        Ph 4: Human Eval and Analysis & Month 8 (Wk 29--32) & Human evaluation with $n=60$, ECR calibration, failure analysis, buffer\\
-        Ph 5: Writing and Submit & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission and FYDP-2 defence\\
-        \hline
-        \end{tabular}
-        \label{tab:phases}
-    \end{table}
+  \begin{table}[ht]
+    \centering
+    \caption{Project phases with week-level durations and deliverables.}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{|p{0.20\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
+      \hline
+      Phase                         & Duration                 & Deliverables                                                                                \\
+      \hline
+      Ph 0: Literature and Setup    & Month 1 (Wk 1--4)        & Literature freeze, vLLM and LangGraph setup, model identification, vanilla MAD reproduction \\
+      Ph 1: Injection and Baselines & Month 2 (Wk 5--8)        & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot                  \\
+      Ph 2: Trust Mechanism Build   & Months 3--4 (Wk 9--16)   & Claim decomposition, source-partitioned RAG, trust function version 1, B5/B6/B9             \\
+      Ph 2 to 3: Mid-Project        & Month 5 (Wk 17--20)      & Design freeze, dry run on one dataset, FYDP-1 defence preparation                           \\
+      Ph 3a: Main Experiments       & Month 6 (Wk 21--24)      & Core conditions on primary datasets, three seeds, 95\% confidence intervals                 \\
+      Ph 3b: Ablations and Scaling  & Month 7 (Wk 25--28)      & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, results freeze                   \\
+      Ph 4: Human Eval and Analysis & Month 8 (Wk 29--32)      & Human evaluation with $n=60$, ECR calibration, failure analysis, buffer                     \\
+      Ph 5: Writing and Submit      & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission and FYDP-2 defence           \\
+      \hline
+    \end{tabular}
+    \label{tab:phases}
+  \end{table}
 \end{center}
 
 \begin{center}
-    \begin{table}[ht]
-        \centering
-        \caption{Review gates and their checkpoints.}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.26\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|}
-        \hline
-        Gate & Due & Checkpoint\\
-        \hline
-        Gate 0 & End of Month 1 & Vanilla MAD reproduces the Du et al. baseline on a GPQA slice, and the reference list is frozen\\
-        Gate 1 (Go/No-Go) & End of Month 2 & Injection validation reaches $\kappa \geq 0.75$, baseline CCR sits at 0.30 or higher, pilot executed\\
-        Gate 2 & End of Month 4 & Trust mechanism plus source-partitioned RAG plus competitor baselines, first CCR and MPR on one dataset\\
-        FYDP-1 Defence & Month 5 & Mid-project report with design freeze and initial results\\
-        Gate 3 & End of Month 7 & Full results freeze with confidence intervals and effect sizes\\
-        Submit and FYDP-2 & Months 9--10 & Paper submitted, thesis completed, final defence\\
-        \hline
-        \end{tabular}
-        \label{tab:gates}
-    \end{table}
+  \begin{table}[ht]
+    \centering
+    \caption{Review gates and their checkpoints.}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{|p{0.26\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|}
+      \hline
+      Gate              & Due            & Checkpoint                                                                                              \\
+      \hline
+      Gate 0            & End of Month 1 & Vanilla MAD reproduces the Du et al. baseline on a GPQA slice, and the reference list is frozen         \\
+      Gate 1 (Go/No-Go) & End of Month 2 & Injection validation reaches $\kappa \geq 0.75$, baseline CCR sits at 0.30 or higher, pilot executed    \\
+      Gate 2            & End of Month 4 & Trust mechanism plus source-partitioned RAG plus competitor baselines, first CCR and MPR on one dataset \\
+      FYDP-1 Defence    & Month 5        & Mid-project report with design freeze and initial results                                               \\
+      Gate 3            & End of Month 7 & Full results freeze with confidence intervals and effect sizes                                          \\
+      Submit and FYDP-2 & Months 9--10   & Paper submitted, thesis completed, final defence                                                        \\
+      \hline
+    \end{tabular}
+    \label{tab:gates}
+  \end{table}
 \end{center}
 
 Two buffers guard the critical path. A dry run on one dataset sits inside Month
@@ -165,64 +165,65 @@ Figure~\ref{fig:task-gantt} shows when each member is active across the ten
 project months.
 
 \begin{center}
-    \begin{table}[ht]
-        \centering
-        \caption{Module ownership across the six team members.}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.36\textwidth}|p{0.50\textwidth}|}
-        \hline
-        Member & Primary modules\\
-        \hline
-        Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination\\
-        Rakibul Hasan & Vanilla MAD reproduction, injection protocol\\
-        Md. Salman Rohoman Nayeem & Claim decomposition, source-partitioned RAG\\
-        Pratay Paul & Evaluation harness, CCR/MPR/ECR metrics\\
-        Yousuf Kamal Himel & Baselines B1--B9, vLLM serving\\
-        Mst. Farjana Akter Limu & Evidence APIs, dashboard, result packages\\
-        \hline
-        \end{tabular}
-        \label{tab:tasks}
-    \end{table}
+  \begin{table}[ht]
+    \centering
+    \caption{Module ownership across the six team members.}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{|p{0.36\textwidth}|p{0.50\textwidth}|}
+      \hline
+      Member                      & Primary modules                              \\
+      \hline
+      Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination  \\
+      Rakibul Hasan               & Vanilla MAD reproduction, injection protocol \\
+      Md. Salman Rohoman Nayeem   & Claim decomposition, source-partitioned RAG  \\
+      Pratay Paul                 & Evaluation harness, CCR/MPR/ECR metrics      \\
+      Yousuf Kamal Himel          & Baselines B1--B9, vLLM serving               \\
+      Mst. Farjana Akter Limu     & Evidence APIs, dashboard, result packages    \\
+      \hline
+    \end{tabular}
+    \label{tab:tasks}
+  \end{table}
 \end{center}
 
-\begin{figure}[ht]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  wkline/.style={draw=black!12},
-  monline/.style={draw=black!55, thick},
-  bar/.style={rounded corners=1pt, text=white, font=\scriptsize\bfseries},
-  mlab/.style={font=\scriptsize},
-  nlab/.style={anchor=east, font=\scriptsize},
-]
-  \definecolor{navy}{HTML}{1E40AF}
-  \definecolor{tealg}{HTML}{0F766E}
-  \definecolor{amberg}{HTML}{B45309}
-  \definecolor{roseg}{HTML}{B91C1C}
-  \definecolor{purpg}{HTML}{6D28D9}
-  \definecolor{skyg}{HTML}{0369A1}
-  \def\s{0.34}
-  \foreach \w in {0,...,40} {\draw[wkline] (\w*\s,0) -- (\w*\s,6.3);}
-  \foreach \m in {0,...,10} {\draw[monline] (\m*4*\s,0) -- (\m*4*\s,6.3);}
-  \foreach \m in {1,...,10} {\node[mlab] at ({(2*\m-1)*2*\s},6.65) {M\m};}
-  \foreach \y in {0,...,6} {\draw[black!35] (0,\y*1.05) -- (40*\s,\y*1.05);}
-  \node[nlab] at (-0.25,5.55) {Atikur (Leader)};
-  \node[nlab] at (-0.25,4.5) {Rakibul};
-  \node[nlab] at (-0.25,3.45) {Nayeem};
-  \node[nlab] at (-0.25,2.4) {Pratay};
-  \node[nlab] at (-0.25,1.35) {Himel};
-  \node[nlab] at (-0.25,0.3) {Limu};
-  \fill[bar, fill=navy] (0,5.25) rectangle (40*\s,5.75) node[midway] {Architecture \& trust mechanism \& coordination\hspace{1em}(Ph 0--5)};
-  \fill[bar, fill=tealg] (0,4.2) rectangle (8*\s,4.7) node[midway, font=\tiny\bfseries] {Vanilla MAD + injection (Ph 0--1)};
-  \fill[bar, fill=amberg] (8*\s,3.15) rectangle (24*\s,3.65) node[midway] {Claim decomposition + RAG (Ph 2--3a)};
-  \fill[bar, fill=roseg] (4*\s,2.1) rectangle (8*\s,2.6) node[midway, font=\tiny\bfseries] {Ph 1};
-  \fill[bar, fill=roseg] (20*\s,2.1) rectangle (28*\s,2.6) node[midway, font=\tiny\bfseries] {Harness + metrics (Ph 3a--3b)};
-  \fill[bar, fill=purpg] (4*\s,1.05) rectangle (16*\s,1.55) node[midway, font=\tiny\bfseries] {Baselines + vLLM (Ph 1--2)};
-  \fill[bar, fill=skyg] (8*\s,0) rectangle (16*\s,0.5) node[midway, font=\tiny\bfseries] {Ph 2};
-  \fill[bar, fill=skyg] (28*\s,0) rectangle (40*\s,0.5) node[midway, font=\tiny\bfseries] {Result packages + reporting (Ph 4--5)};
-\end{tikzpicture}}
-\caption{Gantt view of member activity across the ten project months, following the phase plan in Table~\ref{tab:phases}.}
-\label{fig:task-gantt}
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[
+        wkline/.style={draw=black!12},
+        monline/.style={draw=black!55, thick},
+        bar/.style={rounded corners=1pt, text=white, font=\footnotesize\bfseries},
+        mlab/.style={font=\small},
+        nlab/.style={anchor=east, font=\small\bfseries},
+      ]
+      \definecolor{navy}{HTML}{1E40AF}
+      \definecolor{tealg}{HTML}{0F766E}
+      \definecolor{amberg}{HTML}{B45309}
+      \definecolor{roseg}{HTML}{B91C1C}
+      \definecolor{purpg}{HTML}{6D28D9}
+      \definecolor{skyg}{HTML}{0369A1}
+      \def\s{0.33}
+      \path[use as bounding box] (-3.6,0) rectangle (13.7,8.8);
+      \foreach \w in {0,...,40} {\draw[wkline] (\w*\s,0) -- (\w*\s,7.8);}
+      \foreach \m in {0,...,10} {\draw[monline] (\m*4*\s,0) -- (\m*4*\s,7.8);}
+      \foreach \m in {1,...,10} {\node[mlab] at ({(2*\m-1)*2*\s},8.1) {M\m};}
+      \foreach \y in {0,...,6} {\draw[black!35] (0,\y*1.3) -- (40*\s,\y*1.3);}
+      \node[nlab] at (-0.3,7.15) {Atikur};
+      \node[nlab] at (-0.3,5.85) {Rakibul};
+      \node[nlab] at (-0.3,4.55) {Nayeem};
+      \node[nlab] at (-0.3,3.25) {Pratay};
+      \node[nlab] at (-0.3,1.95) {Yousuf};
+      \node[nlab] at (-0.3,0.65) {Limu};
+      \fill[bar, fill=navy] (0,6.85) rectangle (40*\s,7.45) node[midway] {Architecture + coordination};
+      \fill[bar, fill=tealg] (0,5.55) rectangle (12*\s,6.15) node[midway] {MAD + injection};
+      \fill[bar, fill=amberg] (8*\s,4.25) rectangle (24*\s,4.85) node[midway] {Claims + RAG};
+      \fill[bar, fill=roseg] (4*\s,2.95) rectangle (8*\s,3.55) node[midway, font=\tiny\bfseries] {Ph 1};
+      \fill[bar, fill=roseg] (18*\s,2.95) rectangle (28*\s,3.55) node[midway] {Metrics + harness};
+      \fill[bar, fill=purpg] (4*\s,1.65) rectangle (16*\s,2.25) node[midway] {Baselines + vLLM};
+      \fill[bar, fill=skyg] (6*\s,0.35) rectangle (16*\s,0.95) node[midway] {APIs + dashboard};
+      \fill[bar, fill=skyg] (28*\s,0.35) rectangle (40*\s,0.95) node[midway] {Packages + report};
+    \end{tikzpicture}}
+  \caption{Gantt view of member activity across the ten project months, following the phase plan in Table~\ref{tab:phases}.}
+  \label{fig:task-gantt}
 \end{figure}
 
 Owners pair with the phases in Table~\ref{tab:phases}, so each phase has at
