@@ -160,29 +160,70 @@ buffers sit where a late failure would otherwise hit a fixed deadline.
 \section{Task Allocation}\label{sec:task-allocation}
 
 Six members split the work along the modules of the framework.
-Table~\ref{tab:tasks} fixes who owns which part, so every module has a named
-owner and every member holds a stretch of the timeline.
+Table~\ref{tab:tasks} fixes who owns which part, and
+Figure~\ref{fig:task-gantt} shows when each member is active across the ten
+project months.
 
 \begin{center}
     \begin{table}[ht]
         \centering
         \caption{Module ownership across the six team members.}
         \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.36\textwidth}|p{0.34\textwidth}|p{0.16\textwidth}|}
+        \begin{tabular}{|p{0.36\textwidth}|p{0.50\textwidth}|}
         \hline
-        Member & Primary modules & Active phases\\
+        Member & Primary modules\\
         \hline
-        Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination & Ph 0--5\\
-        Rakibul Hasan & Vanilla MAD reproduction, injection protocol & Ph 0--1\\
-        Md. Salman Rohoman Nayeem & Claim decomposition, source-partitioned RAG & Ph 2--3a\\
-        Pratay Paul & Evaluation harness, CCR/MPR/ECR metrics & Ph 1, 3a--3b\\
-        Yousuf Kamal Himel & Baselines B1--B9, vLLM serving & Ph 1--2\\
-        Mst. Farjana Akter Limu & Evidence APIs, dashboard, result packages & Ph 2, 4--5\\
+        Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination\\
+        Rakibul Hasan & Vanilla MAD reproduction, injection protocol\\
+        Md. Salman Rohoman Nayeem & Claim decomposition, source-partitioned RAG\\
+        Pratay Paul & Evaluation harness, CCR/MPR/ECR metrics\\
+        Yousuf Kamal Himel & Baselines B1--B9, vLLM serving\\
+        Mst. Farjana Akter Limu & Evidence APIs, dashboard, result packages\\
         \hline
         \end{tabular}
         \label{tab:tasks}
     \end{table}
 \end{center}
+
+\begin{figure}[ht]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  wkline/.style={draw=black!12},
+  monline/.style={draw=black!55, thick},
+  bar/.style={rounded corners=1pt, text=white, font=\scriptsize\bfseries},
+  mlab/.style={font=\scriptsize},
+  nlab/.style={anchor=east, font=\scriptsize},
+]
+  \definecolor{navy}{HTML}{1E40AF}
+  \definecolor{tealg}{HTML}{0F766E}
+  \definecolor{amberg}{HTML}{B45309}
+  \definecolor{roseg}{HTML}{B91C1C}
+  \definecolor{purpg}{HTML}{6D28D9}
+  \definecolor{skyg}{HTML}{0369A1}
+  \def\s{0.34}
+  \foreach \w in {0,...,40} {\draw[wkline] (\w*\s,0) -- (\w*\s,6.3);}
+  \foreach \m in {0,...,10} {\draw[monline] (\m*4*\s,0) -- (\m*4*\s,6.3);}
+  \foreach \m in {1,...,10} {\node[mlab] at ({(2*\m-1)*2*\s},6.65) {M\m};}
+  \foreach \y in {0,...,6} {\draw[black!35] (0,\y*1.05) -- (40*\s,\y*1.05);}
+  \node[nlab] at (-0.25,5.55) {Atikur (Leader)};
+  \node[nlab] at (-0.25,4.5) {Rakibul};
+  \node[nlab] at (-0.25,3.45) {Nayeem};
+  \node[nlab] at (-0.25,2.4) {Pratay};
+  \node[nlab] at (-0.25,1.35) {Himel};
+  \node[nlab] at (-0.25,0.3) {Limu};
+  \fill[bar, fill=navy] (0,5.25) rectangle (40*\s,5.75) node[midway] {Architecture \& trust mechanism \& coordination\hspace{1em}(Ph 0--5)};
+  \fill[bar, fill=tealg] (0,4.2) rectangle (8*\s,4.7) node[midway, font=\tiny\bfseries] {Vanilla MAD + injection (Ph 0--1)};
+  \fill[bar, fill=amberg] (8*\s,3.15) rectangle (24*\s,3.65) node[midway] {Claim decomposition + RAG (Ph 2--3a)};
+  \fill[bar, fill=roseg] (4*\s,2.1) rectangle (8*\s,2.6) node[midway, font=\tiny\bfseries] {Ph 1};
+  \fill[bar, fill=roseg] (20*\s,2.1) rectangle (28*\s,2.6) node[midway, font=\tiny\bfseries] {Harness + metrics (Ph 3a--3b)};
+  \fill[bar, fill=purpg] (4*\s,1.05) rectangle (16*\s,1.55) node[midway, font=\tiny\bfseries] {Baselines + vLLM (Ph 1--2)};
+  \fill[bar, fill=skyg] (8*\s,0) rectangle (16*\s,0.5) node[midway, font=\tiny\bfseries] {Ph 2};
+  \fill[bar, fill=skyg] (28*\s,0) rectangle (40*\s,0.5) node[midway, font=\tiny\bfseries] {Result packages + reporting (Ph 4--5)};
+\end{tikzpicture}}
+\caption{Gantt view of member activity across the ten project months, following the phase plan in Table~\ref{tab:phases}.}
+\label{fig:task-gantt}
+\end{figure}
 
 Owners pair with the phases in Table~\ref{tab:phases}, so each phase has at
 least one accountable member. The leader reviews each module before it is
