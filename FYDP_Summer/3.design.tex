@@ -77,7 +77,30 @@ The framework is operated through a command-line interface and a small web dashb
 \end{figure}
 
 \section{Detailed Methodology and Design}
-You have to mention alternate solutions that you have considered. Why you have selected the specific solution, etc.
+Several design points had more than one reasonable answer, and the alternatives
+were compared before the current design was fixed.
+
+The first choice is how to combine the agents at the end. Plain majority voting
+is the baseline the framework is measured against, so it stays in the harness
+but not in the framework. LLM-as-judge was rejected early. A judge shares the
+correlated errors of the debating models, and published results show negative
+net gain for that approach~\cite{he2026minority}. Trust-weighted aggregation was
+selected because the verdicts already exist in the pipeline, so the final answer
+uses the same evidence signal as the intermediate rounds.
+
+The trust signal itself went through the same comparison. Self-reported
+confidence is cheap but manipulable, and its ceiling is well
+documented~\cite{yoffe-etal-2025-debunc}. A ground-truth oracle cannot run in
+practice. A post-hoc behavioral classifier, as in Minority Sentinel, operates
+after the debate and cannot change influence during it~\cite{he2026minority}.
+Claim-level verification against retrieved literature was chosen because it is
+the only signal that comes from outside the model family.
+
+Retrieval options also competed. A single database was simpler, but scientific
+claims spread across medical, physics, and general literature, so each agent
+searches a different source with OpenAlex as the fallback. BM25 ranks the
+candidates cheaply, and the cross-encoder reranks them for semantic fit, which
+plain keyword scoring cannot capture.
 \section{Project Plan}
 \section{Task Allocation}
 
