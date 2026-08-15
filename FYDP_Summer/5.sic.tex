@@ -1,33 +1,214 @@
 \chapter{Standards and Design Constraints}
-[Must be present in FYDP-1 Report and also in Final Report]
-
-Every chapter should start with 1-2 sentences on the outline of the chapter.
+This chapter records the standards the framework follows, the constraints that
+shaped its design, and the budget behind the experiments. It also maps the
+project against the complex engineering problem criteria and closes with a short
+summary.
 
 \section{Compliance with the Standards}
-Only include standards related to the system. This list is not exhaustive. For each standard, discuss the alternatives, their advantages and disadvantages, and the reason for selecting it.
+Standards matter in three places: the software stack, the hardware the framework
+runs on, and the communication between components. Each area had alternatives,
+and each choice is justified below.
 
 \subsection{Software Standards}
 
+Python 3.11 was chosen as the implementation language. The LLM ecosystem is
+built around it, so vLLM, the Hugging Face libraries, and the evaluation tooling
+all ship Python support first. Java and C++ are faster in raw terms, but neither
+has the same depth of ready-made support for model serving and retrieval work.
+The framework is a research prototype, not a latency-critical production
+service, so ecosystem fit outweighs raw speed. Surveys of LLM-based multi-agent
+systems describe this design space in terms of workflow, infrastructure, and
+open challenges~\cite{li2024survey}, and the choices below follow that map.
+
+PyTorch 2.x is the deep learning framework underneath vLLM. It is the de facto
+standard for LLM inference and supports the Qwen, Gemma, and Mistral families
+directly. TensorFlow and JAX were considered. TensorFlow's LLM serving story is
+weaker, and JAX would pull the whole pipeline onto its own stack without any
+benefit here.
+
+vLLM serves the models through an OpenAI-compatible API. That interface matters
+because the framework must work with closed APIs and locally served models
+without touching the orchestration code. PagedAttention gives vLLM high
+throughput under the three-agent debate load, and its FP8 support matches the
+Blackwell GPU. Ollama is easier to set up but slower under concurrent requests.
+llama.cpp runs well on CPU but gives up the GPU throughput the debate needs.
+TGI is a close alternative, and vLLM won on ecosystem fit and the
+OpenAI-compatible surface.
+
+Sentence-transformers provides the cross-encoder that reranks retrieved
+passages. BM25 was the fallback, but it matches on surface terms only, while the
+cross-encoder scores semantic fit between a claim and a passage. The web
+dashboard is served with FastAPI, and every result package is written as JSON
+following RFC 8259, validated against a JSON Schema. Git tracks the code and
+LaTeX (Overleaf) produces this report.
+
 \subsection{Hardware Standards}
+
+The experiments run on a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB of
+GDDR7 memory. The choice came down to memory capacity and architecture. The
+development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) fit comfortably in
+BF16. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total
+about 77 billion parameters, which no single card holds in FP16, so they run in
+FP8. Blackwell has native FP8 support, and that is exactly the point of
+difference.
+
+The A100 80GB was the first alternative considered. It has enough memory for the
+development models and strong HBM bandwidth, but its FP8 path is weaker and the
+architecture is two generations old. The H100 80GB is faster yet rents for
+roughly twice the price and brings nothing the framework needs. The L40S at 48
+GB and the consumer RTX 5090 at 32 GB cannot hold the final model trio at all.
+The RTX PRO 6000 sits at the right point: enough memory, modern quantization,
+and a rental price that fits a student budget. The host machine needs at least
+64 GB of system RAM and NVMe storage to stage the models before they move to the
+GPU.
 
 \subsection{Communication Standards}
 
+All communication between the framework and its components runs over HTTP with
+TLS. The model server exposes the OpenAI-compatible chat completions endpoint,
+which is REST with JSON payloads. gRPC was the alternative for model serving. It
+is faster in benchmark terms, but the OpenAI-compatible surface keeps the
+framework portable between closed APIs and local vLLM servers, and that
+portability outweighs the latency difference.
+
+The evidence sources are reached through their public REST interfaces: PubMed
+E-utilities, the arXiv API, the Semantic Scholar Graph API, and OpenAlex as the
+fallback. Each returns JSON or XML over HTTPS, and the framework handles rate
+limits with the retry caps defined in the requirements. WebSocket is reserved
+for the dashboard's live trust chart. Nothing else needs a persistent
+connection.
 
 \section{Design Constraints}
-Only include constraints related to the design. This list is not exhaustive.
+
 \subsection{Economic Constraint}
+
+The budget is the tightest constraint. Everything runs on a single rented GPU
+with no fine-tuning, because training, or even parameter-efficient tuning, would
+multiply the cost of every experiment. The RTX PRO 6000 rental range of about
+USD 0.70 to 1.90 per hour keeps the total within reach of a student budget, and
+the retrieval APIs used are free under their rate limits. Owning the card was
+never an option; its retail price is several times the whole project budget.
+
 \subsection{Environmental Constraint}
+
+The GPU draws up to about 600 watts under load. Running it in the cloud means
+the hardware is shared across many tenants, so one project does not manufacture
+or discard a card. Skipping fine-tuning also keeps energy use down, because
+inference over a few thousand questions costs far less than a training run that
+would occupy the same card for days.
+
 \subsection{Ethical Constraint}
+
+The framework keeps the ground truth hidden from every agent, and the final
+output carries citations to the evidence behind the answer. Models tuned to
+sound agreeable become less accurate and more
+sycophantic~\cite{ibrahim2026training}, and preference-based sycophancy fixes
+need careful data handling~\cite{chen2025self}. In multi-agent debate, the
+correct answer can be present but ignored in more than 20 percent of
+wrong-answer cases~\cite{pitre-etal-2025-consensagent}. Making the evidence
+trail visible is the framework's answer to those risks. A user can always check
+which agent was supported and which was contradicted.
+
 \subsection{Health and Safety Constraint}
+
+The work involves no physical hardware handling and no laboratory risk. All
+compute runs on rented cloud instances. The only health consideration is
+ordinary screen time, which the team manages with standard breaks and workstation
+habits.
+
 \subsection{Social Constraint}
+
+Scientific question answering shapes how people come to trust AI systems. A
+system that confidently repeats a wrong consensus can reinforce
+misinformation~\cite{cau2025selective}. The framework grounds influence in
+evidence, so the social risk is reduced to the quality of the retrieved
+literature rather than the popularity of an answer.
+
 \subsection{Political Constraint}
+
+The framework relies on open access to scientific literature. PubMed, arXiv,
+Semantic Scholar, and OpenAlex are all public services, and the models are
+open-weight with permissive licenses: Qwen and Mistral under Apache 2.0, Gemma
+under its own license. No user data is collected, and the system depends on no
+single vendor, which keeps it usable under changing access policies.
+
 \subsection{Sustainability}
 
+Sustainability here comes from reuse. The rented GPU is shared infrastructure,
+the models are already trained and only served, and every experiment is seeded
+and logged so runs do not need to be repeated. Open licenses and reproducible
+result packages mean the work can be continued by others without redoing the
+setup.
+
 \section{Cost Analysis}
-Provide a cost analysis in terms of budget required and revenue model. In case of budget, you must show an alternate budget and rationales. 
+
+The budget covers the rented GPU, storage, and the free research services. The
+largest line is inference time on the RTX PRO 6000 Blackwell, estimated at about
+300 hours across development and evaluation. Table~\ref{tab:budget} summarizes
+the primary budget.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Primary budget for the project.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
+        \hline
+        Item & Quantity & Unit Cost (USD) & Total (USD)\\
+        \hline
+        RTX PRO 6000 Blackwell 96GB rental & 300 hours & 0.70--1.90 / hour & 210--570\\
+        Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & --- & 0 (free tier) & 0\\
+        Datasets (GPQA, MMLU-Pro) & --- & 0 (public) & 0\\
+        Storage (model weights, logs) & 200 GB & 0.05 / GB & 10\\
+        \hline
+        \textbf{Total} & & & \textbf{220--580}\\
+        \hline
+        \end{tabular}
+        \label{tab:budget}
+    \end{table}
+\end{center}
+
+An alternate budget was also prepared. Renting an A100 80GB instead costs about
+USD 0.68 to 1.50 per hour, or 204--450 for the same 300 hours. The saving is
+real but small, and it comes at a cost: weaker FP8 support means the final model
+trio would need tighter quantization or sequential loading, which adds
+engineering time. The RTX PRO 6000 was selected because the Blackwell FP8 path
+keeps the pipeline simple.
+
+The project has no revenue model. It is an academic deliverable, funded by the
+university and the team, and its outputs are the report and the open-source
+framework. Table~\ref{tab:budget-alt} shows the alternate budget for
+comparison.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Alternate budget using the A100 80GB.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
+        \hline
+        Item & Quantity & Unit Cost (USD) & Total (USD)\\
+        \hline
+        A100 80GB rental & 300 hours & 0.68--1.50 / hour & 204--450\\
+        Retrieval APIs & --- & 0 (free tier) & 0\\
+        Datasets & --- & 0 (public) & 0\\
+        Storage & 200 GB & 0.05 / GB & 10\\
+        \hline
+        \textbf{Total} & & & \textbf{214--460}\\
+        \hline
+        \end{tabular}
+        \label{tab:budget-alt}
+    \end{table}
+\end{center}
+
 \section{Complex Engineering Problem}
-\subsection{Complex Problem Solving} 
-In this section, provide a mapping with problem solving categories. For each mapping add subsections to put rationale (Use Table~\ref{tab:p_solve}). For P1, you need to put another mapping with Knowledge profile and rational thereof.
+
+\subsection{Complex Problem Solving}
+
+The project qualifies as a complex engineering problem under the Washington
+Accord criteria. Table~\ref{tab:p_solve} maps the seven attributes P1--P7, and
+the subsections that follow give the rationale for each mapping.
+
 \begin{center}
     \begin{table}[ht]
         \centering
@@ -38,15 +219,103 @@ In this section, provide a mapping with problem solving categories. For each map
         P1& P2& P3& P4& P5& P6& P7\\
         Dept of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence\\
         \hline 
-        $\sqrt{}$ & $\sqrt{}$ &&&&&\\
-        &&&&&&\\
+        $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$\\
         \hline 
         \end{tabular}
         \label{tab:p_solve}
     \end{table}
 \end{center}
+
+\subsubsection{P1: Depth of Knowledge Required}
+
+The framework spans machine learning, natural language processing,
+retrieval-augmented generation, and distributed model serving. Solving it
+required specialist knowledge in all four areas, from the trust update formula
+to the vLLM serving layer. Table~\ref{tab:knowledge} maps the P1 knowledge
+profile.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Knowledge profile mapping for P1.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
+        \hline
+        Knowledge & Applied & Where used\\
+        \hline
+        DK1: Natural sciences & $\sqrt{}$ & Statistics behind trust updates and metrics\\
+        DK2: Mathematics & $\sqrt{}$ & Softmax, clamping, renormalization, probability\\
+        DK3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling\\
+        DK4: Specialist knowledge & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy\\
+        DK5: Engineering methods & $\sqrt{}$ & Experimental methodology, baseline comparison\\
+        DK6: Computational methods & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI\\
+        DK7: Codes and practices & $\sqrt{}$ & JSON, HTTP, TLS, version control\\
+        DK8: Social context & $\sqrt{}$ & Ethical constraints on AI output\\
+        \hline 
+        \end{tabular}
+        \label{tab:knowledge}
+    \end{table}
+\end{center}
+
+The knowledge profile is broad rather than deep in one spot. The report applies
+DK4 and DK5 in every chapter, and DK6 and DK7 in the implementation, which
+reflects the range the problem demands.
+
+\subsubsection{P2: Range of Conflicting Requirements}
+
+Accuracy competes with latency and cost. More debate rounds improve the signal
+but multiply inference time and the GPU bill. Trust calibration competes with
+diversity, because strong trust weighting can silence a minority that the
+evidence simply has not covered yet. Evidence coverage competes with API rate
+limits. These conflicts had to be resolved jointly, and the round caps, the
+clamping bounds, and the conservative verdict handling are the result.
+
+\subsubsection{P3: Depth of Analysis}
+
+The problem has no textbook solution. Answering it required a comparative
+experiment with multiple baselines (majority voting, MoA, iMAD, DebUnc) and a
+metric set designed for the failure mode: consensus-collapse rate,
+minority-preservation rate, and evidence-calibration rate, alongside plain
+accuracy. The injection point for fabricated wrong consensus was built
+specifically so the collapse dynamic could be measured under controlled
+pressure.
+
+\subsubsection{P4: Familiarity of Issues}
+
+Sycophantic consensus in multi-agent LLM debate is a new research area. The
+closest published work appeared between 2024 and 2026, and no standard solution
+exists. The team started with a full literature review, which is documented in
+Chapter 2, before committing to a design.
+
+\subsubsection{P5: Extent of Applicable Codes}
+
+General software standards apply: JSON (RFC 8259), HTTP over TLS, the
+OpenAI-compatible API, and JSON Schema validation. No standard, however,
+covers evidence-grounded trust in LLM debate. The problem is therefore only
+partially standardized, and the framework defines its own conventions for the
+trust score and the verdict set.
+
+\subsubsection{P6: Extent of Stakeholder Involvement}
+
+The stakeholders are the supervisor, the examiners, and the users of scientific
+question-answering tools. The supervisor guided the scope and the evaluation
+plan, and the examiners assess the report against the complex engineering
+criteria. Future users matter because the dashboard and the result package were
+designed around traceability, not just accuracy.
+
+\subsubsection{P7: Interdependence}
+
+The confidence gate, the orchestrator, the claim decomposer, the retrieval
+subsystem, the trust updater, and the aggregator are tightly coupled. A failure
+in retrieval cascades into the verdicts, then into trust, then into the final
+answer. The failure-isolation requirement in Section 3.1.1 exists because of
+this coupling.
+
 \subsection{Engineering Activities}
-In this section, provide a mapping with engineering activities. For each mapping add subsections to put rationale (Use Table~\ref{tab:e_act}).
+
+Table~\ref{tab:e_act} maps the project to the five engineering activities
+A1--A5, with rationales below.
+
 \begin{center}
     \begin{table}[ht]
         \centering
@@ -58,11 +327,52 @@ In this section, provide a mapping with engineering activities. For each mapping
         A1& A2& A3& A4& A5\\
         Range of resources & Level of Interaction & Innovation & Consequences for society and environment & Familiarity\\
         \hline 
-        $\sqrt{}$ & $\sqrt{}$ &&&\\
-        &&&&\\
+        $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$\\
         \hline 
         \end{tabular}
         \label{tab:e_act}
     \end{table}
 \end{center}
+
+\subsubsection{A1: Range of Resources}
+
+The project draws on three model families, four literature APIs, a rented
+Blackwell GPU, and six team members with different strengths. Coordinating those
+resources is part of the engineering work, and the project plan in Chapter 3
+assigns each task to a named member.
+
+\subsubsection{A2: Level of Interaction}
+
+The system interacts heavily with the outside world. Every debate round calls
+three external model endpoints and three literature APIs, and the cloud GPU is
+reached over the network. The team also interacts through a shared repository
+and weekly reviews.
+
+\subsubsection{A3: Innovation}
+
+The trust-calibrated aggregation mechanism is new. No published method ties an
+agent's influence to claim-level verification against retrieved scientific
+evidence while the debate is still running. The gap analysis in Chapter 2
+documents this, and the design in Chapter 3 implements it.
+
+\subsubsection{A4: Consequences for Society and Environment}
+
+The social consequence is improved reliability in AI scientific question
+answering, which lowers the risk of confidently wrong answers being trusted.
+The environmental consequence is modest, since the work runs on shared cloud
+hardware without fine-tuning.
+
+\subsubsection{A5: Familiarity}
+
+Multi-agent debate and evidence verification were new territory for the team.
+The literature review phase, the baseline study, and the incremental
+implementation plan were all designed around that reality, so each module was
+built only after its background was understood.
+
 \section{Summary}
+The chapter fixed the standards behind the software, the hardware, and the
+communication layers, and recorded the economic, environmental, ethical, and
+social constraints that shaped the design. The budget analysis shows the project
+fits a student budget on a rented RTX PRO 6000 Blackwell GPU, and the complex
+engineering mapping confirms the project meets all seven problem attributes and
+all five engineering activities.
