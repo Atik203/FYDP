@@ -2,7 +2,7 @@
 
 **Project:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
 
-**Last updated:** 2026-07-17
+**Last updated:** 2026-08-15
 
 ---
 
@@ -16,7 +16,7 @@
 | 4 | MoA (Wang et al.) | 2025 | ICLR (Poster) | **Context (foundational arch.)** | Low | 2026-07-17 | [papers/04-moa-wang-2025.md](papers/04-moa-wang-2025.md) |
 | — | Estornell & Liu | 2024 | NeurIPS | Pending | Pending | — | — |
 | — | Yao et al. (Peacemaker) | 2025 | Preprint (withdrawn) | Pending | Pending | — | — |
-| — | He et al. (Minority Sentinel) | 2026 | SIGIR Workshop | Pending | Pending | — | — |
+| 5 | Minority Sentinel (He et al.) | 2026 | SIGIR Workshop | **Competitor** | Medium | 2026-08-15 | [papers/05-minority-sentinel-he-2026.md](papers/05-minority-sentinel-he-2026.md) |
 
 ### Legend
 
@@ -41,13 +41,14 @@
 - iMAD (Fan et al., 2026) — Baseline B9, closest efficiency-focused approach
 - ConsensAgent (Pitre et al., 2025) — Nearest neighbor; closest published sycophancy mitigation (High threat to novelty)
 - DebUnc (Yoffe et al., 2025) — Closest on *mechanism* (in-debate influence reweighting); its Ground Truth oracle is our strongest motivation for an external trust signal
+- Minority Sentinel (He et al., 2026) — Competitor; strongest quantified documentation of the minority-suppression phenomenon (25.5% of divergent cases) + LLM-as-Judge failure (NG −1.37%); post-hoc flip, not in-debate re-weighting
 
 **Important context:**
 - MoA (Wang et al., 2025) — Foundational multi-model aggregation; the trust-blind, evidence-free baseline we improve on
 - [Pending: Estornell & Liu]
 
 **Diagnostic / measurement (cite for problem motivation):**
-- [Pending: Yao et al., He et al.]
+- [Pending: Yao et al.]
 
 ---
 
@@ -60,7 +61,7 @@
 | Sycophancy mitigation in multi-agent debate | ConsensAgent (Pitre et al., 2025) — via *pre-debate prompt rewriting*, aggregates on self-reported confidence | Ours calibrates trust *during* debate via external evidence; prompt clarity ≠ agent trust calibration |
 | Static multi-model aggregation | MoA (Wang et al., 2025) | No dynamic trust, no evidence grounding |
 | Uncertainty-based in-loop weighting | DebUnc (Yoffe et al., 2025) — token-entropy self-confidence via prompt or attention-scaling | Ours uses *external retrieved evidence*, not internal self-reported uncertainty; DebUnc's own Ground Truth oracle shows self-confidence is the binding constraint |
-| Post-hoc sycophancy detection | He et al. (Minority Sentinel, 2026) | After debate ends, not during |
+| Post-hoc sycophancy detection | He et al. (Minority Sentinel, 2026) | After debate ends, not during — binary flip on behavioral fingerprint, no in-debate re-weighting, no external grounding |
 | Theoretical majority-convergence analysis | Estornell & Liu (2024) | Theoretical, not a deployed system |
 
 ---
@@ -76,3 +77,4 @@
 | 2026-07-17 | DebUnc | Added as Paper #3 — Competitor (closest on mechanism), Medium threat. Confirmed Findings of EMNLP 2025, pp. 23299–23315, DOI 10.18653/v1/2025.findings-emnlp.1265 | ACL Anthology 2025.findings-emnlp.1265 + arXiv 2407.06426 |
 | 2026-07-17 | MoA | Added as Paper #4 — Context (foundational arch.), Low threat | ICLR 2025 proceedings + OpenReview h0ZfDIrj7T + arXiv 2406.04692 |
 | 2026-07-17 | MoA | Venue corrected: ICLR 2025 **Poster** (was listed "Spotlight") | iclr.cc/virtual/2025/poster/28787 + OpenReview |
+| 2026-08-15 | Minority Sentinel | Added as Paper #5 — Competitor (closest on problem framing), Medium threat to novelty. Venue (AgentSearch Workshop @ SIGIR 2026, Melbourne) confirmed via paper footer; arXiv 2606.29270v1 (submitted 2026-06-28) verified | arXiv abs page + full paper text + PDF |
