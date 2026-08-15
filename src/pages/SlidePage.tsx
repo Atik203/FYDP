@@ -1249,7 +1249,266 @@ function MoaSlideTwo() {
   );
 }
 
-/* ── Slide 10: Thank you ─────────────────────────────────────────── */
+/* ── Slide 10: Minority Sentinel — Summary + Method + Results ────── */
+function MinoritySlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#fef3c7", color: AMBER }}
+        >
+          Paper Review · Competitor
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Minority Sentinel: When to Overturn Majority Voting in Multi-Agent
+          LLM Debates
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Chuan He et al. (UNSW / Euler AI) · 2026</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: AMBER }} />
+            AgentSearch Workshop @ SIGIR 2026
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            arXiv:2606.29270
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              Majority voting assumes <b>independent errors</b> (Condorcet) —
+              LLMs share training data, so errors are <b>correlated</b>.
+            </Bullet>
+            <Bullet>
+              The majority then suppresses correct minorities:{" "}
+              <b>Minority Truth</b> in <b>25.5%</b> of 2:1 splits →{" "}
+              <b>10.0pp</b> recovery margin (74.3% MV vs 84.3% Oracle).
+            </Bullet>
+            <Bullet>
+              <b>Diagnosis–Cure</b>: 3 heterogeneous agents debate, then a{" "}
+              <b>22-feature debate fingerprint</b> (dynamics + voting + semantic
+              audit) feeds a <b>LightGBM</b> meta-classifier.
+            </Bullet>
+            <Bullet>
+              Flips the vote only when safe — per-dataset threshold keeps{" "}
+              <b>≥95% of correct majorities</b> ("first, do no harm").
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[1.6cqh]">
+            <div className="text-center">
+              <div
+                className="text-[6.6cqh] font-extrabold leading-none"
+                style={{ color: TEAL }}
+              >
+                +1.71%
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                Net Gain · CF 39 / WF 9 · Flip Precision 81.2%
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
+              style={{ background: "#fef2f2" }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: ROSE }}
+              >
+                LLM-as-Judge is harmful
+              </div>
+              <div
+                className="text-[2.1cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                GPT-4o ruling on logs: <b>NG −1.37%</b> (FP 42.7%) — judges
+                share the agents' blind spots.
+              </div>
+            </div>
+            <div
+              className="text-center text-[1.9cqh] font-semibold"
+              style={{ color: "#475569" }}
+            >
+              positive NG on all 6 datasets · all 20 seeds (+1.65%±0.19%)
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          Diagnosis–Cure Pipeline
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Round 0: independent answers",
+            "2 debate rounds + stance tracking",
+            "Detect 2:1 divergence (686 / 1,754)",
+            "Extract 22-feature fingerprint",
+            "LightGBM: flip or keep (per-dataset τ)",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 11: Minority Sentinel — Relevance + Gap ───────────────── */
+function MinoritySlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#fef3c7", color: AMBER }}
+        >
+          Minority Sentinel · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          After the Debate Is Too Late — It Flips Votes, Not Trust
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>Closest on problem framing</b> — independently quantifies the
+              collapse we target (25.5% / 10.0pp margin).
+            </Bullet>
+            <Bullet>
+              Its <b>LLM-as-Judge failure (−1.37%)</b> is direct evidence for
+              our Challenge C: correlated errors can't be arbitrated by another
+              LLM.
+            </Bullet>
+            <Bullet>
+              Shows <b>behavioral signals</b> (how agents argued) do encode
+              consensus reliability — informative for our design.
+            </Bullet>
+            <Bullet>
+              Its <b>"do no harm" constraint</b> + per-dataset reporting are
+              precedents for our evaluation harness.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>Post-hoc only</b>: binary flip after the debate — the majority
+              pressure on the minority <b>already happened</b>.
+            </Bullet>
+            <Bullet>
+              <b>Self-referential signal</b> — fingerprint mined from the very
+              agents whose errors are correlated; no external evidence.
+            </Bullet>
+            <Bullet>
+              <b>Supervised</b>: needs labeled divergent samples + per-dataset
+              threshold tuning.
+            </Bullet>
+            <Bullet>
+              Semantic audit features depend on <b>GPT-4o calls</b> (cost +
+              residual LLM bias).
+            </Bullet>
+            <Bullet>
+              Fixed <b>3 agents / 2 rounds</b>; small sample (686 divergent)
+              risks threshold overfitting.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            We re-weight trust <i>during</i> the debate, grounded in external
+            retrieved evidence — so the minority's argument is never crushed.
+            Sentinel is complementary: a post-hoc safety valve on top of our
+            in-debate calibration.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 12: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -1291,6 +1550,8 @@ const SLIDES = [
   DebUncSlideTwo,
   MoaSlideOne,
   MoaSlideTwo,
+  MinoritySlideOne,
+  MinoritySlideTwo,
   ThankYouSlide,
 ];
 
