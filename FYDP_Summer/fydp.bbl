@@ -121,6 +121,24 @@ Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei
   Natural Language Processing}, pages 15979--15998. Association for
   Computational Linguistics, 2025.
 
+\bibitem{ueda2025exploring}
+Keisuke Ueda, Wataru Hirota, Takuto Asakura, Takahiro Omi, Kosuke Takahashi,
+  Kosuke Arima, and Tatsuya Ishigaki.
+\newblock Exploring the design of multi-agent {LLM} dialogues for research
+  ideation.
+\newblock In {\em Proceedings of the 26th Annual Meeting of the Special
+  Interest Group on Discourse and Dialogue}, pages 322--337, Avignon, France,
+  2025. Association for Computational Linguistics.
+
+\bibitem{wang2025scalability}
+Yuru Wang, Kaiyan Zhang, Kai Tian, Sihang Zeng, Xingtai Lv, Ning Ding, Biqing
+  Qi, and Bowen Zhou.
+\newblock Scalability of {LLM}-based multi-agent systems for scientific code
+  generation: A preliminary study.
+\newblock In {\em Proceedings of The 3rd Workshop on Mathematical Natural
+  Language Processing (MathNLP 2025)}, pages 50--61, Suzhou, China, 2025.
+  Association for Computational Linguistics.
+
 \bibitem{cau2025selective}
 E.~Cau, V.~Pansanella, D.~Pedreschi, et~al.
 \newblock Selective agreement, not sycophancy: investigating opinion dynamics
