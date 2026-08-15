@@ -1,8 +1,6 @@
 \chapter{Introduction}\label{chapter:introduction}
 
-The chapter introduces the study. It presents the background and problem,
-the motivation behind the work, the objectives, a short summary of the
-methodology, the expected outcome, and the structure of the rest of the report.
+This chapter sets the scene for the whole report. Background and problem come first, followed by the motivation, the objectives, a short account of the methodology, the expected outcome, and the structure of the remaining chapters.
 
 \section{Project Overview}\label{sec:project-overview}
 
@@ -10,17 +8,17 @@ Large language models now handle many reasoning tasks, from scientific question
 answering to tutoring and decision support. A single model can still be
 confidently wrong. It may state an incorrect answer in fluent and assured
 language, which makes the mistake hard to catch. Multi-agent debate was proposed
-to reduce this problem. Several agents answer the same question, read each
-other's reasoning, and revise their positions over a few rounds before a final
-answer is selected~\cite{du2024improving}. Chain-of-thought prompting gives each
+to reduce this problem. Several agents answer the same question and read each
+other's reasoning, then revise their positions across a few rounds. Only after
+that is a final answer selected~\cite{du2024improving}. Chain-of-thought prompting gives each
 agent a way to expose its intermediate steps~\cite{wei2022chain}, which makes the
 reasoning inside a debate easier to inspect.
-The real difficulty is the final step, where the separate answers are combined.
+The hard part is the final step, where the separate answers are combined.
 Most debate systems settle disagreements by majority vote. Each agent receives the
 same weight, so the most common answer wins. This rule treats popularity as a
 stand-in for correctness. In scientific reasoning, a better answer should be
 backed by evidence rather than repeated by more agents. The study examines a
-trust-calibrated multi-agent deliberation framework that
+trust-calibrated multi-agent deliberation framework. It
 adjusts each agent's influence during the debate based on how well its claims match retrieved external
 evidence. The final answer then depends on evidence-grounded trust rather than a
 raw headcount.
@@ -30,8 +28,8 @@ raw headcount.
 Majority voting can fail in a way that is easy to miss. A debate may look like it
 reached agreement while it has quietly dropped a correct answer held by one
 agent. Recent studies of multi-agent debate report that agents often copy or
-switch answers under social pressure instead of reasoning on their own, and that
-the correct answer is present in the discussion but ignored in more than 20
+switch answers under social pressure instead of reasoning on their own. The
+correct answer is present in the discussion but ignored in more than 20
 percent of wrong-answer cases~\cite{pitre-etal-2025-consensagent}. Work on model
 behaviour points to a related tendency, where models trained to be agreeable grow
 more sycophantic and less accurate~\cite{ibrahim2026training}. A confident
@@ -110,11 +108,11 @@ recording which agents the evidence supported and which it contradicted.
 
 \section{Organization of the Report}\label{sec:organization-of-the-report}
 
-The rest of the report is arranged as follows. Chapter 2 covers the background,
-the related work on multi-agent debate and sycophancy, and the gap addressed by
-the study. Chapter 3 presents the requirement analysis, the detailed methodology,
-the system design, and the project plan. Chapter 4 describes the implementation
-setup, the testing and evaluation procedure, and the results with discussion.
-Chapter 5 discusses the relevant standards, the impact of the work,
-sustainability, and the complex engineering problem analysis. Chapter 6 concludes
-the report, notes its limitations, and gives recommendations for future work.
+The rest of the report moves from background to results. Chapter 2 covers
+multi-agent debate, sycophancy, and the gap this study addresses. The
+requirements, the methodology, the system design, and the project plan sit in
+Chapter 3. Chapter 4 holds the implementation setup, the testing and evaluation
+procedure, and the results with discussion. Standards, constraints,
+sustainability, and the complex engineering problem analysis fill Chapter 5.
+Chapter 6 closes with the summary and the limitations, along with directions
+for future work.
