@@ -323,6 +323,7 @@ INPUT ./data-flow.png
 INPUT ./data-flow.png
 INPUT ./data-flow.png
 INPUT ./data-flow.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
 INPUT ./4.implementation.tex
 INPUT ./4.implementation.tex
 INPUT 4.implementation.tex
@@ -341,6 +342,7 @@ INPUT ./fydp.out
 INPUT ./fydp.out
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
