@@ -1,63 +1,55 @@
-# Presentation Script — MoA Slides 8 & 9 (~1.5–2 min)
+# Presentation Script — Minority Sentinel Slides 10 & 11 (~1.5–2 min)
 
 > Written for non-native speakers: short sentences, one idea per sentence, ~120 words per minute.
 
 ---
 
-## Slide 8 — MoA: Summary + Method + Results
+## Slide 10 — Minority Sentinel: Summary + Method + Results
 
 **Opening:**
 
-I am presenting **Mixture-of-Agents**, or **MoA** for short. It was published at **ICLR 2025**. The first author is Junlin Wang from Together AI.
+I am presenting **Minority Sentinel**. The full title asks a question: when should we overturn majority voting in multi-agent LLM debates? It comes from the **AgentSearch Workshop at SIGIR 2026**. The first author is Chuan He from UNSW Sydney.
 
 **The main idea:**
 
-The paper shows that LLMs are **collaborative**. A model answers better when it sees other models' answers. This is true even when the other models are weaker.
+Majority voting assumes that agents make **independent errors**. This assumption comes from the Condorcet Jury Theorem. But LLMs share training data. So their errors are **correlated**. The majority can be wrong together. It suppresses the correct minority. The paper calls this **Minority Truth**.
+
+**The finding:**
+
+The authors ran debates with **three different models**: GPT-4o-mini, Gemini, and Claude. Six benchmarks, over 1,700 questions. In 39 percent of cases, the vote split **two against one**. In 25.5 percent of those split cases, the **minority was correct**. Majority voting recovered only 74.3 percent. A perfect oracle would reach 84.3 percent. So there is a **10 point recovery margin**.
 
 **How it works:**
 
-MoA uses a **layered pipeline**. First, several "proposer" models answer the question. Then, an "aggregator" model reads all the answers and combines them. The result goes to the next layer. The final layer produces the final answer.
-
-There is **no fine-tuning**. MoA only uses prompting with existing models.
-
-Important: MoA is an **ensemble**, not a debate. The proposers never talk to each other. They never change their answers.
+The system has two phases: **Diagnosis** and **Cure**. In Diagnosis, the three agents debate across three rounds. One independent round first, then two debate rounds. Each agent must say if it changed its position, and why. After the debate, the system extracts a **debate fingerprint**. 22 features. They capture how agents argued, how the votes looked, and the quality of the reasoning. A small **LightGBM classifier** then decides: flip the vote, or keep it. Flipping happens only when it is safe. The threshold keeps **95 percent of correct majorities**.
 
 **Key results:**
 
-MoA reaches **65.1%** on AlpacaEval 2.0, using only open-source models. This is higher than **GPT-4 Omni**, which scores 57.5%. It also **leads MT-Bench and FLASK**. With a **GPT-4o aggregator**, the score goes up to **65.7%**. The framework matches **GPT-4 Turbo** at about **2 times lower cost**.
-
-**Models and benchmarks:**
-
-The system was tested on **AlpacaEval 2.0, MT-Bench, and FLASK**. It was compared against **GPT-4 Omni, GPT-4 Turbo, and GPT-4o**. The proposers were all open-source: **Qwen1.5, WizardLM, Mixtral, LLaMA-3-70B, and dbrx**.
-
-One more result: **more diverse proposers give better answers**. The score goes from 47.8% with one proposer to 61.3% with six.
+Overall **Net Gain plus 1.71 percent**. 39 correct flips, 9 wrong flips. **Flip Precision 81.2 percent**. Positive gain on **all six datasets**. Stable across **20 random seeds**. The interesting part: an **LLM judge fails**. GPT-4o reading the debate logs gets **negative net gain**, minus 1.37 percent. The judge shares the same blind spots as the debating agents. A non-LLM classifier works better. The paper calls this **cognitive orthogonality**.
 
 ---
 
-## Slide 9 — MoA: Relevance & Gap
+## Slide 11 — Minority Sentinel: Relevance & Gap
 
 **Why it matters to us:**
 
-MoA is the best-known proof that **multi-model aggregation works**. This motivates our own idea of using multiple agents.
+This is our **closest competitor on problem framing**. It measures the exact collapse we target. 25.5 percent of split cases, minority correct. A 10 point margin.
 
-It also shows that **diversity helps**. Different models add different perspectives. We keep this idea in our design.
+Their **LLM-as-Judge failure is direct evidence for our Challenge C**. Correlated errors cannot be fixed by another LLM. That is our core argument.
 
-But MoA is a **trust-blind baseline**. Our mechanism improves on it.
-
-MoA is not our competitor. It uses a different paradigm — an ensemble, not a debate. So we cite it as **context**.
+They also show that **behavioral signals carry information**. How agents argued tells us if the consensus is reliable. This informs our own design.
 
 **The gap:**
 
-First, MoA has **no per-agent trust**. Every proposer's text enters on equal footing. Good answers and bad answers have the same weight.
+First, it is **post-hoc only**. The flip decision happens **after** the debate. The majority pressure has already done its damage. The minority argument was already weakened.
 
-Second, there is **no external evidence**. The aggregator uses only its own judgment.
+Second, the signal is **self-referential**. The fingerprint comes from the same models whose errors are correlated. There is **no external evidence**.
 
-Third, a **weak aggregator can degrade everything**. The paper shows a score drop from 60.6% to 45.0%.
+Third, it is **supervised**. It needs labeled divergent samples. And per-dataset threshold tuning.
 
-Fourth, MoA **cannot detect a confidently-wrong proposer**. A confident wrong answer is synthesized in like any other.
+Fourth, the audit features need **extra GPT-4o calls**. That adds cost, and brings back LLM bias.
 
-Fifth, because it is feed-forward, it **cannot model round-over-round sycophancy**. Agents never respond to each other, so social pressure never appears.
+Fifth, it is **fixed at three agents and two rounds**. Only 686 divergent samples. Small numbers mean threshold risk.
 
 **Our contribution:**
 
-We add what MoA lacks. We give each agent an **explicit, evidence-grounded trust weight**. A confidently-wrong proposer is **down-weighted**, not blindly synthesized in.
+We re-weight trust **during** the debate. Grounded in **external retrieved evidence**. So the minority argument is never crushed in the first place. Minority Sentinel is complementary to us. It can serve as a post-hoc safety valve **on top of** our in-debate calibration.
