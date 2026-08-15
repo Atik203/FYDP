@@ -101,7 +101,98 @@ claims spread across medical, physics, and general literature, so each agent
 searches a different source with OpenAlex as the fallback. BM25 ranks the
 candidates cheaply, and the cross-encoder reranks them for semantic fit, which
 plain keyword scoring cannot capture.
-\section{Project Plan}
-\section{Task Allocation}
+\section{Project Plan}\label{sec:project-plan}
+
+The project runs for ten months, counted here as Month 1 through Month 10, and
+is split into eight phases with six review gates. Table~\ref{tab:phases} lists
+the phases and their deliverables, and Table~\ref{tab:gates} fixes the
+checkpoints. This report covers the work through the mid-project review, while
+the later phases carry the project to the final defence.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Project phases with week-level durations and deliverables.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.20\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
+        \hline
+        Phase & Duration & Deliverables\\
+        \hline
+        Ph 0: Literature and Setup & Month 1 (Wk 1--4) & Literature freeze, vLLM and LangGraph setup, model identification, vanilla MAD reproduction\\
+        Ph 1: Injection and Baselines & Month 2 (Wk 5--8) & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot\\
+        Ph 2: Trust Mechanism Build & Months 3--4 (Wk 9--16) & Claim decomposition, source-partitioned RAG, trust function version 1, B5/B6/B9\\
+        Ph 2 to 3: Mid-Project & Month 5 (Wk 17--20) & Design freeze, dry run on one dataset, FYDP-1 defence preparation\\
+        Ph 3a: Main Experiments & Month 6 (Wk 21--24) & Core conditions on primary datasets, three seeds, 95\% confidence intervals\\
+        Ph 3b: Ablations and Scaling & Month 7 (Wk 25--28) & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, results freeze\\
+        Ph 4: Human Eval and Analysis & Month 8 (Wk 29--32) & Human evaluation with $n=60$, ECR calibration, failure analysis, buffer\\
+        Ph 5: Writing and Submit & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission and FYDP-2 defence\\
+        \hline
+        \end{tabular}
+        \label{tab:phases}
+    \end{table}
+\end{center}
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Review gates and their checkpoints.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.26\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|}
+        \hline
+        Gate & Due & Checkpoint\\
+        \hline
+        Gate 0 & End of Month 1 & Vanilla MAD reproduces the Du et al. baseline on a GPQA slice, and the reference list is frozen\\
+        Gate 1 (Go/No-Go) & End of Month 2 & Injection validation reaches $\kappa \geq 0.75$, baseline CCR sits at 0.30 or higher, pilot executed\\
+        Gate 2 & End of Month 4 & Trust mechanism plus source-partitioned RAG plus competitor baselines, first CCR and MPR on one dataset\\
+        FYDP-1 Defence & Month 5 & Mid-project report with design freeze and initial results\\
+        Gate 3 & End of Month 7 & Full results freeze with confidence intervals and effect sizes\\
+        Submit and FYDP-2 & Months 9--10 & Paper submitted, thesis completed, final defence\\
+        \hline
+        \end{tabular}
+        \label{tab:gates}
+    \end{table}
+\end{center}
+
+Two buffers guard the critical path. A dry run on one dataset sits inside Month
+5 before the defence, and Month 8 keeps a full month free for slippage. Both
+buffers sit where a late failure would otherwise hit a fixed deadline.
+
+\section{Task Allocation}\label{sec:task-allocation}
+
+Six members split the work along the modules of the framework.
+Table~\ref{tab:tasks} fixes who owns which part, so every module has a named
+owner and every member holds a stretch of the timeline.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Module ownership across the six team members.}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.36\textwidth}|p{0.34\textwidth}|p{0.16\textwidth}|}
+        \hline
+        Member & Primary modules & Active phases\\
+        \hline
+        Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination & Ph 0--5\\
+        Rakibul Hasan & Vanilla MAD reproduction, injection protocol & Ph 0--1\\
+        Md. Salman Rohoman Nayeem & Claim decomposition, source-partitioned RAG & Ph 2--3a\\
+        Pratay Paul & Evaluation harness, CCR/MPR/ECR metrics & Ph 1, 3a--3b\\
+        Yousuf Kamal Himel & Baselines B1--B9, vLLM serving & Ph 1--2\\
+        Mst. Farjana Akter Limu & Evidence APIs, dashboard, result packages & Ph 2, 4--5\\
+        \hline
+        \end{tabular}
+        \label{tab:tasks}
+    \end{table}
+\end{center}
+
+Owners pair with the phases in Table~\ref{tab:phases}, so each phase has at
+least one accountable member. The leader reviews each module before it is
+marked complete.
 
 \section{Summary}
+
+Chapter 3 fixed the functional and nonfunctional requirements and drew the
+system boundary in the context diagram. The data flow diagram and the interface
+design follow. The design section compared the main alternatives and recorded
+why each choice was made. The project plan then locks eight phases and six
+gates that carry the work to the final defence. Implementation and evaluation
+come next.
