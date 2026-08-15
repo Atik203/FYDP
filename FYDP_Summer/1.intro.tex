@@ -85,6 +85,14 @@ simple count. The framework is tested on scientific reasoning datasets such as
 GPQA and MMLU-Pro. The evaluation looks at three things: whether the mechanism
 lowers consensus collapse, whether correct minority answers survive, and whether
 overall accuracy holds, all without any model fine-tuning.
+Figure~\ref{fig:methodology-flow} shows the end-to-end flow of the framework.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{methodology-flow.jpg}
+\caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}
+\label{fig:methodology-flow}
+\end{figure}
 
 \section{Project Outcome}\label{sec:project-outcome}
 
