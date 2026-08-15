@@ -33,23 +33,35 @@
 \contentsline {chapter}{\numberline {5}Standards and Design Constraints}{15}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Compliance with the Standards}{15}{section.5.1}%
 \contentsline {subsection}{\numberline {5.1.1}Software Standards}{15}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{15}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{15}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Design Constraints}{15}{section.5.2}%
+\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{16}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{16}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Design Constraints}{16}{section.5.2}%
 \contentsline {subsection}{\numberline {5.2.1}Economic Constraint}{16}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{16}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{16}{subsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{16}{subsection.5.2.4}%
-\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{16}{subsection.5.2.5}%
-\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{16}{subsection.5.2.6}%
-\contentsline {subsection}{\numberline {5.2.7}Sustainability}{16}{subsection.5.2.7}%
-\contentsline {section}{\numberline {5.3}Cost Analysis}{16}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{16}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{16}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{16}{subsection.5.4.2}%
-\contentsline {section}{\numberline {5.5}Summary}{17}{section.5.5}%
-\contentsline {chapter}{\numberline {6}Conclusion}{18}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Summary}{18}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Limitation}{18}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Future Work}{18}{section.6.3}%
-\contentsline {chapter}{References}{21}{chapter*.11}%
+\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{17}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{17}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{17}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{17}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{17}{subsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.2.7}Sustainability}{18}{subsection.5.2.7}%
+\contentsline {section}{\numberline {5.3}Cost Analysis}{18}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{19}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{19}{subsection.5.4.1}%
+\contentsline {subsubsection}{P1: Depth of Knowledge Required}{19}{section*.11}%
+\contentsline {subsubsection}{P2: Range of Conflicting Requirements}{20}{section*.12}%
+\contentsline {subsubsection}{P3: Depth of Analysis}{20}{section*.13}%
+\contentsline {subsubsection}{P4: Familiarity of Issues}{20}{section*.14}%
+\contentsline {subsubsection}{P5: Extent of Applicable Codes}{21}{section*.15}%
+\contentsline {subsubsection}{P6: Extent of Stakeholder Involvement}{21}{section*.16}%
+\contentsline {subsubsection}{P7: Interdependence}{21}{section*.17}%
+\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{21}{subsection.5.4.2}%
+\contentsline {subsubsection}{A1: Range of Resources}{21}{section*.18}%
+\contentsline {subsubsection}{A2: Level of Interaction}{22}{section*.19}%
+\contentsline {subsubsection}{A3: Innovation}{22}{section*.20}%
+\contentsline {subsubsection}{A4: Consequences for Society and Environment}{22}{section*.21}%
+\contentsline {subsubsection}{A5: Familiarity}{22}{section*.22}%
+\contentsline {section}{\numberline {5.5}Summary}{22}{section.5.5}%
+\contentsline {chapter}{\numberline {6}Conclusion}{23}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Summary}{23}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitation}{23}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Future Work}{23}{section.6.3}%
+\contentsline {chapter}{References}{26}{chapter*.23}%
