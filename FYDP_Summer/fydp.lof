@@ -6,7 +6,7 @@
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Level-one data flow diagram of the trust-calibrated multi-agent deliberation framework.}}{12}{figure.3.2}%
 \contentsline {figure}{\numberline {3.3}{\ignorespaces Command-line interface for running experiments and writing JSON result packages.}}{13}{figure.3.3}%
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}}{13}{figure.3.4}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Gantt view of member activity across the ten project months, following the phase plan in Table~\ref {tab:phases}.}}{16}{figure.3.5}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Gantt view of member activity across the ten project months, following the phase plan in Table~\ref {tab:phases}.}}{15}{figure.3.5}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

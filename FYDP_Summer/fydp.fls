@@ -33,6 +33,8 @@ INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
 INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def
 INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def
 INPUT c:/texlive/2025/texmf-dist/tex/latex/graphics-def/pdftex.def
+INPUT c:/texlive/2025/texmf-dist/tex/latex/float/float.sty
+INPUT c:/texlive/2025/texmf-dist/tex/latex/float/float.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 INPUT c:/texlive/2025/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
@@ -323,6 +325,9 @@ INPUT ./data-flow.png
 INPUT ./data-flow.png
 INPUT ./data-flow.png
 INPUT ./data-flow.png
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
+INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx9.tfm
 INPUT c:/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmbx6.tfm
 INPUT ./4.implementation.tex
 INPUT ./4.implementation.tex
@@ -344,6 +349,7 @@ INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb
+INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb

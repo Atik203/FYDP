@@ -24,7 +24,7 @@
 \contentsline {section}{\numberline {3.2}Detailed Methodology and Design}{12}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Project Plan}{13}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Task Allocation}{14}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Summary}{15}{section.3.5}%
+\contentsline {section}{\numberline {3.5}Summary}{16}{section.3.5}%
 \contentsline {chapter}{\numberline {4}Implementation and Results}{17}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Environment Setup}{17}{section.4.1}%
 \contentsline {section}{\numberline {4.2}Testing and Evaluation}{17}{section.4.2}%
