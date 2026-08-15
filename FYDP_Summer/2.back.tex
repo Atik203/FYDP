@@ -71,8 +71,11 @@ Kushwaha and Madhavan built a retrieval-augmented system that spots contradictio
 between retrieved documents and ranks evidence by source credibility before
 producing a final response~\cite{kushwaha2026agentbased}.
 Both directions show that spreading reasoning across specialized agents helps
-robustness and factual consistency. Their aggregation stays fixed once the
-discussion starts. The proposed framework keeps the same goal, reliable answers,
+robustness and factual consistency. Dialogue design and scale also matter. Ueda
+et al. studied how multi-agent LLM dialogues should be structured for research
+ideation~\cite{ueda2025exploring}. Wang et al. looked at how well LLM-based
+multi-agent systems scale for scientific code generation~\cite{wang2025scalability}.
+Their aggregation stays fixed once the discussion starts. The proposed framework keeps the same goal, reliable answers,
 but lets agent influence change during the discussion. Evidence verification
 results are recorded after every round, and each agent's trust score is updated
 from claim-level scientific evidence. That way a well-supported minority opinion
