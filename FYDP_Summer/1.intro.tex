@@ -39,63 +39,66 @@ majority pushes a correct minority agent to give up its answer, majority voting
 does more than pick the wrong result. It hides the failure behind an appearance
 of consensus.
 This matters most for scientific questions, where a wrong but confident consensus
-can mislead a user into trusting an answer that deserved a closer check. Existing
-methods approach this failure from different directions. iMAD decides when a
-debate is worth running~\cite{fan2026imad}, DebUnc uses self-reported confidence to
-adjust agent influence~\cite{yoffe-etal-2025-debunc}, and Mixture-of-Agents combines
-outputs through static aggregation~\cite{wang2025mixture}. These methods are
-useful, yet none ties an agent's influence to whether its claims hold up against
-external evidence while the debate is still active. That gap is what motivates
-the study.
+can mislead a user into trusting an answer that deserved a closer check. Each
+existing method attacks only part of the problem. iMAD decides when a debate is
+worth running at all~\cite{fan2026imad}. DebUnc scales agent influence by
+self-reported confidence~\cite{yoffe-etal-2025-debunc}. Mixture-of-Agents folds
+all outputs together through static aggregation~\cite{wang2025mixture}. None of
+these ties an agent's influence to whether its claims survive a check against
+external evidence while the debate is still running. That connection is exactly
+what this study adds.
 
 \section{Objectives}\label{sec:objectives}
 
 The main objective is to reduce sycophantic consensus in
-multi-agent LLM debate by replacing plain majority voting with evidence-grounded
-trust calibration. This requires examining how a confident wrong majority can
-pressure a correct minority agent into changing its answer. It also involves
-designing a bounded trust score that rises when an agent's claims are supported by
-external evidence and falls when they are contradicted, then applying that score
-before the final answer is fixed. The study compares the method with
-standard majority voting and other relevant debate and aggregation baselines, and
-evaluates it using answer accuracy together with consensus-collapse,
+multi-agent LLM debate. Plain majority voting gets replaced with evidence-grounded
+trust calibration. Reaching that goal needs a few things. The first is a clear
+picture of how a confident wrong majority pressures a correct minority agent into
+changing its answer~\cite{he2026minority,pitre-etal-2025-consensagent}. The second
+is a bounded trust score. It rises when an agent's claims are supported by
+external evidence and falls when they are contradicted, and it is applied before
+the final answer is fixed. The study also compares the method against
+standard majority voting and other debate and aggregation
+baselines~\cite{choi2025debate,wang-etal-2024-rethinking-bounds}, using answer
+accuracy together with consensus-collapse,
 minority-preservation, and evidence-calibration metrics.
 
 \section{Methodology}\label{sec:methodology}
 
-The study follows an experimental methodology. A baseline multi-agent debate
-system is built first, where several heterogeneous LLM agents answer the same
-scientific question, share their reasoning, and revise across rounds. The
-baseline uses majority voting so the usual failure mode can be observed and
-measured.
-Each agent's reasoning is then broken into smaller factual claims. These claims
+The study follows an experimental design. A baseline multi-agent debate
+system is built first. Several heterogeneous LLM agents answer the same
+scientific question, read each other's reasoning, and revise their positions
+across rounds~\cite{du2024improving}. The baseline keeps majority voting so the
+usual failure mode can be observed and measured~\cite{choi2025debate}.
+Each agent's reasoning is then split into smaller factual claims. The claims
 are checked against scientific evidence retrieved from external sources such as
-academic papers and reference databases. Any contradiction between a claim and
-the retrieved evidence is detected and scored~\cite{kushwaha2026agentbased},
-building on the idea that external tools can verify and correct model
-output~\cite{gou2024critic}. The verdicts are turned into trust updates.
-Supported claims raise an agent's trust, contradicted claims lower it, and
-uncertain claims are handled conservatively. The trust score is bounded so that
-no agent gains unlimited influence or drops out of the debate completely.
-The final answer is chosen through trust-weighted aggregation rather than a
-simple count. The framework is evaluated on scientific reasoning datasets such as
-GPQA and MMLU-Pro. The evaluation checks whether the mechanism lowers consensus
-collapse, keeps correct minority answers, and holds overall accuracy without any
-model fine-tuning.
+academic papers and reference databases~\cite{karpukhin2020dense}. Contradictions
+between a claim and the retrieved evidence are detected and scored~\cite{kushwaha2026agentbased}.
+This builds on the idea that external tools can verify and correct model
+output~\cite{gou2024critic}. The verdicts feed into trust updates, following the
+line of work that uses per-agent confidence to steer debate~\cite{yoffe-etal-2025-debunc}.
+Supported claims raise an agent's trust. Contradicted claims lower it. Uncertain
+claims are handled conservatively. The trust score stays bounded, so no agent
+gains unlimited influence or drops out of the debate completely.
+The final answer comes from trust-weighted aggregation rather than a
+simple count. The framework is tested on scientific reasoning datasets such as
+GPQA and MMLU-Pro. The evaluation looks at three things: whether the mechanism
+lowers consensus collapse, whether correct minority answers survive, and whether
+overall accuracy holds, all without any model fine-tuning.
 
 \section{Project Outcome}\label{sec:project-outcome}
 
 The main outcome is a reproducible framework for trust-calibrated multi-agent
-scientific deliberation. It shows how retrieved evidence
-can update agent influence during a debate, and how the final answer can be
-decided by evidence-weighted trust instead of a majority vote. Alongside it, the
-study produces an evaluation protocol that detects sycophantic consensus,
-measures how often correct minority answers survive, and compares the method
+scientific deliberation. Retrieved evidence updates agent influence while the
+debate runs, and the final answer rests on evidence-weighted trust instead of a
+majority vote. The study also produces an evaluation protocol. It detects
+sycophantic consensus~\cite{pitre-etal-2025-consensagent}, tracks how often
+correct minority answers survive~\cite{he2026minority}, and measures the method
 against established baselines.
-The study is expected to show whether dynamic trust calibration makes multi-agent
-debate more dependable on scientific questions. Even where the method does not
-remove every wrong answer, it should make the decision more transparent by
-recording which agents were supported or contradicted by the evidence.
+The hope is that dynamic trust calibration makes multi-agent
+debate more dependable on scientific questions. Where the method fails to remove
+every wrong answer, it should still make the decision more transparent by
+recording which agents the evidence supported and which it contradicted.
 
 \section{Organization of the Report}\label{sec:organization-of-the-report}
 
