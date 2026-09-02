@@ -35,8 +35,7 @@ behaviour points to a related tendency, where models trained to be agreeable gro
 more sycophantic and less accurate~\cite{ibrahim2026training}. A confident
 majority pushes a correct minority agent to give up its answer, and majority
 voting then does more than pick the wrong result. It hides the failure behind
-an appearance of consensus.
-This matters most for scientific questions, where a wrong but confident consensus
+an appearance of consensus. This matters most for scientific questions, where a wrong but confident consensus
 can mislead a user into trusting an answer that deserved a closer check. Each
 existing method attacks only part of the problem. iMAD decides when a debate is
 worth running at all~\cite{fan2026imad}. DebUnc scales agent influence by
@@ -48,42 +47,11 @@ what this study adds.
 
 \section{Objectives}\label{sec:objectives}
 
-The main objective is to reduce sycophantic consensus in
-multi-agent LLM debate. Plain majority voting gets replaced with evidence-grounded
-trust calibration. Reaching that goal needs a few things. The first is a clear
-picture of how a confident wrong majority pressures a correct minority agent into
-changing its answer~\cite{he2026minority,pitre-etal-2025-consensagent}. The second
-is a bounded trust score. It rises when an agent's claims are supported by
-external evidence and falls when they are contradicted, and it is applied before
-the final answer is fixed. The study also compares the method against
-standard majority voting and other debate and aggregation
-baselines~\cite{choi2025debate,wang-etal-2024-rethinking-bounds}, using answer
-accuracy together with consensus-collapse,
-minority-preservation, and evidence-calibration metrics.
+The main objective is to reduce sycophantic consensus in multi-agent LLM debate. The study replaces plain majority voting with trust that is grounded in evidence. To do this, the work first needs a clear picture of the failure. A confident but wrong majority can push a correct minority agent to change its answer~\cite{he2026minority,pitre-etal-2025-consensagent}. Next, it needs a bounded trust score. The score rises when external evidence supports an agent's claims and falls when the evidence contradicts them. The update happens before the final answer is fixed. The study also tests the method against majority voting and other debate and aggregation baselines~\cite{choi2025debate,wang-etal-2024-rethinking-bounds}. Performance is measured with four rates: answer accuracy, consensus-collapse, minority-preservation, and evidence-calibration.
 
 \section{Methodology}\label{sec:methodology}
 
-The study follows an experimental design. A baseline multi-agent debate
-system is built first. Several heterogeneous LLM agents answer the same
-scientific question, read each other's reasoning, and revise their positions
-across rounds~\cite{du2024improving}. The baseline keeps majority voting so the
-usual failure mode can be observed and measured~\cite{choi2025debate}.
-Each agent's reasoning is then split into smaller factual claims. The claims
-are checked against scientific evidence retrieved from external sources such as
-academic papers and reference databases~\cite{karpukhin2020dense}. Contradictions
-between a claim and the retrieved evidence are detected and scored~\cite{kushwaha2026agentbased}.
-This builds on the idea that external tools can verify and correct model
-output~\cite{gou2024critic}. The verdicts feed into trust updates, following the
-line of work that uses per-agent confidence to steer debate~\cite{yoffe-etal-2025-debunc}.
-Supported claims raise an agent's trust. Contradicted claims lower it. Uncertain
-claims are handled conservatively. The trust score stays bounded, so no agent
-gains unlimited influence or drops out of the debate completely.
-The final answer comes from trust-weighted aggregation rather than a
-simple count. The framework is tested on scientific reasoning datasets such as
-GPQA and MMLU-Pro. The evaluation looks at three things: whether the mechanism
-lowers consensus collapse, whether correct minority answers survive, and whether
-overall accuracy holds, all without any model fine-tuning.
-Figure~\ref{fig:methodology-flow} shows the end-to-end flow of the framework.
+The study uses an experimental design. A baseline debate system is built first. Several heterogeneous LLM agents answer the same scientific question and revise their positions after reading each other's reasoning across rounds~\cite{du2024improving}. The baseline keeps majority voting. This makes the usual failure mode visible and lets it be measured~\cite{choi2025debate}. Next, each agent's reasoning is split into smaller factual claims. These claims are checked against scientific evidence from external sources, such as academic papers and reference databases~\cite{karpukhin2020dense}. Contradictions between a claim and the retrieved evidence are detected and scored~\cite{kushwaha2026agentbased}. The idea that external tools can verify and correct model output supports this step~\cite{gou2024critic}. Verdicts then feed into trust updates. This follows work that uses per-agent confidence to steer debate~\cite{yoffe-etal-2025-debunc}. A supported claim raises the agent's trust, and a contradicted claim lowers it. Uncertain claims are handled in a conservative way so the score does not jump on weak evidence. The trust score stays bounded, so no agent gains unlimited influence or drops out completely. The final answer comes from trust-weighted aggregation, not a simple count. The framework is tested on scientific reasoning datasets such as GPQA and MMLU-Pro. Evaluation checks whether the mechanism lowers consensus collapse and whether correct minority answers survive. It also checks whether overall accuracy holds, all without any fine-tuning. Figure~\ref{fig:methodology-flow} shows the end-to-end flow.
 
 \begin{figure}[ht]
 \centering
@@ -94,25 +62,10 @@ Figure~\ref{fig:methodology-flow} shows the end-to-end flow of the framework.
 
 \section{Project Outcome}\label{sec:project-outcome}
 
-The main outcome is a reproducible framework for trust-calibrated multi-agent
-scientific deliberation. Retrieved evidence updates agent influence while the
-debate runs, and the final answer rests on evidence-weighted trust instead of a
-majority vote. The study also produces an evaluation protocol. It detects
-sycophantic consensus~\cite{pitre-etal-2025-consensagent}, tracks how often
-correct minority answers survive~\cite{he2026minority}, and measures the method
-against established baselines.
-The hope is that dynamic trust calibration makes multi-agent
-debate more dependable on scientific questions. Where the method fails to remove
-every wrong answer, it should still make the decision more transparent by
-recording which agents the evidence supported and which it contradicted.
+The main outcome is a reproducible framework for trust-calibrated scientific deliberation with multiple agents. Agent influence is updated from retrieved evidence while the debate runs. The final answer then rests on evidence-weighted trust, not a majority vote. The study also produces an evaluation protocol. The protocol detects sycophantic consensus~\cite{pitre-etal-2025-consensagent} and tracks how often correct minority answers survive~\cite{he2026minority}. It also measures the method against established baselines. Dynamic trust calibration should make debate more dependable on scientific questions. A wrong answer can still remain. The decision is still more transparent because the method records which agents the evidence supported and which it contradicted.
 
 \section{Organization of the Report}\label{sec:organization-of-the-report}
 
-The rest of the report moves from background to results. Chapter 2 covers
-multi-agent debate, sycophancy, and the gap this study addresses. The
-requirements, the methodology, the system design, and the project plan sit in
-Chapter 3. Chapter 4 holds the implementation setup, the testing and evaluation
-procedure, and the results with discussion. Standards, constraints,
-sustainability, and the complex engineering problem analysis fill Chapter 5.
-Chapter 6 closes with the summary and the limitations, along with directions
-for future work.
+The rest of the report moves from background to results. Chapter 2 covers multi-agent debate and sycophancy. It also defines the gap this study addresses. The requirements, the methodology, the system design, and the project plan sit in Chapter 3.
+
+Chapter 4 holds the implementation setup and the testing procedure. It also presents the results with discussion. Standards, constraints, sustainability, and the complex engineering problem analysis fill Chapter 5. Chapter 6 closes with a summary and limitations. It also outlines directions for future work.
