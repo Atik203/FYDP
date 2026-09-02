@@ -103,10 +103,16 @@ connection.
 
 \section{Cost Analysis}
 
-The budget covers the rented GPU, storage, and the free research services. The
-largest line is inference time on the RTX PRO 6000 Blackwell, estimated at about
-300 hours across development and evaluation. Table~\ref{tab:budget} summarizes
-the primary budget.
+The budget covers the rented GPU, storage, and the free research services. No
+fine-tuning is needed, so cost is mostly hours on a rented card. The largest line
+is inference time on the RTX PRO 6000 Blackwell, estimated at about 300 hours
+across development and evaluation. The hours are not spread evenly. Phase-0 and
+Phase-1 use about 30 hours for setup and baselines. Phase-2 uses about 60 hours
+for building claim split and RAG. Phase-3a and Phase-3b together use about 140
+hours for main runs and ablations. Phase-4 uses about 40 hours for human study
+checks, and Phase-5 uses about 30 hours for final runs and packaging. This split
+shows why Phase-3 dominates cost. Table~\ref{tab:budget} summarizes the primary
+budget, and Table~\ref{tab:budget-phase} breaks the GPU hours by phase.
 
 \begin{center}
     \begin{table}[ht]
@@ -129,12 +135,41 @@ the primary budget.
     \end{table}
 \end{center}
 
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{GPU hours and cost split by phase (RTX PRO 6000, USD 0.70--1.90 per hour).}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
+            \hline
+            Phase                              & Hours & Cost (USD) \\
+            \hline
+            Phase-0 and Phase-1 (setup, baselines) & 30    & 21--57     \\
+            Phase-2 (trust build)                  & 60    & 42--114    \\
+            Phase-3a and Phase-3b (main runs)      & 140   & 98--266    \\
+            Phase-4 (human eval)                   & 40    & 28--76     \\
+            Phase-5 (writing, final checks)        & 30    & 21--57     \\
+            \hline
+            \textbf{Total}                         & \textbf{300} & \textbf{210--570} \\
+            \hline
+        \end{tabular}
+        \label{tab:budget-phase}
+    \end{table}
+\end{center}
+
+Storage is 200 GB at USD 0.05 per GB, about USD 10. Model weights with logs and
+result packages take about 180 GB, and workspace takes the rest. Retrieval APIs
+PubMed, arXiv, Semantic Scholar and OpenAlex run on free tiers with rate limits,
+so the direct cost is zero, but limits add time. Datasets GPQA and MMLU-Pro are
+public, so the cost is also zero. Printing and internet take a small fixed amount,
+about USD 15, and Overleaf is covered by the team. No extra license is needed.
+
 An alternate budget was also prepared. Renting an A100 80GB instead costs about
 USD 0.68 to 1.50 per hour, or 204--450 for the same 300 hours. The saving is
 real but small, and it comes at a cost: weaker FP8 support means the final model
 trio would need tighter quantization or sequential loading, which adds
-engineering time. The RTX PRO 6000 was selected because the Blackwell FP8 path
-keeps the pipeline simple.
+engineering time and risk. The RTX PRO 6000 was selected because the Blackwell
+FP8 path keeps the pipeline simple and avoids that extra work.
 
 The project has no revenue model. It is an academic deliverable, funded by the
 university and the team, and its outputs are the report and the open-source
@@ -162,6 +197,12 @@ comparison.
     \end{table}
 \end{center}
 
+A 10 percent buffer, about USD 25 to 55, is kept for price shifts and extra
+hours for failed runs. If a run fails or a gate needs a fix week, the buffer
+covers up to 30 extra hours without changing the final plan. Cost control is
+simple. Runs are batched, logs are reused for ablations, and caching avoids
+repeat retrieval calls.
+
 \section{Complex Engineering Problem}
 
 \subsection{Complex Problem Solving}
@@ -173,14 +214,14 @@ the subsections that follow give the rationale for each mapping.
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{Mapping with complex problem solving.}
+        \caption{Mapping with complex problem solving (Washington Accord P1--P7).}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|}
             \hline
             P1                & P2                                & P3                & P4                    & P5                         & P6                                & P7               \\
-            Dept of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence \\
+            Depth of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence \\
             \hline
-            $\sqrt{}$         & $\sqrt{}$                         & $\sqrt{}$         & $\sqrt{}$             & $\sqrt{}$                  & $\sqrt{}$                         & $\sqrt{}$        \\
+            $\sqrt{}$         & $\sqrt{}$                         & $\sqrt{}$         & $\sqrt{}$             & $\sqrt{}$                  & $\times$                          & $\sqrt{}$        \\
             \hline
         \end{tabular}
         \label{tab:p_solve}
@@ -191,86 +232,96 @@ the subsections that follow give the rationale for each mapping.
 
 The framework spans machine learning, natural language processing,
 retrieval-augmented generation, and distributed model serving. Solving it
-required specialist knowledge in all four areas, from the trust update formula
+required specialist knowledge in these areas, from the trust update formula
 to the vLLM serving layer. Table~\ref{tab:knowledge} maps the P1 knowledge
-profile.
+profile. Coverage is judged per Washington Accord K1--K8.
 
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{Knowledge profile mapping for P1.}
+        \caption{Knowledge profile mapping for P1 (K1--K8).}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
             \hline
             Knowledge                     & Applied   & Where used                                      \\
             \hline
-            DK1: Natural sciences         & $\sqrt{}$ & Statistics behind trust updates and metrics     \\
-            DK2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
-            DK3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling \\
-            DK4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
-            DK5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
-            DK6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
-            DK7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
-            DK8: Social context           & $\sqrt{}$ & Ethical constraints on AI output                \\
+            K1: Natural sciences          & $\times$  & Not directly used; project is computing, not physics or chemistry \\
+            K2: Mathematics               & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
+            K3: Engineering fundamentals  & $\sqrt{}$ & System design, state machines, failure handling \\
+            K4: Specialist knowledge      & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
+            K5: Engineering methods       & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
+            K6: Computational methods     & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
+            K7: Codes and practices       & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
+            K8: Research and context      & $\sqrt{}$ & Ethical constraints and use in scientific QA    \\
             \hline
         \end{tabular}
         \label{tab:knowledge}
     \end{table}
 \end{center}
 
-The knowledge profile is broad rather than deep in one spot. The report applies
-DK4 and DK5 in every chapter, and DK6 and DK7 in the implementation, which
-reflects the range the problem demands.
+K1 is not covered. The project does not use natural sciences like physics,
+chemistry, or biology. It is a computing project. K2 to K8 are covered. K2
+handles the trust math, K3 handles system design, K4 handles the core LLM and
+debate knowledge, and K5 handles the experimental method. K6 and K7 cover the
+tools and standards, and K8 covers the research context. The profile is broad
+rather than deep in one spot. The report applies K4 and K5 in every chapter,
+and K6 and K7 in the implementation, which shows the range the problem demands.
 
 \subsubsection{P2: Range of Conflicting Requirements}
 
-Accuracy competes with latency and cost. More debate rounds improve the signal
-but multiply inference time and the GPU bill. Trust calibration competes with
-diversity, because strong trust weighting can silence a minority that the
-evidence simply has not covered yet. Evidence coverage competes with API rate
-limits. These conflicts had to be resolved jointly, and the round caps, the
-clamping bounds, and the conservative verdict handling are the result.
+P2 is covered. The project had to balance several needs that pull in different
+directions. Accuracy competes with latency and cost. More rounds improve the
+signal but raise inference time and the GPU bill. Trust calibration competes
+with diversity, because strong weighting can silence a minority that the evidence
+has not yet covered. Evidence coverage competes with API rate limits. The team
+had to fix these together. Round caps and clamping bounds were set, and verdicts
+are handled in a conservative way, so no single need dominates.
 
 \subsubsection{P3: Depth of Analysis}
 
-The problem has no textbook solution. Answering it required a comparative
-experiment with multiple baselines (majority voting, MoA, iMAD, DebUnc) and a
-metric set designed for the failure mode: consensus-collapse rate,
-minority-preservation rate, and evidence-calibration rate, alongside plain
-accuracy. The injection point for fabricated wrong consensus was built
-specifically so the collapse dynamic could be measured under controlled
-pressure.
+P3 is covered. The problem has no textbook solution. The team had to run a
+comparative experiment with several baselines: majority voting, MoA, iMAD, and
+DebUnc. Metrics were built for the failure mode. The set includes four rates:
+answer accuracy, consensus-collapse, minority-preservation, and evidence-calibration.
+The injection point for a fabricated wrong consensus was built so the collapse
+can be measured under controlled pressure. This depth of test is why P3 is
+marked as covered.
 
 \subsubsection{P4: Familiarity of Issues}
 
-Sycophantic consensus in multi-agent LLM debate is a new research area. The
-closest published work appeared between 2024 and 2026, and no standard solution
-exists. The team started with a full literature review, which is documented in
-Chapter 2, before committing to a design.
+P4 is covered. Sycophantic consensus in multi-agent LLM debate is a new research
+area. The closest work appeared between 2024 and 2026, and no standard solution
+exists. The issues were not familiar to the team at the start. A full literature
+review was done first, as shown in Chapter 2, before any design was fixed. This
+unfamiliarity is why P4 is marked as covered.
 
 \subsubsection{P5: Extent of Applicable Codes}
 
-General software standards apply: JSON (RFC 8259), HTTP over TLS, the
-OpenAI-compatible API, and JSON Schema validation. No standard, however,
-covers evidence-grounded trust in LLM debate. The problem is therefore only
-partially standardized, and the framework defines its own conventions for the
-trust score and the verdict set.
+P5 is covered. General software standards apply. JSON (RFC 8259), HTTP over TLS,
+the OpenAI-compatible API, and JSON Schema validation all apply. No standard covers
+evidence-grounded trust in LLM debate. The area is therefore only partly
+standardized, and the framework defines its own rules for the trust score and the
+four verdicts. This mix of existing codes and new conventions is why P5 is marked
+as covered.
 
 \subsubsection{P6: Extent of Stakeholder Involvement}
 
-The stakeholders are the supervisor, the examiners, and the users of scientific
-question-answering tools. The supervisor guided the scope and the evaluation
-plan, and the examiners assess the report against the complex engineering
-criteria. Future users matter because the dashboard and the result package
-expose the full decision trail alongside the final accuracy figures.
+P6 is not covered. The project has no external stakeholders. The only people
+involved are the supervisor and the examiners. There is no industry partner and
+no community group that sets needs or reviews the result during the work. Future
+users of scientific QA tools could benefit, but they did not take part in design
+or testing. The team built the system as an academic FYDP, not as a product for
+a real client. The involvement is therefore narrow and limited to the university.
+For this reason P6 is marked as not covered, while the other P points remain
+covered.
 
 \subsubsection{P7: Interdependence}
 
-The confidence gate, the orchestrator, the claim decomposer, the retrieval
-subsystem, the trust updater, and the aggregator are tightly coupled. A failure
-in retrieval cascades into the verdicts, then into trust, then into the final
-answer. The failure-isolation requirement in Section 3.1.1 exists because of
-this coupling.
+P7 is covered. The confidence gate, the orchestrator, the claim decomposer, the
+retrieval subsystem, the trust updater, and the aggregator are tightly linked. A
+failure in retrieval cascades into the verdicts and then into the final answer
+through the trust score. The failure-isolation rule in Section 3.1.1 was added
+because of this link. The high coupling is why P7 is marked as covered.
 
 \subsection{Engineering Activities}
 
@@ -280,7 +331,7 @@ A1--A5, with rationales below.
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{Mapping with complex engineering activities.}
+        \caption{Mapping with complex engineering activities (A1--A5).}
         \renewcommand{\arraystretch}{1.6}
 
         \begin{tabular}{|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
@@ -288,7 +339,7 @@ A1--A5, with rationales below.
             A1                 & A2                   & A3         & A4                                       & A5          \\
             Range of resources & Level of Interaction & Innovation & Consequences for society and environment & Familiarity \\
             \hline
-            $\sqrt{}$          & $\sqrt{}$            & $\sqrt{}$  & $\sqrt{}$                                & $\sqrt{}$   \\
+            $\sqrt{}$          & $\sqrt{}$            & $\times$   & $\times$                                 & $\sqrt{}$   \\
             \hline
         \end{tabular}
         \label{tab:e_act}
@@ -297,43 +348,53 @@ A1--A5, with rationales below.
 
 \subsubsection{A1: Range of Resources}
 
-The project draws on three model families, four literature APIs, a rented
-Blackwell GPU, and six team members with different strengths. Coordinating those
-resources is part of the engineering work, and the project plan in Chapter 3
-assigns each task to a named member.
+A1 is covered. The project draws on three model families, four literature APIs,
+a rented Blackwell GPU, and six team members with different strengths.
+Coordinating these resources is a clear part of the work. The plan in Chapter 3
+assigns each task to a named member and tracks weeks and deliverables. This wide
+range is why A1 is marked as covered.
 
 \subsubsection{A2: Level of Interaction}
 
-The system interacts heavily with the outside world. Every debate round calls
-three external model endpoints and three literature APIs, and the cloud GPU is
-reached over the network. The team also interacts through a shared repository
-and weekly reviews.
+A2 is covered. The system interacts heavily with the outside world. Every debate
+round calls three external model endpoints and three literature APIs, and the cloud
+GPU is reached over the network. The team also interacts through a shared
+repository and weekly reviews. This high level of interaction is why A2 is marked
+as covered.
 
 \subsubsection{A3: Innovation}
 
-The trust-calibrated aggregation mechanism is new. No published method ties an
-agent's influence to claim-level verification against retrieved scientific
-evidence while the debate is still running. The gap analysis in Chapter 2
-documents this, and the design in Chapter 3 implements it.
+A3 is not covered. The framework combines existing ideas: multi-agent debate and
+RAG with trust weighting and reranking. It does not create a new device or a new
+theory. The change is a bounded trust score that updates with evidence, which is
+useful but stays at an incremental level. There is no patent-level or
+breakthrough innovation. For this reason A3 is marked as not covered, even though
+the combination itself is new for this project.
 
 \subsubsection{A4: Consequences for Society and Environment}
 
-The social consequence is improved reliability in AI scientific question
-answering, which lowers the risk of confidently wrong answers being trusted.
-The environmental consequence is modest, since the work runs on shared cloud
-hardware without fine-tuning.
+A4 is not covered. The work is a lab prototype, not a deployed product. Social
+impact is limited to more reliable research answers in a test setting, not a
+change in daily life or a large user group. Environmental impact is also small.
+The test uses about 300 GPU hours on shared cloud without fine-tuning, so energy
+use stays low. There is no large-scale rollout, so broad consequences are not
+present. For this reason A4 is marked as not covered.
 
 \subsubsection{A5: Familiarity}
 
-Multi-agent debate and evidence verification were new territory for the team.
-The literature review phase, the baseline study, and the incremental
-implementation plan were all designed around that reality, so each module was
-built only after its background was understood.
+A5 is covered. Multi-agent debate and evidence verification were new territory
+for the team. The literature review phase and the baseline study with the step-by-step
+implementation plan were all built around that fact. Each module was started only
+after its background was understood. This low familiarity at the start is why A5
+is marked as covered.
 
 \section{Summary}
 The chapter fixed the standards behind the software, the hardware, and the
 communication layers, and recorded the economic, environmental, ethical, and
 social constraints that shaped the design. The budget analysis shows the project
-fits a student budget on a rented RTX PRO 6000 Blackwell GPU, and the complex
-engineering mapping confirms the project meets all seven problem attributes and
-all five engineering activities.
+fits a student budget on a rented RTX PRO 6000 Blackwell GPU with a phase-wise
+split for the 300 hours and a 10 percent buffer. The complex engineering mapping
+shows six of seven P attributes are covered, with P6 not covered due to limited
+external stakeholder involvement. For knowledge, K2 to K8 are covered while K1
+is not. For activities, A1 and A2 are covered and A5 is also covered, while A3
+and A4 are not.
