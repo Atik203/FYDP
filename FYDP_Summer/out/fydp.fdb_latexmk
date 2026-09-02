@@ -1,0 +1,9 @@
+# Fdb version 4
+["pdflatex"] 0 "e:/FYDP/FYDP_Summer/fydp.tex" "out/fydp.pdf" "fydp" 0 -1
+  "e:/FYDP/FYDP_Summer/fydp.tex" 0 -1 0 ""
+  "out/fydp.aux" 0 -1 0 "pdflatex"
+  (generated)
+  "out/fydp.aux"
+  "out/fydp.log"
+  "out/fydp.pdf"
+  (rewritten before read)
