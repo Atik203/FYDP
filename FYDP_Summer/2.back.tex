@@ -137,37 +137,41 @@ framework closes with a bounded trust score.
 
 \section{Gap Analysis}\label{sec:gap-analysis}
 
-The reviewed literature reveals three remaining needs in multi-agent debate
-systems. The first is deciding whether the additional computational
-cost of a debate is justified. Fan et al. addressed this through iMAD, which predicts
-whether a debate is necessary before it begins~\cite{fan2026imad}. The second is
-detecting unsupported agreement caused by conformity or sycophancy.
-CONSENSAGENT mitigates this problem through prompt optimization during
-debate~\cite{pitre-etal-2025-consensagent}. The third is deciding which
-agents deserve greater influence when disagreement remains. DebUnc introduces
-uncertainty-based weighting, but its trust signals rely on internal model
-uncertainty rather than independently verifiable
-evidence~\cite{yoffe-etal-2025-debunc}.
-Previous studies also show that agreement does not necessarily indicate
-correctness. Cau et al. found that selective persuasion influences opinion
-convergence~\cite{cau2025selective}. Wang et al. identified peer conformity as a
-limitation of multi-agent debate~\cite{wang-etal-2024-rethinking-bounds}. Existing
-retrieval-based systems verify retrieved information or improve aggregation, but
-they do not continuously update an agent's influence according to verified
-scientific evidence during debate~\cite{gou2024critic}. Dynamic coordination
-methods also focus on agent selection rather than evidence-driven trust
-updates~\cite{zhou2025reso}.
-The remaining gap is an evidence-grounded mechanism that continuously
-updates agent influence during an ongoing debate. The proposed framework
-fills it by decomposing an agent's response into factual claims and retrieving
-relevant scientific passages, then classifying each claim as supported,
-contradicted, or unverifiable. These verification results update a bounded trust
-score after every debate round. Well-supported minority agents retain
-influence, and unsupported majority consensus carries less weight. The
-framework is evaluated using consensus-collapse rate, minority-preservation rate,
-and evidence-calibration rate alongside conventional answer accuracy. Retrieval
-sparsity, imperfect claim decomposition, and correlated reasoning errors between
-agents remain limitations of the proposed approach.
+Three needs stand out across the reviewed work, and each has been addressed
+only in part. Cost came first. iMAD predicts whether a debate is worth running
+before it begins, so the extra computation is only spent where it
+pays~\cite{fan2026imad}. Then there is unsupported agreement, where conformity
+or sycophancy pushes a debate toward a shared wrong answer. CONSENSAGENT
+attacks that with prompt optimization while the debate is still
+running~\cite{pitre-etal-2025-consensagent}.
+
+The hardest of the three is deciding which agents deserve more influence once
+real disagreement remains. DebUnc answers with uncertainty-based
+weighting~\cite{yoffe-etal-2025-debunc}. Its trust signal is the model's own
+internal uncertainty, which nothing outside the model verifies.
+
+Agreement is not the same thing as correctness. Selective persuasion can steer
+where a group's opinion settles~\cite{cau2025selective}, and peer conformity
+turns up as a standing limitation of debate
+itself~\cite{wang-etal-2024-rethinking-bounds}. Retrieval-based systems do
+verify the information they pull in, and some improve the aggregation step too.
+What none of them do is update an agent's influence from verified scientific
+evidence while the debate is still going~\cite{gou2024critic}. Dynamic
+coordination methods pick which agents take part, and trust stays
+untouched~\cite{zhou2025reso}.
+
+The gap that remains is a mechanism that updates agent influence from evidence
+while a debate is still in progress. The framework fills it in stages. An
+agent's response is decomposed into factual claims, and relevant scientific
+passages are retrieved for each claim. Every claim is then classified as
+supported, contradicted, or unverifiable, and those verdicts update a bounded
+trust score at the end of each round. A minority agent with good support keeps
+its standing, and a majority the evidence does not back loses ground.
+Evaluation uses consensus-collapse rate, minority-preservation rate, and
+evidence-calibration rate alongside plain answer accuracy.
+
+Three limits carry over into the design. Retrieval can be sparse, claim
+decomposition is imperfect, and reasoning errors can correlate between agents.
 
 \section{Summary}\label{sec:background-summary}
 
