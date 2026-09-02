@@ -233,39 +233,8 @@ the subsections that follow give the rationale for each mapping.
 The framework spans machine learning, natural language processing,
 retrieval-augmented generation, and distributed model serving. Solving it
 required specialist knowledge in these areas, from the trust update formula
-to the vLLM serving layer. Table~\ref{tab:knowledge} maps the P1 knowledge
-profile. Coverage is judged per Washington Accord K1--K8.
-
-\begin{center}
-    \begin{table}[ht]
-        \centering
-        \caption{Knowledge profile mapping for P1 (K1--K8).}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
-            \hline
-            Knowledge                     & Applied   & Where used                                      \\
-            \hline
-            K1: Natural sciences          & $\times$  & Not directly used; project is computing, not physics or chemistry \\
-            K2: Mathematics               & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
-            K3: Engineering fundamentals  & $\sqrt{}$ & System design, state machines, failure handling \\
-            K4: Specialist knowledge      & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
-            K5: Engineering methods       & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
-            K6: Computational methods     & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
-            K7: Codes and practices       & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
-            K8: Research and context      & $\sqrt{}$ & Ethical constraints and use in scientific QA    \\
-            \hline
-        \end{tabular}
-        \label{tab:knowledge}
-    \end{table}
-\end{center}
-
-K1 is not covered. The project does not use natural sciences like physics,
-chemistry, or biology. It is a computing project. K2 to K8 are covered. K2
-handles the trust math, K3 handles system design, K4 handles the core LLM and
-debate knowledge, and K5 handles the experimental method. K6 and K7 cover the
-tools and standards, and K8 covers the research context. The profile is broad
-rather than deep in one spot. The report applies K4 and K5 in every chapter,
-and K6 and K7 in the implementation, which shows the range the problem demands.
+to the vLLM serving layer. Coverage for P1 is judged per Washington Accord
+K1--K8, as detailed in Table~\ref{tab:knowledge} after P7.
 
 \subsubsection{P2: Range of Conflicting Requirements}
 
@@ -322,6 +291,69 @@ retrieval subsystem, the trust updater, and the aggregator are tightly linked. A
 failure in retrieval cascades into the verdicts and then into the final answer
 through the trust score. The failure-isolation rule in Section 3.1.1 was added
 because of this link. The high coupling is why P7 is marked as covered.
+
+Table~\ref{tab:knowledge} details the profile. The paragraphs below explain
+each K for this project and why it is covered or not.
+
+\begin{center}
+    \begin{table}[ht]
+        \centering
+        \caption{Knowledge profile mapping for P1 (K1--K8).}
+        \renewcommand{\arraystretch}{1.6}
+        \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
+            \hline
+            Knowledge                     & Applied   & Where used                                      \\
+            \hline
+            K1: Natural sciences          & $\times$  & Not directly used; project is computing, not physics or chemistry \\
+            K2: Mathematics               & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
+            K3: Engineering fundamentals  & $\sqrt{}$ & System design, state machines, failure handling \\
+            K4: Specialist knowledge      & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
+            K5: Engineering methods       & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
+            K6: Computational methods     & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
+            K7: Codes and practices       & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
+            K8: Research and context      & $\sqrt{}$ & Ethical constraints and use in scientific QA    \\
+            \hline
+        \end{tabular}
+        \label{tab:knowledge}
+    \end{table}
+\end{center}
+
+\paragraph{K1: Natural sciences} K1 is not covered. The project does not use
+physics or chemistry, and it does not use biology. It is a computing project
+that works with language models and retrieval. Natural science theory is not
+applied, so K1 is marked as not covered.
+
+\paragraph{K2: Mathematics} K2 is covered. The trust update uses softmax,
+clamping, and renormalization, and the metrics use probability and statistics.
+These maths are applied in the trust formula and in the evaluation.
+
+\paragraph{K3: Engineering fundamentals} K3 is covered. System design and failure
+handling with state machines are used throughout. Requirements and the confidence
+gate with the orchestration logic follow basic engineering design.
+
+\paragraph{K4: Specialist knowledge} K4 is covered. LLMs, multi-agent debate,
+RAG, and sycophancy are the core of the work. This specialist view shapes the
+claim split, the retrieval, and the trust score.
+
+\paragraph{K5: Engineering methods} K5 is covered. The study uses an
+experimental method with controlled variables. Baselines are compared and results
+are reported with confidence intervals. Injection is tested in the same setup.
+
+\paragraph{K6: Computational methods} K6 is covered. Python, PyTorch, and vLLM
+serve the models, and FastAPI serves the dashboard. Sentence-transformers reranks
+passages, and Git tracks changes.
+
+\paragraph{K7: Codes and practices} K7 is covered. JSON under RFC 8259, HTTP
+with TLS, the OpenAI-compatible API, and JSON Schema are used. Version control
+and code style follow standard practice.
+
+\paragraph{K8: Research and context} K8 is covered. Ethical constraints on AI
+output and the use of scientific QA provide the context. Literature review and
+gap analysis set the research direction.
+
+The profile is broad rather than deep in one spot. The report applies K4 and K5
+in every chapter, and K6 and K7 in the implementation, which shows the range the
+problem demands.
 
 \subsection{Engineering Activities}
 
