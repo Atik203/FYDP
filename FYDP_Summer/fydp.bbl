@@ -15,6 +15,21 @@ Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia,
 \newblock In {\em Advances in Neural Information Processing Systems}, NIPS '22,
   Red Hook, NY, USA, 2022. Curran Associates Inc.
 
+\bibitem{wang-etal-2024-rethinking-bounds}
+Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
+\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions
+  the key?
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em
+  Proceedings of the 62nd Annual Meeting of the Association for Computational
+  Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand,
+  August 2024. Association for Computational Linguistics.
+
+\bibitem{choi2025debate}
+Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
+\newblock Debate or vote: Which yields better decisions in multi-agent large
+  language models?
+\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+
 \bibitem{pitre-etal-2025-consensagent}
 Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
 \newblock {CONSENSAGENT}: Towards efficient and effective consensus in
@@ -59,21 +74,6 @@ Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong
 \newblock In {\em Proceedings of the AgentSearch Workshop at SIGIR 2026},
   Melbourne, Australia, 2026.
 \newblock arXiv:2606.29270.
-
-\bibitem{choi2025debate}
-Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
-\newblock Debate or vote: Which yields better decisions in multi-agent large
-  language models?
-\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
-
-\bibitem{wang-etal-2024-rethinking-bounds}
-Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
-\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions
-  the key?
-\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em
-  Proceedings of the 62nd Annual Meeting of the Association for Computational
-  Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand,
-  August 2024. Association for Computational Linguistics.
 
 \bibitem{karpukhin2020dense}
 Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey

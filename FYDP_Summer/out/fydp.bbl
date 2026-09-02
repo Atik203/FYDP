@@ -5,11 +5,6 @@ Yilun Du, Shuang Li, Antonio Torralba, Joshua~B. Tenenbaum, and Igor Mordatch.
 \newblock Improving factuality and reasoning in language models through multiagent debate.
 \newblock In {\em Proceedings of the 41st International Conference on Machine Learning}, volume 235, pages 11733--11763, 2024.
 
-\bibitem{wei2022chain}
-Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed~H. Chi, Quoc~V. Le, and Denny Zhou.
-\newblock Chain-of-thought prompting elicits reasoning in large language models.
-\newblock In {\em Advances in Neural Information Processing Systems}, NIPS '22, Red Hook, NY, USA, 2022. Curran Associates Inc.
-
 \bibitem{pitre-etal-2025-consensagent}
 Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
 \newblock {CONSENSAGENT}: Towards efficient and effective consensus in multi-agent {LLM} interactions through sycophancy mitigation.
@@ -70,6 +65,11 @@ Zhibin Gou, Zhihong Shao, Yeyun Gong, Yelong Shen, Yujiu Yang, Nan Duan, and Wei
 D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng, X.~Chen, Y.~Zhang, F.~Yin, J.~Dong, Z.~Guo, L.~Song, and C.-L. Liu.
 \newblock From system 1 to system 2: a survey of reasoning large language models.
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, pages 1--20, 2025.
+
+\bibitem{wei2022chain}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed~H. Chi, Quoc~V. Le, and Denny Zhou.
+\newblock Chain-of-thought prompting elicits reasoning in large language models.
+\newblock In {\em Advances in Neural Information Processing Systems}, NIPS '22, Red Hook, NY, USA, 2022. Curran Associates Inc.
 
 \bibitem{li2024survey}
 Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.

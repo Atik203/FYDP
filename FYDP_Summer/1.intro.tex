@@ -4,24 +4,7 @@ This chapter sets the scene for the whole report. Background and problem come fi
 
 \section{Project Overview}\label{sec:project-overview}
 
-Large language models now handle many reasoning tasks, from scientific question
-answering to tutoring and decision support. A single model can still be
-confidently wrong. It may state an incorrect answer in fluent and assured
-language, which makes the mistake hard to catch. Multi-agent debate was proposed
-to reduce this problem. Several agents answer the same question and read each
-other's reasoning, then revise their positions across a few rounds. Only after
-that is a final answer selected~\cite{du2024improving}. Chain-of-thought prompting gives each
-agent a way to expose its intermediate steps~\cite{wei2022chain}, which makes the
-reasoning inside a debate easier to inspect.
-The hard part is the final step, where the separate answers are combined.
-Most debate systems settle disagreements by majority vote. Each agent receives the
-same weight, so the most common answer wins. This rule treats popularity as a
-stand-in for correctness. In scientific reasoning, a better answer should be
-backed by evidence rather than repeated by more agents. The study examines a
-trust-calibrated multi-agent deliberation framework. It
-adjusts each agent's influence during the debate based on how well its claims match retrieved external
-evidence. The final answer then depends on evidence-grounded trust rather than a
-raw headcount.
+Large language models today have been shown to be capable of handling a wide variety of reasoning tasks such as answering scientific questions, serving as tutors or providing decision support. A large language model can still be confidently wrong. It may state an incorrect answer in fluent and assertive language that hides the error. To address this, the use of multi-agent debate has been suggested~\cite{du2024improving}. In a debate, multiple agents respond to the same question, and they review the rationales provided by other agents over several iterations. After reviewing all rationales, the agents select a single answer~\cite{du2024improving}. Chain-of-thought prompting gives each agent a way to expose its intermediate steps~\cite{wei2022chain}, which makes it easier for others to evaluate the rationale behind the agent's position. A significant challenge exists at the last stage of the process. This involves determining how best to combine separate answers produced by individual agents. The majority of current debate-based systems resolve disputes through a simple voting mechanism~\cite{wang-etal-2024-rethinking-bounds}. In these mechanisms, each agent receives equal weight (i.e., each vote counts equally), and the answer receiving the highest number of votes ultimately prevails~\cite{choi2025debate}. Such a system evaluates correctness solely on the basis of the relative frequency of occurrence of an answer among agents. However, in scientific inquiry, the quality of an argument is not determined by the number of times it is repeated; instead, arguments are considered valid when supported by credible evidence. The study presents a trust-calibrated multi-agent deliberation framework that modifies the influence agents have in a debate based on how well their statements align with evidence obtained via retrieval from external sources. Therefore, when evaluating the validity of a statement in the context of a multi-agent deliberative environment, the study suggests using a measure of evidence-grounded trust rather than a raw count of heads.
 
 \section{Motivation}\label{sec:motivation}
 
@@ -54,10 +37,10 @@ The main objective is to reduce sycophantic consensus in multi-agent LLM debate.
 The study uses an experimental design. A baseline debate system is built first. Several heterogeneous LLM agents answer the same scientific question and revise their positions after reading each other's reasoning across rounds~\cite{du2024improving}. The baseline keeps majority voting. This makes the usual failure mode visible and lets it be measured~\cite{choi2025debate}. Next, each agent's reasoning is split into smaller factual claims. These claims are checked against scientific evidence from external sources, such as academic papers and reference databases~\cite{karpukhin2020dense}. Contradictions between a claim and the retrieved evidence are detected and scored~\cite{kushwaha2026agentbased}. The idea that external tools can verify and correct model output supports this step~\cite{gou2024critic}. Verdicts then feed into trust updates. This follows work that uses per-agent confidence to steer debate~\cite{yoffe-etal-2025-debunc}. A supported claim raises the agent's trust, and a contradicted claim lowers it. Uncertain claims are handled in a conservative way so the score does not jump on weak evidence. The trust score stays bounded, so no agent gains unlimited influence or drops out completely. The final answer comes from trust-weighted aggregation, not a simple count. The framework is tested on scientific reasoning datasets such as GPQA and MMLU-Pro. Evaluation checks whether the mechanism lowers consensus collapse and whether correct minority answers survive. It also checks whether overall accuracy holds, all without any fine-tuning. Figure~\ref{fig:methodology-flow} shows the end-to-end flow.
 
 \begin{figure}[ht]
-\centering
-\includegraphics[width=\textwidth]{methodology-flow.jpg}
-\caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}
-\label{fig:methodology-flow}
+    \centering
+    \includegraphics[width=\textwidth]{methodology-flow.jpg}
+    \caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}
+    \label{fig:methodology-flow}
 \end{figure}
 
 \section{Project Outcome}\label{sec:project-outcome}
