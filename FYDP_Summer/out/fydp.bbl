@@ -1,0 +1,119 @@
+\begin{thebibliography}{10}
+
+\bibitem{du2024improving}
+Yilun Du, Shuang Li, Antonio Torralba, Joshua~B. Tenenbaum, and Igor Mordatch.
+\newblock Improving factuality and reasoning in language models through multiagent debate.
+\newblock In {\em Proceedings of the 41st International Conference on Machine Learning}, volume 235, pages 11733--11763, 2024.
+
+\bibitem{wei2022chain}
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed~H. Chi, Quoc~V. Le, and Denny Zhou.
+\newblock Chain-of-thought prompting elicits reasoning in large language models.
+\newblock In {\em Advances in Neural Information Processing Systems}, NIPS '22, Red Hook, NY, USA, 2022. Curran Associates Inc.
+
+\bibitem{pitre-etal-2025-consensagent}
+Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
+\newblock {CONSENSAGENT}: Towards efficient and effective consensus in multi-agent {LLM} interactions through sycophancy mitigation.
+\newblock In {\em Findings of the Association for Computational Linguistics: ACL 2025}, pages 22112--22133, Vienna, Austria, July 2025. Association for Computational Linguistics.
+
+\bibitem{ibrahim2026training}
+L.~Ibrahim, F.~S. Hafner, and L.~Rocher.
+\newblock Training language models to be warm can reduce accuracy and increase sycophancy.
+\newblock {\em Nature}, 652:1159--1165, April 2026.
+
+\bibitem{fan2026imad}
+Wei Fan, JinYi Yoon, and Bo~Ji.
+\newblock {iMAD}: Intelligent multi-agent debate for efficient and accurate {LLM} inference.
+\newblock In {\em Proceedings of the Fortieth AAAI Conference on Artificial Intelligence}, pages 29403--29411, 2026.
+
+\bibitem{yoffe-etal-2025-debunc}
+Luke Yoffe, Alfonso Amayuelas, and William~Yang Wang.
+\newblock {D}eb{U}nc: Improving large language model agent communication with uncertainty metrics.
+\newblock In {\em Findings of the Association for Computational Linguistics: EMNLP 2025}, pages 23299--23315, Suzhou, China, November 2025. Association for Computational Linguistics.
+
+\bibitem{wang2025mixture}
+Junlin Wang, Jue Wang, Ben Athiwaratkun, Ce~Zhang, and James~Y Zou.
+\newblock Mixture-of-agents enhances large language model capabilities.
+\newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em International Conference on Learning Representations}, volume 2025, pages 33944--33963, 2025.
+
+\bibitem{he2026minority}
+Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong Wen, and Guanfeng Liu.
+\newblock Minority sentinel: When to overturn majority voting in multi-agent {LLM} debates.
+\newblock In {\em Proceedings of the AgentSearch Workshop at SIGIR 2026}, Melbourne, Australia, 2026.
+\newblock arXiv:2606.29270.
+
+\bibitem{choi2025debate}
+Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
+\newblock Debate or vote: Which yields better decisions in multi-agent large language models?
+\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+
+\bibitem{wang-etal-2024-rethinking-bounds}
+Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
+\newblock Rethinking the bounds of {LLM} reasoning: Are multi-agent discussions the key?
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 6106--6131, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
+
+\bibitem{karpukhin2020dense}
+Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey Edunov, Danqi Chen, and Wen-tau Yih.
+\newblock Dense passage retrieval for open-domain question answering.
+\newblock In {\em Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)}, pages 6769--6781, Online, 2020. Association for Computational Linguistics.
+
+\bibitem{kushwaha2026agentbased}
+Pranjal Kushwaha and S.~Akshat Madhavan.
+\newblock Agent-based contradiction detection and resolution for multi-source retrieval augmented generation systems.
+\newblock {\em International Journal of Scientific Research in Engineering and Management (IJSREM)}, 10(7), July 2026.
+
+\bibitem{gou2024critic}
+Zhibin Gou, Zhihong Shao, Yeyun Gong, Yelong Shen, Yujiu Yang, Nan Duan, and Weizhu Chen.
+\newblock {CRITIC}: Large language models can self-correct with tool-interactive critiquing.
+\newblock In {\em The Twelfth International Conference on Learning Representations}, 2024.
+
+\bibitem{zhang2025from}
+D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng, X.~Chen, Y.~Zhang, F.~Yin, J.~Dong, Z.~Guo, L.~Song, and C.-L. Liu.
+\newblock From system 1 to system 2: a survey of reasoning large language models.
+\newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence}, pages 1--20, 2025.
+
+\bibitem{li2024survey}
+Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.
+\newblock A survey on {LLM}-based multi-agent systems: workflow, infrastructure, and challenges.
+\newblock {\em Vicinagearth}, 1(9), 2024.
+
+\bibitem{zhou2025reso}
+Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei Yin, and Lei Bai.
+\newblock Reso: A reward-driven self-organizing llm-based multi-agent system for reasoning tasks.
+\newblock In {\em Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pages 15979--15998. Association for Computational Linguistics, 2025.
+
+\bibitem{ueda2025exploring}
+Keisuke Ueda, Wataru Hirota, Takuto Asakura, Takahiro Omi, Kosuke Takahashi, Kosuke Arima, and Tatsuya Ishigaki.
+\newblock Exploring the design of multi-agent {LLM} dialogues for research ideation.
+\newblock In {\em Proceedings of the 26th Annual Meeting of the Special Interest Group on Discourse and Dialogue}, pages 322--337, Avignon, France, 2025. Association for Computational Linguistics.
+
+\bibitem{wang2025scalability}
+Yuru Wang, Kaiyan Zhang, Kai Tian, Sihang Zeng, Xingtai Lv, Ning Ding, Biqing Qi, and Bowen Zhou.
+\newblock Scalability of {LLM}-based multi-agent systems for scientific code generation: A preliminary study.
+\newblock In {\em Proceedings of The 3rd Workshop on Mathematical Natural Language Processing (MathNLP 2025)}, pages 50--61, Suzhou, China, 2025. Association for Computational Linguistics.
+
+\bibitem{cau2025selective}
+E.~Cau, V.~Pansanella, D.~Pedreschi, et~al.
+\newblock Selective agreement, not sycophancy: investigating opinion dynamics in {LLM} interactions.
+\newblock {\em EPJ Data Science}, 14:59, August 2025.
+
+\bibitem{yeow2025reliable}
+Xian Yeow, Shunichi Lee, Lasitha Akatsuka, Vidyaratne Aman, A~Hareesh Kumar, Chetan Farahat, and A~Gupta.
+\newblock Reliable decision-making for multi-agent {LLM} systems.
+\newblock {\em arXiv preprint arXiv:2406.04092}, 2025.
+
+\bibitem{cui2026freemad}
+Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
+\newblock {FREE-MAD}: Consensus-free multi-agent debate.
+\newblock In {\em Findings of the Association for Computational Linguistics: ACL 2026}, 2026.
+
+\bibitem{chen2025self}
+Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
+\newblock Self-augmented preference alignment for sycophancy reduction in {LLMs}.
+\newblock In {\em Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing}, pages 12379--12391, Suzhou, China, 2025. Association for Computational Linguistics.
+
+\bibitem{pitre2026diagnostic}
+Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan Wang.
+\newblock A diagnostic study of multi-agent llms for real-world debates.
+\newblock In {\em Proceedings of the 43rd International Conference on Machine Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
+
+\end{thebibliography}

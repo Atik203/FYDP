@@ -4,26 +4,10 @@ tested. Full results belong to the final report, so this chapter keeps the
 setup and the evaluation plan.
 
 \section{Environment Setup}
-The implementation uses Python 3.11 with vLLM serving three models through an
-OpenAI-compatible endpoint on a rented RTX PRO 6000 Blackwell 96GB GPU. The
-evidence layer calls PubMed, arXiv, Semantic Scholar, and OpenAlex over their
-public APIs, and every run writes a JSON result package with the trust
-trajectory, the verdicts, and the answer.
 
 \section{Testing and Evaluation}
-Testing follows the protocol from Chapter 3: seeded runs, the injection point
-for fabricated wrong consensus, and comparison against majority voting, MoA,
-iMAD, and DebUnc. The metric set stays fixed at accuracy, consensus-collapse
-rate, minority-preservation rate, and evidence-calibration rate on GPQA and
-MMLU-Pro.
 
 \section{Results and Discussion}
-The results will be reported once the implementation is complete. This section
-will present the per-dataset tables, the ablation of the trust parameters
-$\alpha$ and $\beta$, and the collapse measurements from the injection
-experiments.
 
 \section{Summary}
-The chapter fixes the runtime environment and the evaluation procedure. The
-results and their discussion arrive with the completed implementation in the
-final report.
+
