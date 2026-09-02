@@ -88,29 +88,33 @@ The framework is operated through a command-line interface and a small web dashb
 
 \section{Project Plan}\label{sec:project-plan}
 
-The project runs for ten months, counted here as Month 1 through Month 10, and
-is split into eight phases with six review gates. Table~\ref{tab:phases} lists
-the phases and their deliverables, and Table~\ref{tab:gates} fixes the
-checkpoints. This report covers the work through the mid-project review, while
-the later phases carry the project to the final defence.
+The project runs for ten months, from Month 1 to Month 10, and covers 40 weeks.
+It is split into eight phases with six review gates. The work starts with literature
+and setup and ends with writing and submission. Table~\ref{tab:phases} lists each
+phase with its weeks and deliverables. Table~\ref{tab:gates} lists the gates and
+their checkpoints. Table~\ref{tab:swot} adds a SWOT view of the plan. This report
+covers work through the mid-project review in Month 5, while later phases carry
+the project to the final defence.
+
+The plan starts with scoping. Project scoping in Phase-0 fixes the research question, the trust-calibrated idea, the evaluation shape, and the gate criteria. Data and model work runs in parallel. Datasets GPQA and MMLU-Pro are checked, and the three development models are chosen with their serving setup. Analysis of the baseline follows in Phase-1. Injection tests and baselines B1 to B4 are run, and the pilot checks if a wrong majority can still fool voting. Design and build fill Phase-2. Claim decomposition and source-partitioned RAG are built, and the trust function is tuned with its clamp and softmax. A short dry run and design freeze close Phase-2 to 3. The main study sits in Phase-3a and Phase-3b. Phase-3a runs core conditions with three seeds, and Phase-3b runs ablations with different agent counts and alpha/beta values. Human study and failure review occupy Phase-4. Writing, reproducibility packing, submission, and defence preparation close the project in Phase-5.
 
 \begin{center}
   \begin{table}[ht]
     \centering
     \caption{Project phases with week-level durations and deliverables.}
     \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{|p{0.20\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
+    \begin{tabular}{|p{0.22\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
       \hline
-      Phase                         & Duration                 & Deliverables                                                                                \\
+      Phase                              & Duration                 & Deliverables                                                                                     \\
       \hline
-      Ph 0: Literature and Setup    & Month 1 (Wk 1--4)        & Literature freeze, vLLM and LangGraph setup, model identification, vanilla MAD reproduction \\
-      Ph 1: Injection and Baselines & Month 2 (Wk 5--8)        & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot                  \\
-      Ph 2: Trust Mechanism Build   & Months 3--4 (Wk 9--16)   & Claim decomposition, source-partitioned RAG, trust function version 1, B5/B6/B9             \\
-      Ph 2 to 3: Mid-Project        & Month 5 (Wk 17--20)      & Design freeze, dry run on one dataset, FYDP-1 defence preparation                           \\
-      Ph 3a: Main Experiments       & Month 6 (Wk 21--24)      & Core conditions on primary datasets, three seeds, 95\% confidence intervals                 \\
-      Ph 3b: Ablations and Scaling  & Month 7 (Wk 25--28)      & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, results freeze                   \\
-      Ph 4: Human Eval and Analysis & Month 8 (Wk 29--32)      & Human evaluation with $n=60$, ECR calibration, failure analysis, buffer                     \\
-      Ph 5: Writing and Submit      & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission and FYDP-2 defence           \\
+      Phase-0: Literature and Setup      & Month 1 (Wk 1--4)        & Literature freeze, vLLM and LangGraph setup, model identification, vanilla MAD reproduction      \\
+      Phase-1: Injection and Baselines   & Month 2 (Wk 5--8)        & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot                       \\
+      Phase-2: Trust Mechanism Build     & Months 3--4 (Wk 9--16)   & Claim decomposition, source-partitioned RAG, trust function v1, baselines B5/B6/B9                \\
+      Phase-2 to 3: Mid-Project          & Month 5 (Wk 17--20)      & Design freeze, dry run on one dataset, FYDP-1 defence preparation, and review feedback fixes      \\
+      Phase-3a: Main Experiments         & Month 6 (Wk 21--24)      & Core conditions on primary datasets, three seeds, 95\% confidence intervals, and effect size report  \\
+      Phase-3b: Ablations and Scaling    & Month 7 (Wk 25--28)      & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, and results freeze                     \\
+      Phase-4: Human Evaluation and Analysis & Month 8 (Wk 29--32)  & Human evaluation with $n=60$, ECR calibration, failure analysis, and buffer for slippage          \\
+      Phase-5: Writing and Submission    & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission, and FYDP-2 defence preparation      \\
       \hline
     \end{tabular}
     \label{tab:phases}
@@ -138,16 +142,46 @@ the later phases carry the project to the final defence.
   \end{table}
 \end{center}
 
-Two buffers guard the critical path. A dry run on one dataset sits inside Month
-5 before the defence, and Month 8 keeps a full month free for slippage. Both
-buffers sit where a late failure would otherwise hit a fixed deadline.
+\begin{center}
+  \begin{table}[ht]
+    \centering
+    \caption{SWOT analysis for the project plan.}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{|p{0.44\textwidth}|p{0.44\textwidth}|}
+      \hline
+      \textbf{Strengths} & \textbf{Weaknesses} \\
+      \hline
+      Clear gap on sycophantic consensus, bounded trust design with no fine-tuning, six-member team with mixed skills, and expert supervision that keeps scope tight. The design needs no new training and runs on a single rented GPU. &
+      Sparse retrieval on rare claims, imperfect claim split, correlated reasoning errors between agents, and limited GPU budget for 300 hours. Small sample noise in early pilots can also hide real gains. \\
+      \hline
+      \textbf{Opportunities} & \textbf{Threats} \\
+      \hline
+      Growing interest in multi-agent debate and sycophancy, open datasets GPQA and MMLU-Pro, free retrieval APIs from PubMed, arXiv, Semantic Scholar and OpenAlex, and affordable cloud GPU rental with Blackwell FP8 support. &
+      API rate limits and downtime, model price changes, time slip from complex integration, and evaluation noise on small samples. A weak retrieval week can shift trust scores and hide the true effect. \\
+      \hline
+    \end{tabular}
+    \label{tab:swot}
+  \end{table}
+\end{center}
+
+The phase order follows dependencies. Vanilla MAD reproduction in Phase-0 must finish before injection validation in Phase-1 can be trusted. The trust mechanism in Phase-2 needs the injection harness from Phase-1, so it cannot start early. Main experiments in Phase-3a wait for the trust function and the dry run in Phase-2 to 3. Human evaluation in Phase-4 needs the frozen results from Phase-3b. Writing in Phase-5 overlaps only with final checks, not with core experiments.
+
+Two buffers guard the critical path. A dry run on one dataset sits inside Month 5 before the defence, and Month 8 keeps a full month free for slippage. Both buffers sit where a late failure would otherwise hit a fixed deadline. Weekly meetings and Git version control track progress, and every gate review decides Go or Fix before the next phase starts.
+
+Phase-0 covers Week 1 to Week 4. Week 1 and Week 2 focus on literature freeze and reference list lock, with every paper checked against its DOI. Week 3 sets up vLLM and LangGraph, and Week 4 tests the model trio on a small GPQA slice. The vanilla MAD baseline must reproduce Du et al. results on that slice before Phase-1 starts.
+
+Phase-1 runs Week 5 to Week 8. Week 5 builds the injection harness that inserts a fabricated wrong consensus between rounds. Week 6 to Week 8 validate the injection with kappa checks and run baselines B1 to B4. The month ends with a pilot that must reach CCR 0.30 or higher to pass Gate 1. Phase-2 spans Week 9 to Week 16. Week 9 to Week 12 build claim decomposition. Source-partitioned RAG with cross-encoder reranking is added in Week 13 to Week 16.
+
+Phase-2 to Phase-3 covers Week 17 to Week 20. This window freezes the design and runs a dry experiment on one dataset for the mid-project review. Phase-3a runs Week 21 to Week 24 with core conditions on primary datasets using three seeds and 95 percent intervals. Phase-3b runs Week 25 to Week 28 with four ablations and the N and alpha/beta sweeps. Phase-4 holds human evaluation with $n=60$ in Week 29 to Week 32. Phase-5 uses Week 33 to Week 40 for thesis and paper writing with a reproducibility package.
+
+Resource use is heaviest in Phase-3. The 300 GPU hours are split with about 80 hours for Phase-3a and Phase-3b each, and the rest for earlier phases. A retrieval API failure falls back to cached evidence or OpenAlex, so the debate still runs. A dry run failure at Gate 2 is absorbed by the buffer in Month 8 without moving the final defence.
 
 \section{Task Allocation}\label{sec:task-allocation}
 
 Six members split the work along the modules of the framework.
-Table~\ref{tab:tasks} fixes who owns which part, and
-Figure~\ref{fig:task-gantt} shows when each member is active across the ten
-project months.
+Table~\ref{tab:tasks} fixes who owns which primary modules,
+and Figure~\ref{fig:task-gantt} shows when each member is active
+across the ten months.
 
 \begin{center}
   \begin{table}[ht]
@@ -201,7 +235,7 @@ project months.
       \fill[bar, fill=navy] (0,6.85) rectangle (40*\s,7.45) node[midway] {Architecture + coordination};
       \fill[bar, fill=tealg] (0,5.55) rectangle (12*\s,6.15) node[midway] {MAD + injection};
       \fill[bar, fill=amberg] (8*\s,4.25) rectangle (24*\s,4.85) node[midway] {Claims + RAG};
-      \fill[bar, fill=roseg] (4*\s,2.95) rectangle (8*\s,3.55) node[midway, font=\tiny\bfseries] {Ph 1};
+      \fill[bar, fill=roseg] (4*\s,2.95) rectangle (8*\s,3.55) node[midway, font=\tiny\bfseries] {Phase-1};
       \fill[bar, fill=roseg] (18*\s,2.95) rectangle (28*\s,3.55) node[midway] {Metrics + harness};
       \fill[bar, fill=purpg] (4*\s,1.65) rectangle (16*\s,2.25) node[midway] {Baselines + vLLM};
       \fill[bar, fill=skyg] (6*\s,0.35) rectangle (16*\s,0.95) node[midway] {APIs + dashboard};
@@ -211,9 +245,15 @@ project months.
   \label{fig:task-gantt}
 \end{figure}
 
-Owners pair with the phases in Table~\ref{tab:phases}, so each phase has at
-least one accountable member. The leader reviews each module before it is
-marked complete.
+Each task has a clear owner and a short deliverable. The owner pairs with the
+phase in Table~\ref{tab:phases}, so every phase has at least one accountable
+member. Dependencies are handled by order. Vanilla reproduction finishes before
+injection starts, and the injection harness finishes before the trust build starts.
+The dry run must pass before main experiments start and human evaluation waits for
+the results freeze. Writing uses the frozen results and runs last. The leader
+reviews each module before it is marked complete. Weekly Git commits and short
+stand-ups track slippage, and any missed gate triggers a fix week before the
+next phase begins.
 
 \section{Summary}
 
