@@ -82,63 +82,24 @@ connection.
 
 \subsection{Economic Constraint}
 
-The budget is the tightest constraint. Everything runs on a single rented GPU
-with no fine-tuning, because training, or even parameter-efficient tuning, would
-multiply the cost of every experiment. The RTX PRO 6000 rental range of about
-USD 0.70 to 1.90 per hour keeps the total within reach of a student budget, and
-the retrieval APIs used are free under their rate limits. Owning the card was
-never an option; its retail price is several times the whole project budget.
 
 \subsection{Environmental Constraint}
 
-The GPU draws up to about 600 watts under load. Running it in the cloud means
-the hardware is shared across many tenants, so one project does not manufacture
-or discard a card. Skipping fine-tuning also keeps energy use down, because
-inference over a few thousand questions costs far less than a training run that
-would occupy the same card for days.
 
 \subsection{Ethical Constraint}
 
-The framework keeps the ground truth hidden from every agent, and the final
-output carries citations to the evidence behind the answer. Models tuned to
-sound agreeable become less accurate and more
-sycophantic~\cite{ibrahim2026training}, and preference-based sycophancy fixes
-need careful data handling~\cite{chen2025self}. In multi-agent debate, the
-correct answer can be present but ignored in more than 20 percent of
-wrong-answer cases~\cite{pitre-etal-2025-consensagent}. Making the evidence
-trail visible is the framework's answer to those risks. A user can always check
-which agent was supported and which was contradicted.
 
 \subsection{Health and Safety Constraint}
 
-The work involves no physical hardware handling and no laboratory risk. All
-compute runs on rented cloud instances. The only health consideration is
-ordinary screen time, which the team manages with standard breaks and workstation
-habits.
 
 \subsection{Social Constraint}
 
-Scientific question answering shapes how people come to trust AI systems. A
-system that confidently repeats a wrong consensus can reinforce
-misinformation~\cite{cau2025selective}. The framework grounds influence in
-evidence, so the social risk is reduced to the quality of the retrieved
-literature rather than the popularity of an answer.
 
 \subsection{Political Constraint}
 
-The framework relies on open access to scientific literature. PubMed, arXiv,
-Semantic Scholar, and OpenAlex are all public services, and the models are
-open-weight with permissive licenses: Qwen and Mistral under Apache 2.0, Gemma
-under its own license. No user data is collected, and the system depends on no
-single vendor, which keeps it usable under changing access policies.
 
 \subsection{Sustainability}
 
-Sustainability here comes from reuse. The rented GPU is shared infrastructure,
-the models are already trained and only served, and every experiment is seeded
-and logged so runs do not need to be repeated. Open licenses and reproducible
-result packages mean the work can be continued by others without redoing the
-setup.
 
 \section{Cost Analysis}
 
@@ -153,16 +114,16 @@ the primary budget.
         \caption{Primary budget for the project.}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
-        \hline
-        Item & Quantity & Unit Cost (USD) & Total (USD)\\
-        \hline
-        RTX PRO 6000 Blackwell 96GB rental & 300 hours & 0.70--1.90 / hour & 210--570\\
-        Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & --- & 0 (free tier) & 0\\
-        Datasets (GPQA, MMLU-Pro) & --- & 0 (public) & 0\\
-        Storage (model weights, logs) & 200 GB & 0.05 / GB & 10\\
-        \hline
-        \textbf{Total} & & & \textbf{220--580}\\
-        \hline
+            \hline
+            Item                                         & Quantity  & Unit Cost (USD)   & Total (USD)       \\
+            \hline
+            RTX PRO 6000 Blackwell 96GB rental           & 300 hours & 0.70--1.90 / hour & 210--570          \\
+            Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & ---       & 0 (free tier)     & 0                 \\
+            Datasets (GPQA, MMLU-Pro)                    & ---       & 0 (public)        & 0                 \\
+            Storage (model weights, logs)                & 200 GB    & 0.05 / GB         & 10                \\
+            \hline
+            \textbf{Total}                               &           &                   & \textbf{220--580} \\
+            \hline
         \end{tabular}
         \label{tab:budget}
     \end{table}
@@ -186,16 +147,16 @@ comparison.
         \caption{Alternate budget using the A100 80GB.}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
-        \hline
-        Item & Quantity & Unit Cost (USD) & Total (USD)\\
-        \hline
-        A100 80GB rental & 300 hours & 0.68--1.50 / hour & 204--450\\
-        Retrieval APIs & --- & 0 (free tier) & 0\\
-        Datasets & --- & 0 (public) & 0\\
-        Storage & 200 GB & 0.05 / GB & 10\\
-        \hline
-        \textbf{Total} & & & \textbf{214--460}\\
-        \hline
+            \hline
+            Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
+            \hline
+            A100 80GB rental & 300 hours & 0.68--1.50 / hour & 204--450          \\
+            Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
+            Datasets         & ---       & 0 (public)        & 0                 \\
+            Storage          & 200 GB    & 0.05 / GB         & 10                \\
+            \hline
+            \textbf{Total}   &           &                   & \textbf{214--460} \\
+            \hline
         \end{tabular}
         \label{tab:budget-alt}
     \end{table}
@@ -215,12 +176,12 @@ the subsections that follow give the rationale for each mapping.
         \caption{Mapping with complex problem solving.}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|}
-        \hline
-        P1& P2& P3& P4& P5& P6& P7\\
-        Dept of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence\\
-        \hline 
-        $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$\\
-        \hline 
+            \hline
+            P1                & P2                                & P3                & P4                    & P5                         & P6                                & P7               \\
+            Dept of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence \\
+            \hline
+            $\sqrt{}$         & $\sqrt{}$                         & $\sqrt{}$         & $\sqrt{}$             & $\sqrt{}$                  & $\sqrt{}$                         & $\sqrt{}$        \\
+            \hline
         \end{tabular}
         \label{tab:p_solve}
     \end{table}
@@ -240,18 +201,18 @@ profile.
         \caption{Knowledge profile mapping for P1.}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
-        \hline
-        Knowledge & Applied & Where used\\
-        \hline
-        DK1: Natural sciences & $\sqrt{}$ & Statistics behind trust updates and metrics\\
-        DK2: Mathematics & $\sqrt{}$ & Softmax, clamping, renormalization, probability\\
-        DK3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling\\
-        DK4: Specialist knowledge & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy\\
-        DK5: Engineering methods & $\sqrt{}$ & Experimental methodology, baseline comparison\\
-        DK6: Computational methods & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI\\
-        DK7: Codes and practices & $\sqrt{}$ & JSON, HTTP, TLS, version control\\
-        DK8: Social context & $\sqrt{}$ & Ethical constraints on AI output\\
-        \hline 
+            \hline
+            Knowledge                     & Applied   & Where used                                      \\
+            \hline
+            DK1: Natural sciences         & $\sqrt{}$ & Statistics behind trust updates and metrics     \\
+            DK2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
+            DK3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling \\
+            DK4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
+            DK5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
+            DK6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
+            DK7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
+            DK8: Social context           & $\sqrt{}$ & Ethical constraints on AI output                \\
+            \hline
         \end{tabular}
         \label{tab:knowledge}
     \end{table}
@@ -319,16 +280,16 @@ A1--A5, with rationales below.
 \begin{center}
     \begin{table}[ht]
         \centering
-                \caption{Mapping with complex engineering activities.}
-                \renewcommand{\arraystretch}{1.6}
+        \caption{Mapping with complex engineering activities.}
+        \renewcommand{\arraystretch}{1.6}
 
         \begin{tabular}{|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|p{0.16\textwidth}|}
-        \hline
-        A1& A2& A3& A4& A5\\
-        Range of resources & Level of Interaction & Innovation & Consequences for society and environment & Familiarity\\
-        \hline 
-        $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$ & $\sqrt{}$\\
-        \hline 
+            \hline
+            A1                 & A2                   & A3         & A4                                       & A5          \\
+            Range of resources & Level of Interaction & Innovation & Consequences for society and environment & Familiarity \\
+            \hline
+            $\sqrt{}$          & $\sqrt{}$            & $\sqrt{}$  & $\sqrt{}$                                & $\sqrt{}$   \\
+            \hline
         \end{tabular}
         \label{tab:e_act}
     \end{table}
