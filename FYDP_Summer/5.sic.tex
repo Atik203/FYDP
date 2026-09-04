@@ -1,82 +1,54 @@
 \chapter{Standards and Design Constraints}
-This chapter records the standards the framework follows, the constraints that
-shaped its design, and the budget behind the experiments. It also maps the
-project against the complex engineering problem criteria and closes with a short
-summary.
+This chapter documents the standards that the framework adheres to,
+The constraints that have shaped its design and budgetary costs of the
+Experiments; and concludes by mapping the project against the
+Criteria for complex engineering problems and providing a brief summary.
 
 \section{Compliance with the Standards}
-Standards matter in three places: the software stack, the hardware the framework
-runs on, and the communication between components. Each area had alternatives,
-and each choice is justified below.
+Standards play out in three areas - the software stack, the hardware the
+Framework executes upon, and the communication among components. There were
+Alternative options available in each area and these alternatives are explained
+Below.
 
 \subsection{Software Standards}
 
-Python 3.11 was chosen as the implementation language. The LLM ecosystem is
-built around it, so vLLM, the Hugging Face libraries, and the evaluation tooling
-all ship Python support first. Java and C++ are faster in raw terms, but neither
-has the same depth of ready-made support for model serving and retrieval work.
-The framework is a research prototype, not a latency-critical production
-service, so ecosystem fit outweighs raw speed. Surveys of LLM-based multi-agent
-systems describe this design space in terms of workflow, infrastructure, and
-open challenges~\cite{li2024survey}, and the choices below follow that map.
+Python 3.11 was chosen as the language to be used. This is because the LLM
+Since Ecosystem is focussed on python, we also have hugging face libraries, vllm, and others.
+Support for evaluation tools is in the form of python. While Java and c++ are faster
+Both do not have the equivalent amount of pre-existing
+Support to serve and load LLM models. Since the framework is a
+Use a research prototype and not a production service, which must be real-time.
+Ecosystem is better than raw speed. As such, surveys concerning LLM-based knowledge models are available.
+Multi-agent systems discuss this design space in terms of workflow, infrastructure,
+And open challenges~\cite{li2024survey} and therefore the decisions made
+Below follow this structure.
 
-PyTorch 2.x is the deep learning framework underneath vLLM. It is the de facto
-standard for LLM inference and supports the Qwen, Gemma, and Mistral families
-directly. TensorFlow and JAX were considered. TensorFlow's LLM serving story is
-weaker, and JAX would pull the whole pipeline onto its own stack without any
-benefit here.
+vllm is built on top of the deep learning framework PyTorch 2.x. Pytorch is
+The de-facto standard for LLM inference and directly supports qwen, Gemma and more.
+Mistral families. While TensorFlow and JAX were evaluated alternatives;
+However, TensorFlow's LLM serving story isn't as strong and JAX will require the whole pipeline.
+On its own without any advantage.
 
-vLLM serves the models through an OpenAI-compatible API. That interface matters
-because the framework must work with closed APIs and locally served models
-without touching the orchestration code. PagedAttention gives vLLM high
-throughput under the three-agent debate load, and its FP8 support matches the
-Blackwell GPU. Ollama is easier to set up but slower under concurrent requests.
-llama.cpp runs well on CPU but gives up the GPU throughput the debate needs.
-TGI is a close alternative, and vLLM won on ecosystem fit and the
-OpenAI-compatible surface.
+Vllm serves the models via an OpenAI compatible api. This interface matters because
+The framework will need to interact with closed APIs and serve locally stored models
+With no modifications to the orchestration code. Given the requirements to handle
+High throughput under the three agent debate load, PagedAttention provides vllm with
+This capability. Additionally given FP8 support from PagedAttention matches that of
+The Blackwell GPU. Ollama is simpler to setup and is slower than PagedAttention when handling concurrent requests. In contrast, llama.cpp runs well on CPU but does not match the GPU throughput needed for the debate. Tgi is a very similar alternative and vllm provided better ecosystem fit and an OpenAI compatible surface.
 
-Sentence-transformers provides the cross-encoder that reranks retrieved
-passages. BM25 was the fallback, but it matches on surface terms only, while the
-cross-encoder scores semantic fit between a claim and a passage. The web
-dashboard is served with FastAPI, and every result package is written as JSON
-following RFC 8259, validated against a JSON Schema. Git tracks the code and
-LaTeX (Overleaf) produces this report.
+Cross-encoders can be used to re-rank passages returned by information retrieval algorithms. Sentence-transformers implements the cross-encoder that ranks the passages. In contrast, BM25 is an alternate ranking method however, like sentence-transformer, it only uses surface features to rank results. However, since both methods use the semantic features of a passage and a claim to score relevance between them, sentence transformers provide better overall relevance rankings. The web dashboard is served using FastAPI, and all result packages are created as JSON objects following rfc 8259, and are validated against a JSON schema. Codebase changes are tracked with git and latex (overleaf) generates this document.
 
 \subsection{Hardware Standards}
 
-The experiments run on a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB of
-GDDR7 memory. The choice came down to memory capacity and architecture. The
-development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) fit comfortably in
-BF16. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total
-about 77 billion parameters, which no single card holds in FP16, so they run in
-FP8. Blackwell has native FP8 support, and that is exactly the point of
-difference.
+Experiments are conducted on a single nvidia RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory. Memory capacity and architecture were key considerations in making this selection. The development models (qwen3.5-9b, Gemma 4 12B, ministral-3-14b) fit into bf16. The final models (qwen3.6-27b, Gemma 4 26B, mistral small 3.2 24b) combine about 77 billion parameters; no single card holds this many parameters in fp16 so they run in FP8. Blackwell has native FP8 support; this is exactly why we chose it.
 
-The A100 80GB was the first alternative considered. It has enough memory for the
-development models and strong HBM bandwidth, but its FP8 path is weaker and the
-architecture is two generations old. The H100 80GB is faster yet rents for
-roughly twice the price and brings nothing the framework needs. The L40S at 48
-GB and the consumer RTX 5090 at 32 GB cannot hold the final model trio at all.
-The RTX PRO 6000 sits at the right point: enough memory, modern quantization,
-and a rental price that fits a student budget. The host machine needs at least
-64 GB of system RAM and NVMe storage to stage the models before they move to the
-GPU.
+An initial alternative to consider was the a100 80gb. It has sufficient memory for development models and high-bandwidth HBM; however its FP8 path is less capable than what we have today, plus its architecture is two-generations old. Faster still is the h100 80gb; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 sits in just the right place: there is enough memory to be useful; it has modern quantization; and it can be rented at a cost suitable for a student budget. To stage models prior to moving them to the GPU the host computer needs to have at least 64 GB of system RAM and nvme disk storage.
 
 \subsection{Communication Standards}
 
-All communication between the framework and its components runs over HTTP with
-TLS. The model server exposes the OpenAI-compatible chat completions endpoint,
-which is REST with JSON payloads. gRPC was the alternative for model serving. It
-is faster in benchmark terms, but the OpenAI-compatible surface keeps the
-framework portable between closed APIs and local vLLM servers, and that
-portability outweighs the latency difference.
+All communication between the framework and its components occurs over http with tls. The model server presents an OpenAI-compatible chat completion api endpoint that is REST-based with JSON payloads. gRPC was another option for model serving; it has lower latencies in benchmark tests; but having an OpenAI-compatible surface allows us to make our framework portably usable across closed APIs and local vllm-served models without changing anything in our orchestration code.
 
-The evidence sources are reached through their public REST interfaces: PubMed
-E-utilities, the arXiv API, the Semantic Scholar Graph API, and OpenAlex as the
-fallback. Each returns JSON or XML over HTTPS, and the framework handles rate
-limits with the retry caps defined in the requirements. WebSocket is reserved
-for the dashboard's live trust chart. Nothing else needs a persistent
-connection.
+Each source of evidence is accessed via its public REST interfaces: PubMed e-utilities, the arxiv api, the semantic scholar Graph API, and OpenAlex as a fallback. Each returns JSON or XML over HTTPS; our framework handles rate limits with retries capped according to those described in requirements. Web sockets are being saved for real-time updates in live trust charts in our dashboard.
 
 \section{Design Constraints}
 
@@ -103,16 +75,7 @@ connection.
 
 \section{Cost Analysis}
 
-The budget covers the rented GPU, storage, and the free research services. No
-fine-tuning is needed, so cost is mostly hours on a rented card. The largest line
-is inference time on the RTX PRO 6000 Blackwell, estimated at about 300 hours
-across development and evaluation. The hours are not spread evenly. Phase-0 and
-Phase-1 use about 30 hours for setup and baselines. Phase-2 uses about 60 hours
-for building claim split and RAG. Phase-3a and Phase-3b together use about 140
-hours for main runs and ablations. Phase-4 uses about 40 hours for human study
-checks, and Phase-5 uses about 30 hours for final runs and packaging. This split
-shows why Phase-3 dominates cost. Table~\ref{tab:budget} summarizes the primary
-budget, and Table~\ref{tab:budget-phase} breaks the GPU hours by phase.
+The budget for this project consists of renting a GPU and for storing all data and for using the Research Services that do not require an additional charge to fine tune our results. Cost analysis is based almost entirely on the amount of time spent running our model on a rented GPU. The greatest expense (in terms of time) was inference time on the RTX PRO 6000 Blackwell which totaled approximately 300 hours during both development and testing. Hours were not distributed in proportion across each phase of the project. For example, Phase-0 and Phase-1 used about 30 total hours for setting up baseline models. Phase-2 also used about 60 total hours to develop the Claim Split and RAG models. Phase-3a and Phase-3b combined used about 140 hours for the Main Runs and Ablations. Phase-4 used about 40 total hours for conducting Human Study checks, while Phase-5 used about 30 hours for Final Runs and Packaging. These numbers show how Phase-3 had the most significant impact on costs. Table~\\ref{tab:budget} shows the major budget for the project and Table~\\ref{tab:budget-phase} details the number of GPU hours per phase.
 
 \begin{center}
     \begin{table}[ht]
@@ -142,13 +105,13 @@ budget, and Table~\ref{tab:budget-phase} breaks the GPU hours by phase.
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
             \hline
-            Phase                              & Hours & Cost (USD) \\
+            Phase                                  & Hours        & Cost (USD)        \\
             \hline
-            Phase-0 and Phase-1 (setup, baselines) & 30    & 21--57     \\
-            Phase-2 (trust build)                  & 60    & 42--114    \\
-            Phase-3a and Phase-3b (main runs)      & 140   & 98--266    \\
-            Phase-4 (human eval)                   & 40    & 28--76     \\
-            Phase-5 (writing, final checks)        & 30    & 21--57     \\
+            Phase-0 and Phase-1 (setup, baselines) & 30           & 21--57            \\
+            Phase-2 (trust build)                  & 60           & 42--114           \\
+            Phase-3a and Phase-3b (main runs)      & 140          & 98--266           \\
+            Phase-4 (human eval)                   & 40           & 28--76            \\
+            Phase-5 (writing, final checks)        & 30           & 21--57            \\
             \hline
             \textbf{Total}                         & \textbf{300} & \textbf{210--570} \\
             \hline
@@ -157,24 +120,12 @@ budget, and Table~\ref{tab:budget-phase} breaks the GPU hours by phase.
     \end{table}
 \end{center}
 
-Storage is 200 GB at USD 0.05 per GB, about USD 10. Model weights with logs and
-result packages take about 180 GB, and workspace takes the rest. Retrieval APIs
-PubMed, arXiv, Semantic Scholar and OpenAlex run on free tiers with rate limits,
-so the direct cost is zero, but limits add time. Datasets GPQA and MMLU-Pro are
-public, so the cost is also zero. Printing and internet take a small fixed amount,
-about USD 15, and Overleaf is covered by the team. No extra license is needed.
+Costs for storage are estimated as \$10.00 based upon an initial cost of \$0.05/GB and a total of 200 GB. Logs and result package models will be approximately 180 GB in size while the remaining space will be used for the workspace. The direct costs of the retrieval API services from PubMed, arXiv, Semantic Scholar and OpenAlex are free due to their use of free tier service levels; however, the limits imposed may increase the time required to retrieve the data. As both GPQA and MMLU-Pro datasets are publically available, there were no additional costs associated with these datasets. Costs associated with printing (approximately \$15) and Internet connectivity were assumed to be fixed, therefore included in the overall estimate. Overleaf was provided to the team, thus eliminating any costs for this platform.
 
-An alternate budget was also prepared. Renting an A100 80GB instead costs about
-USD 0.68 to 1.50 per hour, or 204--450 for the same 300 hours. The saving is
-real but small, and it comes at a cost: weaker FP8 support means the final model
-trio would need tighter quantization or sequential loading, which adds
-engineering time and risk. The RTX PRO 6000 was selected because the Blackwell
-FP8 path keeps the pipeline simple and avoids that extra work.
+Additionally, an alternative budget was developed. Rented usage of an A100 80GB would be approximately \$0.68 - \$1.50/hour or 204 -- 450 dollars over the course of 300 hours. Although renting would produce significant savings over purchasing, the cost savings would be modest and come at a trade-off: reduced FP8 support from the Blackwell Path would necessitate tighter quantization or sequential loading, each of which would introduce engineering time and risk. Therefore, the RTX PRO 6000 was chosen because the Blackwell FP8 path would allow the pipeline to remain uncomplicated and avoid the engineering risks associated with those alternatives.
 
-The project has no revenue model. It is an academic deliverable, funded by the
-university and the team, and its outputs are the report and the open-source
-framework. Table~\ref{tab:budget-alt} shows the alternate budget for
-comparison.
+There is no revenue stream anticipated for this project. This project represents an academic deliverable produced by a university and a team with funding provided exclusively through grants awarded to the university and team. The only products expected from this effort include a written report and an open-source framework. An example of an alternate budget for comparison purposes is shown in Table~\\ref\{tab:budget-alt\}.
+
 
 \begin{center}
     \begin{table}[ht]
@@ -197,11 +148,8 @@ comparison.
     \end{table}
 \end{center}
 
-A 10 percent buffer, about USD 25 to 55, is kept for price shifts and extra
-hours for failed runs. If a run fails or a gate needs a fix week, the buffer
-covers up to 30 extra hours without changing the final plan. Cost control is
-simple. Runs are batched, logs are reused for ablations, and caching avoids
-repeat retrieval calls.
+A ten percent buffer (approximately \$25-\$55) is maintained to cover unexpected price increases and extended operating time in the event of a failed run. The buffer can be used to fund up to thirty additional hours of operation if either an ablation run fails or a maintenance call is required on a gate before the end of the plan period.
+
 
 \section{Complex Engineering Problem}
 
@@ -218,10 +166,10 @@ the subsections that follow give the rationale for each mapping.
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|}
             \hline
-            P1                & P2                                & P3                & P4                    & P5                         & P6                                & P7               \\
+            P1                 & P2                                & P3                & P4                    & P5                         & P6                                & P7               \\
             Depth of Knowledge & Range of Conflicting Requirements & Depth of Analysis & Familiarity of Issues & Extent of Applicable Codes & Extent of Stakeholder Involvement & Inter-dependence \\
             \hline
-            $\sqrt{}$         & $\sqrt{}$                         & $\sqrt{}$         & $\sqrt{}$             & $\sqrt{}$                  & $\times$                          & $\sqrt{}$        \\
+            $\sqrt{}$          & $\sqrt{}$                         & $\sqrt{}$         & $\sqrt{}$             & $\sqrt{}$                  & $\times$                          & $\sqrt{}$        \\
             \hline
         \end{tabular}
         \label{tab:p_solve}
@@ -302,16 +250,16 @@ each K for this project and why it is covered or not.
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
             \hline
-            Knowledge                     & Applied   & Where used                                      \\
+            Knowledge                    & Applied   & Where used                                                        \\
             \hline
-            K1: Natural sciences          & $\times$  & Not directly used; project is computing, not physics or chemistry \\
-            K2: Mathematics               & $\sqrt{}$ & Softmax, clamping, renormalization, probability \\
-            K3: Engineering fundamentals  & $\sqrt{}$ & System design, state machines, failure handling \\
-            K4: Specialist knowledge      & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy       \\
-            K5: Engineering methods       & $\sqrt{}$ & Experimental methodology, baseline comparison   \\
-            K6: Computational methods     & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                  \\
-            K7: Codes and practices       & $\sqrt{}$ & JSON, HTTP, TLS, version control                \\
-            K8: Research and context      & $\sqrt{}$ & Ethical constraints and use in scientific QA    \\
+            K1: Natural sciences         & $\times$  & Not directly used; project is computing, not physics or chemistry \\
+            K2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability                   \\
+            K3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling                   \\
+            K4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy                         \\
+            K5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison                     \\
+            K6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                                    \\
+            K7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                                  \\
+            K8: Research and context     & $\sqrt{}$ & Ethical constraints and use in scientific QA                      \\
             \hline
         \end{tabular}
         \label{tab:knowledge}
