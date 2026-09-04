@@ -155,9 +155,7 @@ A ten percent buffer (approximately \$25-\$55) is maintained to cover unexpected
 
 \subsection{Complex Problem Solving}
 
-The project qualifies as a complex engineering problem under the Washington
-Accord criteria. Table~\ref{tab:p_solve} maps the seven attributes P1--P7, and
-the subsections that follow give the rationale for each mapping.
+The project meets the definition of a complex engineering problem by meeting the seven attributes defined in the Washington Accord criteria. Each attribute is mapped to subsections in Table~\ref{tab:p_solve}, which follows.
 
 \begin{center}
     \begin{table}[ht]
@@ -178,67 +176,31 @@ the subsections that follow give the rationale for each mapping.
 
 \subsubsection{P1: Depth of Knowledge Required}
 
-The framework spans machine learning, natural language processing,
-retrieval-augmented generation, and distributed model serving. Solving it
-required specialist knowledge in these areas, from the trust update formula
-to the vLLM serving layer. Coverage for P1 is judged per Washington Accord
-K1--K8, as detailed in Table~\ref{tab:knowledge} after P7.
+This project required knowledge of multiple areas including machine learning, natural language processing, retrieval-augmentation generation, and distributed model serving. Therefore, solving the project required specialized knowledge in these areas, such as the trust update formula through the vLLM serving layer. The coverage for P1 is based on the Washington Accord K1-K8, as detailed in Table~\ref{tab:knowledge} after P7.
 
 \subsubsection{P2: Range of Conflicting Requirements}
 
-P2 is covered. The project had to balance several needs that pull in different
-directions. Accuracy competes with latency and cost. More rounds improve the
-signal but raise inference time and the GPU bill. Trust calibration competes
-with diversity, because strong weighting can silence a minority that the evidence
-has not yet covered. Evidence coverage competes with API rate limits. The team
-had to fix these together. Round caps and clamping bounds were set, and verdicts
-are handled in a conservative way, so no single need dominates.
+P2 is covered. The project needed to meet multiple competing requirements. Accuracy competed with latency and cost. More rounds improved the signal but increased both the inference time and the GPU bill. Strong weighting would limit diversity due to trust calibration. The need to cover evidence competed with API rate limits. Therefore, the team needed to resolve these together. Round caps and clamping bounds were established, and verdicts are conservatively resolved. Thus, none of the competing needs dominate.
 
 \subsubsection{P3: Depth of Analysis}
 
-P3 is covered. The problem has no textbook solution. The team had to run a
-comparative experiment with several baselines: majority voting, MoA, iMAD, and
-DebUnc. Metrics were built for the failure mode. The set includes four rates:
-answer accuracy, consensus-collapse, minority-preservation, and evidence-calibration.
-The injection point for a fabricated wrong consensus was built so the collapse
-can be measured under controlled pressure. This depth of test is why P3 is
-marked as covered.
+P3 is covered. There is no textbook solution to the problem. The team ran comparative experiments comparing several baseline systems: majority voting, MoA, iMAD, and DebUnc. Metrics were created to measure failure modes. Four types of metrics were developed: answer accuracy, consensus-collapse, minority-preservation, and evidence-calibration. An additional metric measuring the failure mode was the injection point for a fake wrong consensus; this allowed the team to measure collapse under controlled stress conditions. Therefore, the depth of test was sufficient to mark P3 as covered.
 
 \subsubsection{P4: Familiarity of Issues}
 
-P4 is covered. Sycophantic consensus in multi-agent LLM debate is a new research
-area. The closest work appeared between 2024 and 2026, and no standard solution
-exists. The issues were not familiar to the team at the start. A full literature
-review was done first, as shown in Chapter 2, before any design was fixed. This
-unfamiliarity is why P4 is marked as covered.
+P4 is covered. Multi-Agent LLM Debate is a novel research area. The most similar research that has been performed appears between 2024-2026; there is currently no standard method available for resolving issues related to sycophantic consensus in multi-agent LLM debates. At the beginning of the project, the issues were unfamiliar to the team. A complete review of current literature was conducted prior to designing any elements of the framework, as described in chapter 2. Therefore, this lack of familiarity is what makes P4 "covered".
 
 \subsubsection{P5: Extent of Applicable Codes}
 
-P5 is covered. General software standards apply. JSON (RFC 8259), HTTP over TLS,
-the OpenAI-compatible API, and JSON Schema validation all apply. No standard covers
-evidence-grounded trust in LLM debate. The area is therefore only partly
-standardized, and the framework defines its own rules for the trust score and the
-four verdicts. This mix of existing codes and new conventions is why P5 is marked
-as covered.
+P5 is covered. General software standards are applicable. JSON (RFC 8259) and HTTP over TLS are applicable. Additionally, since the framework uses an open AI compatible API, the general API standard applies. However, as previously stated, there is currently no applicable code that addresses evidence-grounded trust in LLM debates. As such, this area is only partially standardized and the framework defines its own rules for the trust score and four possible verdicts. Therefore, this combination of existing codes and new conventions make P5 "covered."
 
 \subsubsection{P6: Extent of Stakeholder Involvement}
 
-P6 is not covered. The project has no external stakeholders. The only people
-involved are the supervisor and the examiners. There is no industry partner and
-no community group that sets needs or reviews the result during the work. Future
-users of scientific QA tools could benefit, but they did not take part in design
-or testing. The team built the system as an academic FYDP, not as a product for
-a real client. The involvement is therefore narrow and limited to the university.
-For this reason P6 is marked as not covered, while the other P points remain
-covered.
+P6 is not covered. The project does not have any external stakeholders. The only individuals involved are the supervisor and the examiners. There is no industry partner and no community group that identifies stakeholder needs or evaluates results as part of the development process. While users who will use future scientific QA tools may benefit from this project, they do not participate in either the design or testing phases of the project. The framework was designed and tested as an Academic FYDP (Final Year Design Project); therefore, the engagement is very narrow and only within the University context. For this reason P6 is considered "not covered", while the other P points are still considered covered.
 
 \subsubsection{P7: Interdependence}
 
-P7 is covered. The confidence gate, the orchestrator, the claim decomposer, the
-retrieval subsystem, the trust updater, and the aggregator are tightly linked. A
-failure in retrieval cascades into the verdicts and then into the final answer
-through the trust score. The failure-isolation rule in Section 3.1.1 was added
-because of this link. The high coupling is why P7 is marked as covered.
+P7 is covered. The tight interdependencies between the Confidence Gate, Orchestrator, Claim Decomposer, Retrieval Subsystem, Trust Updater and Aggregator make it a candidate for P7. This means that if there is an error in the Retrieval Subsystem, this will be reflected in both Verdicts and ultimately the Final Answer through the Trust Score. Because of these interdependencies, P7 has been marked as "covered" with the addition of the Failure-Isolation Rule identified in Section 3.1.1.
 
 Table~\ref{tab:knowledge} details the profile. The paragraphs below explain
 each K for this project and why it is covered or not.
@@ -266,38 +228,21 @@ each K for this project and why it is covered or not.
     \end{table}
 \end{center}
 
-\paragraph{K1: Natural sciences} K1 is not covered. The project does not use
-physics or chemistry, and it does not use biology. It is a computing project
-that works with language models and retrieval. Natural science theory is not
-applied, so K1 is marked as not covered.
+\paragraph{K1: Natural sciences} K1 is not covered. In K1, there isn't anything about natural science. There is no physics, no chemistry, and no biology — this is purely a computing project that has to do with how you use language models for retrieval. Because we're applying no part of natural science theory to the problem, we can mark K1 as "not addressed."
 
-\paragraph{K2: Mathematics} K2 is covered. The trust update uses softmax,
-clamping, and renormalization, and the metrics use probability and statistics.
-These maths are applied in the trust formula and in the evaluation.
+\paragraph{K2: Mathematics} K2 has been addressed. We apply softmax, clamping, and renormalization in our trust update; and we also have probability and statistical measures when using our metrics. Both were applied to our trust formula, and both were applied to our evaluation.
 
-\paragraph{K3: Engineering fundamentals} K3 is covered. System design and failure
-handling with state machines are used throughout. Requirements and the confidence
-gate with the orchestration logic follow basic engineering design.
+\paragraph{K3: Engineering fundamentals} K3 is covered. State machines (the system's design and its failure handling) are at the heart of what we've done here. Basic engineering design is used by requirements and the confidence gate along with the orchestration logic.
 
-\paragraph{K4: Specialist knowledge} K4 is covered. LLMs, multi-agent debate,
-RAG, and sycophancy are the core of the work. This specialist view shapes the
-claim split, the retrieval, and the trust score.
+\paragraph{K4: Specialist knowledge} We've addressed K4. Our main focus of interest are LLMs (language models), multi-agent debate, RAG (Rebuttal Aggregation Graph), and sycophancy. This specialized way of thinking drives how we divide claims, how we retrieve information, and ultimately how we calculate trust.
 
-\paragraph{K5: Engineering methods} K5 is covered. The study uses an
-experimental method with controlled variables. Baselines are compared and results
-are reported with confidence intervals. Injection is tested in the same setup.
+\paragraph{K5: Engineering methods} K5 is covered. An experimental approach is being used with variable controls. Results are presented with confidence intervals and baselines are compared. All these studies were conducted in the same setup where injection was being tested.
 
-\paragraph{K6: Computational methods} K6 is covered. Python, PyTorch, and vLLM
-serve the models, and FastAPI serves the dashboard. Sentence-transformers reranks
-passages, and Git tracks changes.
+\paragraph{K6: Computational methods} K6 is covered. Our main application tools are Python, PyTorch, vLLM (to serve the model), and FastAPI (to serve the dashboard). Sentence-transformers (to re-rank passages) and Git (for version control) complete the suite of applications.
 
-\paragraph{K7: Codes and practices} K7 is covered. JSON under RFC 8259, HTTP
-with TLS, the OpenAI-compatible API, and JSON Schema are used. Version control
-and code style follow standard practice.
+\paragraph{K7: Codes and practices} K7 has been addressed. JSON under RFC 8259, HTTP with TLS, the OpenAI compatible API, and JSON Schema (as well as many others) were all applied as codes. Standard practices were followed regarding version control and coding style.
 
-\paragraph{K8: Research and context} K8 is covered. Ethical constraints on AI
-output and the use of scientific QA provide the context. Literature review and
-gap analysis set the research direction.
+\paragraph{K8: Research and context} K8 has been addressed. Scientific QA (scientific questions answering) provides us with our ethical bounds on the output from AIs — literature reviews, gap analyses provide the context for our research direction.
 
 The profile is broad rather than deep in one spot. The report applies K4 and K5
 in every chapter, and K6 and K7 in the implementation, which shows the range the
@@ -328,53 +273,23 @@ A1--A5, with rationales below.
 
 \subsubsection{A1: Range of Resources}
 
-A1 is covered. The project draws on three model families, four literature APIs,
-a rented Blackwell GPU, and six team members with different strengths.
-Coordinating these resources is a clear part of the work. The plan in Chapter 3
-assigns each task to a named member and tracks weeks and deliverables. This wide
-range is why A1 is marked as covered.
+A1 is covered. Three model family sources; Four Literature API's; Six team members; Rented Blackwell GPU. Coordinating these resources clearly has to be part of the work. The plan in Chapter 3 assigns each task to a specific team member and tracks weeks/deliverables. That is why A1 is labeled as covered.
 
 \subsubsection{A2: Level of Interaction}
 
-A2 is covered. The system interacts heavily with the outside world. Every debate
-round calls three external model endpoints and three literature APIs, and the cloud
-GPU is reached over the network. The team also interacts through a shared
-repository and weekly reviews. This high level of interaction is why A2 is marked
-as covered.
+A2 is covered. The system makes heavy use of the outside world. Every round of debating calls three external model API endpoints and three Literature API endpoints, and there is communication to/from the rented cloud GPU. Team communication occurs via the shared repository and weekly meeting. High degree of interactivity = why A2 is labeled as covered.
 
 \subsubsection{A3: Innovation}
 
-A3 is not covered. The framework combines existing ideas: multi-agent debate and
-RAG with trust weighting and reranking. It does not create a new device or a new
-theory. The change is a bounded trust score that updates with evidence, which is
-useful but stays at an incremental level. There is no patent-level or
-breakthrough innovation. For this reason A3 is marked as not covered, even though
-the combination itself is new for this project.
+A3 is not covered. The framework combines pre-existing concepts; multi-agent debate/RAG with trust-weighting/reranking. It creates no new device/new theory. The innovation is a bound trust-score that updates based upon evidence; useful, but still within an incremental level of innovation. No patent-able/break-through innovation exists. That is why A3 is labeled as "not covered", although it would represent a first time combination of concepts for this project.
 
 \subsubsection{A4: Consequences for Society and Environment}
 
-A4 is not covered. The work is a lab prototype, not a deployed product. Social
-impact is limited to more reliable research answers in a test setting, not a
-change in daily life or a large user group. Environmental impact is also small.
-The test uses about 300 GPU hours on shared cloud without fine-tuning, so energy
-use stays low. There is no large-scale rollout, so broad consequences are not
-present. For this reason A4 is marked as not covered.
+A4 is not covered. The work represents a lab prototype, NOT a production-deployed product. Any social-impact will be limited to providing more-reliable research results from a test-environment, rather than changing daily life/social habits, or supporting a large user-base. Similarly, environmental-impact will be minimal. Test uses approximately 300 GPU-hours on public-cloud using standard configurations/no-fine tuning - therefore energy usage will remain very-low. No large-scale deployment exists; therefore, broad societal-consequences do not exist. That is why A4 is labeled as "not covered".
 
 \subsubsection{A5: Familiarity}
 
-A5 is covered. Multi-agent debate and evidence verification were new territory
-for the team. The literature review phase and the baseline study with the step-by-step
-implementation plan were all built around that fact. Each module was started only
-after its background was understood. This low familiarity at the start is why A5
-is marked as covered.
+A5 is covered. Both multi-agent debate/evidence verification were uncharted territory for our team. Our literature-review phase and our baseline study that used a step-by-step implementation plan were both structured around the lack of prior experience with those areas. Only after we had studied each component sufficiently could we begin implementing each one. Lack of prior-experience with many components = why A5 is labeled as "covered".
 
 \section{Summary}
-The chapter fixed the standards behind the software, the hardware, and the
-communication layers, and recorded the economic, environmental, ethical, and
-social constraints that shaped the design. The budget analysis shows the project
-fits a student budget on a rented RTX PRO 6000 Blackwell GPU with a phase-wise
-split for the 300 hours and a 10 percent buffer. The complex engineering mapping
-shows six of seven P attributes are covered, with P6 not covered due to limited
-external stakeholder involvement. For knowledge, K2 to K8 are covered while K1
-is not. For activities, A1 and A2 are covered and A5 is also covered, while A3
-and A4 are not.
+The chapter defined the requirements for the software-layer, hardware-layer, and communication-layers and documented the economic, environmental, ethics-social constraints that have impacted design decisions. Budget-analysis demonstrates that the project can fit within a students' budget utilizing a rented RTX PRO 6000 Blackwell GPU with a phased split of costs over the 300 hours plus a 10\% buffer. The complex engineering mapping demonstrates that six out of seven P attributes are covered with only P6 being non-covered due to little to no input from external stakeholders. For knowledge, K2-K8 are covered while K1 is not. For activities, A1-A2 and A5 are covered while A3 and A4 are not.
