@@ -28,7 +28,9 @@ Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
 Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
 \newblock Debate or vote: Which yields better decisions in multi-agent large
   language models?
-\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~38, 2025.
+\newblock Spotlight presentation.
 
 \bibitem{pitre-etal-2025-consensagent}
 Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
@@ -155,7 +157,7 @@ Xian Yeow, Shunichi Lee, Lasitha Akatsuka, Vidyaratne Aman, A~Hareesh Kumar,
 Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
 \newblock {FREE-MAD}: Consensus-free multi-agent debate.
 \newblock In {\em Findings of the Association for Computational Linguistics:
-  ACL 2026}, 2026.
+  ACL 2026}, pages 31977--31997, 2026.
 
 \bibitem{chen2025self}
 Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
