@@ -2,7 +2,7 @@
 
 **Project:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
 
-**Last updated:** 2026-08-15
+**Last updated:** 2026-09-05
 
 ---
 
@@ -14,9 +14,9 @@
 | 2 | ConsensAgent (Pitre et al.) | 2025 | Findings of ACL | **Competitor (nearest neighbor)** | High | 2026-07-17 | [papers/02-consensagent-pitre-2025.md](papers/02-consensagent-pitre-2025.md) |
 | 3 | DebUnc (Yoffe et al.) | 2025 | Findings of EMNLP | **Competitor (closest on mechanism)** | Medium | 2026-07-17 | [papers/03-debunc-yoffe-2025.md](papers/03-debunc-yoffe-2025.md) |
 | 4 | MoA (Wang et al.) | 2025 | ICLR (Poster) | **Context (foundational arch.)** | Low | 2026-07-17 | [papers/04-moa-wang-2025.md](papers/04-moa-wang-2025.md) |
-| — | Estornell & Liu | 2024 | NeurIPS | Pending | Pending | — | — |
-| — | Yao et al. (Peacemaker) | 2025 | Preprint (withdrawn) | Pending | Pending | — | — |
 | 5 | Minority Sentinel (He et al.) | 2026 | SIGIR Workshop | **Competitor** | Medium | 2026-08-15 | [papers/05-minority-sentinel-he-2026.md](papers/05-minority-sentinel-he-2026.md) |
+| 6 | Multi-LLM Debate (Estornell & Liu) | 2024 | NeurIPS (Main) | **Context (theoretical)** | Low | 2026-09-05 | [papers/06-estornell-liu-2024.md](papers/06-estornell-liu-2024.md) |
+| — | Yao et al. (Peacemaker) | 2025 | Preprint (withdrawn) | Pending | Pending | — | — |
 
 ### Legend
 
@@ -45,7 +45,7 @@
 
 **Important context:**
 - MoA (Wang et al., 2025) — Foundational multi-model aggregation; the trust-blind, evidence-free baseline we improve on
-- [Pending: Estornell & Liu]
+- Multi-LLM Debate (Estornell & Liu, 2024) — Theoretical foundation; proves tyranny-of-the-majority and shared-misconception decay, fixed by pruning rather than evidence-grounded trust
 
 **Diagnostic / measurement (cite for problem motivation):**
 - [Pending: Yao et al.]
@@ -78,3 +78,4 @@
 | 2026-07-17 | MoA | Added as Paper #4 — Context (foundational arch.), Low threat | ICLR 2025 proceedings + OpenReview h0ZfDIrj7T + arXiv 2406.04692 |
 | 2026-07-17 | MoA | Venue corrected: ICLR 2025 **Poster** (was listed "Spotlight") | iclr.cc/virtual/2025/poster/28787 + OpenReview |
 | 2026-08-15 | Minority Sentinel | Added as Paper #5 — Competitor (closest on problem framing), Medium threat to novelty. Venue (AgentSearch Workshop @ SIGIR 2026, Melbourne) confirmed via paper footer; arXiv 2606.29270v1 (submitted 2026-06-28) verified | arXiv abs page + full paper text + PDF |
+| 2026-09-05 | Multi-LLM Debate (Estornell & Liu) | Added as Paper #6 — Context (theoretical), Low threat to novelty. Venue (NeurIPS 2024 Main, Vancouver) confirmed via proceedings page; 27-page PDF fetched and reviewed | NeurIPS proceedings + PDF full text |
