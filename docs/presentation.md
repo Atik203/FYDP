@@ -1,55 +1,51 @@
-# Presentation Script — Minority Sentinel Slides 10 & 11 (~1.5–2 min)
+# Presentation Script — Estornell & Liu Slides 12 & 13 (~1.5–2 min)
 
 > Written for non-native speakers: short sentences, one idea per sentence, ~120 words per minute.
 
 ---
 
-## Slide 10 — Minority Sentinel: Summary + Method + Results
+## Slide 12 — Multi-LLM Debate: Summary + Method + Results
 
 **Opening:**
 
-I am presenting **Minority Sentinel**. The full title asks a question: when should we overturn majority voting in multi-agent LLM debates? It comes from the **AgentSearch Workshop at SIGIR 2026**. The first author is Chuan He from UNSW Sydney.
+I am presenting **Multi-LLM Debate: Framework, Principals, and Interventions**. The authors are Andrew Estornell and Yang Liu. It comes from **NeurIPS 2024**, the Main Conference Track. This is our **theoretical foundation** paper.
 
 **The main idea:**
 
-Majority voting assumes that agents make **independent errors**. This assumption comes from the Condorcet Jury Theorem. But LLMs share training data. So their errors are **correlated**. The majority can be wrong together. It suppresses the correct minority. The paper calls this **Minority Truth**.
+This is the first paper that gives a **formal theory of debate**. It treats last-round responses as examples. Each agent updates its beliefs the way models learn from examples. This is Lemma 4.2 in the paper.
 
-**The finding:**
-
-The authors ran debates with **three different models**: GPT-4o-mini, Gemini, and Claude. Six benchmarks, over 1,700 questions. In 39 percent of cases, the vote split **two against one**. In 25.5 percent of those split cases, the **minority was correct**. Majority voting recovered only 74.3 percent. A perfect oracle would reach 84.3 percent. So there is a **10 point recovery margin**.
+Then it proves three principles. **Theorem 5.1**: identical models produce **static debate**. The discussion freezes on one idea. **Theorem 5.2**: similar responses cause the **tyranny of the majority**. Repeated answers drown out the rest. **Theorem 5.4**: when many agents share the **same misconception**, accuracy falls as more agents share it. Adding more models does not help.
 
 **How it works:**
 
-The system has two phases: **Diagnosis** and **Cure**. In Diagnosis, the three agents debate across three rounds. One independent round first, then two debate rounds. Each agent must say if it changed its position, and why. After the debate, the system extracts a **debate fingerprint**. 22 features. They capture how agents argued, how the votes looked, and the quality of the reasoning. A small **LightGBM classifier** then decides: flip the vote, or keep it. Flipping happens only when it is safe. The threshold keeps **95 percent of correct majorities**.
+They design **three interventions**. First, **diversity pruning**. Keep the responses that are most different from each other. Second, **quality pruning**. Keep the responses closest to the question. Third, **misconception refutation**. An LLM lists the errors in a response, refutes them, and rewrites a corrected version.
 
 **Key results:**
 
-Overall **Net Gain plus 1.71 percent**. 39 correct flips, 9 wrong flips. **Flip Precision 81.2 percent**. Positive gain on **all six datasets**. Stable across **20 random seeds**. The interesting part: an **LLM judge fails**. GPT-4o reading the debate logs gets **negative net gain**, minus 1.37 percent. The judge shares the same blind spots as the debating agents. A non-LLM classifier works better. The paper calls this **cognitive orthogonality**.
+Tested on **four benchmarks**: BoolQ, MMLU, TruthfulQA, and MathQ. With GPT, Llama, and Mistral models. Six agents, ten rounds. MMLU accuracy rose from **0.74 to 0.79**. Math rose from **0.88 to 0.93**. TruthfulQA rose from **0.63 to 0.69**. The gain is largest exactly where responses are **most similar**. That confirms the theory.
 
 ---
 
-## Slide 11 — Minority Sentinel: Relevance & Gap
+## Slide 13 — Estornell & Liu: Relevance & Gap
 
 **Why it matters to us:**
 
-This is our **closest competitor on problem framing**. It measures the exact collapse we target. 25.5 percent of split cases, minority correct. A 10 point margin.
+This paper **proves our problem is real**. Debate converges to the majority. Not by accident, but by theory. That is our starting point.
 
-Their **LLM-as-Judge failure is direct evidence for our Challenge C**. Correlated errors cannot be fixed by another LLM. That is our core argument.
+Their finding on **shared misconceptions** motivates our design. Models trained on similar data share the same blind spots. So we need **heterogeneous agents** plus outside evidence.
 
-They also show that **behavioral signals carry information**. How agents argued tells us if the consensus is reliable. This informs our own design.
+Their echo-rate plots are the precedent for our **injection protocol**. We measure the same collapse, but under controlled pressure.
 
 **The gap:**
 
-First, it is **post-hoc only**. The flip decision happens **after** the debate. The majority pressure has already done its damage. The minority argument was already weakened.
+First, the theory needs **concept distributions** that cannot be computed. They use sentence embeddings as a proxy. This proxy **fails on arithmetic**. Embeddings cannot tell two calculations apart.
 
-Second, the signal is **self-referential**. The fingerprint comes from the same models whose errors are correlated. There is **no external evidence**.
+Second, there is **no external verification**. The method rearranges peer text. It never checks a claim against a real source.
 
-Third, it is **supervised**. It needs labeled divergent samples. And per-dataset threshold tuning.
+Third, there is **no persistent trust**. Pruning affects only the next round. No agent carries a standing across rounds.
 
-Fourth, the audit features need **extra GPT-4o calls**. That adds cost, and brings back LLM bias.
-
-Fifth, it is **fixed at three agents and two rounds**. Only 686 divergent samples. Small numbers mean threshold risk.
+Fourth, refutation **re-prompts every debater**. That is costly. And it returns no citations.
 
 **Our contribution:**
 
-We re-weight trust **during** the debate. Grounded in **external retrieved evidence**. So the minority argument is never crushed in the first place. Minority Sentinel is complementary to us. It can serve as a post-hoc safety valve **on top of** our in-debate calibration.
+We keep every response. But we re-weight **who counts**. A bounded trust score comes from **retrieved evidence**. With citations in the final answer. Pruning changes what the next round reads. We change whose evidence-backed position decides.
