@@ -16,7 +16,8 @@
 | 4 | MoA (Wang et al.) | 2025 | ICLR (Poster) | **Context (foundational arch.)** | Low | 2026-07-17 | [papers/04-moa-wang-2025.md](papers/04-moa-wang-2025.md) |
 | 5 | Minority Sentinel (He et al.) | 2026 | SIGIR Workshop | **Competitor** | Medium | 2026-08-15 | [papers/05-minority-sentinel-he-2026.md](papers/05-minority-sentinel-he-2026.md) |
 | 6 | Multi-LLM Debate (Estornell & Liu) | 2024 | NeurIPS (Main) | **Context (theoretical)** | Low | 2026-09-05 | [papers/06-estornell-liu-2024.md](papers/06-estornell-liu-2024.md) |
-| — | Yao et al. (Peacemaker) | 2025 | Preprint (withdrawn) | Pending | Pending | — | — |
+| 7 | Debate or Vote (Choi et al.) | 2025 | NeurIPS (Spotlight) | **Competitor (mechanism challenge)** | High | 2026-09-05 | [papers/07-debate-or-vote-choi-2025.md](papers/07-debate-or-vote-choi-2025.md) |
+| 8 | FREE-MAD (Cui et al.) | 2026 | Findings of ACL | **Competitor (consensus-free)** | Medium | 2026-09-05 | [papers/08-freemad-cui-2026.md](papers/08-freemad-cui-2026.md) |
 
 ### Legend
 
@@ -42,6 +43,8 @@
 - ConsensAgent (Pitre et al., 2025) — Nearest neighbor; closest published sycophancy mitigation (High threat to novelty)
 - DebUnc (Yoffe et al., 2025) — Closest on *mechanism* (in-debate influence reweighting); its Ground Truth oracle is our strongest motivation for an external trust signal
 - Minority Sentinel (He et al., 2026) — Competitor; strongest quantified documentation of the minority-suppression phenomenon (25.5% of divergent cases) + LLM-as-Judge failure (NG −1.37%); post-hoc flip, not in-debate re-weighting
+- Debate or Vote (Choi et al., 2025) — Mechanism challenge; martingale proof that neutral debate ≈ voting forces our vote-vs-debate ablation (High threat to novelty)
+- FREE-MAD (Cui et al., 2026) — Consensus-free competitor; trajectory scoring without evidence grounding sharpens our differentiation
 
 **Important context:**
 - MoA (Wang et al., 2025) — Foundational multi-model aggregation; the trust-blind, evidence-free baseline we improve on
@@ -63,6 +66,8 @@
 | Uncertainty-based in-loop weighting | DebUnc (Yoffe et al., 2025) — token-entropy self-confidence via prompt or attention-scaling | Ours uses *external retrieved evidence*, not internal self-reported uncertainty; DebUnc's own Ground Truth oracle shows self-confidence is the binding constraint |
 | Post-hoc sycophancy detection | He et al. (Minority Sentinel, 2026) | After debate ends, not during — binary flip on behavioral fingerprint, no in-debate re-weighting, no external grounding |
 | Theoretical majority-convergence analysis | Estornell & Liu (2024) | Theoretical, not a deployed system |
+| Vote-vs-debate disentanglement | Choi et al. (2025) — neutral debate is a martingale, voting explains most gains | Ours adds the exogenous correction channel (evidence-grounded trust) their theory predicts should help |
+| Consensus-free trajectory scoring | FREE-MAD (Cui et al., 2026) — anti-conformity prompt + shift-score dict, no retrieval | Ours scores evidence support per claim with persistent trust, not opinion shifts |
 
 ---
 
@@ -79,3 +84,5 @@
 | 2026-07-17 | MoA | Venue corrected: ICLR 2025 **Poster** (was listed "Spotlight") | iclr.cc/virtual/2025/poster/28787 + OpenReview |
 | 2026-08-15 | Minority Sentinel | Added as Paper #5 — Competitor (closest on problem framing), Medium threat to novelty. Venue (AgentSearch Workshop @ SIGIR 2026, Melbourne) confirmed via paper footer; arXiv 2606.29270v1 (submitted 2026-06-28) verified | arXiv abs page + full paper text + PDF |
 | 2026-09-05 | Multi-LLM Debate (Estornell & Liu) | Added as Paper #6 — Context (theoretical), Low threat to novelty. Venue (NeurIPS 2024 Main, Vancouver) confirmed via proceedings page; 27-page PDF fetched and reviewed | NeurIPS proceedings + PDF full text |
+| 2026-09-05 | Debate or Vote (Choi et al.) | Added as Paper #7 — Competitor (mechanism challenge), High threat to novelty. Venue (NeurIPS 2025 Spotlight) confirmed via OpenReview + arXiv 2508.17536v2; forum fetch bot-walled, abstract + metadata verified | OpenReview landing page + arXiv abs page |
+| 2026-09-05 | FREE-MAD (Cui et al.) | Added as Paper #8 — Competitor (consensus-free), Medium threat to novelty. Venue (Findings of ACL 2026, pp. 31977–31997) confirmed via ACL Anthology PDF footer + 21-page full text | ACL Anthology PDF full text |
