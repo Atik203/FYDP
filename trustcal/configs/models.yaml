@@ -1,0 +1,16 @@
+# The ONLY file that changes between Dev (Ph 0-2) and Final (Ph 3-5).
+# Dev stack runs at Q4/FP8 (~28GB total) on an RTX A6000 48GB.
+# Final stack (Ph 3-5) runs on an A100 80GB — swap `agents`, nothing else.
+
+rounds: 3
+
+agents:
+  - { role: "agent1", model: "Qwen/Qwen3.5-9B", port: 8000, quant: "q4" }
+  - { role: "agent2", model: "google/gemma-4-12B", port: 8001, quant: "q4" }
+  - { role: "agent3", model: "mistralai/Ministral-3-14B-Instruct-2512", port: 8002, quant: "fp8" }
+
+final_phase:
+  agents:
+    - { role: "agent1", model: "Qwen/Qwen3.6-27B", port: 8000, quant: "q4" }
+    - { role: "agent2", model: "google/gemma-4-26B-A4B", port: 8001, quant: "q4" }
+    - { role: "agent3", model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506", port: 8002, quant: "q4" }

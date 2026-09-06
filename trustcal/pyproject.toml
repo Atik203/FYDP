@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trustcal"
+version = "0.1.0"
+description = "Trust-calibrated multi-agent scientific deliberation pipeline (FYDP)"
+requires-python = ">=3.10"
+dependencies = [
+  "openai>=1.40",
+  "langgraph>=0.2",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "scikit-learn>=1.4",
+  "sentence-transformers>=3.0",
+  "datasets>=2.19",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/trustcal"]
+pythonpath = ["src"]

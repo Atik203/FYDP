@@ -33,3 +33,11 @@ dist-ssr
 .claude
 .agents
 config.bat
+
+# FYDP pipeline (Python)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+/trustcal/.env
+/trustcal/results/
