@@ -22,26 +22,28 @@ Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressur
 
 | Command | Purpose |
 | --- | --- |
-| `npm install` | Install deps |
-| `npm run dev` | Vite dev server with HMR |
-| `npm run build` | `tsc -b` typecheck → `vite build` → prerender all routes |
-| `npm run preview` | Serve the production build |
-| `npm run lint` | Oxlint |
+| `npm install` (in `frontend/`) | Install deps |
+| `npm run dev` (in `frontend/`) | Vite dev server with HMR |
+| `npm run build` (in `frontend/`) | `tsc -b` typecheck → `vite build` → prerender all routes |
+| `npm run preview` (in `frontend/`) | Serve the production build |
+| `npm run lint` (in `frontend/`) | Oxlint |
 
-Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked.
+All app commands run from the `frontend/` directory — that's the Vercel root. Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked.
 
 ## Layout
 
 ```text
-src/
-  components/layout/   SiteNav, SiteFooter, PageHeader
-  components/shared/   Diagrams (ArchitectureFlow, PipelineFlow), TrustSimulator,
-                       tables, Timeline, Callout, and reusable UI
-  context/             ThemeContext provider
-  data/                Page content (ideas.ts, overview.ts, papers.ts)
-  pages/               One component per route
-scripts/prerender.mjs  Headless-Chrome prerender, runs after vite build
+frontend/            React app (Vite root; see Routes below)
+  src/
+    components/layout/   SiteNav, SiteFooter, PageHeader
+    components/shared/   Diagrams (ArchitectureFlow, PipelineFlow), TrustSimulator,
+                         tables, Timeline, Callout, and reusable UI
+    context/             ThemeContext provider
+    data/                Page content (ideas.ts, overview.ts, papers.ts)
+    pages/               One component per route
+  scripts/prerender.mjs  Headless-Chrome prerender, runs after vite build
 docs/                  Research blueprint + literature-review guide
+roadmap.md             Phase-by-phase execution plan (blueprint §12–13)
 literature_review/
   index.md             Master paper matrix / gap map / verification log
   papers/              One detailed review file per paper (NN-slug-author-year.md)
@@ -49,7 +51,7 @@ literature_review/
 
 ## Routes
 
-Defined in `src/App.tsx`; the prerender list in `scripts/prerender.mjs` must match.
+Defined in `frontend/src/App.tsx`; the prerender list in `frontend/scripts/prerender.mjs` must match.
 
 | Path | Page | Notes |
 | --- | --- | --- |
@@ -60,7 +62,7 @@ Defined in `src/App.tsx`; the prerender list in `scripts/prerender.mjs` must mat
 | `/proposal` | ProposalPage | |
 | `/slide` | SlidePage | Projector deck, not in nav; keyboard-nav only |
 
-When you add or remove a route, update **both** `src/App.tsx` and the `routes` array in `scripts/prerender.mjs`, or the new page won't be prerendered.
+When you add or remove a route, update **both** `frontend/src/App.tsx` and the `routes` array in `frontend/scripts/prerender.mjs`, or the new page won't be prerendered.
 
 ## Conventions
 
