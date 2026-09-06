@@ -15,7 +15,10 @@ The core idea: in multi-agent LLM debate, a confidently wrong majority can press
 
 ## Getting started
 
+The React app lives in `frontend/`:
+
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
@@ -44,25 +47,27 @@ The dev server runs at the URL Vite prints (default `http://localhost:5173`).
 ## Project structure
 
 ```text
-src/
-  components/
-    layout/     Nav, footer, page header
-    shared/     Diagrams (ArchitectureFlow, PipelineFlow), TrustSimulator,
-                tables, timeline, and other reusable UI
-  context/      Theme provider
-  data/         Page content (ideas, overview, papers)
-  pages/        One component per route
-scripts/
-  prerender.mjs Post-build static prerendering via headless Chrome
+frontend/        React + Vite app (site source, configs, scripts)
+  src/
+    components/
+      layout/     Nav, footer, page header
+      shared/     Diagrams (ArchitectureFlow, PipelineFlow), TrustSimulator,
+                  tables, timeline, and other reusable UI
+    context/      Theme provider
+    data/         Page content (ideas, overview, papers)
+    pages/        One component per route
+  scripts/
+    prerender.mjs Post-build static prerendering via headless Chrome
 docs/           Research blueprint and literature-review guide
+roadmap.md      Phase-by-phase execution plan (blueprint §12–13)
 literature_review/
   papers/       Per-paper detailed review entries
 ```
 
 ## Prerendering
 
-`npm run build` runs [scripts/prerender.mjs](scripts/prerender.mjs) after the Vite build. It launches headless Chrome, visits each route, and writes the fully-rendered HTML to `dist/<route>/index.html` so crawlers see real content instead of an empty SPA shell. If Chrome can't be found, prerendering is skipped with a warning and the build still succeeds.
+`npm run build` runs [frontend/scripts/prerender.mjs](frontend/scripts/prerender.mjs) after the Vite build. It launches headless Chrome, visits each route, and writes the fully-rendered HTML to `frontend/dist/<route>/index.html` so crawlers see real content instead of an empty SPA shell. If Chrome can't be found, prerendering is skipped with a warning and the build still succeeds.
 
 ## Deployment
 
-Configured for Vercel via [vercel.json](vercel.json).
+Configured for Vercel via [frontend/vercel.json](frontend/vercel.json) — the project's Root Directory is `frontend`.
