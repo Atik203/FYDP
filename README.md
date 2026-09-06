@@ -58,6 +58,10 @@ frontend/        React + Vite app (site source, configs, scripts)
     pages/        One component per route
   scripts/
     prerender.mjs Post-build static prerendering via headless Chrome
+trustcal/        Python pipeline (Phase 0 skeleton; see docs/project_structure.md)
+  src/trustcal/   inference, agents, retrieval, trust, orchestrator, eval
+  configs/        models.yaml (Dev→Final swap), datasets.yaml
+  scripts/        serve.sh, repro_mad.py (Gate 0), smoke_test.py
 docs/           Research blueprint and literature-review guide
 roadmap.md      Phase-by-phase execution plan (blueprint §12–13)
 literature_review/

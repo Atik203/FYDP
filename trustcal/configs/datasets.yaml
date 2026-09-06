@@ -1,0 +1,30 @@
+# §8 Dataset Plan. Pin snapshot values at Phase 0 freeze and never move them mid-project.
+# BrokenMath/BrokenArXiv are adversarial/worst-case by construction — frame results that way.
+
+datasets:
+  brokermath:
+    source: "INSAIT-Institute (HuggingFace)"
+    role: "primary adversarial stress test"
+    filtering: "divergent-answer filter per §5.4 Step 1 (~60-70% retention)"
+  brokenarxiv:
+    source: "MathArena (monthly snapshots)"
+    role: "adversarial, monthly-refreshed"
+    snapshot: "0226-0526"
+    filtering: "same as brokermath"
+  hle:
+    source: "cais/hle"
+    role: "hard scientific reasoning ceiling"
+    note: "click-through approval required — apply in Phase 0"
+  gpqa:
+    source: "public"
+    role: "stable comparison baseline"
+  mmlu_pro:
+    source: "public"
+    role: "stable comparison baseline"
+
+seeds: [1, 2, 3]
+rounds: 3
+
+sample_caps:
+  pilot: 50
+  main: 1000
