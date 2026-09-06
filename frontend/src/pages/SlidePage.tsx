@@ -1518,7 +1518,264 @@ function MinoritySlideTwo() {
   );
 }
 
-/* ── Slide 12: Thank you ─────────────────────────────────────────── */
+/* ── Slide 12: Estornell & Liu — Summary + Method + Results ─────── */
+function EstornellSlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#e0e7ff", color: ACCENT }}
+        >
+          Paper Review · Theoretical Foundation
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Multi-LLM Debate: Framework, Principals, and Interventions
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Andrew Estornell, Yang Liu · 2024</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
+            NeurIPS 2024 (Main)
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            proceedings.neurips.cc · 32e07a11
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              First <b>Bayesian theory of debate</b> — prior-round responses act
+              as in-context examples skewing each agent's posterior.
+            </Bullet>
+            <Bullet>
+              <b>Theorem 5.1:</b> identical models → static dynamics, debate
+              freezes on one concept.
+            </Bullet>
+            <Bullet>
+              <b>Theorem 5.2:</b> similar responses →{" "}
+              <b>tyranny of the majority</b>; shared misconceptions decay
+              accuracy (Thm 5.4).
+            </Bullet>
+            <Bullet>
+              Three fixes: <b>diversity pruning</b> + <b>quality pruning</b> +{" "}
+              <b>misconception refutation</b>.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[2cqh]">
+            <div className="text-center">
+              <div
+                className="text-[7cqh] font-extrabold leading-none"
+                style={{ color: TEAL }}
+              >
+                .74 → .79
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                MMLU (6×GPT-3.5)
+              </div>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-[7cqh] font-extrabold leading-none"
+                style={{ color: ACCENT }}
+              >
+                .88 → .93
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                Math (6×GPT-3.5)
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
+              style={{ background: "#f1f5f9" }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: "#475569" }}
+              >
+                across 4 benchmarks
+              </div>
+              <div
+                className="text-[2cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                BoolQ · MMLU · TruthfulQA · MathQ
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          Theory → Intervention Pipeline
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Latent-concept framework",
+            "Prove static dynamics (Thm 5.1)",
+            "Prove majority tyranny (Thm 5.2)",
+            "Prune + refute responses",
+            "Test on 4 benchmarks",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 13: Estornell & Liu — Relevance + Gap ─────────────────── */
+function EstornellSlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#e0e7ff", color: ACCENT }}
+        >
+          Estornell &amp; Liu · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          The Theory Behind Our Problem — But No Evidence Fix
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>Formal proof</b> that debate converges to the majority — not an
+              accident, but expected.
+            </Bullet>
+            <Bullet>
+              <b>Shared-misconception decay</b> (Thm 5.4) motivates heterogeneous
+              agents + external retrieval.
+            </Bullet>
+            <Bullet>
+              Echo-rate plots are the precedent for our{" "}
+              <b>injection protocol</b>.
+            </Bullet>
+            <Bullet>
+              Pruning changes <b>what the next round reads</b> — we change{" "}
+              <b>whose evidence counts</b>.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              Concept distributions are <b>intractable</b> — proxied by ADA-2
+              embeddings, weak on arithmetic.
+            </Bullet>
+            <Bullet>
+              <b>No external verification</b> — rearranges peer text, never
+              checks claims against sources.
+            </Bullet>
+            <Bullet>
+              <b>No persistent trust</b> — pruning affects one round only, not
+              agent standing.
+            </Bullet>
+            <Bullet>
+              Refutation <b>re-prompts every debater</b> — costly, no citations
+              returned.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            We keep every response but re-weight who counts — a bounded trust
+            score from retrieved evidence, with citations in the final answer.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 14: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -1562,6 +1819,8 @@ const SLIDES = [
   MoaSlideTwo,
   MinoritySlideOne,
   MinoritySlideTwo,
+  EstornellSlideOne,
+  EstornellSlideTwo,
   ThankYouSlide,
 ];
 
