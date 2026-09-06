@@ -17,13 +17,32 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 
 **Objective:** literature freeze, environment setup, reproduce vanilla MAD.
 
+**Status: code part complete** (pushed to main) — `trustcal/` package with `setup.sh`, `configs/`, `src/trustcal/{config,inference,agents,retrieval,trust,orchestrator,eval}`, `scripts/{serve.sh,repro_mad.py,smoke_test.py,verify_env.py}`, `references.bib` (25 entries), trust math + boundedness tests passing. Remaining Phase 0 work is manual — checklist below.
+
 **Keypoints:**
-- Repo skeleton per `docs/project_structure.md` (setup.sh, configs/, src/fydp/{inference,agents,retrieval,trust,orchestrator,eval})
 - vLLM multi-model serving: all 3 Dev models load + generate correctly on the A6000 before any orchestration code
 - LangGraph StateGraph core only (videos 1–6, not the whole library)
 - **Gate 0:** vanilla MAD reproduction (Du et al. 2023) on a GPQA slice — base debate loop works independent of our contributions
 - Apply for HLE access now (approval lead time), freeze dataset snapshots
 - Deliverables: `references.bib`, working serve.sh, MAD reproduction script, Month-1 pilot design finalized
+
+### Phase 0 — Manual checklist (do these on the GPU pod)
+
+- [ ] **Rent the GPU pod** — RunPod (or Vast.ai): search template `RunPod PyTorch 2.x`, GPU = **RTX A6000 48GB**, storage ≥ 100GB persistent volume (keeps models + results across restarts). Approx $0.53/hr.
+- [ ] **Clone the repo on the pod** — open the pod's terminal (RunPod: Connect → Terminal):
+  `git clone https://github.com/Atik203/FYDP.git /workspace/fydp && cd /workspace/fydp/trustcal`
+- [ ] **Run the one-command setup** — `bash setup.sh`. This installs all pinned Python deps, downloads the 3 Dev models (~28GB) to `HF_HOME`, starts vLLM on ports 8000–8002, and runs the environment verification (imports + versions + server health). Expected finish: `setup.sh complete — vLLM on :8000-8002`.
+- [ ] **Confirm the health check passed** — `python scripts/verify_env.py --check-servers` should print `server OK` for ports 8000/8001/8002 and version lines for openai/numpy/datasets/vllm. If a model fails, re-run `bash scripts/serve.sh` and check the log for OOM (`--gpu-memory-utilization` too high on the card).
+- [ ] **Apply for HLE access (do now, lead time)** — go to https://huggingface.co/datasets/cais/hle → request access (click-through approval). Record the approval email. Fallback if denied: GPQA-Diamond subset (pre-approved in §8).
+- [ ] **Freeze dataset snapshots** — confirm the BrokenArXiv monthly snapshot range **0226–0526** is recorded in `configs/datasets.yaml` (already there) and note the exact snapshot URLs in `references.bib`/notes so results cite the exact version.
+- [ ] **Run Gate 0 (vanilla MAD reproduction)** — `python scripts/repro_mad.py --limit 10`. Expected: 3 agents answer the same question, 3 rounds, positions print. Gate 0 = the loop completes and produces coherent per-agent answers.
+- [ ] **Learn LangGraph core** — CampusX Agentic AI playlist **videos 1–6 only** (StateGraph, nodes/edges, conditional edges, memory), then `pip show langgraph` to confirm the installed version matches the tutorial.
+- [ ] **Finalize the Month-1 pilot Go/No-Go criterion** — decide now, in writing: e.g. "pilot passes if trust-weight shift changes the final aggregation on ≥ 15/25 toy questions where evidence contradicts the majority; otherwise report as negative result" (blueprint §18.6).
+- [ ] **Verify references.bib** — `trustcal/references.bib` was copied from `FYDP_Summer/fydp.bib` (25 entries); spot-check iMAD (AAAI 2026), MoA (ICLR 2025), ConsensAgent (Findings ACL 2025), DebUnc (Findings EMNLP 2025) against ACL Anthology/DOI.
+
+### Phase 0 — Done criteria
+
+- [ ] All checkboxes above ticked + Gate 0 reproduction log saved under `trustcal/results/gate0/` (folder is gitignored by design).
 
 ---
 
