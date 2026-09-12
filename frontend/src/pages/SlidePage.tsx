@@ -1775,7 +1775,266 @@ function EstornellSlideTwo() {
   );
 }
 
-/* ── Slide 14: Thank you ─────────────────────────────────────────── */
+/* ── Slide 14: MAST (Cemri et al.) — Summary + Method + Results ─── */
+function MastSlideOne() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2.2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#fef3c7", color: AMBER }}
+        >
+          Paper Review · Failure Taxonomy
+        </div>
+        <h1
+          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          Why Do Multi-Agent LLM Systems Fail?
+        </h1>
+        <div
+          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          style={{ color: DEEP_INK }}
+        >
+          <span>Mert Cemri et al. (UC Berkeley) · 2025</span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span className="flex items-center gap-[0.5cqw]">
+            <BarChart3 size="2.3cqh" style={{ color: AMBER }} />
+            NeurIPS 2025 (Datasets &amp; Benchmarks)
+          </span>
+          <span style={{ color: "#94a3b8" }}>|</span>
+          <span
+            className="flex items-center gap-[0.5cqw]"
+            style={{ color: ACCENT }}
+          >
+            <Link2 size="2.3cqh" />
+            arxiv.org/abs/2503.13657
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="What It Does"
+          color={ACCENT}
+        >
+          <ul>
+            <Bullet>
+              Builds <b>MAST-Data</b>: 1,642 annotated execution traces from{" "}
+              <b>7 popular multi-agent frameworks</b>.
+            </Bullet>
+            <Bullet>
+              Builds <b>MAST</b>: 14 failure modes in 3 categories — system
+              design, inter-agent misalignment, task verification.
+            </Bullet>
+            <Bullet>
+              Human annotators agree at <b>κ = 0.88</b>; an LLM-as-judge pipeline
+              reaches <b>κ = 0.77</b> and scales annotation.
+            </Bullet>
+            <Bullet>
+              Failures are <b>design-level</b> — they repeat across model
+              families and tasks.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Key Results"
+          color={TEAL}
+        >
+          <div className="flex flex-col justify-center h-full gap-[1.8cqh]">
+            <div className="text-center">
+              <div
+                className="text-[6cqh] font-extrabold leading-none"
+                style={{ color: AMBER }}
+              >
+                41–86.7%
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                failure rate across 7 SOTA open-source MAS
+              </div>
+            </div>
+            <div className="text-center">
+              <div
+                className="text-[4.8cqh] font-extrabold leading-none"
+                style={{ color: ACCENT }}
+              >
+                14 modes · 3 categories
+              </div>
+              <div
+                className="text-[2.3cqh] font-semibold"
+                style={{ color: NEAR_BLACK }}
+              >
+                first grounded taxonomy of MAS failures
+              </div>
+            </div>
+            <div
+              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
+              style={{ background: "#f1f5f9" }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                style={{ color: "#475569" }}
+              >
+                MAST-guided fix
+              </div>
+              <div
+                className="text-[2cqh] font-bold leading-snug"
+                style={{ color: DEEP_INK }}
+              >
+                ChatDev task success <b>+9.4%</b> after a workflow change
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-[2cqh]">
+        <div
+          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
+          style={{ color: AMBER }}
+        >
+          From Traces to Taxonomy
+        </div>
+        <div className="flex items-stretch gap-[0.6cqw]">
+          {[
+            "Run 7 popular MAS",
+            "Collect 1,642 traces",
+            "Annotate with MAST (κ=0.88)",
+            "Scale with LLM judge (κ=0.77)",
+            "Diagnose + targeted fixes",
+          ].map((step, i, arr) => (
+            <div key={step} className="flex items-center flex-1">
+              <div
+                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+                style={{
+                  borderColor: AMBER,
+                  background: "#fffbeb",
+                  color: NEAR_BLACK,
+                }}
+              >
+                {step}
+              </div>
+              {i < arr.length - 1 && (
+                <ArrowRight
+                  size="2.6cqh"
+                  style={{ color: AMBER }}
+                  className="mx-[0.3cqw] flex-shrink-0"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 15: MAST — Relevance + Gap ────────────────────────────── */
+function MastSlideTwo() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <div className="mb-[2cqh]">
+        <div
+          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+          style={{ background: "#fef3c7", color: AMBER }}
+        >
+          MAST · Relevance &amp; Gap
+        </div>
+        <h1
+          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
+          style={{ color: NEAR_BLACK }}
+        >
+          The Failure Map Behind Our Problem — Diagnostic, Not Corrective
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="Relevant to Our Idea"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              Strongest evidence that MAS fail in{" "}
+              <b>recurring, classifiable ways</b> — 41–86.7% of runs.
+            </Bullet>
+            <Bullet>
+              Two categories map to our target:{" "}
+              <b>inter-agent misalignment</b> (correct information not used) and{" "}
+              <b>task verification</b> (premature consensus, unverified claims).
+            </Bullet>
+            <Bullet>
+              Its <b>κ-validated LLM-judge pipeline</b> is a precedent for our
+              evaluation and human study.
+            </Bullet>
+            <Bullet>
+              Gives our motivation and failure analysis an{" "}
+              <b>independently validated vocabulary</b>.
+            </Bullet>
+          </ul>
+        </Card>
+
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Gap / Limitations"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-between h-full">
+            <Bullet>
+              <b>Diagnostic only</b> — it classifies and measures failures but
+              proposes no mechanism to fix them.
+            </Bullet>
+            <Bullet>
+              Says robust reliability needs{" "}
+              <b>more than isolated fixes</b> — correction is left to future
+              work.
+            </Bullet>
+            <Bullet>
+              Does not isolate <b>sycophancy as a trust-signal problem</b>;
+              misalignment is one broad category among many.
+            </Bullet>
+            <Bullet>
+              <b>No external evidence and no in-debate trust</b> — nothing ties
+              agent influence to verified claims.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
+        style={{ background: TEAL }}
+      >
+        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
+        <div>
+          <div
+            className="text-[2.1cqh] font-bold uppercase tracking-wide"
+            style={{ color: "#d1fae5" }}
+          >
+            Our Contribution Fills This Gap
+          </div>
+          <div
+            className="text-[2.7cqh] font-extrabold leading-snug"
+            style={{ color: "#ffffff" }}
+          >
+            MAST shows where multi-agent systems break. We supply the missing
+            corrective mechanism — evidence-grounded trust weighting that keeps a
+            correct minority alive during the debate.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 16: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -1821,6 +2080,8 @@ const SLIDES = [
   MinoritySlideTwo,
   EstornellSlideOne,
   EstornellSlideTwo,
+  MastSlideOne,
+  MastSlideTwo,
   ThankYouSlide,
 ];
 
