@@ -18,13 +18,13 @@
 | 6 | Multi-LLM Debate (Estornell & Liu) | 2024 | NeurIPS (Main) | **Context (theoretical)** | Low | 2026-09-05 | [papers/06-estornell-liu-2024.md](papers/06-estornell-liu-2024.md) |
 | 7 | Debate or Vote (Choi et al.) | 2025 | NeurIPS (Spotlight) | **Competitor (mechanism challenge)** | High | 2026-09-05 | [papers/07-debate-or-vote-choi-2025.md](papers/07-debate-or-vote-choi-2025.md) |
 | 8 | FREE-MAD (Cui et al.) | 2026 | Findings of ACL | **Competitor (consensus-free)** | Medium | 2026-09-05 | [papers/08-freemad-cui-2026.md](papers/08-freemad-cui-2026.md) |
-| 9 | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.) **(not read)** | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)** | Low | 2026-09-12 | — |
-| 10 | Multiagent Finetuning (Subramaniam et al.) **(not read)** | 2025 | ICLR | Context (training-time diversity) | Low | 2026-09-12 | — |
-| 11 | Encouraging Divergent Thinking (Liang et al.) **(not read)** | 2024 | EMNLP (Main) | Context (DoT diagnosis) | Low | 2026-09-12 | — |
-| 12 | ChatEval (Chan et al.) **(not read)** | 2024 | ICLR | Context (multi-agent judge) | Low | 2026-09-12 | — |
-| 13 | Let Models Speak Ciphers / CIPHER (Pham et al.) **(not read)** | 2024 | ICLR | Context (communication channel) | Low | 2026-09-12 | — |
-| 14 | S2-MAD (Zeng et al.) **(not read)** | 2025 | NAACL (Long) | Context (efficiency) | Low | 2026-09-12 | — |
-| 15 | I Want to Break Free! (Campedelli et al.) **(not read)** | 2025 | TMLR | Context (persuasion ≠ correctness) | Low | 2026-09-12 | — |
+| 9 | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.) **(not read)** | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)** | Low | 2026-09-12 | [papers/09-mast-cemri-2025.md](papers/09-mast-cemri-2025.md) |
+| 10 | Multiagent Finetuning (Subramaniam et al.) **(not read)** | 2025 | ICLR | Context (training-time diversity) | Low | 2026-09-12 | [papers/10-multiagent-finetuning-subramaniam-2025.md](papers/10-multiagent-finetuning-subramaniam-2025.md) |
+| 11 | Encouraging Divergent Thinking (Liang et al.) **(not read)** | 2024 | EMNLP (Main) | Context (DoT diagnosis) | Low | 2026-09-12 | [papers/11-divergent-thinking-liang-2024.md](papers/11-divergent-thinking-liang-2024.md) |
+| 12 | ChatEval (Chan et al.) **(not read)** | 2024 | ICLR | Context (multi-agent judge) | Low | 2026-09-12 | [papers/12-chateval-chan-2024.md](papers/12-chateval-chan-2024.md) |
+| 13 | Let Models Speak Ciphers / CIPHER (Pham et al.) **(not read)** | 2024 | ICLR | Context (communication channel) | Low | 2026-09-12 | [papers/13-cipher-pham-2024.md](papers/13-cipher-pham-2024.md) |
+| 14 | S2-MAD (Zeng et al.) **(not read)** | 2025 | NAACL (Long) | Context (efficiency) | Low | 2026-09-12 | [papers/14-s2mad-zeng-2025.md](papers/14-s2mad-zeng-2025.md) |
+| 15 | I Want to Break Free! (Campedelli et al.) **(not read)** | 2025 | TMLR | Context (persuasion ≠ correctness) | Low | 2026-09-12 | [papers/15-breakfree-campedelli-2025.md](papers/15-breakfree-campedelli-2025.md) |
 
 ### Legend
 
@@ -41,7 +41,7 @@
 | **Medium** | Adjacent solution — needs explicit differentiation paragraph |
 | **Low** | Different subproblem — cite as complementary or contextual |
 
-`**(not read)**` = added to the tracker but no review file yet — create `papers/NN-*.md` and remove the mark after reading.
+`**(not read)**` = draft review created from the published paper; confirm it, then remove the mark after the team reads it.
 
 ---
 
@@ -121,3 +121,4 @@
 | 2026-09-12 | S2-MAD (Zeng et al.) | Added to tracker — **(not read)**. NAACL 2025 Long Papers, pp. 9393–9408 verified | ACL Anthology 2025.naacl-long.475 |
 | 2026-09-12 | I Want to Break Free! (Campedelli et al.) | Added to tracker — **(not read)**. TMLR 2025 confirmed; arXiv 2410.07109 | OpenReview FR76oM8eGD + arXiv |
 | 2026-09-12 | Bibliography | 7 papers queued in tracker as **(not read)** — bib entries deliberately NOT added yet; they will be added (`cemri2025why`, `zeng2025s2mad`, `campedelli2025breakfree`, `subramaniam2025multiagent`, `liang2024divergent`, `chan2024chateval`, `pham2024cipher`) after reading. `FYDP_Summer/fydp.bib` stays at 34 entries; `trustcal/references.bib` synced | Publisher pages (ACL Anthology, arXiv, TMLR) |
+| 2026-09-12 | Papers #9–#15 | Draft review files created (`papers/09-mast-cemri-2025.md` … `15-breakfree-campedelli-2025.md`) in the standard expert template; compiled from published papers (abstracts + key sections), each with a "Reading checklist" to complete. `(not read)` marks retained until team read; bib entries still pending | arXiv/ACL/TMLR full texts |
