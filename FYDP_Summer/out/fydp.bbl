@@ -97,9 +97,9 @@ E.~Cau, V.~Pansanella, D.~Pedreschi, et~al.
 \newblock {\em EPJ Data Science}, 14:59, August 2025.
 
 \bibitem{yeow2025reliable}
-Xian Yeow, Shunichi Lee, Lasitha Akatsuka, Vidyaratne Aman, A~Hareesh Kumar, Chetan Farahat, and A~Gupta.
+Xian~Yeow Lee, Shunichi Akatsuka, Lasitha Vidyaratne, Aman Kumar, Ahmed Farahat, and Chetan Gupta.
 \newblock Reliable decision-making for multi-agent {LLM} systems.
-\newblock {\em arXiv preprint arXiv:2406.04092}, 2025.
+\newblock In {\em Workshop on Advancing LLM-Based Multi-Agent Collaboration at AAAI 2025}, 2025.
 
 \bibitem{cui2026freemad}
 Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
@@ -115,5 +115,72 @@ Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
 Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan Wang.
 \newblock A diagnostic study of multi-agent llms for real-world debates.
 \newblock In {\em Proceedings of the 43rd International Conference on Machine Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
+
+\bibitem{han2024synergizing}
+Dongqi Han, Kenji Doya, Dongsheng Li, and Jun Tani.
+\newblock Synergizing habits and goals with variational bayes.
+\newblock {\em Nature Communications}, 15(1):4461, 2024.
+
+\bibitem{yao2025peacemaker}
+Binwei Yao, Chao Shang, Wanyu Du, Jianfeng He, Ruixue Lian, Yi~Zhang, Hang Su, Sandesh Swamy, and Yanjun Qi.
+\newblock Peacemaker or troublemaker: How sycophancy shapes multi-agent debate.
+\newblock {\em arXiv preprint arXiv:2509.23055}, 2025.
+
+\bibitem{wynn2025talk}
+Andrea Wynn, Harsh Satija, and Gillian~K. Hadfield.
+\newblock Talk isn't always cheap: Understanding failure modes in multi-agent debate.
+\newblock {\em arXiv preprint arXiv:2509.05396}, 2025.
+
+\bibitem{chen2024reconcile}
+Justin Chih-Yao Chen, Swarnadeep Saha, and Mohit Bansal.
+\newblock {R}e{C}oncile: Round-table conference improves reasoning via consensus among diverse {LLM}s.
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)}, pages 7066--7085, Bangkok, Thailand, August 2024. Association for Computational Linguistics.
+
+\bibitem{sharma2024sycophancy}
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell, Samuel~R. Bowman, et~al.
+\newblock Towards understanding sycophancy in language models.
+\newblock In {\em The Twelfth International Conference on Learning Representations}, 2024.
+\newblock arXiv:2310.13548.
+
+\bibitem{wang2025learning}
+Haotian Wang, Xiyuan Du, Weijiang Yu, Qianglong Chen, Kun Zhu, Zheng Chu, Lian Yan, and Yi~Guan.
+\newblock Learning to break: Knowledge-enhanced reasoning in multi-agent debate system.
+\newblock {\em Neurocomputing}, 618:129063, 2025.
+
+\bibitem{liu2025breaking}
+Yexiang Liu, Jie Cao, Zekun Li, Ran He, and Tieniu Tan.
+\newblock Breaking mental set to improve reasoning through diverse multi-agent debate.
+\newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em International Conference on Learning Representations}, volume 2025, pages 24666--24725, 2025.
+
+\bibitem{li-etal-2024-improving-multi}
+Yunxuan Li, Yibing Du, Jiageng Zhang, Le~Hou, Peter Grabowski, Yeqing Li, and Eugene Ie.
+\newblock Improving multi-agent debate with sparse communication topology.
+\newblock In {\em Findings of the Association for Computational Linguistics: EMNLP 2024}, pages 7281--7294, Miami, Florida, USA, November 2024. Association for Computational Linguistics.
+
+\bibitem{gomez2026multiagent}
+Susana G\'{o}mez~\'{A}lvarez, Alejandro Mozo~Quesada, Tom\'{a}s Navarro, Sergio G\'{a}lvez~Rojas, and Francisco L\'{o}pez~Valverde.
+\newblock Multi-agent debate system based on large language models: structured deliberation and validation in satellite communications.
+\newblock {\em Journal of Intelligent Information Systems}, August 2026.
+
+\bibitem{zhou2025adaptive}
+Y.~Zhou and Y.~Chen.
+\newblock Adaptive heterogeneous multi-agent debate for enhanced educational and factual reasoning in large language models.
+\newblock {\em Journal of King Saud University - Computer and Information Sciences}, 37:330, November 2025.
+
+\bibitem{yang2025comprehensive}
+Wenli Yang, Lilian Some, Michael Bain, and Byeong Kang.
+\newblock A comprehensive survey on integrating large language models with knowledge-based methods.
+\newblock {\em Knowledge-Based Systems}, 2025.
+
+\bibitem{cemri2025why}
+Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra, Rishabh Tiwari, Kurt Keutzer, Aditya Parameswaran, Dan Klein, Kannan Ramchandran, Matei Zaharia, Joseph~E. Gonzalez, and Ion Stoica.
+\newblock Why do multi-agent {LLM} systems fail?
+\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+\newblock Datasets and Benchmarks Track.
+
+\bibitem{estornell2024multillm}
+Andrew Estornell and Yang Liu.
+\newblock Multi-{LLM} debate: Framework, principals, and interventions.
+\newblock In {\em Advances in Neural Information Processing Systems}, volume~38, 2024.
 
 \end{thebibliography}
