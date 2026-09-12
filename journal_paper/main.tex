@@ -11,9 +11,41 @@
 \usepackage[hidelinks]{hyperref}
 
 % Remove the horizontal rules above and below the abstract/keywords block.
+% (pprintMaketitle is the preprint path; MaketitleBox covers the final layouts.)
 \makeatletter
 \let\els@MaketitleBox\MaketitleBox
 \long\def\MaketitleBox{\begingroup\let\hrule\relax\els@MaketitleBox\endgroup}
+\long\def\pprintMaketitle{\clearpage
+  \iflongmktitle\if@twocolumn\let\columnwidth=\textwidth\fi\fi
+  \resetTitleCounters
+  \def\baselinestretch{1}%
+  \printFirstPageNotes
+  \begin{\elsarticletitlealign}%
+  \thispagestyle{pprintTitle}%
+    \def\baselinestretch{1}%
+    \Large\@title\par\vskip18pt%
+    \ifx\@elsarticlenewpageafter\newpage@after@title%
+      \newpage
+    \fi%
+    \ifdoubleblind
+      \vspace*{2pc}
+    \else
+      \normalsize\elsauthors\par\vskip10pt
+      \footnotesize\itshape\elsaddress\par\vskip36pt
+    \fi
+    \ifx\@elsarticlenewpageafter\newpage@after@author%
+      \newpage
+    \fi%
+    \vskip12pt
+    \ifvoid\absbox\else\unvbox\absbox\par\vskip10pt\fi
+    \ifvoid\keybox\else\unvbox\keybox\par\vskip10pt\fi
+    \vskip12pt
+    \ifx\@elsarticlenewpageafter\newpage@after@abstract%
+      \newpage
+    \fi%
+    \end{\elsarticletitlealign}%
+    \gdef\thefootnote{\arabic{footnote}}%
+  }
 \makeatother
 
 \begin{document}
