@@ -18,7 +18,7 @@
 | 6 | Multi-LLM Debate (Estornell & Liu) | 2024 | NeurIPS (Main) | **Context (theoretical)** | Low | 2026-09-05 | [papers/06-estornell-liu-2024.md](papers/06-estornell-liu-2024.md) |
 | 7 | Debate or Vote (Choi et al.) | 2025 | NeurIPS (Spotlight) | **Competitor (mechanism challenge)** | High | 2026-09-05 | [papers/07-debate-or-vote-choi-2025.md](papers/07-debate-or-vote-choi-2025.md) |
 | 8 | FREE-MAD (Cui et al.) | 2026 | Findings of ACL | **Competitor (consensus-free)** | Medium | 2026-09-05 | [papers/08-freemad-cui-2026.md](papers/08-freemad-cui-2026.md) |
-| 9 | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.) **(not read)** | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)** | Low | 2026-09-12 | [papers/09-mast-cemri-2025.md](papers/09-mast-cemri-2025.md) |
+| 9 | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.) | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)** | Low | 2026-09-12 | [papers/09-mast-cemri-2025.md](papers/09-mast-cemri-2025.md) |
 | 10 | Multiagent Finetuning (Subramaniam et al.) **(not read)** | 2025 | ICLR | Context (training-time diversity) | Low | 2026-09-12 | [papers/10-multiagent-finetuning-subramaniam-2025.md](papers/10-multiagent-finetuning-subramaniam-2025.md) |
 | 11 | Encouraging Divergent Thinking (Liang et al.) **(not read)** | 2024 | EMNLP (Main) | Context (DoT diagnosis) | Low | 2026-09-12 | [papers/11-divergent-thinking-liang-2024.md](papers/11-divergent-thinking-liang-2024.md) |
 | 12 | ChatEval (Chan et al.) **(not read)** | 2024 | ICLR | Context (multi-agent judge) | Low | 2026-09-12 | [papers/12-chateval-chan-2024.md](papers/12-chateval-chan-2024.md) |
@@ -63,7 +63,6 @@
 - [Pending: Yao et al.]
 
 **Added 2026-09-12 — queued to read (no review yet, marked `(not read)` above):**
-- Why Do Multi-Agent LLM Systems Fail? (Cemri et al., 2025) — read first; MAST failure taxonomy + κ=0.88 LLM-judge pipeline
 - Multiagent Finetuning (Subramaniam et al., 2025) — training-time counterpart to our inference-time mechanism
 - Encouraging Divergent Thinking (Liang et al., 2024) — Degeneration-of-Thought diagnosis; judge has no evidence grounding
 - ChatEval (Chan et al., 2024) — multi-agent judge precedent; contrast: no retrieval/verification
@@ -122,3 +121,4 @@
 | 2026-09-12 | I Want to Break Free! (Campedelli et al.) | Added to tracker — **(not read)**. TMLR 2025 confirmed; arXiv 2410.07109 | OpenReview FR76oM8eGD + arXiv |
 | 2026-09-12 | Bibliography | 7 papers queued in tracker as **(not read)** — bib entries deliberately NOT added yet; they will be added (`cemri2025why`, `zeng2025s2mad`, `campedelli2025breakfree`, `subramaniam2025multiagent`, `liang2024divergent`, `chan2024chateval`, `pham2024cipher`) after reading. `FYDP_Summer/fydp.bib` stays at 34 entries; `trustcal/references.bib` synced | Publisher pages (ACL Anthology, arXiv, TMLR) |
 | 2026-09-12 | Papers #9–#15 | Draft review files created (`papers/09-mast-cemri-2025.md` … `15-breakfree-campedelli-2025.md`) in the standard expert template; compiled from published papers (abstracts + key sections), each with a "Reading checklist" to complete. `(not read)` marks retained until team read; bib entries still pending | arXiv/ACL/TMLR full texts |
+| 2026-09-12 | MAST (Cemri et al.) | **Read by team** — `(not read)` mark removed from #9; bib entry `cemri2025why` added to `FYDP_Summer/fydp.bib` (34 → 35), `trustcal/references.bib` synced | Team read + arXiv 2503.13657 |
