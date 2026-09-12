@@ -10,6 +10,12 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 
+% Remove the horizontal rules above and below the abstract/keywords block.
+\makeatletter
+\let\els@MaketitleBox\MaketitleBox
+\long\def\MaketitleBox{\begingroup\let\hrule\relax\els@MaketitleBox\endgroup}
+\makeatother
+
 \begin{document}
 
 \begin{frontmatter}
