@@ -5,9 +5,9 @@
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-NeurIPS%202025%20(D%26B%20Track)-6e40c9?style=for-the-badge)
 ![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Read](https://img.shields.io/badge/Read-2026--09--12-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the published paper (arXiv v3 + MAST artifacts); not yet read by the team. Update after reading.*
+> *Read and confirmed 2026-09-12 — compiled from the published paper (arXiv v3 + MAST artifacts). Bib entry `cemri2025why` added to `fydp.bib`.*
 
 Paper Title:
 Why Do Multi-Agent LLM Systems Fail?
