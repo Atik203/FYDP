@@ -49,3 +49,45 @@ Fourth, refutation **re-prompts every debater**. That is costly. And it returns 
 **Our contribution:**
 
 We keep every response. But we re-weight **who counts**. A bounded trust score comes from **retrieved evidence**. With citations in the final answer. Pruning changes what the next round reads. We change whose evidence-backed position decides.
+
+---
+
+# Presentation Script — MAST (Paper #9) Slides 1 & 2 (~1.5–2 min)
+
+> Separate talk. The Estornell & Liu script above is a different presentation and stays unchanged.
+
+---
+
+## Slide 1 — Why Do Multi-Agent LLM Systems Fail?
+
+**Opening:**
+
+This presentation covers our failure-taxonomy paper, **Why Do Multi-Agent LLM Systems Fail?** The authors are Mert Cemri and co-authors from UC Berkeley. It comes from **NeurIPS 2025**, the Datasets and Benchmarks Track. This is the paper that maps how multi-agent systems break.
+
+**The main idea:**
+
+Multi-agent systems are popular, but their gains over a single agent are often small. This paper asks a direct question: why do they fail? The team collects **1,642 execution traces** from **seven popular multi-agent frameworks**. Then they annotate the traces and build **MAST**, the first taxonomy of multi-agent failures. MAST has **14 failure modes** in **three categories**: system design issues, inter-agent misalignment, and task verification.
+
+**How it works:**
+
+Human experts label the traces and agree at **κ = 0.88**. To scale the work, the team builds an **LLM-as-a-judge pipeline**. It agrees with the human labels at **κ = 0.77**. On unseen frameworks and benchmarks it still holds at **κ = 0.79**.
+
+**Key results:**
+
+Across the seven systems, the failure rate is **41 to 86.7 percent**. The failures repeat across model families and tasks. So they come from system design, not just from the model. In one case study, a MAST-guided workflow fix raised ChatDev task success by **9.4 percent**.
+
+---
+
+## Slide 2 — MAST: Relevance & Gap
+
+**Why it matters to us:**
+
+This is our strongest evidence that multi-agent systems fail in **recurring, classifiable ways**. Two MAST categories match our problem. **Inter-agent misalignment** covers agents that do not use correct information. **Task verification** covers premature consensus and unverified claims. Its **κ-validated judge pipeline** is also a template for our evaluation and our human study. MAST gives our motivation and failure analysis an independently validated vocabulary.
+
+**The gap:**
+
+First, MAST is **diagnostic only**. It measures failures but proposes no mechanism to prevent them. Second, the authors say robust reliability needs **more than isolated fixes**. Third, it never isolates **sycophancy as a trust-signal problem**. Fourth, there is **no external evidence and no in-debate trust**, so no agent's influence is tied to verified claims.
+
+**Our contribution:**
+
+MAST shows where multi-agent systems break. We add the missing corrective part: an **evidence-grounded trust score** that keeps a correct minority alive during the debate itself.
