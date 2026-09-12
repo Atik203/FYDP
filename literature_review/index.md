@@ -2,7 +2,7 @@
 
 **Project:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
 
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-12
 
 ---
 
@@ -18,6 +18,15 @@
 | 6 | Multi-LLM Debate (Estornell & Liu) | 2024 | NeurIPS (Main) | **Context (theoretical)** | Low | 2026-09-05 | [papers/06-estornell-liu-2024.md](papers/06-estornell-liu-2024.md) |
 | 7 | Debate or Vote (Choi et al.) | 2025 | NeurIPS (Spotlight) | **Competitor (mechanism challenge)** | High | 2026-09-05 | [papers/07-debate-or-vote-choi-2025.md](papers/07-debate-or-vote-choi-2025.md) |
 | 8 | FREE-MAD (Cui et al.) | 2026 | Findings of ACL | **Competitor (consensus-free)** | Medium | 2026-09-05 | [papers/08-freemad-cui-2026.md](papers/08-freemad-cui-2026.md) |
+| 9 | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.) **(not read)** | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)** | Low | 2026-09-12 | — |
+| 10 | Breaking Mental Set / DMAD (Liu et al.) **(not read)** | 2025 | ICLR | **Competitor (diversity intervention)** | Medium | 2026-09-12 | — |
+| 11 | Multiagent Finetuning (Subramaniam et al.) **(not read)** | 2025 | ICLR | Context (training-time diversity) | Low | 2026-09-12 | — |
+| 12 | Encouraging Divergent Thinking (Liang et al.) **(not read)** | 2024 | EMNLP (Main) | Context (DoT diagnosis) | Low | 2026-09-12 | — |
+| 13 | ChatEval (Chan et al.) **(not read)** | 2024 | ICLR | Context (multi-agent judge) | Low | 2026-09-12 | — |
+| 14 | Let Models Speak Ciphers / CIPHER (Pham et al.) **(not read)** | 2024 | ICLR | Context (communication channel) | Low | 2026-09-12 | — |
+| 15 | Sparse Communication Topology (Li et al.) **(not read)** | 2024 | Findings of EMNLP | Context (efficiency) | Low | 2026-09-12 | — |
+| 16 | S2-MAD (Zeng et al.) **(not read)** | 2025 | NAACL (Long) | Context (efficiency) | Low | 2026-09-12 | — |
+| 17 | I Want to Break Free! (Campedelli et al.) **(not read)** | 2025 | TMLR | Context (persuasion ≠ correctness) | Low | 2026-09-12 | — |
 
 ### Legend
 
@@ -33,6 +42,8 @@
 | **High** | Published solution overlaps substantially with C1 or C2 — gap argument must be sharp |
 | **Medium** | Adjacent solution — needs explicit differentiation paragraph |
 | **Low** | Different subproblem — cite as complementary or contextual |
+
+`**(not read)**` = added to the tracker but no review file yet — create `papers/NN-*.md` and remove the mark after reading.
 
 ---
 
@@ -53,6 +64,17 @@
 **Diagnostic / measurement (cite for problem motivation):**
 - [Pending: Yao et al.]
 
+**Added 2026-09-12 — queued to read (no review yet, marked `(not read)` above):**
+- Why Do Multi-Agent LLM Systems Fail? (Cemri et al., 2025) — read first; MAST failure taxonomy + κ=0.88 LLM-judge pipeline
+- DMAD (Liu et al., 2025) — diversity intervention; closest complementary lever to our trust signal
+- Multiagent Finetuning (Subramaniam et al., 2025) — training-time counterpart to our inference-time mechanism
+- Encouraging Divergent Thinking (Liang et al., 2024) — Degeneration-of-Thought diagnosis; judge has no evidence grounding
+- ChatEval (Chan et al., 2024) — multi-agent judge precedent; contrast: no retrieval/verification
+- CIPHER (Pham et al., 2024) — lossy text channel; supports an external trust signal
+- Sparse Communication Topology (Li et al., 2024) — future-work cost lever
+- S2-MAD (Zeng et al., 2025) — redundancy pruning; efficiency-only, no correctness notion
+- I Want to Break Free! (Campedelli et al., 2025) — persuasion ≠ correctness motivation
+
 ---
 
 ## Gap Map
@@ -68,6 +90,13 @@
 | Theoretical majority-convergence analysis | Estornell & Liu (2024) | Theoretical, not a deployed system |
 | Vote-vs-debate disentanglement | Choi et al. (2025) — neutral debate is a martingale, voting explains most gains | Ours adds the exogenous correction channel (evidence-grounded trust) their theory predicts should help |
 | Consensus-free trajectory scoring | FREE-MAD (Cui et al., 2026) — anti-conformity prompt + shift-score dict, no retrieval | Ours scores evidence support per claim with persistent trust, not opinion shifts |
+| Failure-mode diagnosis (measurement only) | Cemri et al. (MAST, NeurIPS 2025 D&B) | Diagnostic only — 14 modes, no corrective mechanism |
+| Reasoning-diversity intervention | DMAD (Liu et al., 2025) | Diversifies reasoning methods; aggregation still internally judged, no evidence check |
+| Training-time self-improvement | Multiagent Finetuning (Subramaniam et al., 2025) | Fine-tunes each agent; no external correctness verification |
+| Multi-agent judgment without retrieval | ChatEval (Chan et al., 2024); Liang et al. (2024) | Panel/judge relies on internal knowledge — no evidence grounding |
+| Faithful inter-agent communication | CIPHER (Pham et al., 2024) | Improves transmission fidelity, not truthfulness; white-box only |
+| Debate cost reduction | Sparse Topology (Li et al., 2024); S2-MAD (Zeng et al., 2025) | Efficiency-only; no notion of correctness |
+| Persuasion vs correctness | Campedelli et al. (TMLR 2025) | Measures social dynamics only; no ground truth, no correction mechanism |
 
 ---
 
@@ -86,3 +115,13 @@
 | 2026-09-05 | Multi-LLM Debate (Estornell & Liu) | Added as Paper #6 — Context (theoretical), Low threat to novelty. Venue (NeurIPS 2024 Main, Vancouver) confirmed via proceedings page; 27-page PDF fetched and reviewed | NeurIPS proceedings + PDF full text |
 | 2026-09-05 | Debate or Vote (Choi et al.) | Added as Paper #7 — Competitor (mechanism challenge), High threat to novelty. Venue (NeurIPS 2025 Spotlight) confirmed via OpenReview + arXiv 2508.17536v2; forum fetch bot-walled, abstract + metadata verified | OpenReview landing page + arXiv abs page |
 | 2026-09-05 | FREE-MAD (Cui et al.) | Added as Paper #8 — Competitor (consensus-free), Medium threat to novelty. Venue (Findings of ACL 2026, pp. 31977–31997) confirmed via ACL Anthology PDF footer + 21-page full text | ACL Anthology PDF full text |
+| 2026-09-12 | Cemri et al. (MAST) | Added to tracker — **(not read)**. Venue (NeurIPS 2025, Datasets and Benchmarks Track) + full author list verified | arXiv 2503.13657 + arXiv API author list |
+| 2026-09-12 | DMAD (Liu et al.) | Added to tracker — **(not read)**. Already in `fydp.bib` (`liu2025breaking`); ICLR 2025 proceedings PDF verified | ICLR 2025 proceedings |
+| 2026-09-12 | Multiagent Finetuning (Subramaniam et al.) | Added to tracker — **(not read)**. ICLR 2025 confirmed | arXiv 2501.05707 |
+| 2026-09-12 | Encouraging Divergent Thinking (Liang et al.) | Added to tracker — **(not read)**. EMNLP 2024 Main, pp. 17889–17904 verified | ACL Anthology 2024.emnlp-main.992 |
+| 2026-09-12 | ChatEval (Chan et al.) | Added to tracker — **(not read)**. ICLR 2024 confirmed | OpenReview FQepisCUWu |
+| 2026-09-12 | CIPHER (Pham et al.) | Added to tracker — **(not read)**. ICLR 2024 confirmed | arXiv 2310.06272 |
+| 2026-09-12 | Sparse Communication Topology (Li et al.) | Added to tracker — **(not read)**. Findings of EMNLP 2024, pp. 7281–7294; already in `fydp.bib` | ACL Anthology 2024.findings-emnlp.427 |
+| 2026-09-12 | S2-MAD (Zeng et al.) | Added to tracker — **(not read)**. NAACL 2025 Long Papers, pp. 9393–9408 verified | ACL Anthology 2025.naacl-long.475 |
+| 2026-09-12 | I Want to Break Free! (Campedelli et al.) | Added to tracker — **(not read)**. TMLR 2025 confirmed; arXiv 2410.07109 | OpenReview FR76oM8eGD + arXiv |
+| 2026-09-12 | Bibliography | 7 new entries added to `FYDP_Summer/fydp.bib` (`cemri2025why`, `zeng2025s2mad`, `campedelli2025breakfree`, `subramaniam2025multiagent`, `liang2024divergent`, `chan2024chateval`, `pham2024cipher`); `trustcal/references.bib` synced | Publisher pages (ACL Anthology, arXiv, TMLR) |
