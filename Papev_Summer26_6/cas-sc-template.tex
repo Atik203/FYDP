@@ -223,19 +223,31 @@ Each round follows the same order, namely positions, decomposition, retrieval, v
 \end{figure}
 
 \begin{table}
-\caption{Pipeline stages and model calls for one debated question.}\label{tbl:rounds}
-\begin{tabular*}{\textwidth}{@{\extracolsep\fill}ll}
-\toprule
-\textbf{Stage} & \textbf{Model calls}\\
-\midrule
-Confidence gate & 1 or 3 \\
-Round 0 positions & 3 \\
-Round 1 revision & 3 \\
-Injection (stress test only) & 0 \\
-Round 2 revision & 3 \\
-Trust-weighted aggregation & 0 \\
-\bottomrule
-\end{tabular*}
+\caption{Stages of one debated question and their model calls.}\label{tbl:rounds}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{|p{4.3cm}|X|c|}
+\hline
+\textbf{Stage} & \textbf{What happens} & \multicolumn{1}{c|}{\textbf{Model calls}}\\
+\hline
+Confidence gate & Decides between a direct answer and a full debate & 1 or 3 \\
+\hline
+Round 1 positions & Three agents answer independently and tag their claims & 3 \\
+\hline
+Claim check (each round) & Decomposition, retrieval, and verdicts label every claim & 0 \\
+\hline
+Trust update (each round) & Verdict counts move the raw score, then the weights & 0 \\
+\hline
+Injection (stress tests only) & Fabricated wrong consensus enters between round 1 and round 2 & 0 \\
+\hline
+Round 2 revision & Agents see peer positions and their own trust, then revise & 3 \\
+\hline
+Round 3 revision & Final revision round, after which the debate stops & 3 \\
+\hline
+Aggregation & Trust-weighted answer is selected and packaged & 0 \\
+\hline
+\textbf{Total} & & \textbf{10} \\
+\hline
+\end{tabularx}
 \end{table}
 
 \begin{figure}[pos=htbp]
@@ -252,7 +264,7 @@ a^{*} = \arg\max_{a} \sum_{i:\, p_i = a} T_i
 where $p_i$ is the position of agent $i$ at the last round and $T_i$ is its final trust weight. The aggregation ignores the plain head count. This is the step that allows a correct, evidence-backed minority to outweigh a wrong majority. The result package records the final answer, the evidence citations, the trust trajectory of every round, and the reasoning trace of every agent. The trajectories are stored because the evaluation uses them for the calibration analysis.
 
 \subsection{Complexity}
-A debated question uses about nine model calls. The gate uses one call, the initial round uses three calls, and the two revision rounds use three calls each. The retrieval traffic scales with the number of claims, and the cache removes repeated queries. The pipeline runs on a single rented GPU and requires no fine-tuning.
+A debated question uses about ten model calls. The gate uses one call, the initial round uses three calls, and the two revision rounds use three calls each. The retrieval traffic scales with the number of claims, and the cache removes repeated queries. The pipeline runs on a single rented GPU and requires no fine-tuning.
 
 \clearpage
 
