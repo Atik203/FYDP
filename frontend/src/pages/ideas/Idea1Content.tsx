@@ -889,6 +889,9 @@ export function Idea1Content() {
         <p className="text-sm mb-4">
           Five datasets across adversarial and stable categories.
           BrokenMath/BrokenArXiv are primary for sycophancy measurement.
+          All are official author releases (HuggingFace); none are taken from
+          Kaggle. GPQA and HLE need a free click-through agreement before
+          download.
         </p>
         <div className="overflow-x-auto rounded-lg shadow-sm">
           <table className="w-full border-collapse text-xs sm:text-sm">
