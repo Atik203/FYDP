@@ -51,6 +51,10 @@ This note explains each part of the title and why that word was chosen. It answe
 
 **Meaning.** The setting is inference with large language models. Models run as served inference, with no fine-tuning and no training changes.
 
+**Why "LLM" and not "LLMs".** The study runs three different model families, so a reviewer may ask why the title keeps the singular. The title already carries the number. "Multi-Agent" states that more than one model takes part, and every agent is an LLM. "LLM Reasoning" names the task, not a count of models. The pattern follows "human reasoning" and "machine translation", where the label names the kind of reasoning under study. The plural form would shift the phrase toward a property of a set of models, and the target here is a failure inside the reasoning process. The title also needs no second "multi" modifier. "Multi-LLM Reasoning" is the closest variant, and it would repeat the plurality that "Multi-Agent" already states. Section 3 names the three model families in full.
+
 ## One-line answer for a review or defense question
 
 The title names the mechanism (trust-calibrated, multi-agent, deliberation), the problem (sycophantic consensus), the scope (scientific reasoning with LLMs), and the outcome (mitigation). Scientific is the domain where an external evidence corpus and objective ground truth exist at the same time, and those two things are exactly what evidence-grounded trust calibration requires.
+
+For the plural question, the short answer is that "Multi-Agent" already states that several models take part, and "LLM Reasoning" names the task under study.
