@@ -30,14 +30,6 @@ Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
   language models?
 \newblock In {\em Advances in Neural Information Processing Systems}, 2025.
 
-\bibitem{pitre-etal-2025-consensagent}
-Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
-\newblock {CONSENSAGENT}: Towards efficient and effective consensus in
-  multi-agent {LLM} interactions through sycophancy mitigation.
-\newblock In {\em Findings of the Association for Computational Linguistics:
-  ACL 2025}, pages 22112--22133, Vienna, Austria, July 2025. Association for
-  Computational Linguistics.
-
 \bibitem{ibrahim2026training}
 L.~Ibrahim, F.~S. Hafner, and L.~Rocher.
 \newblock Training language models to be warm can reduce accuracy and increase
@@ -74,6 +66,14 @@ Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong
 \newblock In {\em Proceedings of the AgentSearch Workshop at SIGIR 2026},
   Melbourne, Australia, 2026.
 \newblock arXiv:2606.29270.
+
+\bibitem{pitre-etal-2025-consensagent}
+Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
+\newblock {CONSENSAGENT}: Towards efficient and effective consensus in
+  multi-agent {LLM} interactions through sycophancy mitigation.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2025}, pages 22112--22133, Vienna, Austria, July 2025. Association for
+  Computational Linguistics.
 
 \bibitem{karpukhin2020dense}
 Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey
