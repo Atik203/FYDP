@@ -67,7 +67,6 @@
 
 **Added 2026-09-12 — queued to read (no review yet, marked `(not read)` above):**
 
-- Multiagent Finetuning (Subramaniam et al., 2025) — training-time counterpart to our inference-time mechanism
 - Encouraging Divergent Thinking (Liang et al., 2024) — Degeneration-of-Thought diagnosis; judge has no evidence grounding
 - ChatEval (Chan et al., 2024) — multi-agent judge precedent; contrast: no retrieval/verification
 - CIPHER (Pham et al., 2024) — lossy text channel; supports an external trust signal
@@ -127,3 +126,4 @@
 | 2026-09-12 | Papers #9–#15                                 | Draft review files created (`papers/09-mast-cemri-2025.md` … `15-breakfree-campedelli-2025.md`) in the standard expert template; compiled from published papers (abstracts + key sections), each with a "Reading checklist" to complete. `(not read)` marks retained until team read; bib entries still pending                                             | arXiv/ACL/TMLR full texts                                        |
 | 2026-09-12 | MAST (Cemri et al.)                           | **Read by team** — `(not read)` mark removed from #9; bib entry `cemri2025why` added to `FYDP_Summer/fydp.bib` (34 → 35), `trustcal/references.bib` synced                                                                                                                                                                                                  | Team read + arXiv 2503.13657                                     |
 | 2026-09-12 | Estornell & Liu (NeurIPS 2024)                | **Restored to `fydp.bib`** (`estornell2024multillm`, 35 → 36) — paper #6 was tracked and read but had been dropped from the updated bib; cross-checked against the 6-member assignments                                                                                                                                                                     | Member list + `papers/06-estornell-liu-2024.md` BibTeX           |
+| 2026-09-16 | Multiagent Finetuning (Subramaniam et al.)    | **Read by team** — `(not read)` mark removed from #10; bib entry `subramaniam2025multiagent` added to `FYDP_Summer/fydp.bib` (41 → 42), `trustcal/references.bib` synced (41 → 42)                                                                                                                                                                          | Team read + `papers/10-multiagent-finetuning-subramaniam-2025.md` BibTeX |

@@ -301,4 +301,12 @@ Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K\'{a}ri R\"{o}gnvaldsson,
   mathematics with {LLM}s.
 \newblock {\em arXiv preprint arXiv:2605.00674}, 2026.
 
+\bibitem{subramaniam2025multiagent}
+Vighnesh Subramaniam, Yilun Du, Joshua~B. Tenenbaum, Antonio Torralba, Shuang
+  Li, and Igor Mordatch.
+\newblock Multiagent finetuning: Self improvement with diverse reasoning
+  chains.
+\newblock In {\em The Thirteenth International Conference on Learning
+  Representations}, 2025.
+
 \end{thebibliography}
