@@ -166,15 +166,15 @@ Across the reviewed work, influence is set by a vote, a self-reported score, a p
 \subsection{Framework Overview}
 The framework is a deliberation layer that sits between a scientific question and its final answer. A question first passes the confidence gate. The gate chooses between a direct answer and a full debate. Inside a debate, three heterogeneous agents answer the question independently and tag the claims in their reasoning. Each claim is checked against retrieved scientific evidence. The verdicts update the trust score of every agent, and the agents revise their positions with the peer answers and their own trust standing in view. The loop runs for at most three rounds. The final answer is selected by a trust-weighted aggregation over the agent positions. The result package contains the answer, the supporting citations, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:framework-flow} shows the end-to-end flow, and Figure~\ref{fig:context} shows the system boundary and the external actors.
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.98\linewidth]{fig-pipeline.png}
+  \includegraphics[width=0.88\linewidth]{fig-pipeline.png}
   \caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}\label{fig:framework-flow}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.90\linewidth]{fig-context.png}
+  \includegraphics[width=0.80\linewidth]{fig-context.png}
   \caption{Context diagram of the framework. The evaluation harness submits questions, the evidence sources return passages, the model server runs the three agents, and the user receives the result package.}\label{fig:context}
 \end{figure}
 
@@ -190,9 +190,9 @@ A compound sentence can carry more than one fact. The decomposition step splits 
 \subsection{Source-Partitioned Retrieval and Evidence Scoring}
 The three agents do not share one retrieval source. Agent one sends its claims to PubMed, agent two to arXiv, and agent three to the Semantic Scholar Graph API. OpenAlex is the fallback when a source is unavailable, and retrieved results are cached so repeated runs do not hit rate limits. A cross-encoder reranker scores each claim against the retrieved passages and keeps the highest scoring passages~\cite{karpukhin2020dense}. Every claim then receives one of four verdicts, namely supported, contradicted, unverifiable, or contested. A claim with conflicting high-score passages is marked contested and reported separately in the evaluation. Figure~\ref{fig:claim-example} shows one claim checked against a retrieved passage.
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{fig-claim-example.png}
+  \includegraphics[width=0.80\linewidth]{fig-claim-example.png}
   \caption{Worked example of a single claim verified against a retrieved passage. The claim is marked supported, and the trust score of the agent rises for that round.}\label{fig:claim-example}
 \end{figure}
 
@@ -207,18 +207,18 @@ T_i = \frac{\mathrm{clamp}(\mathrm{softmax}(S)_i, 0.1, 0.9)}{\sum_{j=1}^{N} \mat
 \end{equation}
 The clamp prevents two failure cases. No agent is silenced by a zero weight, and no agent dominates the debate with a weight of one. The renormalization keeps the sum of the weights at one, so the final decision stays a weighted choice over the agent positions. Equations~\eqref{eq:score} and~\eqref{eq:weights} form the bounded trust update, and the whole update is a pure function of the verdict counts. Figure~\ref{fig:trust-detail} traces one update from the verdict counts to the final weights of the three agents.
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.72\linewidth]{fig-trust-detail.png}
+  \includegraphics[width=0.58\linewidth]{fig-trust-detail.png}
   \caption{The five steps of one trust update. The verdict counts feed the raw score, and the softmax, clamp, and renormalization steps turn that score into the final trust weights of the three agents.}\label{fig:trust-detail}
 \end{figure}
 
 \subsection{Deliberation Protocol}
 Each round follows the same order, namely positions, decomposition, retrieval, verdicts, and trust update. Table~\ref{tbl:rounds} lists the stages of one debated question and the number of model calls per stage. In round two and round three the revision prompt shows the agent the positions of the other agents and its own current trust value. The debate stops after round three. An injection point sits between round one and round two. At this point the evaluation harness can insert a fabricated expert consensus that contradicts a correct minority. The injection is used only in the stress tests and never in normal operation. Figure~\ref{fig:round-loop} shows the loop and where the injection enters it. A timeout or a parse failure marks the round inconclusive for that agent, and the debate continues with the remaining agents. Figure~\ref{fig:dataflow} shows the level-one data flow, including the three data stores that hold the debate state, the evidence log, and the results log.
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{fig-round-loop.png}
+  \includegraphics[width=0.88\linewidth]{fig-round-loop.png}
   \caption{The debate round loop. The six stages run in order for at most three rounds, and the injection point enters between round one and round two in the stress tests.}\label{fig:round-loop}
 \end{figure}
 
@@ -238,9 +238,9 @@ Trust-weighted aggregation & 0 \\
 \end{tabular*}
 \end{table}
 
-\begin{figure}
+\begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.98\linewidth]{fig-dataflow.png}
+  \includegraphics[width=0.88\linewidth]{fig-dataflow.png}
   \caption{Level-one data flow of the framework with the debate state, the evidence log, and the results log.}\label{fig:dataflow}
 \end{figure}
 
@@ -253,6 +253,8 @@ where $p_i$ is the position of agent $i$ at the last round and $T_i$ is its fina
 
 \subsection{Complexity}
 A debated question uses about nine model calls. The gate uses one call, the initial round uses three calls, and the two revision rounds use three calls each. The retrieval traffic scales with the number of claims, and the cache removes repeated queries. The pipeline runs on a single rented GPU and requires no fine-tuning.
+
+\clearpage
 
 \section{Experiment}
 
