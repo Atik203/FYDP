@@ -1,12 +1,72 @@
 # IDEA 1 — RESEARCH MASTER BLUEPRINT
 
-## Trust-Calibrated Multi-Agent Scientific Deliberation
+**Trust-Calibrated Multi-Agent Scientific Deliberation** — a bounded, evidence-grounded trust score that re-weights each agent's influence during a multi-agent debate, so a correct minority is not talked out of its answer by a confidently wrong majority.
 
-### Phase 1 of 5: Sections 0–4
+![status](https://img.shields.io/badge/status-canonical%20source%20of%20truth-2ea043)
+![structure](https://img.shields.io/badge/structure-5%20phases%20%C2%B7%2018%20sections-1f6feb)
+![headline metric](https://img.shields.io/badge/headline%20metric-CCR%20(collapse%20rate)-d29922)
+![closest competitors](https://img.shields.io/badge/closest%20competitors-ConsensAgent%20%C2%B7%20DebUnc-cf222e)
+![stack](https://img.shields.io/badge/stack-Qwen%20%C2%B7%20Gemma%20%C2%B7%20Mistral%20%C2%B7%20vLLM%20%C2%B7%20LangGraph-8250df)
+
+> [!IMPORTANT]
+> **Canonical source of truth.** Every research decision in this repository traces back to this file. If a decision changes, change it here first — the report, the journal, and the roadmap follow this blueprint.
+
+> [!TIP]
+> **Reading guide:** first day on the project → **§1** and **§15** · supervisor or defence prep → **§14** and **§18** · building the pipeline → **§5**, **§7**, **§13** · running experiments → **§9–§12** · writing the paper → **§2**, **§16**, **§18**.
+
+## Contents
+
+**Phase 1 of 5 — Foundations (Sections 0–4)**
+
+| § | Section | Read it for |
+| --- | --- | --- |
+| 0 | [Research Design Decisions & Assumptions](#section-0--research-design-decisions--assumptions) | Why this problem, assumptions ranked by risk, rejected alternatives |
+| 1 | [Executive Summary](#section-1--executive-summary-for-a-new-team-member-zero-ai-background) | The whole project in plain language, zero background needed |
+| 2 | [Research Motivation](#section-2--research-motivation) | Literature status, the three competitors, the one-sentence gap |
+| 3 | [Problem Statement](#section-3--problem-statement) | Hypothesis, objectives, expected contribution |
+| 4 | [Complete System Overview](#section-4--complete-system-overview) | End-to-end flow diagram and the frozen design invariants |
+
+**Phase 2 of 5 — Pipeline and Tooling (Sections 5–8)**
+
+| § | Section | Read it for |
+| --- | --- | --- |
+| 5 | [Detailed Multi-Agent Pipeline](#section-5--detailed-multi-agent-pipeline) | Component specs: [gate](#agent-0--confidence-estimator-gatekeeper-not-a-debate-participant), [debate agents](#agents-13--debate-agents-two-phase-model-strategy), [retrieval](#retrieval-sub-system-source-partitioned-rag-shared-infrastructure-not-an-agent-per-se), [orchestrator](#orchestrator-implementation-detail-not-a-research-facing-agent-but-required-for-the-pipeline-to-function) |
+| 6 | [Complete Data Flow](#section-6--complete-data-flow) | The nine-step trace with every intermediate output |
+| 7 | [Models & Tools](#section-7--models--tools) | Dev vs Final model stack, [GPU budget](#gpu-budget--cost-breakdown), build difficulty ranking |
+| 8 | [Dataset Plan](#section-8--dataset-plan) | Five datasets, licenses, access risks, contingency fallbacks |
+
+**Phase 3 of 5 — Evaluation and Planning (Sections 9–12)**
+
+| § | Section | Read it for |
+| --- | --- | --- |
+| 9 | [Evaluation Strategy](#section-9--evaluation-strategy) | Metrics (CCR/MPR/ECR), baselines B1–B10, ablations, statistics |
+| 10 | [Edge Cases & Failure Handling](#section-10--edge-cases--failure-handling) | Ten failure scenarios with detection, prevention, recovery |
+| 11 | [Risk Assessment](#section-11--risk-assessment) | Risk register with likelihood, impact, and mitigation |
+| 12 | [Month-by-Month Roadmap](#section-12--month-by-month-roadmap-july-2026--april-2027) | Jul 2026 to Apr 2027 plan, gates, and the Month-1 pilot |
+
+**Phase 4 of 5 — Execution (Sections 13–15)**
+
+| § | Section | Read it for |
+| --- | --- | --- |
+| 13 | [Implementation Order](#section-13--implementation-order) | Exact build sequence and forbidden shortcuts |
+| 14 | [Supervisor Explanation](#section-14--supervisor-explanation) | The [five-minute pitch](#how-to-explain-our-project-in-5-minutes) plus a worked example |
+| 15 | [Team Explanation](#section-15--team-explanation-beginner-friendly) | Beginner walkthrough, glossary, analogies, FAQs |
+
+**Phase 5 of 5 — Outcomes (Sections 16–18)**
+
+| § | Section | Read it for |
+| --- | --- | --- |
+| 16 | [Expected Research Outcome](#section-16--expected-research-outcome) | Target numbers and falsifiable success criteria |
+| 17 | [Future Extensions](#section-17--future-extensions) | MSc/PhD directions and open-source potential |
+| 18 | [Final Critical Review](#section-18--final-critical-review-reviewer-2-mode) | Reviewer #2 attacks and prepared answers |
 
 ---
 
-## Section 0 — Research Design Decisions & Assumptions
+## Phase 1 of 5 — Sections 0–4
+
+---
+
+### Section 0 — Research Design Decisions & Assumptions
 
 **Why this problem was selected.** Multi-agent debate (MAD) is a widely used technique to improve LLM reasoning, but has a documented failure mode: agents abandon correct answers under social pressure from a confident wrong majority. This is the single biggest reason MAD's promised gains don't always materialize in practice, and it's especially costly in scientific QA where a confidently wrong consensus is worse than an honest "uncertain."
 
@@ -23,6 +83,9 @@
 3. **Trust weight changes actually alter final output, not just sit in context ignored** (highest risk — this is Challenge C, and it is the assumption the whole mechanism lives or dies on).
 4. Heterogeneous model families reduce, but don't eliminate, correlated hallucination (accepted as a named limitation, not assumed away).
 
+> [!WARNING]
+> **Assumption 3 is the make-or-break item (Challenge C).** The entire mechanism lives or dies on whether trust weights behaviorally change the output. That is why the Month-1 pilot exists (Sections 12 and 13), and why it gates the full build.
+
 **High-risk assumptions requiring early validation** (in priority order):
 
 - Assumption 3 (behavioral effectiveness) — must be piloted in Month 1, not discovered in Month 8.
@@ -38,7 +101,7 @@
 
 ---
 
-## Section 1 — Executive Summary (for a new team member, zero AI background)
+### Section 1 — Executive Summary (for a new team member, zero AI background)
 
 Imagine three expert reviewers looking at the same hard science question. Normally, if two agree and one disagrees, we go with the majority — that's how most group-decision systems work, human or AI. The problem: two confident-but-wrong reviewers can talk a correct third reviewer out of their right answer. This happens with AI "reviewer" systems too, and it's a documented failure mode.
 
@@ -48,7 +111,7 @@ We build the system, and we build a way to reliably test whether it works — in
 
 ---
 
-## Section 2 — Research Motivation
+### Section 2 — Research Motivation
 
 **Why this problem matters.** Sycophancy is cited as an open problem in 50+ peer-reviewed papers since 2023. In multi-agent systems specifically, it directly undermines the reason multi-agent debate is used in the first place — if debate collapses to whichever position sounds most confident rather than which is most correct, it adds cost without adding reliability.
 
@@ -64,6 +127,9 @@ We build the system, and we build a way to reliably test whether it works — in
 
 **Research gap (one sentence):** No existing framework dynamically re-weights agent influence _within_ an active debate session based on real-time verifiability of claims against external evidence with a formally bounded numeric trust score — prompt refinement (ConsensAgent), self-reported uncertainty (DebUnc), and theoretical pruning (Estornell & Liu) each address adjacent problems but none ties influence to external evidence verification.
 
+> [!NOTE]
+> **Sharpest differentiation lines:** **ConsensAgent** (textual prompt refinement, no retrieval, no numeric trust) and **DebUnc** (in-loop re-weighting, but driven by self-reported uncertainty, not external evidence). State the novelty claim precisely against these two — never as "first to mitigate sycophancy."
+
 **Why our approach is different.** It's the only proposal that makes trust (a) dynamic within-session, (b) grounded in something outside the debate itself, and (c) formally specified with bounded, provable stability properties (no agent fully silenced or dominant).
 
 **Expected research contribution:**
@@ -75,7 +141,7 @@ We build the system, and we build a way to reliably test whether it works — in
 
 ---
 
-## Section 3 — Problem Statement
+### Section 3 — Problem Statement
 
 **Current problem.** In multi-agent LLM debate, a confidently wrong majority can cause a correct minority agent to abandon its position — even without any new evidence being presented. Standard majority-vote aggregation then locks in the wrong answer.
 
@@ -94,7 +160,7 @@ We build the system, and we build a way to reliably test whether it works — in
 
 ---
 
-## Section 4 — Complete System Overview
+### Section 4 — Complete System Overview
 
 ```
 Input (scientific question)
@@ -136,17 +202,18 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 
 **Consistency check against prior discussions:** this section carries forward the architecture exactly as verified in earlier reviews (softmax→clamp→renormalize order, K=3 rounds, N=3 agents, source-partitioned retrieval). No changes made. The confidence-estimator gate (§4.1 originally) and the trust math (§4.4) are unchanged. The one addition is explicit placement of the **Month 1 behavioral-effectiveness pilot** as a design requirement, not just a risk note — this doesn't change the architecture, it changes _when_ one specific validation happens, moving it earlier per Section 0's risk ranking.
 
----
-
-# IDEA 1 — RESEARCH MASTER BLUEPRINT
-
-## Phase 2 of 5: Sections 5–8
+> [!IMPORTANT]
+> **Frozen design invariants — do not drift:** softmax → clamp → renormalize (exactly this order, clamp to [0.1, 0.9]) · K = 3 rounds · N = 3 heterogeneous agents · source-partitioned retrieval · inference only, no fine-tuning.
 
 ---
 
-## Section 5 — Detailed Multi-Agent Pipeline
+## Phase 2 of 5 — Sections 5–8
 
-### Agent 0 — Confidence Estimator (Gatekeeper, not a debate participant)
+---
+
+### Section 5 — Detailed Multi-Agent Pipeline
+
+#### Agent 0 — Confidence Estimator (Gatekeeper, not a debate participant)
 
 - **Purpose:** avoid full debate pipeline cost on questions where agents would agree correctly anyway.
 - **Responsibilities:** run a lightweight single-pass check (e.g., self-reported confidence from one agent, or agreement rate across 3 quick independent answers) before committing to full debate.
@@ -160,7 +227,7 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 - **Alternative implementation:** could use a trained classifier instead of self-report; rejected for FYDP scope as unnecessary added complexity — self-report is sufficient and matches this gate's low-stakes role.
 - **What happens if removed:** debate runs on every question. No correctness impact, only extra compute (~9 forward passes instead of ~1 on easy questions) — acceptable fallback if the gate proves unreliable.
 
-### Agents 1–3 — Debate Agents (two-phase model strategy)
+#### Agents 1–3 — Debate Agents (two-phase model strategy)
 
 Empirically, the debate pipeline behaves identically regardless of which models sit in the agent slots — the trust math, claim decomposition, retrieval, and aggregation are all model-agnostic. This allows a **two-phase model strategy** that minimises GPU cost while preserving experimental rigour:
 
@@ -183,7 +250,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 - **Alternative implementation:** could use more than 3 agents (N-scaling ablation at N∈{2,3,5} already planned) or fewer; N=3 is the primary configuration because it's the minimum needed to create a genuine "1 vs 2" minority-suppression scenario, which is the core phenomenon under test.
 - **What happens if one agent is removed:** system degrades to N=2, which changes the experiment from "minority vs majority" to "two-way disagreement" — a materially different (and already separately covered) N-scaling condition, not a silent degradation. This is why N=3 is treated as the primary configuration, not arbitrary.
 
-### Retrieval Sub-System (Source-Partitioned RAG, shared infrastructure, not an "agent" per se)
+#### Retrieval Sub-System (Source-Partitioned RAG, shared infrastructure, not an "agent" per se)
 
 - **Purpose:** fetch external evidence to support/contradict each atomic claim.
 - **Responsibilities:** route Agent A's claims to PubMed, Agent B's to ArXiv, Agent C's to Semantic Scholar; rerank retrieved passages via cross-encoder; classify each claim as supported / contradicted / unverifiable.
@@ -193,7 +260,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 - **Recovery:** (a) mark claim as abstained, exclude from trust update per original design (abstention doesn't penalize or reward); (b) citation-count filter (already specified, >10 citations) + domain-restricted abstracts; (c) local caching of retrieved results + retry with backoff, fallback to a secondary free API if primary is down for extended periods.
 - **What happens if removed:** system reduces to MoA (static, non-evidence-grounded aggregation) — this is precisely Baseline B6, so "retrieval removed" is already a designed ablation condition (B4 vs B6 comparison), not an unplanned failure mode.
 
-### Orchestrator (implementation detail, not a research-facing agent, but required for the pipeline to function)
+#### Orchestrator (implementation detail, not a research-facing agent, but required for the pipeline to function)
 
 - **Purpose:** coordinates round sequencing, injects test pressure at the specified point (t=1→2), triggers trust updates, and calls final aggregation.
 - **Responsibilities:** state management across rounds; enforcing the K=3 round cap; invoking the trust formula in the exact specified operator order (softmax → clamp → renormalize).
@@ -201,9 +268,12 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 - **Failure cases:** state corruption across rounds, infinite retry loops.
 - **Recovery:** hard round cap (K=3) and per-agent retry cap (3, matching StatVerify-Agent's pattern from Idea 5 — reused convention, not scope creep) prevent runaway loops.
 
+> [!CAUTION]
+> **The operator order is fixed: softmax → clamp → renormalize.** Any reordering breaks the boundedness guarantee (Proposition 1). Unit-test the trust function in isolation before wiring it into the debate loop (Section 13, step 6).
+
 ---
 
-## Section 6 — Complete Data Flow
+### Section 6 — Complete Data Flow
 
 ```
 1. USER/EVAL-HARNESS SUBMITS QUESTION
@@ -242,7 +312,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 
 ---
 
-## Section 7 — Models & Tools
+### Section 7 — Models & Tools
 
 | Component           | Dev (Ph 0–2)               | Final (Ph 3–5)              | Why Selected                                                                                                                   | Limitations & Upgrade Path                                       |
 | ------------------- | -------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
@@ -255,7 +325,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 | **Orchestration**  | LangGraph                      | LangGraph                      | State-machine model fits round-based debate + injection point control precisely; reused for B9 (iMAD) for codebase consistency | Learning curve if unfamiliar                                                                                                      |
 | **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar| PubMed, ArXiv, Semantic Scholar| Domain coverage matches scientific QA target; free academic access                                                             | Rate limits, coverage gaps in niche subfields — caching layer already planned                                                      |
 
-### GPU Budget & Cost Breakdown
+#### GPU Budget & Cost Breakdown
 
 The two-phase strategy keeps compute costs manageable for a student team. All pipeline code is model-agnostic, so no engineering time is spent reconfiguring between Dev and Final — only the model names in a config file change.
 
@@ -283,7 +353,7 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 
 ---
 
-## Section 8 — Dataset Plan
+### Section 8 — Dataset Plan
 
 | Dataset         | Role                              | Source                         | License/Access                          | Preprocessing Needed                                                        | Known Limitations                                                                                      |
 | --------------- | --------------------------------- | ------------------------------ | --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -294,6 +364,9 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 | **MMLU-Pro**    | Stable comparison baseline        | `TIGER-Lab/MMLU-Pro` (HuggingFace); NeurIPS 2024 (D&B); arXiv:2406.01574 | Public; **MIT**                         | Standard eval split                                                         | Same role as GPQA                                                                                      |
 
 **Provenance note:** all five datasets are the official releases from their authors (HuggingFace organization pages or the project site). None are taken from Kaggle. GPQA and HLE need a free click-through agreement before download. Licenses verified 2026-09-15; cite the dataset papers in any report or paper that uses them.
+
+> [!WARNING]
+> **Access and license reality check:** BrokenMath is **CC BY-NC-SA 4.0 (non-commercial)** · HLE needs a click-through approval, so apply in **Phase 0** · BrokenArXiv snapshots rotate, so always record the exact snapshot used. All of these are already reflected in the table above — treat them as triggering conditions, not trivia.
 
 **Data quality/bias considerations:** BrokenMath/BrokenArXiv are specifically constructed to induce false consensus, so results on these datasets should be explicitly framed as _adversarial/worst-case_ performance, not representative of average-case deployment — this framing is already present in the original proposal's "domain-of-applicability boundary" language and should be preserved.
 
@@ -311,11 +384,11 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 ---
 
-# Phase 3 of 5: Sections 9–12
+## Phase 3 of 5 — Sections 9–12
 
 ---
 
-## Section 9 — Evaluation Strategy
+### Section 9 — Evaluation Strategy
 
 **Evaluation pipeline (end-to-end):**
 
@@ -347,7 +420,7 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 ---
 
-## Section 10 — Edge Cases & Failure Handling
+### Section 10 — Edge Cases & Failure Handling
 
 | Failure Scenario                                                             | Detection                                                                 | Prevention                                                                       | Mitigation                                                                       | Recovery/Fallback                                                                                               |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
@@ -364,7 +437,7 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 ---
 
-## Section 11 — Risk Assessment
+### Section 11 — Risk Assessment
 
 | Risk Category      | Specific Risk                                                                                                               | Likelihood                                   | Impact                               | Mitigation                                                                                                                                                                                                                                                              |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -382,9 +455,12 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 ---
 
-## Section 12 — Month-by-Month Roadmap (July 2026 – April 2027)
+### Section 12 — Month-by-Month Roadmap (July 2026 – April 2027)
 
 _(Carries forward the original 10-month Gantt structure exactly, with the Month 1 behavioral-effectiveness pilot inserted as an explicit new deliverable — this is the one substantive timeline change from the original plan, justified in Section 0.)_
+
+> [!IMPORTANT]
+> **Aug 2026 — the Month-1 behavioral-effectiveness pilot is the one must-hold deliverable.** Gate 1 does not pass until the pilot confirms that trust weights measurably shift the aggregation output on ~20–30 toy questions.
 
 **GPU economics:** Development (Ph 0–2) runs on a rented RTX A6000 48GB (~$0.53/hr on RunPod) using the Dev model stack ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) at Q4/FP8 (~28GB total). The final experiment matrix (Ph 3) runs on an A100 80GB (~$0.68–1.50/hr) using the Final model stack ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)). Total GPU budget: ~$560–1,100.
 
@@ -401,13 +477,11 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 **Why the Month-1 pilot addition doesn't disrupt the original schedule:** it reuses infrastructure already being built in Phase 1 (injection protocol, basic debate loop) and only requires a small (~20–30 question) toy run — estimated 3–4 days of work absorbed within the existing Phase 1 window, not an added phase.
 
-# IDEA 1 — RESEARCH MASTER BLUEPRINT
-
-## Phase 4 of 5: Sections 13–15
+## Phase 4 of 5 — Sections 13–15
 
 ---
 
-## Section 13 — Implementation Order
+### Section 13 — Implementation Order
 
 **Exact build sequence, with dependency reasoning:**
 
@@ -437,6 +511,9 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 13. **Human evaluation + failure analysis** — last, since it requires completed experimental results to annotate against.
 
+> [!CAUTION]
+> **Forbidden build shortcuts — violating these costs months:**
+
 **What should never be built before another module:**
 
 - Never build the trust update function before retrieval exists (step 6 before step 5) — it would have nothing real to operate on.
@@ -447,9 +524,9 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 ---
 
-## Section 14 — Supervisor Explanation
+### Section 14 — Supervisor Explanation
 
-### "How to Explain Our Project in 5 Minutes"
+#### "How to Explain Our Project in 5 Minutes"
 
 **The problem, in one sentence:**
 When AI systems debate each other to reach better answers, a confident-but-wrong majority can talk a correct minority into changing its answer — even with no new evidence. This defeats the whole purpose of having them debate.
@@ -494,7 +571,7 @@ _(This example is preserved unchanged from the earlier supervisor-explanation ta
 
 ---
 
-## Section 15 — Team Explanation (Beginner-Friendly)
+### Section 15 — Team Explanation (Beginner-Friendly)
 
 **Simple overview:**
 Think of three friends trying to answer a hard trivia question together. Normally, if two friends agree on an answer and one disagrees, you'd probably go with the two. Our project builds a system where instead, each friend's opinion is weighted by how well they can back it up with real sources — so the one friend with a solid source can outvote the other two if they're just guessing confidently.
@@ -559,11 +636,11 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 ---
 
-# Phase 5 of 5: Sections 16–18
+## Phase 5 of 5 — Sections 16–18
 
 ---
 
-## Section 16 — Expected Research Outcome
+### Section 16 — Expected Research Outcome
 
 **Expected technical improvements:** 20–30% CCR reduction vs. standard MAD; ECR >0.80 on HLE; substantial MPR improvement; competitive-or-better accuracy on GPQA/MMLU-Pro (i.e., anti-sycophancy gains should not come at the cost of baseline correctness).
 
@@ -589,7 +666,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 ---
 
-## Section 17 — Future Extensions
+### Section 17 — Future Extensions
 
 **MSc/PhD research:** the trust mechanism's convergence properties for N>3 agents are explicitly flagged as future work (already noted in original proposal's FAQ). A PhD-scope extension could pursue formal convergence theorems rather than the FYDP's bounded design-property propositions.
 
@@ -603,7 +680,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 ---
 
-## Section 18 — Final Critical Review (Reviewer #2 Mode)
+### Section 18 — Final Critical Review (Reviewer #2 Mode)
 
 **Challenging every assumption, as an adversarial reviewer would:**
 
