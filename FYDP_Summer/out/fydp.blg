@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: fydp.aux
 The style file: unsrt.bst
 Database file #1: fydp.bib
-You've used 41 entries,
+You've used 42 entries,
             1791 wiz_defined-function locations,
-            664 strings with 13930 characters,
-and the built_in function-call counts, 13309 in all, are:
-= -- 1080
-> -- 870
+            668 strings with 14207 characters,
+and the built_in function-call counts, 13540 in all, are:
+= -- 1092
+> -- 890
 < -- 20
-+ -- 301
-- -- 260
-* -- 959
-:= -- 2074
-add.period$ -- 140
-call.type$ -- 41
-change.case$ -- 41
++ -- 308
+- -- 266
+* -- 974
+:= -- 2113
+add.period$ -- 143
+call.type$ -- 42
+change.case$ -- 42
 chr.to.int$ -- 0
-cite$ -- 41
-duplicate$ -- 609
-empty$ -- 1139
-format.name$ -- 260
-if$ -- 3010
+cite$ -- 42
+duplicate$ -- 621
+empty$ -- 1164
+format.name$ -- 266
+if$ -- 3061
 int.to.chr$ -- 0
-int.to.str$ -- 41
-missing$ -- 41
-newline$ -- 214
-num.names$ -- 49
-pop$ -- 173
+int.to.str$ -- 42
+missing$ -- 42
+newline$ -- 219
+num.names$ -- 50
+pop$ -- 180
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 352
+skip$ -- 355
 stack$ -- 0
 substring$ -- 726
-swap$ -- 230
+swap$ -- 232
 text.length$ -- 20
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 98
-width$ -- 43
-write$ -- 476
+while$ -- 99
+width$ -- 44
+write$ -- 486

@@ -5,9 +5,9 @@
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-ICLR%202025-6e40c9?style=for-the-badge)
 ![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Read](https://img.shields.io/badge/Read-2026--09--16-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the ICLR 2025 paper (arXiv v2); not yet read by the team. Update after reading.*
+> *Read and confirmed 2026-09-16 - compiled from the published paper (ICLR 2025, arXiv v2). Bib entry `subramaniam2025multiagent` added to `fydp.bib`.*
 
 Paper Title:
 Multiagent Finetuning: Self Improvement with Diverse Reasoning Chains
@@ -55,7 +55,7 @@ The intervention requires fine-tuning each agent on interaction-generated data �
 | **Last verified** | 2026-09-12 — "Published as a conference paper at ICLR 2025" in PDF + arXiv metadata |
 | **Project page** | https://llm-multiagent-ft.github.io |
 
-**Proposed BibTeX (to add to `fydp.bib` after reading):**
+**Proposed BibTeX (added to `fydp.bib` 2026-09-16):**
 ```bibtex
 @inproceedings{subramaniam2025multiagent,
   author = {Subramaniam, Vighnesh and Du, Yilun and Tenenbaum, Joshua B. and Torralba, Antonio and Li, Shuang and Mordatch, Igor},
