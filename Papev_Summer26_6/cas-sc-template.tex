@@ -168,7 +168,7 @@ The framework is a deliberation layer that sits between a scientific question an
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.98\linewidth]{methodology-flow.jpg}
+  \includegraphics[width=0.98\linewidth]{fig-pipeline.png}
   \caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}\label{fig:framework-flow}
 \end{figure}
 
@@ -205,10 +205,22 @@ where $\alpha$ and $\beta$ control the gain and the loss. The raw scores are the
 \begin{equation}\label{eq:weights}
 T_i = \frac{\mathrm{clamp}(\mathrm{softmax}(S)_i, 0.1, 0.9)}{\sum_{j=1}^{N} \mathrm{clamp}(\mathrm{softmax}(S)_j, 0.1, 0.9)}
 \end{equation}
-The clamp prevents two failure cases. No agent is silenced by a zero weight, and no agent dominates the debate with a weight of one. The renormalization keeps the sum of the weights at one, so the final decision stays a weighted choice over the agent positions. Equations~\eqref{eq:score} and~\eqref{eq:weights} form the bounded trust update, and the whole update is a pure function of the verdict counts.
+The clamp prevents two failure cases. No agent is silenced by a zero weight, and no agent dominates the debate with a weight of one. The renormalization keeps the sum of the weights at one, so the final decision stays a weighted choice over the agent positions. Equations~\eqref{eq:score} and~\eqref{eq:weights} form the bounded trust update, and the whole update is a pure function of the verdict counts. Figure~\ref{fig:trust-detail} traces one update from the verdict counts to the final weights of the three agents.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.72\linewidth]{fig-trust-detail.png}
+  \caption{The five steps of one trust update. The verdict counts feed the raw score, and the softmax, clamp, and renormalization steps turn that score into the final trust weights of the three agents.}\label{fig:trust-detail}
+\end{figure}
 
 \subsection{Deliberation Protocol}
-Each round follows the same order, namely positions, decomposition, retrieval, verdicts, and trust update. Table~\ref{tbl:rounds} lists the stages of one debated question and the number of model calls per stage. In round two and round three the revision prompt shows the agent the positions of the other agents and its own current trust value. The debate stops after round three. An injection point sits between round one and round two. At this point the evaluation harness can insert a fabricated expert consensus that contradicts a correct minority. The injection is used only in the stress tests and never in normal operation. A timeout or a parse failure marks the round inconclusive for that agent, and the debate continues with the remaining agents. Figure~\ref{fig:dataflow} shows the level-one data flow, including the three data stores that hold the debate state, the evidence log, and the results log.
+Each round follows the same order, namely positions, decomposition, retrieval, verdicts, and trust update. Table~\ref{tbl:rounds} lists the stages of one debated question and the number of model calls per stage. In round two and round three the revision prompt shows the agent the positions of the other agents and its own current trust value. The debate stops after round three. An injection point sits between round one and round two. At this point the evaluation harness can insert a fabricated expert consensus that contradicts a correct minority. The injection is used only in the stress tests and never in normal operation. Figure~\ref{fig:round-loop} shows the loop and where the injection enters it. A timeout or a parse failure marks the round inconclusive for that agent, and the debate continues with the remaining agents. Figure~\ref{fig:dataflow} shows the level-one data flow, including the three data stores that hold the debate state, the evidence log, and the results log.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.95\linewidth]{fig-round-loop.png}
+  \caption{The debate round loop. The six stages run in order for at most three rounds, and the injection point enters between round one and round two in the stress tests.}\label{fig:round-loop}
+\end{figure}
 
 \begin{table}
 \caption{Pipeline stages and model calls for one debated question.}\label{tbl:rounds}
@@ -228,7 +240,7 @@ Trust-weighted aggregation & 0 \\
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.98\linewidth]{data-flow.png}
+  \includegraphics[width=0.98\linewidth]{fig-dataflow.png}
   \caption{Level-one data flow of the framework with the debate state, the evidence log, and the results log.}\label{fig:dataflow}
 \end{figure}
 
