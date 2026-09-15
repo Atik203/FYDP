@@ -23,7 +23,7 @@
 \contentsline {subsection}{\numberline {3.1.4}UI Design}{13}{subsection.3.1.4}%
 \contentsline {section}{\numberline {3.2}Detailed Methodology and Design}{14}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Project Plan}{14}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Task Allocation}{18}{section.3.4}%
+\contentsline {section}{\numberline {3.4}Task Allocation}{17}{section.3.4}%
 \contentsline {section}{\numberline {3.5}Summary}{19}{section.3.5}%
 \contentsline {chapter}{\numberline {4}Implementation and Results}{20}{chapter.4}%
 \contentsline {section}{\numberline {4.1}Environment Setup}{20}{section.4.1}%
@@ -73,4 +73,4 @@
 \contentsline {section}{\numberline {6.1}Summary}{32}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Limitation}{32}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Future Work}{32}{section.6.3}%
-\contentsline {chapter}{References}{36}{chapter*.31}%
+\contentsline {chapter}{References}{37}{chapter*.31}%
