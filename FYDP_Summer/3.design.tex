@@ -27,29 +27,7 @@ As illustrated in Figure ~\ref{fig:context-diagram}, the context diagram outline
 
 \begin{figure}[ht]
   \centering
-  \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[
-        entity/.style={draw, rounded corners=2pt, text width=2.4cm, align=center, minimum height=1.0cm, font=\scriptsize},
-        sysbox/.style={draw, thick, circle, text width=3.0cm, align=center, font=\scriptsize\bfseries},
-        flow/.style={->, >=stealth, shorten >=2pt, shorten <=2pt, font=\tiny}
-      ]
-      \node[sysbox] (sys) at (0,0) {Trust-Calibrated\\Multi-Agent\\Deliberation\\Framework};
-      \node[entity] (user) at (0,3.8) {User /\\Researcher};
-      \node[entity] (eval) at (-6.4,0) {Evaluation\\Harness\\GPQA, MMLU-Pro};
-      \node[entity] (src) at (6.4,0) {Evidence Sources\\PubMed, arXiv,\\Semantic Scholar};
-      \node[entity] (models) at (-3.4,-4.0) {Model Serving\\vLLM + 3 LLMs};
-      \node[entity] (gpu) at (3.4,-4.0) {GPU Cloud\\RTX PRO 6000\\96GB Blackwell};
-
-      \draw[flow] (user) -- node[right, pos=0.3] {question} (sys);
-      \draw[flow] (sys) -- node[left, pos=0.7] {result package} (user);
-      \draw[flow] (eval) -- node[above, pos=0.4] {questions} (sys);
-      \draw[flow] (sys) -- node[below, pos=0.4] {scores, metrics} (eval);
-      \draw[flow] (sys) -- node[above, pos=0.4] {claim queries} (src);
-      \draw[flow] (src) -- node[below, pos=0.4] {passages} (sys);
-      \draw[flow] (sys) -- node[left, pos=0.6] {requests} (models);
-      \draw[flow] (models) -- node[right, pos=0.35] {responses} (sys);
-      \draw[flow,dashed] (gpu) -- node[below, pos=0.5] {GPU compute} (models);
-    \end{tikzpicture}}
+  \includegraphics[width=\textwidth]{fig-context.png}
   \caption{Context diagram of the trust-calibrated multi-agent deliberation framework.}
   \label{fig:context-diagram}
 \end{figure}
