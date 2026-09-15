@@ -1,8 +1,8 @@
-PWD e:/FYDP/Papev_Summer26_6
+PWD E:/FYDP/Papev_Summer26_6
 INPUT c:/texlive/2025/texmf.cnf
 INPUT c:/texlive/2025/texmf-dist/web2c/texmf.cnf
 INPUT c:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT e:/FYDP/Papev_Summer26_6/cas-sc-template.tex
+INPUT cas-sc-template.tex
 OUTPUT out/cas-sc-template.log
 INPUT ./cas-sc.cls
 INPUT cas-sc.cls
