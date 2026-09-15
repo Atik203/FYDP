@@ -51,13 +51,7 @@
 \title [mode = title]{Trust-Calibrated Multi-Agent Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning} 
 
 
-\author[1]{Md. Atikur Rahaman}%[style=chinese]
-[%
-   type=editor,
-        auid=000,bioid=1,
-                        prefix=,
-                        role=, 
-                        orcid=0000-0002-8776-7145,]
+\author[1]{Md. Atikur Rahaman}
 \cormark[1]
 \ead{mrahaman2310298@bscse.uiu.ac.bd}
 \credit{ Conceptualization, Formal analysis,  Methodology, Writing-original draft, Writing-review \& editing}
@@ -139,7 +133,11 @@ A third group changes the information that agents receive. Yoffe et al. reweight
 Theory and diagnosis complete the picture. Estornell and Liu prove that similar responses cause majority tyranny and that shared misconceptions lower accuracy as more agents share them~\cite{estornell2024multillm}. Choi et al. separate debate from voting and show that majority voting explains a large part of the reported gain~\cite{choi2025debate}. Cui et al. remove the consensus requirement and score the debate trajectory instead~\cite{cui2026freemad}. Pitre et al. evaluate debate process quality when ground truth is unavailable~\cite{pitre2026diagnostic}. Cemri et al. build a failure taxonomy for multi-agent systems and report failure rates between 41 and 86.7 percent across seven systems, and they leave correction to future work~\cite{cemri2025why}. Cau et al. show that selective persuasion drives agreement, and Yeow et al. show that feedback between agents can spread early errors~\cite{cau2025selective,yeow2025reliable}.
 
 \subsection{Research Gap}
-The reviewed methods gate the debate, rewrite the prompt, or read internal confidence. None of them checks an agent's claims against external evidence while the debate is running, and none of them uses such a check to set the weight of that agent in the final decision. This study fills that gap with a bounded trust score that is updated from retrieved evidence during the debate and used for the final aggregation.
+Three issues remain open in multi-agent debate. The first issue is the cost of a debate. iMAD predicts whether a debate is needed before it starts, which lowers the token cost on easy questions~\cite{fan2026imad}. The second issue is how to detect agreement that comes from conformity or sycophancy. CONSENSAGENT detects stalling and answer copying, and it rewrites the prompt before the next round~\cite{pitre-etal-2025-consensagent}. The third issue is how to decide which agent should carry more influence when the agents disagree. DebUnc weights agent influence with self-reported uncertainty, and its own diagnostic ground-truth experiment shows that the weighting mechanism works only as well as the uncertainty signal it receives~\cite{yoffe-etal-2025-debunc}.
+
+Existing fixes do not close the third issue. Static aggregation treats every proposer the same and leaves the synthesis to one model, so a confidently wrong proposer enters the final answer on equal footing~\cite{wang2025mixture}. Process-level diagnosis measures the health of a debate but does not change the decision~\cite{pitre2026diagnostic}. A post-hoc flip protects a suppressed minority after the debate ends, when the pressure on that minority has already happened~\cite{he2026minority}. Tool-based correction verifies one agent's output in isolation, and it does not arbitrate between agents~\cite{gou2024critic}. Retrieval-side credibility scoring ranks sources before a single generation pass, with no revision rounds and no agent trust~\cite{kushwaha2026agentbased}. Theory predicts that correlated agents drift to the majority regardless of correctness and that shared misconceptions lower accuracy as more agents share them~\cite{estornell2024multillm}. Training-time work shows that alignment can make this tendency stronger, because models trained to sound agreeable grow more sycophantic and less accurate~\cite{ibrahim2026training,chen2025self}. Empirical studies of failure also show that these failures are recurring and classifiable, and they leave correction to future work~\cite{cemri2025why}. Debate-only baselines confirm that voting carries much of the reported gain, and voting is the component that cannot separate a correct answer from a repeated one~\cite{choi2025debate}.
+
+Across the reviewed work, influence is set by a vote, a self-reported score, a prompt rewrite, or a post-hoc flip. No method verifies an agent's claims against external evidence while the debate is running, and no method uses such a verification to set the weight of that agent in the final decision. This study fills that gap with a bounded trust score that is updated from retrieved evidence during the debate and used for the final aggregation.
 
 \section{Proposed Method}\label{sec3}
 
