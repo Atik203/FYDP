@@ -14,10 +14,10 @@ Each Agent's Reasoning is segmented into Atomic Factual Claims and carefully tag
 After every round the trust score is updated as $S_i(t+1) = S_i(t) + \alpha V_i - \beta H_i$. A softmax follows, the values are clamped between 0.1 and 0.9, and the vector is renormalized.
 
 Those two bounds matter. Without them an agent could be silenced outright, or could grow to dominate the debate. An injection point lets the harness insert a fabricated wrong consensus between rounds. That is how sycophantic collapse gets measured under controlled pressure. At the end, weighted aggregation over trust and position picks the final answer, and the majority vote plays no part in it. The results package contains
-the answers, the citations supporting those answers, the full trust history, and the reasoning trace for each agent..
+the answers, the citations supporting those answers, the full trust history, and the reasoning trace for each agent.
 
 The evaluation harness will compute an estimate of the answer's correctness along with a measure of how well the framework has collapsed into a consensus, preserved minority opinions, and calibrated its use of evidence. It will evaluate
-this framework relative to baseline methods based upon majority voting and MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc} .There are several built-in recovery routes in case there is some kind of failure within the system. For example, if a model's output cannot be processed then it will be sent through the fallback extraction path. Any timeouts encountered during this process will be retried one time prior to the current round being declared as inconclusive. Additionally, if a retrieval API becomes unavailable then the system will either default to using available cached evidence or make queries directly to OpenAlex.
+this framework relative to baseline methods based upon majority voting and MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc}. There are several built-in recovery routes in case there is some kind of failure within the system. For example, if a model's output cannot be processed then it will be sent through the fallback extraction path. Any timeouts encountered during this process will be retried one time prior to the current round being declared as inconclusive. Additionally, if a retrieval API becomes unavailable then the system will either default to using available cached evidence or make queries directly to OpenAlex.
 
 With respect to non-functional requirements, which refer to properties of systems, such as performance and scalability, but do not describe specific behavior, latency is currently the most significant limiting factor. This is achieved by forcing adherence to the limit of three debate rounds plus three retries. This ensures that total processing times remain reasonable on the intended hardware. The system was also designed such that when a single component fails, it does not bring down the entire debate. Instead, failure is dealt with at a local level while keeping other components active. Portability is another important design consideration. By utilizing the vLLM interface compatible with OpenAI, the framework supports both closed APIs and locally hosted models with equal ease. For practical purposes, the same pipeline can operate unmodified on both our development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B), as well as the final evaluation models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B). No fine tuning is required for inference, nor is it computationally intensive, allowing it to run on a single rented GPU from NVIDIA - specifically an RTX PRO 6000 Blackwell 96GB. Using this GPU costs approximately USD 0.70 to 1.90 per hour. Finally, to facilitate transparency and reproducibility all runs are seeded appropriately and all relevant intermediate outputs are logged. This allows the final output to maintain an auditable decision trail detailing which agent's claims were supported or contradicted by the evidence. Throughout this process, the ground truth remains completely hidden from the agents, and the final provided answer explicitly cites its supporting evidence.
 
@@ -85,7 +85,67 @@ The framework is operated through a command-line interface and a small web dashb
   \label{fig:dashboard}
 \end{figure}
 
-\section{Detailed Methodology and Design}
+\section{Detailed Methodology and Design}\label{sec:detailed-methodology}
+
+\subsection{Framework Overview}
+The framework is a deliberation layer that sits between a scientific question and its final answer. A question first passes the confidence gate. The gate chooses between a direct answer and a full debate. Inside a debate, three heterogeneous agents answer the question independently and tag the claims in their reasoning. Each claim is checked against retrieved scientific evidence. The verdicts update the trust score of every agent, and the agents revise their positions with the peer answers and their own trust standing in view. The loop runs for at most three rounds. The final answer is selected by a trust-weighted aggregation over the agent positions. The result package contains the answer, the supporting citations, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:context-diagram} shows the system boundary, and Figure~\ref{fig:dfd-level1} shows the level-one data flow.
+
+\subsection{Confidence Gate}
+The gate keeps the cost low on easy questions. One agent answers the question with a short chain of thought and reports a confidence value, or three quick agent calls answer the same question and the gate compares the answers. A low confidence or a disagreement sends the question to the full pipeline. A high confidence sends the question to a direct answer. The gate affects throughput and not the core evaluation, because the evaluation set keeps only questions that produce divergent initial answers.
+
+\subsection{Heterogeneous Debate Agents}
+Three agents answer the question in round zero. Each agent is a different model family, so the agents do not share the same training data and the same blind spots~\cite{estornell2024multillm}. The development configuration uses Qwen3.5-9B, Gemma 4 12B, and Ministral-3-14B-Instruct-2512. The final configuration replaces them with Qwen3.6-27B, Gemma 4 26B A4B, and Mistral-Small-3.2-24B-Instruct-2506. All models are served through vLLM behind an OpenAI-compatible interface, and no model is fine-tuned. Each agent produces an answer, a reasoning trace, and a list of tagged claims, where every claim carries an identifier such as \texttt{c1}. The identifiers make claim-level checking possible in later stages.
+
+\subsection{Claim Decomposition}
+A compound sentence can carry more than one fact. The decomposition step splits each agent answer into small factual statements, and every statement keeps the identifier of its source agent. A schema check validates the tagged output. A failed check triggers a fallback extraction pass that recovers the claims from the raw text. A claim that no source can verify is marked unverifiable and is excluded from the trust update, so an abstention neither rewards nor penalizes the agent.
+
+\subsection{Source-Partitioned Retrieval and Evidence Scoring}
+The three agents do not share one retrieval source. Agent one sends its claims to PubMed, agent two to arXiv, and agent three to the Semantic Scholar Graph API. OpenAlex is the fallback when a source is unavailable, and retrieved results are cached so repeated runs do not hit rate limits. A cross-encoder reranker scores each claim against the retrieved passages and keeps the highest scoring passages~\cite{karpukhin2020dense}. Every claim then receives one of four verdicts, namely supported, contradicted, unverifiable, or contested. A claim with conflicting high-score passages is marked contested and reported separately in the evaluation.
+
+\subsection{Trust Update}
+The trust update converts the verdicts into a bounded influence score. Let $S_i(t)$ be the raw score of agent $i$ at round $t$. The raw score grows with the number of supported claims $V_i$ and falls with the number of contradicted claims $H_i$:
+\begin{equation}\label{eq:trust-score}
+S_i(t+1) = S_i(t) + \alpha V_i - \beta H_i
+\end{equation}
+where $\alpha$ and $\beta$ control the gain and the loss. The raw scores are then converted into weights. A softmax maps the raw scores into positive values, a clamp keeps each value inside the interval $[0.1, 0.9]$, and a renormalization returns the weights to the simplex:
+\begin{equation}\label{eq:trust-weights}
+T_i = \frac{\mathrm{clamp}(\mathrm{softmax}(S)_i, 0.1, 0.9)}{\sum_{j=1}^{N} \mathrm{clamp}(\mathrm{softmax}(S)_j, 0.1, 0.9)}
+\end{equation}
+The clamp prevents two failure cases. No agent is silenced by a zero weight, and no agent dominates the debate with a weight of one. The renormalization keeps the sum of the weights at one, so the final decision stays a weighted choice over the agent positions. Equations~\eqref{eq:trust-score} and~\eqref{eq:trust-weights} form the bounded trust update, and the whole update is a pure function of the verdict counts.
+
+\subsection{Deliberation Protocol}
+Each round follows the same order, namely positions, decomposition, retrieval, verdicts, and trust update. Table~\ref{tab:rounds} lists the stages of one debated question and the number of model calls per stage. In round two and round three the revision prompt shows the agent the positions of the other agents and its own current trust value. The debate stops after round three. An injection point sits between round one and round two. At this point the evaluation harness can insert a fabricated expert consensus that contradicts a correct minority. The injection is used only in the stress tests and never in normal operation. A timeout or a parse failure marks the round inconclusive for that agent, and the debate continues with the remaining agents.
+
+\begin{center}
+  \begin{table}[ht]
+    \centering
+    \caption{Pipeline stages and model calls for one debated question.}
+    \renewcommand{\arraystretch}{1.6}
+    \begin{tabular}{|p{0.45\textwidth}|p{0.40\textwidth}|}
+      \hline
+      Stage                        & Model calls \\
+      \hline
+      Confidence gate              & 1 or 3      \\
+      Round 0 positions            & 3           \\
+      Round 1 revision             & 3           \\
+      Injection (stress test only) & 0           \\
+      Round 2 revision             & 3           \\
+      Trust-weighted aggregation   & 0           \\
+      \hline
+    \end{tabular}
+    \label{tab:rounds}
+  \end{table}
+\end{center}
+
+\subsection{Trust-Weighted Aggregation}
+The final answer is the position with the highest weighted support:
+\begin{equation}\label{eq:trust-aggregate}
+a^{*} = \arg\max_{a} \sum_{i:\, p_i = a} T_i
+\end{equation}
+where $p_i$ is the position of agent $i$ at the last round and $T_i$ is its final trust weight. The aggregation ignores the plain head count. This is the step that allows a correct, evidence-backed minority to outweigh a wrong majority. The result package records the final answer, the evidence citations, the trust trajectory of every round, and the reasoning trace of every agent. The trajectories are stored because the evaluation uses them for the calibration analysis.
+
+\subsection{Complexity}
+A debated question uses about nine model calls. The gate uses one call, the initial round uses three calls, and the two revision rounds use three calls each. The retrieval traffic scales with the number of claims, and the cache removes repeated queries. The pipeline runs on a single rented GPU and requires no fine-tuning.
 
 \section{Project Plan}\label{sec:project-plan}
 
