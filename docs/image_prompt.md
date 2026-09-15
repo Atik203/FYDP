@@ -57,7 +57,7 @@ Purpose: replaces `data-flow.png` in the paper; shows the seven processes, the e
 Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
 
 ```
-Create a flat vector infographic of a level-one data flow diagram for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded rectangles with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF for process cards in the top row, teal #0F766E for process cards in the bottom row, light gray #F8FAFC for card bodies, near-black #0A0A0A for text, gray #475569 for data stores, amber #B45309 for the injection note. Draw the flow in an S-shape: the top row reads left to right, then a thick curved arrow leads down to the bottom row, and the bottom row reads left to right.
+Create a flat vector infographic of a level-one data flow diagram for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded rectangles with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF for process cards in the top row, teal #0F766E for process cards in the bottom row, light gray #F8FAFC for card bodies, near-black #0A0A0A for text, gray #475569 for data stores. Draw the flow in an S-shape: the top row reads left to right, the long "verdicts" arrow is the thick curved connector from the end of the top row down to the start of the bottom row, and the bottom row reads left to right.
 
 Top row, left to right, four process cards, each with a numbered dark-navy circle:
 1. "P1 Intake and Gate"
@@ -81,10 +81,25 @@ Add three data stores as open cylinders:
 - "D2 Evidence and Verdict Log" below center left
 - "D3 Results Log" below center right
 
-Draw labeled arrows between the elements. Use these exact arrow labels, each written once and kept short:
-"question", "debate = yes", "positions", "atomic claims", "verdicts", "trust updates", "answer", "log", "result package", "queries", "passages", "inference requests", "responses", "state".
+Draw these arrows exactly as listed. Write each label on a single line and never split a word across two lines:
+- "Evaluation Harness" to "P1": "question"
+- "P1" to "P2": "debate = yes"
+- "D1 Debate State" to "P2": "state"
+- "P2" to "P3": "positions"
+- "P3" to "P4": "atomic claims"
+- "P2" to "Model Serving": "inference requests"
+- "Model Serving" to "P2": "responses"
+- "P4" to "Evidence Sources": "queries"
+- "Evidence Sources" to "P4": "passages"
+- "P4" to "P5": "verdicts"
+- "P4" to "D2 Evidence and Verdict Log": "verdicts"
+- "P5" to "D1 Debate State": "trust updates"
+- "P5" to "P6": "trust updates"
+- "P6" to "P7": "answer"
+- "P7" to "User / Researcher": "result package"
+- "P7" to "D3 Results Log": "log"
 
-Keep the layout clean with even spacing and no overlapping shapes. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
+The words "verdicts" and "trust updates" each appear on two different arrows. Do not write any other text in the image. Keep the layout clean with even spacing and no overlapping shapes. Do not add extra arrows, icons, people, robots, shadows, gradients, textures, watermarks, or text.
 ```
 
 ---
@@ -93,22 +108,24 @@ Keep the layout clean with even spacing and no overlapping shapes. Do not add ex
 
 Purpose: shows one debate round as a cycle and where the injection point sits.
 
-Aspect ratio and size: `4:3 landscape, 1600x1200 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a circular process loop for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, and thick navy arrows that bend along a circle. Use the palette: navy blue #1E40AF, teal #0F766E, amber #B45309, green #15803D, red #B91C1C, light gray #F8FAFC, near-black #0A0A0A.
 
 Arrange six nodes clockwise around a large circle, each node is a rounded card with a numbered dark-navy circle:
-1. "Round t positions", inside the card show three small agent chips labeled "A", "B", "C"
+1. "Round t positions", inside the card show only three small chips labeled "A", "B", "C"
 2. "Claim decomposition", second line "atomic factual claims"
 3. "Source-partitioned retrieval", show three small chips labeled "PubMed", "arXiv", "Semantic Scholar"
 4. "Evidence verdicts", show four small pills labeled "Supported" in green, "Contradicted" in red, "Unverifiable" in gray, "Contested" in amber
 5. "Trust update", second line "bounded 0.1 to 0.9"
 6. "Revision", second line "peers + own trust"
 
-In the center of the circle place the text "K = 3 rounds maximum". Draw one thick arrow from node 6 back to node 1 to close the loop, and label that arrow "next round".
+In the center of the circle place the text "K = 3 rounds maximum".
 
-Below the loop, place one dashed amber rectangle labeled "Injection point" with the second line "stress test only". Connect it to the arrow between node 6 and node 1 with a dashed amber arrow.
+Draw the thick arrows clockwise from node 1 to node 2, node 2 to node 3, node 3 to node 4, node 4 to node 5, and node 5 to node 6. Do not label these five arrows. Draw the closing arrow from node 6 back to node 1, and write the label "next round" on that closing arrow only. Do not write "next round" on any other arrow.
+
+Below the loop, place one dashed amber rectangle labeled "Injection point" with the second line "stress test only". Draw one dashed amber arrow from the Injection point box that touches the closing arrow between node 6 and node 1. Do not point this arrow at any other arrow.
 
 Keep labels short and correctly spelled. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
 ```
@@ -154,7 +171,7 @@ Purpose: cleaner rebuild of the current Figure 1 (`methodology-flow.jpg`) with t
 Aspect ratio and size: `16:9 landscape, 2000x1125 pixels`, pure white background.
 
 ```
-Create a flat vector infographic of an eight-stage pipeline for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, numbered dark-navy circles, and thick navy arrows. Follow this palette: navy blue #1E40AF for stages 1 to 4 headers and arrows, teal #0F766E for stages 5 to 8 headers, light gray #F8FAFC for card bodies, amber #B45309 for the pipeline strip and the injection note, green #15803D for a supported pill, red #B91C1C for a contradicted pill, gray #475569 for an unverifiable pill, near-black #0A0A0A for text.
+Create a flat vector infographic of an eight-stage pipeline for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, numbered dark-navy circles, and thick navy arrows. Follow this palette: navy blue #1E40AF for stages 1 to 4 headers and arrows, teal #0F766E for stages 5 to 8 headers, light gray #F8FAFC for card bodies, amber #B45309 for the injection point box, green #15803D for a supported pill, red #B91C1C for a contradicted pill, gray #475569 for an unverifiable pill, near-black #0A0A0A for text.
 
 At the very top, place one wide rounded rectangle labeled "Trust-Calibrated Multi-Agent Deliberation Framework".
 
@@ -172,11 +189,11 @@ Bottom row:
 7. "Trust Update", second line "bounded 0.1 to 0.9", third line "renormalized each round"
 8. "Trust-Weighted Aggregation", second line "Final Answer + Citations + Trust Trajectory"
 
-Below stage 3, place one dashed amber rounded rectangle labeled "Injection point" with the second line "fabricated wrong consensus (sycophancy stress test)", connected to stage 3 and stage 4 with a thin dashed amber arrow.
+Below stage 3, place one dashed amber rounded rectangle labeled "Injection point" with the second line "fabricated wrong consensus (sycophancy stress test)". Draw one thin dashed amber arrow from the top of the box to the bottom edge of stage 3.
 
-At the bottom of the image, place one wide horizontal strip. The left tab of the strip is teal #0F766E with white text "Evaluation". The rest of the strip is light teal #ECFDF5 with the text "GPQA · MMLU-Pro" followed by four outlined pills labeled "Accuracy", "Consensus-Collapse Rate", "Minority-Preservation Rate", "Evidence-Calibration Rate", and the last text "No model fine-tuning".
+At the bottom of the image, place one wide horizontal strip. This is the only strip in the image. The left tab of the strip is teal #0F766E with white text "Evaluation". The rest of the strip is light teal #ECFDF5 with the text "GPQA · MMLU-Pro" followed by four outlined pills labeled "Accuracy", "Consensus-Collapse Rate", "Minority-Preservation Rate", "Evidence-Calibration Rate", and the last text "No model fine-tuning".
 
-Keep labels short and correctly spelled. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
+Keep labels short and correctly spelled. Do not add any other strip, bar, or banner. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
 ```
 
 ---
