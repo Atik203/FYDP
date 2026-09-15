@@ -87,8 +87,11 @@ The budget for this project consists of renting a GPU and for storing all data a
             Item                                         & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
             RTX PRO 6000 Blackwell 96GB rental           & 300 hours & 0.70--1.90 / hour & 210--570          \\
+            \hline
             Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & ---       & 0 (free tier)     & 0                 \\
+            \hline
             Datasets (GPQA, MMLU-Pro)                    & ---       & 0 (public)        & 0                 \\
+            \hline
             Storage (model weights, logs)                & 200 GB    & 0.05 / GB         & 10                \\
             \hline
             \textbf{Total}                               &           &                   & \textbf{220--580} \\
@@ -108,9 +111,13 @@ The budget for this project consists of renting a GPU and for storing all data a
             Phase                                  & Hours        & Cost (USD)        \\
             \hline
             Phase-0 and Phase-1 (setup, baselines) & 30           & 21--57            \\
+            \hline
             Phase-2 (trust build)                  & 60           & 42--114           \\
+            \hline
             Phase-3a and Phase-3b (main runs)      & 140          & 98--266           \\
+            \hline
             Phase-4 (human eval)                   & 40           & 28--76            \\
+            \hline
             Phase-5 (writing, final checks)        & 30           & 21--57            \\
             \hline
             \textbf{Total}                         & \textbf{300} & \textbf{210--570} \\
@@ -137,8 +144,11 @@ There is no revenue stream anticipated for this project. This project represents
             Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
             A100 80GB rental & 300 hours & 0.68--1.50 / hour & 204--450          \\
+            \hline
             Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
+            \hline
             Datasets         & ---       & 0 (public)        & 0                 \\
+            \hline
             Storage          & 200 GB    & 0.05 / GB         & 10                \\
             \hline
             \textbf{Total}   &           &                   & \textbf{214--460} \\
@@ -215,12 +225,19 @@ each K for this project and why it is covered or not.
             Knowledge                    & Applied   & Where used                                                                    \\
             \hline
             K1: Natural sciences         & $\sqrt{}$ & Scientific questions; evidence from PubMed, arXiv, Semantic Scholar, OpenAlex \\
+            \hline
             K2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability                               \\
+            \hline
             K3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling                               \\
+            \hline
             K4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy                                     \\
+            \hline
             K5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison                                 \\
+            \hline
             K6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                                                \\
+            \hline
             K7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                                              \\
+            \hline
             K8: Research and context     & $\sqrt{}$ & Ethical constraints and use in scientific QA                                  \\
             \hline
         \end{tabular}
