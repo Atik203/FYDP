@@ -212,23 +212,23 @@ each K for this project and why it is covered or not.
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.28\textwidth}|p{0.14\textwidth}|p{0.44\textwidth}|}
             \hline
-            Knowledge                    & Applied   & Where used                                                        \\
+            Knowledge                    & Applied   & Where used                                                                    \\
             \hline
             K1: Natural sciences         & $\sqrt{}$ & Scientific questions; evidence from PubMed, arXiv, Semantic Scholar, OpenAlex \\
-            K2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability                   \\
-            K3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling                   \\
-            K4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy                         \\
-            K5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison                     \\
-            K6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                                    \\
-            K7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                                  \\
-            K8: Research and context     & $\sqrt{}$ & Ethical constraints and use in scientific QA                      \\
+            K2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability                               \\
+            K3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling                               \\
+            K4: Specialist knowledge     & $\sqrt{}$ & LLMs, multi-agent debate, RAG, sycophancy                                     \\
+            K5: Engineering methods      & $\sqrt{}$ & Experimental methodology, baseline comparison                                 \\
+            K6: Computational methods    & $\sqrt{}$ & Python, PyTorch, vLLM, FastAPI                                                \\
+            K7: Codes and practices      & $\sqrt{}$ & JSON, HTTP, TLS, version control                                              \\
+            K8: Research and context     & $\sqrt{}$ & Ethical constraints and use in scientific QA                                  \\
             \hline
         \end{tabular}
         \label{tab:knowledge}
     \end{table}
 \end{center}
 
-\paragraph{K1: Natural sciences} K1 has been addressed. The framework answers scientific questions and checks each claim against papers from PubMed, arXiv, Semantic Scholar, and OpenAlex. The evaluation datasets include natural science questions. The project does not derive new natural science theory. The problem domain and the evidence base still come from natural science fields. That is why K1 is marked as covered.
+\paragraph{K1: Natural sciences} K1 has been addressed. The framework is designed to address scientific inquiries and verify each claim by comparing it to articles on PubMed, arXiv, Semantic Scholar, and OpenAlex. Natural science questions are included in evaluation data sets. The project itself is not an outcome of a new natural science theory. The problem domain and the evidence base are still sourced from the natural science fields. This is the reason for marking K1 as covered.
 
 \paragraph{K2: Mathematics} K2 has been addressed. We apply softmax, clamping, and renormalization in our trust update; and we also have probability and statistical measures when using our metrics. Both were applied to our trust formula, and both were applied to our evaluation.
 
@@ -302,22 +302,22 @@ Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|}
             \hline
-            PO1                   & PO2              & PO3                             & PO4           & PO5               & PO6                      \\
-            Engineering knowledge & Problem analysis & Design/development of solutions & Investigation & Modern tool usage & The engineer and society \\
+            PO1                            & PO2              & PO3                             & PO4           & PO5                            & PO6                      \\
+            Engineering knowledge          & Problem analysis & Design/development of solutions & Investigation & Modern tool usage              & The engineer and society \\
             \hline
-            $\sqrt{}$             & $\sqrt{}$        & $\times$                        & $\sqrt{}$     & $\times$          & $\times$                 \\
+            $\sqrt{}$                      & $\sqrt{}$        & $\times$                        & $\sqrt{}$     & $\times$                       & $\times$                 \\
             \hline
-            PO7                            & PO8      & PO9                     & PO10          & PO11                          & PO12               \\
-            Environment and sustainability & Ethics   & Individual and teamwork & Communication & Project management and finance & Life-long learning  \\
+            PO7                            & PO8              & PO9                             & PO10          & PO11                           & PO12                     \\
+            Environment and sustainability & Ethics           & Individual and teamwork         & Communication & Project management and finance & Life-long learning       \\
             \hline
-            $\times$                       & $\times$ & $\times$                & $\sqrt{}$     & $\sqrt{}$                     & $\sqrt{}$          \\
+            $\times$                       & $\times$         & $\times$                        & $\sqrt{}$     & $\sqrt{}$                      & $\sqrt{}$                \\
             \hline
         \end{tabular}
         \label{tab:po_map}
     \end{table}
 \end{center}
 
-Six program outcomes are covered by FYDP I. PO1 is covered by the real-life problem in Chapter 1. PO4 is covered by the literature review and the gap analysis in Chapter 2. PO2 is covered by the requirements work in Chapter 3. PO10 is covered by the interim report and the oral presentation. PO11 is covered by the timeline and the budget. PO12 is covered by the journal writing and the independent learning record. The other six program outcomes are handled in FYDP II and FYDP III.
+The real-life problem in Chapter 1 addresses six program outcomes (PO), all of which are addressed in FYDP I. Literature review and Gap analysis (Chapter 2) will cover PO4. PO2 is covered by the requirements work in Chapter 3. PO10 is addressed in the interim report and in the oral presentation. The timeline is applicable to PO11 and the budget is applicable to PO11. The writing of the journal and the independent learning record are used to cover PO12. The other six program outcomes will be addressed in FYDP II and FYDP III.
 
 \section{Summary}
 The chapter defined the requirements for the software-layer, hardware-layer, and communication-layers and documented the economic, environmental, ethics-social constraints that have impacted design decisions. Budget-analysis demonstrates that the project can fit within a students' budget utilizing a rented RTX PRO 6000 Blackwell GPU with a phased split of costs over the 300 hours plus a 10\% buffer. The complex engineering mapping demonstrates that six out of seven P attributes are covered with only P6 being non-covered due to little to no input from external stakeholders. For knowledge, K1-K8 are all covered. For activities, A1-A2 and A5 are covered while A3 and A4 are not. For the program outcomes, FYDP I covers PO1, PO2, PO4, PO10, PO11 and PO12.
