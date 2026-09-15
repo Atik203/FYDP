@@ -1,25 +1,40 @@
 # §8 Dataset Plan. Pin snapshot values at Phase 0 freeze and never move them mid-project.
 # BrokenMath/BrokenArXiv are adversarial/worst-case by construction — frame results that way.
+# Provenance: all datasets are the official releases from their authors (HuggingFace orgs and
+# project pages). None are taken from Kaggle. Licenses verified 2026-09-15.
 
 datasets:
   brokermath:
-    source: "INSAIT-Institute (HuggingFace)"
+    source: "INSAIT-Institute/BrokenMath (HuggingFace, official release)"
+    paper: "BrokenMath: A Benchmark for Sycophancy in Theorem Proving with LLMs, arXiv:2510.04721"
+    license: "CC BY-NC-SA 4.0 (non-commercial)"
     role: "primary adversarial stress test"
     filtering: "divergent-answer filter per §5.4 Step 1 (~60-70% retention)"
   brokenarxiv:
-    source: "MathArena (monthly snapshots)"
+    source: "MathArena/brokenarxiv (HuggingFace, official release)"
+    homepage: "https://matharena.ai/"
+    paper: "MathArena, arXiv:2605.00674"
+    license: "CC BY-SA 4.0"
     role: "adversarial, monthly-refreshed"
     snapshot: "0226-0526"
     filtering: "same as brokermath"
   hle:
-    source: "cais/hle"
+    source: "cais/hle (HuggingFace, official release by Center for AI Safety and Scale AI)"
+    paper: "Humanity's Last Exam, Nature 649, 1139-1146 (2026); arXiv:2501.14249"
+    license: "MIT (gated: accept terms before download)"
     role: "hard scientific reasoning ceiling"
     note: "click-through approval required — apply in Phase 0"
   gpqa:
-    source: "public"
+    source: "Idavidrein/gpqa (HuggingFace, official release)"
+    homepage: "https://github.com/idavidrein/gpqa"
+    paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
+    license: "CC BY 4.0"
     role: "stable comparison baseline"
   mmlu_pro:
-    source: "public"
+    source: "TIGER-Lab/MMLU-Pro (HuggingFace, official release)"
+    homepage: "https://github.com/TIGER-AI-Lab/MMLU-Pro"
+    paper: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, arXiv:2406.01574"
+    license: "MIT"
     role: "stable comparison baseline"
 
 seeds: [1, 2, 3]
