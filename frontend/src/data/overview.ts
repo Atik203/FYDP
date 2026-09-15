@@ -144,11 +144,11 @@ export interface DatasetRow {
 }
 
 export const datasets: DatasetRow[] = [
-  { name: 'BrokenMath', role: 'Primary adversarial stress test', source: 'INSAIT-Institute (HF)', size: '1,000 QA', limitation: 'Math-focused, may not generalize to broader science' },
-  { name: 'BrokenArXiv', role: 'Adversarial, monthly-refreshed', source: 'MathArena', size: '500 QA', limitation: 'Monthly versioning — cite exact snapshot' },
-  { name: 'HLE', role: 'Hard scientific reasoning ceiling', source: 'cais/hle', size: '300 QA', limitation: 'Access approval lead time — apply in Phase 0' },
-  { name: 'GPQA Diamond', role: 'Stable comparison baseline', source: 'Public', size: '448 QA', limitation: 'Well-known, not adversarial' },
-  { name: 'MMLU-Pro (STEM)', role: 'Stable comparison baseline', source: 'Public', size: '12,000 QA', limitation: 'Broad STEM, non-adversarial' },
+  { name: 'BrokenMath', role: 'Primary adversarial stress test', source: 'INSAIT-Institute/BrokenMath (HF, official)', size: '1,000 QA', limitation: 'Math-focused, may not generalize to broader science' },
+  { name: 'BrokenArXiv', role: 'Adversarial, monthly-refreshed', source: 'MathArena/brokenarxiv (HF, official)', size: '500 QA', limitation: 'Monthly versioning — cite exact snapshot' },
+  { name: 'HLE', role: 'Hard scientific reasoning ceiling', source: 'cais/hle (HF, official; gated)', size: '300 QA', limitation: 'Access approval lead-time — apply in Phase 0' },
+  { name: 'GPQA Diamond', role: 'Stable comparison baseline', source: 'Idavidrein/gpqa (HF, official; gated)', size: '448 QA', limitation: 'Well-known, not adversarial' },
+  { name: 'MMLU-Pro (STEM)', role: 'Stable comparison baseline', source: 'TIGER-Lab/MMLU-Pro (HF, official)', size: '12,000 QA', limitation: 'Broad STEM, non-adversarial' },
 ];
 
 // Blueprint §10 — Failure Handling

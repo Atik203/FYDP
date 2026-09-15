@@ -98,6 +98,23 @@ Zhibin Gou, Zhihong Shao, Yeyun Gong, Yelong Shen, Yujiu Yang, Nan Duan, and
 \newblock In {\em The Twelfth International Conference on Learning
   Representations}, 2024.
 
+\bibitem{rein2024gpqa}
+David Rein, Betty~Li Hou, Asa~Cooper Stickland, Jackson Petty, Richard~Yuanzhe
+  Pang, Julien Dirani, Julian Michael, and Samuel~R. Bowman.
+\newblock {GPQA}: A graduate-level {Google}-proof {Q\&A} benchmark.
+\newblock In {\em First Conference on Language Modeling (COLM)}, 2024.
+\newblock arXiv:2311.12022.
+
+\bibitem{wang2024mmlupro}
+Yubo Wang, Xueguang Ma, Ge~Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo,
+  Weiming Ren, Aaran Arulraj, Xuan He, Ziyan Jiang, Tianle Li, Max~W.F. Ku, Kai
+  Wang, Alex Zhuang, Rongqi Fan, Xiang Yue, and Wenhu Chen.
+\newblock {MMLU-Pro}: A more robust and challenging multi-task language
+  understanding benchmark.
+\newblock In {\em Advances in Neural Information Processing Systems (Datasets
+  and Benchmarks Track)}, 2024.
+\newblock arXiv:2406.01574.
+
 \bibitem{zhang2025from}
 D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng,
   X.~Chen, Y.~Zhang, F.~Yin, J.~Dong, Z.~Guo, L.~Song, and C.-L. Liu.
@@ -263,5 +280,25 @@ Andrew Estornell and Yang Liu.
 \newblock Multi-{LLM} debate: Framework, principals, and interventions.
 \newblock In {\em Advances in Neural Information Processing Systems},
   volume~38, 2024.
+
+\bibitem{phan2026hle}
+Long Phan, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, et~al.
+\newblock A benchmark of expert-level academic questions to assess {AI}
+  capabilities.
+\newblock {\em Nature}, 649:1139--1146, 2026.
+\newblock arXiv:2501.14249; Humanity's Last Exam.
+
+\bibitem{petrov2025brokenmath}
+Ivo Petrov, Jasper Dekoninck, and Martin Vechev.
+\newblock {BrokenMath}: A benchmark for sycophancy in theorem proving with
+  {LLM}s.
+\newblock {\em arXiv preprint arXiv:2510.04721}, 2025.
+
+\bibitem{dekoninck2026matharena}
+Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K\'{a}ri R\"{o}gnvaldsson,
+  Ivo Petrov, Chenhao Sun, and Martin~T. Vechev.
+\newblock Beyond benchmarks: {MathArena} as an evaluation platform for
+  mathematics with {LLM}s.
+\newblock {\em arXiv preprint arXiv:2605.00674}, 2026.
 
 \end{thebibliography}

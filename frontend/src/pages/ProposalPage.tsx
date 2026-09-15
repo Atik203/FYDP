@@ -726,31 +726,31 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             <tr>
               <td style={tdStyle}>BrokenMath</td>
               <td style={tdStyle}>Primary adversarial stress test</td>
-              <td style={tdStyle}>INSAIT-Institute (HuggingFace)</td>
+              <td style={tdStyle}>INSAIT-Institute/BrokenMath (HuggingFace, official)</td>
               <td style={tdStyle}>Math-focused; may not generalise to broader science</td>
             </tr>
             <tr>
               <td style={tdStyle}>BrokenArXiv</td>
               <td style={tdStyle}>Adversarial, monthly-refreshed</td>
-              <td style={tdStyle}>MathArena</td>
+              <td style={tdStyle}>MathArena/brokenarxiv (HuggingFace, official)</td>
               <td style={tdStyle}>Monthly versioning; exact snapshot must be cited</td>
             </tr>
             <tr>
               <td style={tdStyle}>HLE</td>
               <td style={tdStyle}>Hard scientific reasoning ceiling</td>
-              <td style={tdStyle}>cais/hle</td>
+              <td style={tdStyle}>cais/hle (HuggingFace, official; gated)</td>
               <td style={tdStyle}>Access approval lead-time risk; GPQA-Diamond as fallback</td>
             </tr>
             <tr>
               <td style={tdStyle}>GPQA Diamond</td>
               <td style={tdStyle}>Stable comparison baseline</td>
-              <td style={tdStyle}>Public</td>
+              <td style={tdStyle}>Idavidrein/gpqa (HuggingFace, official; gated)</td>
               <td style={tdStyle}>Well-known; not adversarial</td>
             </tr>
             <tr>
               <td style={tdStyle}>MMLU-Pro</td>
               <td style={tdStyle}>Stable comparison baseline</td>
-              <td style={tdStyle}>Public</td>
+              <td style={tdStyle}>TIGER-Lab/MMLU-Pro (HuggingFace, official)</td>
               <td style={tdStyle}>Same role as GPQA; broad coverage</td>
             </tr>
           </tbody>
@@ -763,6 +763,11 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           datasets are explicitly framed as worst-case performance, not average-case
           deployment. If HLE access is delayed, the GPQA-Diamond subset
           restructured with the same injection protocol serves as the fallback.
+          All datasets are official author releases from HuggingFace; none are
+          taken from Kaggle. GPQA and HLE require a free click-through agreement
+          before download. Dataset papers to cite: GPQA (COLM 2024), MMLU-Pro
+          (NeurIPS 2024 D&amp;B), HLE (Nature 2026), BrokenMath (arXiv 2025),
+          BrokenArXiv / MathArena (arXiv 2026).
         </p>
 
         <h2 style={h2Style}>8. Evaluation Strategy</h2>
