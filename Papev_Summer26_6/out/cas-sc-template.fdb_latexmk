@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex out/cas-sc-template"] 1789490973.25945 "out/cas-sc-template.aux" "out/cas-sc-template.bbl" "out/cas-sc-template" 1789490979.53452 0
+["bibtex out/cas-sc-template"] 1789497182.90086 "out/cas-sc-template.aux" "out/cas-sc-template.bbl" "out/cas-sc-template" 1789497545.01773 0
   "./cas-refs.bib" 1789490107 19326 bc72eadf78a945df0af0a9fc805a22c5 ""
   "c:/texlive/2025/texmf-dist/bibtex/bst/elsarticle/elsarticle-num.bst" 1761153866 29462 3b2a1af2ce1e224a3b46ee048ffd4b98 ""
-  "out/cas-sc-template.aux" 1789490978 10121 255105c802e156e62eb4a881ebbf58d8 "pdflatex"
+  "out/cas-sc-template.aux" 1789497543 11171 1b695588bfccf02c9c1205d03eb3dc07 "pdflatex"
   (generated)
   "out/cas-sc-template.bbl"
   "out/cas-sc-template.blg"
   (rewritten before read)
-["pdflatex"] 1789490973.85135 "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" "out/cas-sc-template.pdf" "cas-sc-template" 1789490979.53553 0
+["pdflatex"] 1789497541.30844 "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" "out/cas-sc-template.pdf" "cas-sc-template" 1789497545.01849 0
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1761152797 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/stix/stix-t1.enc" 1761161519 7013 c55cc8669071ac14036c4a0c96c16202 ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/stix/stix-ts1.enc" 1761161519 2836 154e6b0061f9b8cb549144b55b268339 ""
@@ -236,17 +236,19 @@
   "c:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1761163389 3629008 a48baa9d78f9198f4318d3cc7e36e9fa ""
   "c:/texlive/2025/texmf.cnf" 1761163137 713 e69b156964470283e0530f5060668171 ""
   "cas-common.sty" 1789463446 76661 edd5b8a98de28a359bf90630ef49c969 ""
-  "cas-sc-template.tex" 1789490793 26561 71093412201c3a2181b6c903463db21d ""
+  "cas-sc-template.tex" 1789497138 27394 118d9d00c8e507c0721fdb6322ff881a ""
   "cas-sc.cls" 1789463446 4409 f271eb20a758fc9ea5551304eb312def ""
-  "data-flow.png" 1786211505 2510936 4cef05bcf1128f68aa162a42faeffa2b ""
-  "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" 1789490793 26561 71093412201c3a2181b6c903463db21d ""
+  "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" 1789497138 27394 118d9d00c8e507c0721fdb6322ff881a ""
   "fig-claim-example.png" 1789489763 1728135 d21cb78625b94e4066e861c4804b711f ""
   "fig-context.png" 1789489213 1959442 55c5a666377fb58f0f786224fb9bb037 ""
-  "methodology-flow.jpg" 1786810726 2253210 9d5beb0ffc5c028c159209a65e04d50a ""
-  "out/cas-sc-template.abs" 1789490975 1886 ed2b09db654f00fcb279273a752cae1f "pdflatex"
-  "out/cas-sc-template.aux" 1789490978 10121 255105c802e156e62eb4a881ebbf58d8 "pdflatex"
-  "out/cas-sc-template.bbl" 1789490973 18260 dd6659ef6063a60b61dfbdc3b2e2268a "bibtex out/cas-sc-template"
-  "out/cas-sc-template.out" 1789490975 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "fig-dataflow.png" 1789495305 193405 2874c28d112e23bd22bf96bfd9170f1c ""
+  "fig-pipeline.png" 1789495306 261347 30ea284d878347ca117797ed35348417 ""
+  "fig-round-loop.png" 1789493035 2025956 2e0906fc7c6f1b3d411ca033782d8a61 ""
+  "fig-trust-detail.png" 1789492089 1882159 935fdfbddaf76b9ed4d062c5b3c8506c ""
+  "out/cas-sc-template.abs" 1789497542 1886 ed2b09db654f00fcb279273a752cae1f "pdflatex"
+  "out/cas-sc-template.aux" 1789497543 11171 1b695588bfccf02c9c1205d03eb3dc07 "pdflatex"
+  "out/cas-sc-template.bbl" 1789497183 18596 7391fbafc027bec41494eae80564ec42 "bibtex out/cas-sc-template"
+  "out/cas-sc-template.out" 1789497542 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "out/cas-sc-template.abs"
   "out/cas-sc-template.aux"
