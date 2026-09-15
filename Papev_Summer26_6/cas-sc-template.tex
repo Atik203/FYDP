@@ -26,6 +26,24 @@
 \usepackage{subcaption}
 \usepackage{color}
 \usepackage{xcolor} 
+%%%Footer and ORCID adjustments
+% This is a preprint, not a submitted manuscript: drop the "submitted to Elsevier" wording.
+\ExplSyntaxOn
+\cs_set:Npn \__first_footerline:
+  {
+    \group_begin:
+    \small
+    \sffamily
+    \ifnum\theblind>0\relax
+    \else
+    \__short_authors: :~
+    \fi
+    \rmfamily \itshape Preprint
+    \group_end:
+  }
+\ExplSyntaxOff
+% No ORCID identifiers are used, so hide the empty ORCID footnote.
+\RenewDocumentCommand \printorcid { } { }
 %%%Author definitions
 \def\tsc#1{\csdef{#1}{\textsc{\lowercase{#1}}\xspace}}
 \tsc{WGM}
@@ -42,13 +60,13 @@
 \def\textpagefraction{.001}
 
 % Short title
-\shorttitle{Trust-Calibrated Multi-Agent Deliberation for Mitigating Sycophantic Consensus}
+\shorttitle{Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus}
 
 % Short author
 \shortauthors{Rahaman et~al.}
 
 % Main title of the paper
-\title [mode = title]{Trust-Calibrated Multi-Agent Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning} 
+\title [mode = title]{Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning} 
 
 
 \author[1]{Md. Atikur Rahaman}
@@ -92,6 +110,10 @@
 % Supervisor
 \author[1]{Mohammad Nurul Huda}
 \credit{Investigation, Supervision, Visualization}
+
+% FYDP faculty
+\author[1]{Ohidujjaman}
+\credit{Supervision, Validation, Writing - review \& editing}
 
 \cortext[cor1]{Corresponding author: Md. Atikur Rahaman (mrahaman2310298@bscse.uiu.ac.bd)}
  
@@ -142,12 +164,18 @@ Across the reviewed work, influence is set by a vote, a self-reported score, a p
 \section{Proposed Method}\label{sec3}
 
 \subsection{Framework Overview}
-The framework is a deliberation layer that sits between a scientific question and its final answer. A question first passes the confidence gate. The gate chooses between a direct answer and a full debate. Inside a debate, three heterogeneous agents answer the question independently and tag the claims in their reasoning. Each claim is checked against retrieved scientific evidence. The verdicts update the trust score of every agent, and the agents revise their positions with the peer answers and their own trust standing in view. The loop runs for at most three rounds. The final answer is selected by a trust-weighted aggregation over the agent positions. The result package contains the answer, the supporting citations, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:framework-flow} shows the end-to-end flow.
+The framework is a deliberation layer that sits between a scientific question and its final answer. A question first passes the confidence gate. The gate chooses between a direct answer and a full debate. Inside a debate, three heterogeneous agents answer the question independently and tag the claims in their reasoning. Each claim is checked against retrieved scientific evidence. The verdicts update the trust score of every agent, and the agents revise their positions with the peer answers and their own trust standing in view. The loop runs for at most three rounds. The final answer is selected by a trust-weighted aggregation over the agent positions. The result package contains the answer, the supporting citations, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:framework-flow} shows the end-to-end flow, and Figure~\ref{fig:context} shows the system boundary and the external actors.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.98\linewidth]{methodology-flow.jpg}
   \caption{End-to-end flow of the trust-calibrated multi-agent deliberation framework: debate, claim-level evidence verification, per-round trust updates, and trust-weighted aggregation.}\label{fig:framework-flow}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.90\linewidth]{fig-context.png}
+  \caption{Context diagram of the framework. The evaluation harness submits questions, the evidence sources return passages, the model server runs the three agents, and the user receives the result package.}\label{fig:context}
 \end{figure}
 
 \subsection{Confidence Gate}
@@ -160,7 +188,13 @@ Three agents answer the question in round zero. Each agent is a different model 
 A compound sentence can carry more than one fact. The decomposition step splits each agent answer into small factual statements, and every statement keeps the identifier of its source agent. A schema check validates the tagged output. A failed check triggers a fallback extraction pass that recovers the claims from the raw text. A claim that no source can verify is marked unverifiable and is excluded from the trust update, so an abstention neither rewards nor penalizes the agent.
 
 \subsection{Source-Partitioned Retrieval and Evidence Scoring}
-The three agents do not share one retrieval source. Agent one sends its claims to PubMed, agent two to arXiv, and agent three to the Semantic Scholar Graph API. OpenAlex is the fallback when a source is unavailable, and retrieved results are cached so repeated runs do not hit rate limits. A cross-encoder reranker scores each claim against the retrieved passages and keeps the highest scoring passages~\cite{karpukhin2020dense}. Every claim then receives one of four verdicts, namely supported, contradicted, unverifiable, or contested. A claim with conflicting high-score passages is marked contested and reported separately in the evaluation.
+The three agents do not share one retrieval source. Agent one sends its claims to PubMed, agent two to arXiv, and agent three to the Semantic Scholar Graph API. OpenAlex is the fallback when a source is unavailable, and retrieved results are cached so repeated runs do not hit rate limits. A cross-encoder reranker scores each claim against the retrieved passages and keeps the highest scoring passages~\cite{karpukhin2020dense}. Every claim then receives one of four verdicts, namely supported, contradicted, unverifiable, or contested. A claim with conflicting high-score passages is marked contested and reported separately in the evaluation. Figure~\ref{fig:claim-example} shows one claim checked against a retrieved passage.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.95\linewidth]{fig-claim-example.png}
+  \caption{Worked example of a single claim verified against a retrieved passage. The claim is marked supported, and the trust score of the agent rises for that round.}\label{fig:claim-example}
+\end{figure}
 
 \subsection{Trust Update}
 The trust update converts the verdicts into a bounded influence score. Let $S_i(t)$ be the raw score of agent $i$ at round $t$. The raw score grows with the number of supported claims $V_i$ and falls with the number of contradicted claims $H_i$:
