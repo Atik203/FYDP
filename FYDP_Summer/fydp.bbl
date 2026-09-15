@@ -173,12 +173,6 @@ Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan
 \newblock In {\em Proceedings of the 43rd International Conference on Machine
   Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
 
-\bibitem{estornell2024multillm}
-Andrew Estornell and Yang Liu.
-\newblock Multi-{LLM} debate: Framework, principals, and interventions.
-\newblock In {\em Advances in Neural Information Processing Systems},
-  volume~38, 2024.
-
 \bibitem{han2024synergizing}
 Dongqi Han, Kenji Doya, Dongsheng Li, and Jun Tani.
 \newblock Synergizing habits and goals with variational bayes.
@@ -263,5 +257,11 @@ Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra,
 \newblock Why do multi-agent {LLM} systems fail?
 \newblock In {\em Advances in Neural Information Processing Systems}, 2025.
 \newblock Datasets and Benchmarks Track.
+
+\bibitem{estornell2024multillm}
+Andrew Estornell and Yang Liu.
+\newblock Multi-{LLM} debate: Framework, principals, and interventions.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~38, 2024.
 
 \end{thebibliography}
