@@ -23,7 +23,7 @@ from .eval.metrics import MetricSummary
 from .inference import VLLMClient, vllm_clients
 from .orchestrator import DebateRunner
 
-ARMS = ("B1", "B3")
+ARMS = ("B1", "B3", "injection")
 
 
 @dataclass
@@ -97,7 +97,7 @@ def single_agent_record(qid: str, question: dict, client: VLLMClient, arm: str, 
 
 
 def debate_record(qid: str, question: dict, result: dict, arm: str, seed: int, elapsed_s: float) -> dict:
-    """B3 — full debate; parsed answers per round plus the raw transcript."""
+    """Debate arms — parsed answers per round, raw transcript, injection audit."""
     record = _base_record(qid, question, arm, seed)
     record["elapsed_s"] = round(elapsed_s, 2)
     record["rounds_completed"] = result.get("rounds_completed")
@@ -105,6 +105,11 @@ def debate_record(qid: str, question: dict, result: dict, arm: str, seed: int, e
     record["rounds"] = [
         {"answers": [parse_position(p) for p in entry["positions"]]} for entry in result["transcript"]
     ]
+    injection = result.get("injection")
+    record["injection"] = injection
+    if injection and injection.get("eligible"):
+        record["consensus"] = injection.get("consensus")
+        record["targets"] = injection.get("targets")
     return record
 
 
@@ -153,7 +158,11 @@ def run(
 
     path = records_path(cfg)
     done = {r["question_id"] for r in read_records(path)}
-    runner = DebateRunner(clients=clients, rounds=rounds)
+    runner = DebateRunner(
+        clients=clients,
+        rounds=rounds,
+        injection_scope="minority" if cfg.arm == "injection" else None,
+    )
 
     for index, question in enumerate(questions):
         qid = f"{cfg.dataset}-{index:04d}"
@@ -163,7 +172,7 @@ def run(
             record = single_agent_record(qid, question, clients[0], cfg.arm, cfg.seed)
         else:
             t0 = time.perf_counter()
-            result = runner.run(question["question"])
+            result = runner.run(question["question"], options=question.get("options"))
             record = debate_record(qid, question, result, cfg.arm, cfg.seed, time.perf_counter() - t0)
         _append_record(path, record)
         print(f"[{index + 1}/{len(questions)}] {qid} {record['elapsed_s']:6.1f}s", flush=True)
