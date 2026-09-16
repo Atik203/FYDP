@@ -27,7 +27,10 @@ trustcal/
 ├── scripts/
 │   ├── serve.sh                  # starts 3 vLLM instances (ports 8000–8002)
 │   ├── run_experiment.py         # runs a named experiment arm (B1/B3/injection)
-│   ├── smoke_test.py             # 20-question model-swap gate (§13 step 11)
+│   ├── preflight.py              # cost-safety checks before paid sessions
+│   ├── mock_vllm.py              # mock OpenAI-compatible servers (GPU-free tests)
+│   ├── annotate.py               # annotation sheets + Cohen's κ
+│   └── smoke_test.py             # 20-question model-swap gate (§13 step 11)
 └── results/                      # gitignored; one folder per experiment run
 ```
 
