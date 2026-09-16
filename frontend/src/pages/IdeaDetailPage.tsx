@@ -1,9 +1,10 @@
 import { PageHeader } from '@/components/layout/PageHeader';
+import { DocsToc } from '@/components/shared/DocsToc';
 import { Section, SectionTitle } from '@/components/shared/Section';
 import { KpiRow } from '@/components/shared/KpiRow';
 import { BarChart3 } from 'lucide-react';
 import { ideaMetadata } from '@/data/ideas';
-import { Idea1Content } from './ideas/Idea1Content';
+import { IDEA1_SECTIONS, Idea1Content } from './ideas/Idea1Content';
 
 const idea = ideaMetadata[0];
 
@@ -18,14 +19,18 @@ export function IdeaDetailPage() {
         coverItems={idea.coverItems}
       />
 
-      <main className="max-w-[1150px] mx-auto my-10 px-4 sm:px-5">
-        <Section>
-          <SectionTitle icon={BarChart3}>At a Glance</SectionTitle>
-          <KpiRow kpis={idea.kpis} />
-        </Section>
+      <div className="mx-auto my-10 flex max-w-[1400px] flex-col px-4 sm:px-5 lg:flex-row lg:gap-10">
+        <DocsToc sections={[...IDEA1_SECTIONS]} title="Blueprint contents" />
 
-        <Idea1Content />
-      </main>
+        <main className="min-w-0 flex-1 lg:max-w-[1150px]">
+          <Section>
+            <SectionTitle icon={BarChart3}>At a Glance</SectionTitle>
+            <KpiRow kpis={idea.kpis} />
+          </Section>
+
+          <Idea1Content />
+        </main>
+      </div>
     </>
   );
 }
