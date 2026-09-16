@@ -114,22 +114,22 @@ interface MonthPlan {
 
 const monthPlan: MonthPlan[] = [
   {
-    month: 'Jul 2026',
-    phase: 'Ph 0',
+    month: 'Jul–Sep 2026',
+    phase: 'Ph 0 — complete',
     hours: '~15 hr/wk',
     learn: 'Only the Transformer / attention / quantization units from the ML/DL playlists (skip what you know); structured prompting for tagged output; vLLM + HF Hub basics.',
-    build: 'Repo skeleton per docs/project_structure.md; one model served on the A6000; single-agent script returning tagged claims; setup.sh.',
+    build: 'Repo skeleton per docs/project_structure.md; 3-model vLLM serving on the A6000; Gate 0 MAD reproduction passed 16 Sep 2026 (10/10 debates × 3 rounds, mean 370.8 s/debate).',
     links: [
       { label: '100 Days of DL (Transformer units only)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' },
       { label: 'vLLM docs', href: 'https://docs.vllm.ai/' },
     ],
   },
   {
-    month: 'Aug 2026',
-    phase: 'Ph 1',
+    month: 'Sep–Oct 2026',
+    phase: 'Ph 1 — in progress',
     hours: '~20 hr/wk',
     learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX LangGraph playlist, videos 1–6 only); Du et al. 2023 read once, carefully.',
-    build: 'serve.sh with 3 vLLM instances; MAD reproduction loop (Gate 0); injection protocol v1; 50-question pilot + κ check.',
+    build: 'Injection protocol + B1/B3 baselines built and mock-verified; 50-question pilot + κ check and Month-1 behavioural pilot next (GPU runs).',
     links: [
       { label: 'Agentic AI using LangGraph (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' },
       { label: 'Du et al. 2023 — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
@@ -276,9 +276,9 @@ export function RoadmapPage() {
           </p>
           <div className="space-y-3">
             {[
-              { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this.' },
-              { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions.' },
-              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test.' },
+              { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this. Done — three-model serving verified 16 Sep 2026.' },
+              { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions. Done — 10/10 debates, 3/3 rounds.' },
+              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Coded and mock-verified; GPU pilot next.' },
               { step: 4, title: 'Month-1 behavioral-effectiveness pilot', desc: 'Highest-risk assumption — test on ~20–30 toy questions before full build.' },
               { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Build retrieval before trust math.' },
               { step: 6, title: 'Trust update function', desc: 'Unit-test operator order (softmax→clamp→renormalize) in isolation.' },
