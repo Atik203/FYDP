@@ -36,7 +36,7 @@ Quantized checkpoints pinned in `models.yaml` — the model names stay the roadm
 
 | Command | Does |
 | --- | --- |
-| `HF_TOKEN=hf_... [VENV=1] bash setup.sh` | install deps + nightly vLLM + checkpoints (~31GB), start servers, verify. `VENV=1` on Thunder Compute |
+| `HF_TOKEN=hf_... [VENV=1] bash setup.sh` | install deps + nightly vLLM + checkpoints (~31GB), start servers, verify. `VENV=1` on any image that blocks system pip (PEP 668): Thunder Compute, Vast PyTorch images |
 | `python scripts/verify_env.py --check-servers` | gate: three `server OK` lines |
 | `python scripts/repro_mad.py --limit 10` | Gate 0; writes `results/gate0/` |
 | `bash scripts/serve.sh` | (re)start servers; logs in `results/logs/vllm-<port>.log` |
