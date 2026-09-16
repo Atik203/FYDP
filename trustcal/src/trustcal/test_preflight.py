@@ -88,7 +88,7 @@ def test_report_marks_failure() -> None:
     from .preflight import CheckResult
 
     report = format_report([CheckResult("a", True, "fine"), CheckResult("b", False, "broken")])
-    assert "RESULT: FAIL — b" in report
+    assert "RESULT: FAIL - b" in report
 
 
 @pytest.mark.parametrize("value", [0.0, 1.0])
