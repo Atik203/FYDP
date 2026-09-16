@@ -65,9 +65,10 @@ Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate
 
 **GPU session economics (learned the hard way in Phase 0 — keep in mind):**
 - **Ingress is billed** on most Vast hosts (~$0.005–0.026/GB; verified 2026-09-16 that the `inet_down_cost=0` filter matches no A6000). One setup session cost **$3.20 in downloads** because models were pulled repeatedly (HF_HOME bug) and a retired FP8 checkpoint was downloaded. A *clean* fresh setup is ~35–40GB ≈ **$0.30–1.00**.
-- **Persist the cache so you pay for downloads once:** RunPod 100GB network volume (~$0.07/GB/mo), Thunder Compute snapshot (models live in the snapshot), or a Vast volume reattached on the same physical machine. Preferred for Phase 1's many short sessions.
+- **Persist the cache so you pay for downloads once:** RunPod 100GB network volume (~$0.07/GB/mo), Thunder Compute snapshot (models live in the snapshot), or a Vast volume reattached on the same physical machine. **But check availability first** — as of 2026-09-16 Thunder's A6000 capacity is full, RunPod is $0.44–0.53/hr, TensorDock ≈ $0.70/hr, Massed ≈ $0.50/hr. Vast is the cheapest *available* option, so the practical rule is: **batch each phase's GPU work into 1–2 long sessions** and treat the ~$0.5–1.0 ingress per session as a fixed line item, not a reason to switch providers.
 - **Never re-download:** `setup.sh`/`serve.sh` pin `HF_HOME`; once the cache is complete, export `HF_HUB_OFFLINE=1`. Check `inet_down_cost` when picking offers and sort with `-o 'inet_down_cost,dph'`.
 - **Destroy instances between sessions** (Vast bills storage while stopped and deletes the disk on destroy). Copy `results/` out and push `experiments/` first.
+- **Session plan for Phase 1:** finish and unit-test all code locally, then one long Vast session for the injection pilot + baselines B1–B4 (~12–16h), and one shorter session for the Month-1 pilot (~3h). Two ingress payments instead of one per experiment (saves ~$2–3 and hours of setup).
 
 **Schedule note:** Phase 0 finished 2026-09-16 (environment bring-up ran long vs the July slot). Phase 1 now runs Sep–Oct; Phases 2–5 shift right by roughly six weeks — confirm the revised Month-1 pilot date with the supervisor.
 
