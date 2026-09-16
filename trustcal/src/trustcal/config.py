@@ -2,10 +2,37 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
+
+ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
+
+
+def load_env(path: Path | None = None) -> bool:
+    """Load trustcal/.env into os.environ without overriding existing variables.
+
+    Called once at package import. Pod/CI environment variables always win, so a
+    secret exported on the instance is never clobbered by a stale local .env.
+    Returns False when python-dotenv or the file is absent (both are fine).
+    """
+    env_path = path or ENV_PATH
+    if not env_path.is_file():
+        return False
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return False
+    load_dotenv(env_path, override=False)
+    return True
+
+
+def get_key(name: str) -> str | None:
+    """Read an API key from the environment (after load_env); empty → None."""
+    value = os.getenv(name, "").strip()
+    return value or None
 
 
 @dataclass
