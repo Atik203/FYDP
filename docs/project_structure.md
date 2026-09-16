@@ -26,8 +26,8 @@ trustcal/
 │   └── eval/                     # harness: metrics, baselines B1–B9, dataset loaders
 ├── scripts/
 │   ├── serve.sh                  # starts 3 vLLM instances (ports 8000–8002)
-│   ├── run_ablation.py           # runs a named experiment config
-│   └── smoke_test.py             # 20-question model-swap gate (§13 step 11)
+│   ├── run_experiment.py         # runs a named experiment arm (B1/B3/injection)
+│   ├── smoke_test.py             # 20-question model-swap gate (§13 step 11)
 └── results/                      # gitignored; one folder per experiment run
 ```
 
