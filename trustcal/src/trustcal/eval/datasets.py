@@ -15,6 +15,8 @@ def load_dataset(name: str = "gpqa", split: str = "test", sample_cap: int | None
     """Return [{'question', 'answer', 'options'}] for one dataset.
 
     Phase 0: GPQA (public, via huggingface `datasets`). Other loaders land in Ph 1-2.
+    The HF GPQA release only ships a 'train' split; fall back to it if the requested
+    split does not exist (the benchmark is used as an eval set regardless).
     """
     if name not in _GPQA_SUBSETS:
         raise NotImplementedError(f"Phase 0 ships GPQA only; {name} lands in Ph 1-2")
@@ -22,7 +24,10 @@ def load_dataset(name: str = "gpqa", split: str = "test", sample_cap: int | None
     from datasets import load_dataset as hf_load  # lazy: heavy import, pod-only
 
     subset = _GPQA_SUBSETS[name]
-    ds = hf_load("Idavidrein/gpqa", subset, split=split)
+    try:
+        ds = hf_load("Idavidrein/gpqa", subset, split=split)
+    except ValueError:
+        ds = hf_load("Idavidrein/gpqa", subset, split="train")
     rows = []
     for r in ds:
         rows.append(
