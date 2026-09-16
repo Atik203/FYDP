@@ -52,11 +52,34 @@ import {
   Wrench,
 } from "lucide-react";
 
+export const IDEA1_SECTIONS = [
+  { id: "core-idea", label: "1. Core Idea" },
+  { id: "design-decisions", label: "0. Research Design Decisions" },
+  { id: "research-motivation", label: "2. Research Motivation" },
+  { id: "problem-statement", label: "3. Problem Statement" },
+  { id: "system-architecture", label: "4. Complete System Architecture" },
+  { id: "pipeline", label: "5. Detailed Multi-Agent Pipeline" },
+  { id: "data-flow", label: "6. Complete Data Flow" },
+  { id: "models-tools", label: "7. Models & Tools" },
+  { id: "dataset-plan", label: "8. Dataset Plan" },
+  { id: "evaluation-strategy", label: "9. Evaluation Strategy" },
+  { id: "edge-cases", label: "10. Edge Cases & Failure Handling" },
+  { id: "risk-assessment", label: "11. Risk Assessment" },
+  { id: "roadmap", label: "12. Month-by-Month Roadmap" },
+  { id: "implementation-order", label: "13. Implementation Order" },
+  { id: "publication-justification", label: "Q1. Publication Justification" },
+  { id: "supervisor-explanation", label: "14. Supervisor Explanation" },
+  { id: "team-explanation", label: "15. Team Explanation" },
+  { id: "expected-outcome", label: "16. Expected Research Outcome" },
+  { id: "future-extensions", label: "17. Future Extensions" },
+  { id: "final-review", label: "18. Final Critical Review" },
+] as const;
+
 export function Idea1Content() {
   return (
     <>
       {/* ───────────── 1. Core Idea ───────────── */}
-      <Section accent="blue" className="animate-fade-up">
+      <Section id="core-idea" accent="blue" className="animate-fade-up">
         <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
         <p className="mb-3 text-sm sm:text-base">
           We propose a{" "}
@@ -98,7 +121,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 0. Research Design Decisions & Assumptions ───────────── */}
-      <Section accent="amber" className="animate-fade-up animate-delay-1">
+      <Section id="design-decisions" accent="amber" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={Settings}>
           0. Research Design Decisions &amp; Assumptions
         </SectionTitle>
@@ -304,7 +327,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 2. Research Motivation ───────────── */}
-      <Section className="animate-fade-up animate-delay-2">
+      <Section id="research-motivation" className="animate-fade-up animate-delay-2">
         <SectionTitle icon={Microscope}>2. Research Motivation</SectionTitle>
         <TwoCol>
           <ColBox>
@@ -411,7 +434,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 3. Problem Statement ───────────── */}
-      <Section accent="teal" className="animate-fade-up animate-delay-2">
+      <Section id="problem-statement" accent="teal" className="animate-fade-up animate-delay-2">
         <SectionTitle icon={Target}>3. Problem Statement</SectionTitle>
         <p className="text-sm mb-4">
           <strong>Research hypothesis:</strong> If agent influence in
@@ -465,7 +488,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 4. Complete System Architecture ───────────── */}
-      <Section className="animate-fade-up animate-delay-3">
+      <Section id="system-architecture" className="animate-fade-up animate-delay-3">
         <SectionTitle icon={Building2}>
           4. Complete System Architecture
         </SectionTitle>
@@ -560,7 +583,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 5. Detailed Multi-Agent Pipeline ───────────── */}
-      <Section accent="blue" className="animate-fade-up animate-delay-4">
+      <Section id="pipeline" accent="blue" className="animate-fade-up animate-delay-4">
         <SectionTitle icon={Wrench}>
           5. Detailed Multi-Agent Pipeline
         </SectionTitle>
@@ -692,7 +715,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 6. Complete Data Flow ───────────── */}
-      <Section className="animate-fade-up animate-delay-5">
+      <Section id="data-flow" className="animate-fade-up animate-delay-5">
         <SectionTitle icon={ArrowLeftRight}>6. Complete Data Flow</SectionTitle>
         <p className="text-sm mb-4">
           End-to-end data flow from question submission to final output. Every
@@ -796,7 +819,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 7. Models & Tools ───────────── */}
-      <Section accent="teal" className="animate-fade-up">
+      <Section id="models-tools" accent="teal" className="animate-fade-up">
         <SectionTitle icon={Hammer}>7. Models &amp; Tools</SectionTitle>
         <p className="text-sm mb-4">
           Full model stack per blueprint §7. All open-weight, inference-only,
@@ -884,7 +907,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 8. Dataset Plan ───────────── */}
-      <Section className="animate-fade-up animate-delay-1">
+      <Section id="dataset-plan" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={BarChart3}>8. Dataset Plan</SectionTitle>
         <p className="text-sm mb-4">
           Five datasets across adversarial and stable categories.
@@ -940,7 +963,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 9. Evaluation Strategy ───────────── */}
-      <Section accent="blue" className="animate-fade-up animate-delay-2">
+      <Section id="evaluation-strategy" accent="blue" className="animate-fade-up animate-delay-2">
         <SectionTitle icon={Ruler}>9. Evaluation Strategy</SectionTitle>
         <h4 className="text-sm font-bold mb-3">
           Metrics &amp; Primary Hypotheses
@@ -1105,7 +1128,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 10. Edge Cases & Failure Handling ───────────── */}
-      <Section className="animate-fade-up animate-delay-3">
+      <Section id="edge-cases" className="animate-fade-up animate-delay-3">
         <SectionTitle icon={Shield}>
           10. Edge Cases &amp; Failure Handling
         </SectionTitle>
@@ -1150,7 +1173,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 11. Risk Assessment ───────────── */}
-      <Section accent="amber" className="animate-fade-up animate-delay-4">
+      <Section id="risk-assessment" accent="amber" className="animate-fade-up animate-delay-4">
         <SectionTitle icon={TriangleAlert}>11. Risk Assessment</SectionTitle>
         <p className="text-sm mb-4">
           Per blueprint §11. The highest-likelihood risk (timeline overload in
@@ -1181,7 +1204,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 12. Month-by-Month Roadmap ───────────── */}
-      <Section className="animate-fade-up animate-delay-5">
+      <Section id="roadmap" className="animate-fade-up animate-delay-5">
         <SectionTitle icon={Calendar}>
           12. Month-by-Month Roadmap (Jul 2026 – Apr 2027)
         </SectionTitle>
@@ -1198,7 +1221,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 13. Implementation Order ───────────── */}
-      <Section accent="teal" className="animate-fade-up">
+      <Section id="implementation-order" accent="teal" className="animate-fade-up">
         <SectionTitle icon={ClipboardList}>
           13. Implementation Order
         </SectionTitle>
@@ -1211,17 +1234,17 @@ export function Idea1Content() {
             {
               step: 1,
               title: "vLLM multi-model serving",
-              desc: "Nothing else testable without this. Verify all 3 checkpoints load + generate in 4-bit quant before writing orchestration.",
+              desc: "Nothing else testable without this. Verify all 3 checkpoints load + generate in 4-bit quant before writing orchestration. Done — three-model serving verified 16 Sep 2026.",
             },
             {
               step: 2,
               title: "Vanilla MAD reproduction (Du et al. 2023)",
-              desc: "Gate 0. Validates base debate loop independent of our additions. Isolates later bugs to our code.",
+              desc: "Gate 0. Validates base debate loop independent of our additions. Isolates later bugs to our code. Done — 10/10 debates ran all 3 rounds.",
             },
             {
               step: 3,
               title: "Injection protocol (§5.4 Steps 1–6)",
-              desc: "Must exist before trust mechanism — trust calibration only evaluable against a working stress test.",
+              desc: "Must exist before trust mechanism — trust calibration only evaluable against a working stress test. Coded and mock-verified; GPU pilot next.",
             },
             {
               step: 4,
@@ -1318,7 +1341,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── Q1 Justification ───────────── */}
-      <Section className="animate-fade-up animate-delay-1">
+      <Section id="publication-justification" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={Target}>Q1 Publication Justification</SectionTitle>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="bg-[#d3f9d8] dark:bg-[rgba(12,166,120,0.15)] border border-[#0ca678] dark:border-[rgba(12,166,120,0.3)] rounded-md p-4">
@@ -1362,7 +1385,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 14. Supervisor Explanation ───────────── */}
-      <Section accent="blue" className="animate-fade-up">
+      <Section id="supervisor-explanation" accent="blue" className="animate-fade-up">
         <SectionTitle icon={GraduationCap}>
           14. Supervisor Explanation (5-Minute Pitch)
         </SectionTitle>
@@ -1462,7 +1485,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 15. Team Explanation ───────────── */}
-      <Section className="animate-fade-up animate-delay-1">
+      <Section id="team-explanation" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={Users}>
           15. Team Explanation (Beginner-Friendly)
         </SectionTitle>
@@ -1553,7 +1576,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 16. Expected Research Outcome ───────────── */}
-      <Section accent="teal" className="animate-fade-up animate-delay-2">
+      <Section id="expected-outcome" accent="teal" className="animate-fade-up animate-delay-2">
         <SectionTitle icon={Trophy}>16. Expected Research Outcome</SectionTitle>
         <TwoCol>
           <ColBox>
@@ -1632,7 +1655,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 17. Future Extensions ───────────── */}
-      <Section className="animate-fade-up animate-delay-3">
+      <Section id="future-extensions" className="animate-fade-up animate-delay-3">
         <SectionTitle icon={Telescope}>17. Future Extensions</SectionTitle>
         <TwoCol>
           <ColBox>
@@ -1689,7 +1712,7 @@ export function Idea1Content() {
       </Section>
 
       {/* ───────────── 18. Final Critical Review ───────────── */}
-      <Section accent="rose" className="animate-fade-up animate-delay-4">
+      <Section id="final-review" accent="rose" className="animate-fade-up animate-delay-4">
         <SectionTitle icon={Search}>
           18. Final Critical Review (Reviewer #2 Mode)
         </SectionTitle>

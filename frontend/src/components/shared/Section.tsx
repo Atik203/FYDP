@@ -14,13 +14,14 @@ const accentBorder: Record<AccentVariant, string> = {
 interface SectionProps {
   accent?: AccentVariant;
   className?: string;
+  id?: string;
   children: React.ReactNode;
 }
 
-export function Section({ accent = 'none', className, children }: SectionProps) {
+export function Section({ accent = 'none', className, id, children }: SectionProps) {
   return (
-    <section className={cn(
-      'glass-card p-8 rounded-[10px] mb-7',
+    <section id={id} className={cn(
+      'glass-card p-8 rounded-[10px] mb-7 scroll-mt-24',
       accentBorder[accent],
       className
     )}>
