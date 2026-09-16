@@ -3,12 +3,16 @@
 from .answers import canonical, distinct_answers, is_correct, majority_answer, normalize, same_answer
 from .baselines import BASELINES
 from .datasets import load_dataset
-from .metrics import ccr, ecr, mpr
+from .metrics import DebateMetrics, MetricSummary, ccr, ecr, evaluate_debate, mpr, summarize
 
 __all__ = [
     "ccr",
     "mpr",
     "ecr",
+    "evaluate_debate",
+    "summarize",
+    "DebateMetrics",
+    "MetricSummary",
     "load_dataset",
     "BASELINES",
     "normalize",
