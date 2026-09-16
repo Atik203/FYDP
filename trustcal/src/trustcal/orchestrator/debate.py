@@ -6,7 +6,7 @@ The optional injection point sits between round 1 and round 2 (§5.4).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Callable
 
 from ..inference import VLLMClient
@@ -31,21 +31,41 @@ class DebateRunner:
         raise NotImplementedError("Phase 2: full trust-calibrated loop")
 
     def _run_vanilla(self, question: str) -> dict:
-        from ..agents import AGENT_INITIAL, AGENT_REVISION
+        from ..agents import AGENT_INITIAL, AGENT_REVISION, AGENT_SYSTEM
 
-        positions = []
-        for i, client in enumerate(self.clients, start=1):
-            positions.append(client.complete(AGENT_INITIAL.format(agent_id=i, question=question)))
+        transcript: list[dict] = []
+
+        positions = [
+            client.complete(
+                AGENT_SYSTEM,
+                AGENT_INITIAL.format(agent_id=i, question=question),
+            )
+            for i, client in enumerate(self.clients, start=1)
+        ]
+        transcript.append({"round": 1, "positions": positions})
 
         for r in range(2, self.rounds + 1):
             peers = "\n\n".join(f"Agent {i}: {p}" for i, p in enumerate(positions, start=1))
             positions = [
                 client.complete(
+                    AGENT_SYSTEM,
                     AGENT_REVISION.format(
-                        agent_id=i, round=r, rounds=self.rounds, own_position=positions[i - 1], trust=1 / len(self.clients), peer_positions=peers
-                    )
+                        agent_id=i,
+                        round=r,
+                        rounds=self.rounds,
+                        own_position=positions[i - 1],
+                        trust=1 / len(self.clients),
+                        peer_positions=peers,
+                    ),
                 )
                 for i, client in enumerate(self.clients, start=1)
             ]
+            transcript.append({"round": r, "positions": positions})
 
-        return {"question": question, "final_positions": positions, "trust_trajectory": None}
+        return {
+            "question": question,
+            "final_positions": positions,
+            "rounds_completed": self.rounds,
+            "transcript": transcript,
+            "trust_trajectory": None,
+        }

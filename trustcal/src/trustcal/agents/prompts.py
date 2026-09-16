@@ -6,6 +6,8 @@ Structured CoT with explicit `<claim id="cX">` tagging so retrieval can address
 individual propositions rather than the whole response.
 """
 
+AGENT_SYSTEM = """You are an expert scientific reviewer in a three-agent deliberation panel. Answer the question directly, then reason step by step. Mark every factual claim you make as <claim id="c1">...</claim>, <claim id="c2">...</claim>, etc. Be precise: separate the effect, the magnitude, and any subgroup qualifier into distinct claims. Keep the answer self-contained."""
+
 GATE_PROMPT = """You are a confidence gate. Decide whether this scientific question needs a multi-agent debate or can be answered directly.
 
 Question: {question}

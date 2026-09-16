@@ -1,6 +1,6 @@
 # Project Structure — Runtime Implementation
 
-Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build inside `/workspace` on the RunPod pod (RTX A6000 48GB, Dev phase) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU.
+Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on the rented GPU instance (RTX A6000 48GB, Dev phase — RunPod or Thunder Compute) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU.
 
 The rule of thumb: **vLLM owns the GPU, this repo owns everything else.** The only GPU-touching file is `scripts/serve.sh`. Everything else is plain Python talking to the three vLLM servers over their OpenAI-compatible APIs.
 
@@ -73,9 +73,9 @@ rounds: 3
 
 ## Pod workflow
 
-1. `setup.sh` on a fresh pod: `git clone` the repo, `pip install -r requirements.txt`, set `HF_HOME=/workspace/.cache`, pre-download the three Dev models, then run `serve.sh` in the background.
-2. Work via SSH/VS Code Remote on `/workspace`. Code and results live on the persistent volume; models cached there too (`HF_HOME`), so restarts cost only `git pull`.
-3. The persistent volume keeps the repo, `.cache`, and `results/`; GitHub is the safety net (spot pods get reclaimed). Terminate-safe: nothing is lost except the container disk (OS + vLLM install, rebuilt by `setup.sh` in ~15 min).
+1. `setup.sh` on a fresh instance: `git clone` the repo, install pinned deps + nightly vLLM, pre-download the three quantized Dev checkpoints, then start `serve.sh` in the background. On Thunder Compute add `VENV=1` (keeps the preinstalled CUDA 13 / PyTorch 2.9 environment untouched).
+2. RunPod: work via SSH/VS Code Remote in `/workspace`; the 100GB network volume keeps repo, `HF_HOME` cache, and `results/` across stop/start. Thunder Compute: everything lives in `$HOME` on the persistent disk; there is no stop — snapshot, delete the instance, restore later (~8 min per 100GB).
+3. GitHub is the safety net (spot pods get reclaimed; Thunder snapshots have no durability guarantee). Push code; copy `results/` out before deleting an instance.
 
 ## Correspondence with the blueprint
 
