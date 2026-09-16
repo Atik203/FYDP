@@ -36,8 +36,8 @@ datasets:
     paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
     license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
     role: "stable comparison baseline"
-    note: "terms accepted 2026-09-16; export HF_TOKEN before repro_mad.py"
-    revision: "main"
+    note: "terms accepted 2026-09-16; export HF_TOKEN before repro_mad.py; HF release has only a 'train' split"
+    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"   # pinned at first Phase 0 download
   mmlu_pro:
     source: "TIGER-Lab/MMLU-Pro (HuggingFace, official release)"
     homepage: "https://github.com/TIGER-AI-Lab/MMLU-Pro"
