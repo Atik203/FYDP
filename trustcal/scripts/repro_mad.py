@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -54,6 +55,9 @@ def _write_summary(out_dir: Path, stamp: str, args: argparse.Namespace, rounds: 
 
 
 def main() -> None:
+    # Progress must be visible in nohup logs while the run is in flight.
+    sys.stdout.reconfigure(line_buffering=True)
+
     parser = argparse.ArgumentParser(description="Gate 0: reproduce vanilla MAD on GPQA")
     parser.add_argument("--config", default="configs/models.yaml")
     parser.add_argument("--dataset", default="gpqa")
