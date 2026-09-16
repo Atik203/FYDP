@@ -36,17 +36,19 @@ trustcal/
 
 ## What each directory does
 
-**`configs/models.yaml`** — the only file that changes between Dev and Final phases. Maps each agent slot to a Hugging Face model id and a port. Dev→Final swap = edit this file, nothing else:
+**`configs/models.yaml`** — the only file that changes between Dev and Final phases. Maps each agent slot to a servable checkpoint and a port; serve flags are generated from it (`scripts/gen_serve_cmds.py`), so the Dev→Final swap = edit this file, nothing else:
 
 ```yaml
 agents:
-  - { role: "agent1", model: "Qwen/Qwen3.5-9B",            port: 8000, quant: "q4" }
-  - { role: "agent2", model: "google/gemma-4-12B",          port: 8001, quant: "q4" }
-  - { role: "agent3", model: "mistralai/Ministral-3-14B-Instruct-2512", port: 8002, quant: "fp8" }
+  - { role: "agent1", model: "QuantTrio/Qwen3.5-9B-AWQ",               port: 8000, quant: "awq_marlin",         gpu_memory_utilization: 0.28 }
+  - { role: "agent2", model: "google/gemma-4-12B-it-qat-w4a16-ct",     port: 8001, quant: "compressed-tensors", gpu_memory_utilization: 0.26 }
+  - { role: "agent3", model: "cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit", port: 8002, quant: "auto",  gpu_memory_utilization: 0.36 }
 rounds: 3
 ```
 
-**`src/trustcal/inference/`** — one small wrapper over the OpenAI SDK (`base_url="http://localhost:<port>/v1"`). No GPU code lives here; it just sends chat completions and returns text. This is the only module that knows the port numbering from `models.yaml`.
+Quantized variants of the roadmap's model trio: the official Ministral FP8 checkpoint cannot run on Ampere (vLLM W8A8 sm80 kernel), so the same model is used in 4-bit AWQ. See `experiments/gate0/README.md` §4.
+
+**`src/trustcal/inference/`** — one small wrapper over the OpenAI SDK (`base_url="http://127.0.0.1:<port>/v1"` — never `localhost`, Windows resolves it to IPv6 first and pays ~2s per request on the fallback). No GPU code lives here; it just sends chat completions and returns text, retrying transient failures only. This is the only module that knows the port numbering from `models.yaml`.
 
 **`src/trustcal/agents/`** — the *personas*. Each agent is the same inference client with a different prompt template (structured CoT + `<claim id="cX">` tagging per blueprint §5.5). Includes the response parser with the fallback regex/LLM extraction for unparseable output. Agent 0 (confidence gate) lives here too — it's a prompt, not a separate service.
 
@@ -58,7 +60,7 @@ rounds: 3
 
 **`src/trustcal/eval/`** — the harness: dataset loaders (GPQA slice, etc. per §8), the CCR/MPR/ECR metrics, and the baselines (B1–B4 trivial reuses, B5 self-consistency, B6 MoA, B7 Gemini oracle, B9 iMAD reimplementation). Each baseline is a runnable config, not a fork of the pipeline.
 
-**`scripts/serve.sh`** — launches three `vllm serve` processes, one per model in `models.yaml`, each on its own port, with `--gpu-memory-utilization` split so the trio shares the card (Dev trio ≈ 28GB Q4/FP8 on 48GB; split per-instance ~0.30). `--enforce-eager` to avoid memory spikes when sharing.
+**`scripts/serve.sh`** — launches three `vllm serve` processes, one per model in `models.yaml` (commands generated, never hand-edited), each on its own port with the per-instance `gpu_memory_utilization` from the config (current split 0.28/0.26/0.36, ~41GB of 45GB usable). Servers start **sequentially** with a readiness gate — concurrent startup makes vLLM's memory profiling race and report phantom OOM. `--enforce-eager` avoids memory spikes when sharing.
 
 **`results/`** — per-run folder: `{experiment}/{dataset}/{seed}/` containing the debate transcript, per-claim verdicts, trust trajectories (JSON), and metric outputs. Gitignored; uploaded to GitHub only if you want them versioned (they can be large).
 

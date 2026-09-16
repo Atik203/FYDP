@@ -17,6 +17,13 @@
 - **AMBIGUOUS — 10–14 of 25:** rerun with a second seed. If the pooled result is still < 60%, treat as No-Go.
 - **NO-GO — < 10 of 25:** stop; do not build further. Write the result up honestly as a finding about *when* evidence-grounded trust does not behaviorally influence LLM aggregation (blueprint §18.6), and escalate to the supervisor before any Phase 2 work.
 
+## Tooling
+
+- **Question set:** local JSON (`[{"question","answer","options"}]`) passed with `--questions-file`; finalized toy set lives in `experiments/pilot-month1/questions.json` once written.
+- **Debate run:** `python scripts/run_experiment.py --arm B3 --questions-file <file> --limit 25` (add the injection arm variant if the pilot uses injected pressure).
+- **Trust-weighted comparison:** ⚠️ **not implemented yet.** The runner currently produces majority aggregation only. The pilot needs a small `--trust-weight` mode that assigns support/harm verdicts from the evidence side of each toy question and compares `weighted_aggregate` (trust v1, `trust/update.py` + `trust/aggregation.py`) against the majority outcome. Tracked as a Phase 1 item in `roadmap.md`.
+- **Scoring:** per question, "changed" = trust-weighted winner ≠ unweighted majority winner; a change toward the injected/incorrect side counts against the criterion (see Pass/Fail above). Report the count out of 25.
+
 ## Notes
 
 - The criterion is about *behavioral* effect (aggregation changes), not accuracy on the toy set — accuracy comes later, at scale.
