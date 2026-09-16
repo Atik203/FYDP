@@ -13,14 +13,14 @@
 
 rounds: 3
 max_model_len: 4096           # Phase 0 debates are short; raise only with KV headroom
-gpu_memory_utilization: 0.86  # sum of the three instances (48GB * 0.86 ≈ 41.3GB)
+gpu_memory_utilization: 0.90  # sum of the three instances (real card = ~45GB on Vast)
 
 agents:
   - role: "agent1"
     model: "QuantTrio/Qwen3.5-9B-AWQ"
     port: 8000
     quant: "awq_marlin"
-    gpu_memory_utilization: 0.22
+    gpu_memory_utilization: 0.28
     max_model_len: 4096
     extra_args:
       - "--reasoning-parser"
@@ -41,7 +41,7 @@ agents:
     model: "mistralai/Ministral-3-14B-Instruct-2512"
     port: 8002
     quant: "auto"                     # FP8 checkpoint: vLLM detects it; no flag
-    gpu_memory_utilization: 0.38
+    gpu_memory_utilization: 0.36
     max_model_len: 4096
     extra_args:
       - "--tokenizer_mode"
