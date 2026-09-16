@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 
 CLAIM_RE = re.compile(r'<claim id="(c\d+)">(.*?)</claim>', re.DOTALL)
-ANSWER_RE = re.compile(r"(?:Answer|Final answer):\s*(.+)", re.DOTALL)
+ANSWER_RE = re.compile(r"(?:Answer|Final answer):\s*([^\n]+)")
 
 
 def extract_claims(text: str) -> list[tuple[str, str]]:
@@ -14,8 +14,12 @@ def extract_claims(text: str) -> list[tuple[str, str]]:
 
 
 def parse_position(text: str) -> str:
-    """Extract the agent's answer/position. Falls back to the first non-tag line."""
+    """Extract the agent's answer/position. Falls back to the first non-empty line.
+
+    The answer is taken from a single line so trailing claim tags are not swallowed
+    into the position (Phase 1 compares positions across rounds).
+    """
     m = ANSWER_RE.search(text)
     if m:
         return m.group(1).strip()
-    return text.strip().splitlines()[0] if text.strip() else ""
+    return next((ln.strip() for ln in text.splitlines() if ln.strip()), "")

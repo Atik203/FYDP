@@ -1,6 +1,10 @@
 # Pinned ranges — verified against Python 3.10-3.12. Keep the upper bounds;
 # they are what stops a fresh install from pulling a breaking release.
-huggingface_hub>=0.20,<1.0
+#
+# vLLM is NOT pinned here: the gemma-4-12B (gemma4_unified) architecture needs a
+# nightly wheel, which pip requirements can't express cleanly. setup.sh installs
+# it via scripts/install_vllm.sh. `import vllm` in verify_env is the check.
+huggingface_hub>=0.30,<2.0
 openai>=1.40,<2.0
 langgraph>=0.2,<1.0
 pyyaml>=6.0,<7.0
@@ -10,5 +14,4 @@ scipy>=1.11,<2.0
 scikit-learn>=1.4,<2.0
 sentence-transformers>=3.0,<4.0
 datasets>=2.19,<4.0
-vllm>=0.7,<1.0
 pytest>=8.0,<9.0

@@ -1,16 +1,77 @@
 # The ONLY file that changes between Dev (Ph 0-2) and Final (Ph 3-5).
-# Dev stack runs at Q4/FP8 (~28GB total) on an RTX A6000 48GB.
-# Final stack (Ph 3-5) runs on an A100 80GB — swap `agents`, nothing else.
+#
+# Dev stack runs on an RTX A6000 48GB (Ampere, sm_86). Checkpoints verified
+# 2026-09-16 against the serving requirements of each architecture:
+#   agent1  QuantTrio/Qwen3.5-9B-AWQ               ~7GB   4-bit AWQ (mirrors Qwen3.5-9B)
+#   agent2  google/gemma-4-12B-it-qat-w4a16-ct     ~9.6GB official QAT 4-bit (compressed-tensors)
+#   agent3  mistralai/Ministral-3-14B-Instruct-2512 ~14GB  official FP8
+#
+# `model` is what vLLM serves AND what the OpenAI client sends — do not rename it
+# on the server (`--served-model-name` caused 404s in the first serve.sh draft).
+# serve.sh commands are generated from this file by scripts/gen_serve_cmds.py,
+# so flags can never drift from this config again.
 
 rounds: 3
+max_model_len: 4096           # Phase 0 debates are short; raise only with KV headroom
+gpu_memory_utilization: 0.86  # sum of the three instances (48GB * 0.86 ≈ 41.3GB)
 
 agents:
-  - { role: "agent1", model: "Qwen/Qwen3.5-9B", port: 8000, quant: "q4" }
-  - { role: "agent2", model: "google/gemma-4-12B", port: 8001, quant: "q4" }
-  - { role: "agent3", model: "mistralai/Ministral-3-14B-Instruct-2512", port: 8002, quant: "fp8" }
+  - role: "agent1"
+    model: "QuantTrio/Qwen3.5-9B-AWQ"
+    port: 8000
+    quant: "awq_marlin"
+    gpu_memory_utilization: 0.22
+    max_model_len: 4096
+    extra_args:
+      - "--reasoning-parser"
+      - "qwen3"
+      - "--default-chat-template-kwargs"
+      - '{"enable_thinking": false}'
+      - "--language-model-only"   # text-only Phase 0: drop the vision tower
+  - role: "agent2"
+    model: "google/gemma-4-12B-it-qat-w4a16-ct"
+    port: 8001
+    quant: "compressed-tensors"
+    gpu_memory_utilization: 0.26
+    max_model_len: 4096
+    extra_args:
+      - "--limit-mm-per-prompt"
+      - '{"image": 0, "audio": 0}'   # text-only Phase 0: skip MM profiling
+  - role: "agent3"
+    model: "mistralai/Ministral-3-14B-Instruct-2512"
+    port: 8002
+    quant: "auto"                     # FP8 checkpoint: vLLM detects it; no flag
+    gpu_memory_utilization: 0.38
+    max_model_len: 4096
+    extra_args:
+      - "--tokenizer_mode"
+      - "mistral"
+      - "--config_format"
+      - "mistral"
+      - "--load_format"
+      - "mistral"
 
+# Final phase (Ph 3-5) runs on an A100 80GB — swap here, nothing else. `quant`
+# stays "auto" until the exact quantized checkpoints are pinned at design freeze
+# (a placeholder like "q4" is not a valid vLLM flag and would fail on launch).
 final_phase:
+  gpu_memory_utilization: 0.90
   agents:
-    - { role: "agent1", model: "Qwen/Qwen3.6-27B", port: 8000, quant: "q4" }
-    - { role: "agent2", model: "google/gemma-4-26B-A4B", port: 8001, quant: "q4" }
-    - { role: "agent3", model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506", port: 8002, quant: "q4" }
+    - role: "agent1"
+      model: "Qwen/Qwen3.6-27B"
+      port: 8000
+      quant: "auto"
+      gpu_memory_utilization: 0.30
+      max_model_len: 8192
+    - role: "agent2"
+      model: "google/gemma-4-26B-A4B"
+      port: 8001
+      quant: "auto"
+      gpu_memory_utilization: 0.30
+      max_model_len: 8192
+    - role: "agent3"
+      model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506"
+      port: 8002
+      quant: "auto"
+      gpu_memory_utilization: 0.30
+      max_model_len: 8192
