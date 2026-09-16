@@ -19,11 +19,12 @@ from pathlib import Path
 from .agents import AGENT_INITIAL, AGENT_SYSTEM, parse_position
 from .config import load_models
 from .eval import load_dataset, summarize
+from .eval.baselines import RUNNER_ARMS
 from .eval.metrics import MetricSummary
 from .inference import VLLMClient, vllm_clients
 from .orchestrator import DebateRunner
 
-ARMS = ("B1", "B3", "injection")
+ARMS = RUNNER_ARMS
 
 
 @dataclass
