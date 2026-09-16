@@ -5,8 +5,8 @@
 #   git clone https://github.com/Atik203/FYDP.git /workspace/fydp
 #   cd /workspace/fydp/trustcal
 #   HF_TOKEN=hf_... bash setup.sh        # token needed for the gated GPQA dataset
-#   HF_TOKEN=hf_... VENV=1 bash setup.sh # recommended on Thunder Compute: keeps the
-#                                        # preinstalled CUDA 13 / PyTorch 2.9 env untouched
+#   HF_TOKEN=hf_... VENV=1 bash setup.sh # recommended when the image blocks system
+#                                        # pip (PEP 668): Thunder Compute, Vast PyTorch images
 #
 # Does, in order: checks Python + GPU → installs pinned deps → installs nightly
 # vLLM (gemma4_unified needs it) → installs trustcal editable → downloads the 3
@@ -40,7 +40,8 @@ esac
 # keeps the nightly vLLM + torch stack isolated from the system environment.
 if [ "${VENV:-0}" = "1" ]; then
   if command -v uv >/dev/null 2>&1; then
-    uv venv --allow-existing .venv
+    rm -rf .venv   # recreate cleanly: uv venvs ship without pip unless --seed
+    uv venv --seed .venv
   else
     "$PY_CMD" -m venv .venv
   fi
