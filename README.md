@@ -4,6 +4,10 @@ FYDP 2026 research proposal site — a static React app presenting the proposal 
 
 The core idea: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer. This project proposes re-weighting each agent's influence _during_ the debate based on how well its claims hold up against retrieved external evidence — an evidence-grounded trust score, not a majority vote.
 
+## Research pipeline
+
+The implementation of the proposed system lives in [`trustcal/`](trustcal/) (Python + vLLM). Phase-by-phase plan: [`roadmap.md`](roadmap.md) · design: [`docs/blueprint.md`](docs/blueprint.md) · injection protocol spec: [`trustcal/INJECTION_PROTOCOL.md`](trustcal/INJECTION_PROTOCOL.md) · experiment reports and artifacts: [`experiments/`](experiments/). Agent/operator instructions for the GPU box: [`trustcal/AGENTS.md`](trustcal/AGENTS.md).
+
 ## Tech stack
 
 - **React 19** + **TypeScript** + **Vite 8**
