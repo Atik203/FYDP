@@ -35,6 +35,19 @@ echo "── vLLM commands ─────────────────�
 cat "$CMD_FILE"
 echo "───────────────────────────────────────────────────────────────"
 
+# Locate the model cache exactly like setup.sh. Without this, vLLM falls back to
+# $HOME/.cache/huggingface and RE-DOWNLOADS every checkpoint — on bandwidth-billed
+# hosts (Vast: ~$0.03/GB) that silently costs more than the GPU.
+if [ -z "${HF_HOME:-}" ]; then
+  if [ -d /workspace ] && [ -w /workspace ]; then
+    HF_HOME=/workspace/.cache/huggingface
+  else
+    HF_HOME="$HOME/.cache/huggingface"
+  fi
+fi
+export HF_HOME
+echo "HF_HOME=$HF_HOME"
+
 if [ "${DRY_RUN:-0}" = "1" ]; then
   echo "DRY_RUN=1 — not launching."
   exit 0
