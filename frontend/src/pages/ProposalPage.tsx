@@ -523,7 +523,7 @@ export function ProposalPage() {
           (Ph 0–2) the pipeline runs <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a></strong>,{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a></strong>, and{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a></strong>{" "}
-          on an RTX A6000 48GB (~$0.53/hr), keeping iteration cost low.
+          on an RTX A6000 48GB (~$0.40–0.46/hr on Vast.ai), keeping iteration cost low.
           For the final experiment matrix (Ph 3–5) we swap to{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a></strong>,{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a></strong>, and{" "}
@@ -674,7 +674,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             <tr>
               <td style={tdStyle}>Agent 3</td>
               <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> (Final)</td>
-              <td style={tdStyle}>Dev: Mistral-family 14B (FP8), same lineage as Final. Final: third distinct family for heterogeneity</td>
+              <td style={tdStyle}>Dev: Mistral-family 14B, served as AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot run on Ampere). Final: third distinct family for heterogeneity</td>
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
@@ -951,13 +951,13 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Jul 2026</td>
               <td style={tdStyle}>Phase 0</td>
               <td style={tdStyle}>Literature freeze, environment setup, reproduce vanilla MAD</td>
-              <td style={tdStyle}>Gate 0: base debate loop reproduces</td>
+              <td style={tdStyle}>Gate 0: base debate loop reproduces — achieved 16 Sep 2026 (10/10 debates, 3/3 rounds)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Aug 2026</td>
               <td style={tdStyle}>Phase 1</td>
               <td style={tdStyle}>Injection protocol, baselines B1&ndash;B4, Month-1 pilot</td>
-              <td style={tdStyle}>Gate 1: &kappa; &gt; 0.75; pilot confirms behavioural effect</td>
+              <td style={tdStyle}>Gate 1: &kappa; &gt; 0.75; pilot confirms behavioural effect (harness built; pilot pending)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Sep&ndash;Oct 2026</td>
@@ -999,7 +999,8 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
         </table>
         <p>
           Three critical Go/No-Go decision points are built into the timeline.
-          Gate 0 (end of Phase 0) validates that the basic debate loop functions.
+          Gate 0 (end of Phase 0) validates that the basic debate loop functions —
+          achieved 16 Sep 2026 (10/10 debates ran all three rounds; mean 370.8 s/debate).
           Gate 1 (end of Phase 1) requires the injection protocol to achieve
           inter-rater reliability &kappa; &gt; 0.75 and the pilot to confirm that
           trust weighting causally affects output. Gate 2 (end of Phase 2) requires

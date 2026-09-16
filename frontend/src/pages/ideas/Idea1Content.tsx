@@ -651,10 +651,10 @@ export function Idea1Content() {
               <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a>
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
-              Dev: Mistral-family 14B with official FP8 weights (~14GB,
-              near-lossless) — same lineage as Final Agent 3. Final: Mistral
-              adds third distinct family (non-Qwen, non-Gemma) for true
-              heterogeneity.
+              Dev: Mistral-family 14B, served as AWQ 4-bit (~8GB) — the official
+              FP8 checkpoint cannot run on Ampere, so the same model is used in
+              4-bit AWQ. Final: Mistral adds third distinct family (non-Qwen,
+              non-Gemma) for true heterogeneity.
             </p>
           </ColBox>
           <ColBox>
@@ -806,8 +806,8 @@ export function Idea1Content() {
 
         <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
-          Two-phase strategy: develop on RTX A6000 48GB ($0.53/hr) with smaller
-          models, then run final experiments on A100 80GB ($0.68–1.50/hr) with
+          Two-phase strategy: develop on RTX A6000 48GB ($0.40–0.46/hr on
+          Vast.ai) with smaller models, then run final experiments on A100 80GB ($0.68–1.50/hr) with
           the full-scale stack. Use the sliders below to estimate your budget.
         </p>
         <CostTable />
