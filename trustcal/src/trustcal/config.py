@@ -47,7 +47,9 @@ class AgentConfig:
 
     @property
     def base_url(self) -> str:
-        return f"http://localhost:{self.port}/v1"
+        # 127.0.0.1, not localhost: Windows resolves localhost to ::1 first and the
+        # IPv4-only vLLM listener costs ~2s per connection on the fallback.
+        return f"http://127.0.0.1:{self.port}/v1"
 
 
 @dataclass

@@ -35,7 +35,7 @@ def main() -> None:
     if check_servers:
         for port in PORTS:
             try:
-                with urllib.request.urlopen(f"http://localhost:{port}/v1/models", timeout=15) as resp:
+                with urllib.request.urlopen(f"http://127.0.0.1:{port}/v1/models", timeout=15) as resp:
                     models = [m["id"] for m in json.load(resp).get("data", [])]
                     if not models:
                         raise RuntimeError("server returned no model ids")
