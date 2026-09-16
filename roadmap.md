@@ -63,6 +63,12 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 
 Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate; B1/B2 cost ~1/9 of MAD per question; a fresh Vast instance re-downloads the ~22GB model cache plus ~15–20GB of wheels/deps, i.e. ~$0.30–1.00 of ingress per session — so Phase 1 should persist the cache (RunPod network volume, Thunder snapshot, or a Vast volume on the same machine) or add ~$1/session to the budget. Keep the instance alive only during pilot runs.
 
+**GPU session economics (learned the hard way in Phase 0 — keep in mind):**
+- **Ingress is billed** on most Vast hosts (~$0.005–0.026/GB; verified 2026-09-16 that the `inet_down_cost=0` filter matches no A6000). One setup session cost **$3.20 in downloads** because models were pulled repeatedly (HF_HOME bug) and a retired FP8 checkpoint was downloaded. A *clean* fresh setup is ~35–40GB ≈ **$0.30–1.00**.
+- **Persist the cache so you pay for downloads once:** RunPod 100GB network volume (~$0.07/GB/mo), Thunder Compute snapshot (models live in the snapshot), or a Vast volume reattached on the same physical machine. Preferred for Phase 1's many short sessions.
+- **Never re-download:** `setup.sh`/`serve.sh` pin `HF_HOME`; once the cache is complete, export `HF_HUB_OFFLINE=1`. Check `inet_down_cost` when picking offers and sort with `-o 'inet_down_cost,dph'`.
+- **Destroy instances between sessions** (Vast bills storage while stopped and deletes the disk on destroy). Copy `results/` out and push `experiments/` first.
+
 **Schedule note:** Phase 0 finished 2026-09-16 (environment bring-up ran long vs the July slot). Phase 1 now runs Sep–Oct; Phases 2–5 shift right by roughly six weeks — confirm the revised Month-1 pilot date with the supervisor.
 
 ---
