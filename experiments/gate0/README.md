@@ -198,6 +198,8 @@ Vast.ai invoice for this session (the number that matters for planning):
 
 ### Phase 1 — injection protocol and first baselines (roadmap)
 
+> **Status 2026-09-17:** items 6–8 below are implemented and mock-verified in the Phase 1 harness (parser fallback, retry caps, resumable JSONL runner). Items 1–5 are coded but not yet run on real GPUs — they await the paid session. See `roadmap.md` Phase 1 for the current checklist.
+
 1. Implement §5.4 injection steps 1–6 (fabricated wrong "expert consensus" pressure at t=1→2) in `src/trustcal/orchestrator/`.
 2. Baselines B1–B4 (single-agent CoT, single-agent+RAG, MAD, MAD+RAG) in `src/trustcal/eval/`.
 3. 50-question pilot + κ check (κ > 0.75 target) on the injection protocol.
