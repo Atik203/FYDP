@@ -11,7 +11,7 @@ from ..config import AgentConfig, ModelConfig
 
 
 class VLLMClient:
-    def __init__(self, base_url: str, model: str, temperature: float = 0.7, max_tokens: int = 2048, timeout: float = 120.0):
+    def __init__(self, base_url: str, model: str, temperature: float = 0.7, max_tokens: int = 1024, timeout: float = 120.0):
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens

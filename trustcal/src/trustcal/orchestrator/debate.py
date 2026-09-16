@@ -45,7 +45,8 @@ class DebateRunner:
         transcript.append({"round": 1, "positions": positions})
 
         for r in range(2, self.rounds + 1):
-            peers = "\n\n".join(f"Agent {i}: {p}" for i, p in enumerate(positions, start=1))
+            # Cap each peer position so round prompts stay inside max_model_len.
+            peers = "\n\n".join(f"Agent {i}: {p[:1500]}" for i, p in enumerate(positions, start=1))
             positions = [
                 client.complete(
                     AGENT_SYSTEM,
