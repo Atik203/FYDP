@@ -13,7 +13,7 @@ import sys
 import urllib.request
 
 PACKAGES = [
-    "openai", "langgraph", "yaml", "requests", "numpy", "scipy",
+    "openai", "langgraph", "yaml", "dotenv", "requests", "numpy", "scipy",
     "sklearn", "sentence_transformers", "datasets", "vllm", "pytest",
 ]
 
