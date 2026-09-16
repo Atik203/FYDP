@@ -30,7 +30,8 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 
 ### Phase 0 — Manual checklist (do these on the GPU instance)
 
-- [ ] **Rent the GPU instance** — **RTX A6000 48GB**, ~$0.35–0.53/hr. Two verified options:
+- [ ] **Rent the GPU instance** — **RTX A6000 48GB**, ~$0.35–0.53/hr. Three verified options:
+  - **Vast.ai** (marketplace; **selected for Phase 0** — host-dependent quality). Filter: CUDA ≥ 12.4, disk bandwidth ≥ 500 MB/s, inet ≥ 500 Mbps, reliability ≥ 95%, on-demand. **Set Disk Space to 100GB at creation** (fixed, not resizable; base image + deps + 31GB checkpoints). Skip Volumes (local to one physical machine). Container disk is **billed while stopped and deleted on destroy** — copy `results/` out and push before destroying; `setup.sh` re-runs in ~30–40 min.
   - **Thunder Compute** (access granted; ~$0.43/hr at 8 vCPU / 64GB RAM / 100GB included disk, per-minute billing, CUDA 13.0 / driver 580). Setup: `HF_TOKEN=hf_... VENV=1 bash setup.sh` (venv per Thunder's "do not touch CUDA" rule). **No native stop:** snapshot → delete instance → restore later; restore takes ~8 min/100GB, and snapshots are not durability-guaranteed — copy `results/` out first.
   - **RunPod** (fallback): template `RunPod PyTorch 2.x`, 100GB network volume; stop (not terminate) when idle.
 - [ ] **Clone the repo on the instance** — RunPod: Connect → Terminal; Thunder: SSH/VS Code Remote (see their VS Code extension). Then:
