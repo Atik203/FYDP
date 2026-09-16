@@ -37,11 +37,13 @@ class RunConfig:
     temperature: float = 0.7
     out_root: Path = Path("results")
     model_config: Path | str = "configs/models.yaml"
+    questions_file: Path | None = None  # local JSON list; bypasses the HF dataset
 
     def __post_init__(self) -> None:
         if self.arm not in ARMS:
             raise ValueError(f"unknown arm {self.arm!r}; expected one of {ARMS}")
         self.out_root = Path(self.out_root)
+        self.questions_file = Path(self.questions_file) if self.questions_file else None
 
 
 def run_dir(cfg: RunConfig) -> Path:
@@ -142,6 +144,14 @@ def _write_summary(cfg: RunConfig, summary: MetricSummary) -> Path:
     return path
 
 
+def load_questions(cfg: RunConfig) -> list[dict]:
+    """Questions from a local JSON file when configured, else the HF dataset."""
+    if cfg.questions_file:
+        data = json.loads(Path(cfg.questions_file).read_text(encoding="utf-8"))
+        return data[: cfg.limit]
+    return load_dataset(cfg.dataset, sample_cap=cfg.limit)[: cfg.limit]
+
+
 def run(
     cfg: RunConfig,
     clients: list[VLLMClient] | None = None,
@@ -155,7 +165,7 @@ def run(
     else:
         rounds = cfg.rounds
     if questions is None:
-        questions = load_dataset(cfg.dataset, sample_cap=cfg.limit)[: cfg.limit]
+        questions = load_questions(cfg)
 
     path = records_path(cfg)
     done = {r["question_id"] for r in read_records(path)}
