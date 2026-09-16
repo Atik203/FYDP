@@ -39,16 +39,20 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 **Objective:** injection protocol, baselines B1–B4, Proposition 1 proof, Month-1 pilot.
 
 **Keypoints:**
-- Implement §5.4 injection steps 1–6 (fabricated wrong "expert consensus" pressure at t=1→2)
-- Baselines B1–B4 (Single-Agent CoT, Single-Agent+RAG, MAD, MAD+RAG)
-- 50-question pilot + κ check (κ > 0.75 target) on the injection protocol
-- **Month-1 behavioral-effectiveness pilot:** ~25 toy questions — confirm trust weight *causally* shifts aggregation output before full build (highest-risk assumption; do not skip)
+- Implement §5.4 injection steps 1–6 (fabricated wrong "expert consensus" pressure at t=1→2) — **spec: `trustcal/INJECTION_PROTOCOL.md`, code: `orchestrator/injection.py`, arm: `--arm injection`**
+- Baselines **B1 + B3 implemented** as runner arms (`scripts/run_experiment.py`); **B2/B4 deferred to Phase 2** with the retrieval subsystem (decision 2026-09-17)
+- 50-question pilot + κ check (κ > 0.75 target) on the injection protocol — tooling ready (`scripts/annotate.py`)
+- **Month-1 behavioral-effectiveness pilot:** ~25 toy questions (`--questions-file`) — confirm trust weight *causally* shifts aggregation output before full build (highest-risk assumption; do not skip)
 - **Gate 1 (Go/No-Go):** protocol validated, baseline CCR ≥ 0.30 confirmed, pilot verdict recorded
 
-**Code items Gate 0 surfaced (fix before the pilot runs):**
-- Parser: skip formatting-only lines (`**Answer:**` / `**Conclusion:**`) — 19% of outputs
-- Claim extraction: exercise the fallback path + per-agent retry (Ministral left 5/30 generations untagged)
-- `repro_mad`: write per-question JSONL so a crash never loses the whole run
+**Code status (2026-09-17) — harness complete and locally verified, no GPU needed:**
+- ✅ Parser: skips formatting-only lines; fallback claim extraction (Gate 0 quirk fixed)
+- ✅ `run_experiment.py`: resumable JSONL per question, retry caps, seeds, per-arm summaries
+- ✅ Injection arm with minority targeting + collapse scoring (CCR/MPR from records)
+- ✅ `mock_vllm.py` + end-to-end tests: injection collapse scenario, resume, stop conditions (104 tests passing)
+- ✅ `preflight.py` cost-safety gate (servers, cache, disk, context budget, keys) and κ annotation tooling
+- ✅ 50-question mock dry run PASS (injection CCR 1.0 / MPR 0.0 as designed; B3 minority preserved)
+- ⬜ Remaining: the paid GPU session itself (below)
 
 **Time & budget — measured from Gate 0 (370.8 s/debate; card ~$0.46/hr):**
 
