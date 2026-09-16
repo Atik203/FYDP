@@ -13,5 +13,8 @@ numpy>=1.26,<3.0
 scipy>=1.11,<2.0
 scikit-learn>=1.4,<2.0
 sentence-transformers>=3.0,<4.0
+# vLLM nightly (0.29.x) imports PixtralRotaryEmbedding, which transformers renamed
+# to PixtralVisionRotaryEmbedding in 5.17.0 — keep transformers below that.
+transformers>=5.16,<5.17
 datasets>=2.19,<4.0
 pytest>=8.0,<9.0
