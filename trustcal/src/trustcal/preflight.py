@@ -38,7 +38,7 @@ def check_servers(agents: list[AgentConfig], timeout: float = 10.0) -> list[Chec
     for agent in agents:
         name = f"server:{agent.port}"
         try:
-            with urllib.request.urlopen(f"http://localhost:{agent.port}/v1/models", timeout=timeout) as resp:
+            with urllib.request.urlopen(f"http://127.0.0.1:{agent.port}/v1/models", timeout=timeout) as resp:
                 served = [m["id"] for m in json.load(resp).get("data", [])]
             if agent.model in served:
                 results.append(CheckResult(name, True, agent.model))
