@@ -27,7 +27,7 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 - Quantized Dev trio is mandatory on 48GB: AWQ Qwen, QAT Gemma, AWQ Ministral — the official Ministral FP8 checkpoint cannot run on Ampere.
 - vLLM **nightly** is required (`gemma4_unified` + Qwen3.5); transformers pinned `<5.17`; use `VENV=1` on PEP 668 images.
 - Servers must start **sequentially** (readiness-gated) or vLLM's memory profiling races and reports phantom OOM.
-- Rent hosts with **`inet_down_cost=0`**; pin `HF_HOME`; copy `results/` out before destroying an instance (disk is billed while stopped, deleted on destroy).
+- Ingress is billed on most Vast hosts (~$0.005–0.026/GB; a free-ingress filter matches nothing as of 2026-09) — **persist the model cache** (RunPod network volume, Thunder Compute snapshot, or a Vast volume reattached on the same physical machine) or budget ~$0.30–1.00 of ingress per fresh Vast instance. Pin `HF_HOME`; copy `results/` out before destroying an instance (disk is billed while stopped, deleted on destroy).
 - Ministral left ~17% of generations without claim tags → the §5.3 fallback extractor is load-bearing, not optional.
 
 **Remaining Phase 0 item (offline, not blocking Phase 1):** LangGraph StateGraph core, videos 1–6.
@@ -58,10 +58,10 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 | Baselines B1–B4 (50 questions each) | ~8–12 h | 3–4 days | ~$4–6 |
 | 50-question pilot + κ check | ~5.2 h | 2–3 days | ~$2.4 |
 | Month-1 behavioral pilot (25 questions) | ~2.6 h | 2 days | ~$1.2 |
-| Setup per fresh instance | ~45–60 min | — | ~$0.5 (free if `inet_down_cost=0`) |
+| Setup per fresh instance | ~45–60 min | — | ~$0.30–1.00 ingress (cache-persisting host: ~$0) |
 | **Phase total** | **~18–24 h** | **~3–4 weeks** | **~$9–12** |
 
-Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate; B1/B2 cost ~1/9 of MAD per question; the model cache (~22GB) is re-downloaded per fresh instance, so hosts with free ingress are mandatory. Keep the instance alive only during pilot runs — destroy between sessions.
+Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate; B1/B2 cost ~1/9 of MAD per question; a fresh Vast instance re-downloads the ~22GB model cache plus ~15–20GB of wheels/deps, i.e. ~$0.30–1.00 of ingress per session — so Phase 1 should persist the cache (RunPod network volume, Thunder snapshot, or a Vast volume on the same machine) or add ~$1/session to the budget. Keep the instance alive only during pilot runs.
 
 **Schedule note:** Phase 0 finished 2026-09-16 (environment bring-up ran long vs the July slot). Phase 1 now runs Sep–Oct; Phases 2–5 shift right by roughly six weeks — confirm the revised Month-1 pilot date with the supervisor.
 
