@@ -44,9 +44,12 @@ Gate 0 (roadmap, blueprint §13 step 2): validate that the **base multi-agent de
 | GPU | NVIDIA RTX A6000 48GB (45GB usable), driver 555.58.02 |
 | CPU / RAM / Disk | 12 vCPU / 72GB / 100GB container disk |
 | OS / Python | Ubuntu 22.04 (image `pytorch/pytorch:2.11.0-cuda12.8-cudnn9-devel`) / Python 3.12.3 |
-| vLLM | nightly `0.29.1rc1.dev128+gcd10ed6f9` |
+| vLLM | nightly `0.29.1rc1.dev128+gcd10ed6f9` (stable cannot load `gemma4_unified`) |
 | transformers | 5.16.1 (pinned `<5.17`, see §8) |
+| mistral_common | 1.11.7 (required by the Mistral 3 architecture) |
 | Other | openai SDK, datasets, pytest; run inside `trustcal/.venv` (`VENV=1`) |
+| Observed GPU memory | 25.8GB after two models loaded; 42.7GB during generation (all three + KV) |
+| Observed GPU utilization | 33–41% during sequential generation |
 
 ## 4. Models served
 
@@ -57,6 +60,19 @@ Gate 0 (roadmap, blueprint §13 step 2): validate that the **base multi-agent de
 | agent3 | `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit` | 4-bit AWQ | 8002 | 0.36 |
 
 agent3 note: the official `mistralai/Ministral-3-14B-Instruct-2512` FP8 checkpoint **cannot run on Ampere** (vLLM's W8A8 sm80 kernel fails with `cutlass_scaled_mm_sm80_epilogue`). Swapped to a 4-bit AWQ quant of the *same model* — same model identity, different precision. Recorded in `trustcal/configs/models.yaml`.
+
+Exact server commands (generated from `configs/models.yaml` by `scripts/gen_serve_cmds.py`, launched sequentially by `serve.sh`):
+
+```bash
+vllm serve QuantTrio/Qwen3.5-9B-AWQ --port 8000 --max-model-len 4096 \
+  --gpu-memory-utilization 0.28 --enforce-eager --quantization awq_marlin \
+  --reasoning-parser qwen3 --default-chat-template-kwargs '{"enable_thinking": false}' --language-model-only
+vllm serve google/gemma-4-12B-it-qat-w4a16-ct --port 8001 --max-model-len 4096 \
+  --gpu-memory-utilization 0.26 --enforce-eager --quantization compressed-tensors \
+  --limit-mm-per-prompt '{"image": 0, "audio": 0}'
+vllm serve cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit --port 8002 --max-model-len 4096 \
+  --gpu-memory-utilization 0.36 --enforce-eager
+```
 
 ## 5. Configuration used
 
@@ -96,9 +112,47 @@ Per-question timings (from `artifacts/summary-20260916T193249Z.md`):
 | 9 | 348.8 | `**Answer:**` |
 | 10 | 360.9 | Exoplanet with the highest density … |
 
-**Formatting quirk to handle in Phase 1:** several agents emit a bare `**Answer:**` / `**Conclusion:**` line and put the actual answer on the next line. The position parser must skip formatting-only lines (fallback extraction). Cosmetic for Gate 0; affects claim/position parsing in Phase 1.
+### 7.1 Generation volume
 
-Note: raw request counts in the vLLM access logs exceeded 90 because the OpenAI SDK retried slow calls; the transcript is the source of truth.
+| Metric | Value |
+| --- | --- |
+| Debates × rounds × agents | 10 × 3 × 3 = **90 generations** |
+| Non-empty positions | **90 / 90** |
+| Total generated text | 275,668 chars (~69K tokens) |
+| Mean output length | 3,063 chars (~760 tokens) per generation |
+| Output cap | 1,024 tokens (hit only by long-form answers) |
+
+### 7.2 Per-agent output behaviour (computed from the transcript)
+
+| Agent | Model | Generations | Mean chars | Mean `<claim>` tags | Generations with ≥1 tag |
+| --- | --- | --- | --- | --- | --- |
+| agent1 | Qwen3.5-9B-AWQ | 30 | 3,215 | 9.0 | 30/30 (100%) |
+| agent2 | Gemma-4-12B-QAT | 30 | 2,793 | 11.3 | 30/30 (100%) |
+| agent3 | Ministral-3-14B-AWQ | 30 | 3,181 | 8.3 | 25/30 (83%) |
+
+**Phase-1 implication:** Ministral skipped claim tags in 5 of 30 generations — the fallback claim-extraction pass (§5.3) and the per-agent retry cap are not theoretical, they will be exercised from the first pilot run. Qwen and Gemma complied with tag formatting on every generation.
+
+### 7.3 Timing distribution
+
+| Metric | Value |
+| --- | --- |
+| Total | 3,708.1 s (61.8 min) |
+| Mean per debate | 370.8 s |
+| Fastest / slowest debate | 334.8 s / 404.4 s |
+| Stdev across debates | 21.5 s (5.8%) |
+
+Timing is dominated by ~9 sequential generations per debate (3 agents × 3 rounds), not by prompt length; per-debate cost is therefore predictable, which is what the Phase-1 budget needs.
+
+### 7.4 Transcript schema (what the artifact contains)
+
+`transcript-*.json` → `{gate, stamp, dataset, limit, rounds, models[], runs[]}`; each run has:
+`question`, `gold_answer`, `question_index`, `elapsed_s`, `rounds_completed`, `trust_trajectory` (null in Phase 0), and `transcript[]` —
+one entry per round with `{round, positions[3]}` (positions ordered agent1→agent3). Raw model text, not parsed positions, so Phase 1 can re-parse without re-running the models.
+
+### 7.5 Known output quirks
+
+- 17 of 90 generations (19%) open with a bare `**Answer:**` / `**Conclusion:**` line and put the real answer on the next line — the position parser must skip formatting-only lines (roadmap next step).
+- Raw vLLM request counts exceeded 90 because the OpenAI SDK retried slow calls; the transcript (90) is the source of truth, not access-log counts.
 
 ## 8. Issues found and fixes
 
@@ -142,7 +196,21 @@ Vast.ai invoice for this session (the number that matters for planning):
 
 ## 11. Next steps
 
-1. Phase 1: injection protocol (§5.4 steps 1–6), baselines B1–B4, 50-question pilot + κ.
-2. Month-1 behavioral pilot per [`trustcal/PILOT_CRITERION.md`](../../trustcal/PILOT_CRITERION.md) (fixed Go/No-Go criterion).
-3. Parser hardening for the `**Answer:**` newline format noted in §7.
-4. Budget: rent hosts with **free ingress** for Phase 1; expect the three-model cache (~22GB) to be re-downloaded per fresh instance unless a persistent volume is used.
+### Phase 1 — injection protocol and first baselines (roadmap)
+
+1. Implement §5.4 injection steps 1–6 (fabricated wrong "expert consensus" pressure at t=1→2) in `src/trustcal/orchestrator/`.
+2. Baselines B1–B4 (single-agent CoT, single-agent+RAG, MAD, MAD+RAG) in `src/trustcal/eval/`.
+3. 50-question pilot + κ check (κ > 0.75 target) on the injection protocol.
+4. Month-1 behavioral pilot (~25 toy questions) against the fixed Go/No-Go criterion in [`trustcal/PILOT_CRITERION.md`](../../trustcal/PILOT_CRITERION.md).
+5. **Gate 1:** protocol validated, baseline CCR ≥ 0.30 confirmed, pilot verdict recorded.
+
+### Code items surfaced by this run
+
+6. Position parser: skip formatting-only lines (`**Answer:**` / `**Conclusion:**`) — affects 19% of generations (§7.5).
+7. Claim extraction: exercise the fallback path + per-agent retry for untagged generations (Ministral 5/30, §7.2).
+8. `repro_mad.py`: write per-question results incrementally (JSONL) — a crash currently loses the entire run.
+
+### Compute and budget for Phase 1
+
+9. Rent a host with **`inet_down_cost=0`**. The ~22GB model cache is lost on destroy and must be re-downloaded per fresh instance; at this host's $0.026/GB that is ~$0.55–0.60 per session — more than the GPU time itself.
+10. Estimated Phase-1 GPU: 50-question pilot at ~6.2 min/debate ≈ **5.2h ≈ $2.40** at $0.46/hr; Month-1 pilot (25 questions) ≈ **2.6h ≈ $1.20**; plus ~45 min setup per fresh instance. Budget **$5** for the phase, dominated by the two pilots, not by setup.

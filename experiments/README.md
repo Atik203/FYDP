@@ -8,6 +8,7 @@ Index of every experimental run for the trustcal pipeline. One folder per experi
 
 ## Conventions
 
+- New reports: copy [`TEMPLATE.md`](TEMPLATE.md) to `<experiment-id>/README.md` and fill every section.
 - One experiment = one folder named after the gate/experiment id (`gate0`, `injection-v1`, `pilot-month1`, ...).
 - Every report starts with an index and states, in order: objective, result, environment, models, config, process, measurements, issues+fixes, cost, artifacts, next steps.
 - Raw artifacts (transcripts, metric files) live in `<experiment>/artifacts/` and are committed for future team use.
