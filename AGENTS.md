@@ -6,7 +6,7 @@ Canonical agent instructions for this repo. Read by opencode (DeepSeek V4, MiniM
 
 Static React site presenting the FYDP research proposal **"Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning"** (Group 6 · Team Phantom Devs).
 
-Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer (sycophantic collapse). The proposal re-weights each agent's influence *during* the debate using an evidence-grounded trust score derived from retrieved external evidence, not a majority vote. This repo is the presentation of that proposal, not an implementation of the mechanism.
+Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer (sycophantic collapse). The proposal re-weights each agent's influence *during* the debate using an evidence-grounded trust score derived from retrieved external evidence, not a majority vote. This repo holds both the presentation site (`frontend/`) and the Phase 0+ implementation of the mechanism (`trustcal/`, Python + vLLM) — the pipeline has its own agent file: `trustcal/AGENTS.md`.
 
 ## Tech stack
 
@@ -28,7 +28,7 @@ Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressur
 | `npm run preview` (in `frontend/`) | Serve the production build |
 | `npm run lint` (in `frontend/`) | Oxlint |
 
-All app commands run from the `frontend/` directory — that's the Vercel root. Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked.
+All app commands run from the `frontend/` directory — that's the Vercel root. Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked. The Python research pipeline is separate: its commands run from `trustcal/` and are documented in `trustcal/AGENTS.md` (`pytest` exists there).
 
 ## Layout
 
@@ -42,6 +42,11 @@ frontend/            React app (Vite root; see Routes below)
     data/                Page content (ideas.ts, overview.ts, papers.ts)
     pages/               One component per route
   scripts/prerender.mjs  Headless-Chrome prerender, runs after vite build
+trustcal/              Python pipeline (vLLM serving + debate runner; see trustcal/AGENTS.md)
+  configs/             models.yaml (Dev/Final switch), datasets.yaml (revisions, caps)
+  src/trustcal/        inference · agents · orchestrator (injection) · trust · eval · runner · preflight
+  scripts/             setup.sh, serve.sh, run_experiment.py, preflight.py, mock_vllm.py, annotate.py
+experiments/           Per-run reports + committed artifacts (index in experiments/README.md)
 docs/                  Research blueprint + literature-review guide
 roadmap.md             Phase-by-phase execution plan (blueprint §12–13)
 literature_review/
