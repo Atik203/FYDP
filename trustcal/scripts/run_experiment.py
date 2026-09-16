@@ -23,6 +23,7 @@ def main() -> None:
     parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--out", default="results")
     parser.add_argument("--config", default="configs/models.yaml")
+    parser.add_argument("--questions-file", default=None, help="local JSON question list instead of the HF dataset")
     args = parser.parse_args()
 
     cfg = RunConfig(
@@ -33,6 +34,7 @@ def main() -> None:
         rounds=args.rounds,
         out_root=Path(args.out),
         model_config=args.config,
+        questions_file=Path(args.questions_file) if args.questions_file else None,
     )
     summary = run(cfg)
     print(summary.as_dict())

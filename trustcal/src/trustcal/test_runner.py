@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from .runner import RunConfig, read_records, records_path, run
 
 OPTIONS = ["mitochondrial matrix", "cytoplasm", "nucleus", "reticulum"]
@@ -74,6 +76,20 @@ def test_unknown_arm_rejected(tmp_path) -> None:
         raise AssertionError("expected ValueError")
     except ValueError:
         pass
+
+
+def test_questions_file_bypasses_dataset(tmp_path) -> None:
+    qfile = tmp_path / "questions.json"
+    qfile.write_text(
+        json.dumps([{"question": "Local Q?", "answer": "cytoplasm", "options": OPTIONS}]),
+        encoding="utf-8",
+    )
+    cfg = RunConfig(arm="B1", limit=5, seed=1, out_root=tmp_path, questions_file=qfile)
+    client = FakeClient("cytoplasm")
+    summary = run(cfg, clients=[client])
+    assert summary.n_debates == 1  # only what the file contains
+    assert client.calls == 1
+    assert read_records(records_path(cfg))[0]["question"] == "Local Q?"
 
 
 def test_read_records_ignores_torn_last_line(tmp_path) -> None:
