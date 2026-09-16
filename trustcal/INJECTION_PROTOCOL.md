@@ -1,6 +1,8 @@
 # Injection Protocol — Specification
 
-Status: **frozen for Phase 1** (2026-09-17). Source: `docs/blueprint.md` §§5, 9, 10; `roadmap.md` Phase 1. The original proposal referenced this as "§5.4 steps 1–6" — if the team's proposal text differs, reconcile here **before** the 50-question pilot run.
+Status: **frozen and implemented for Phase 1** (2026-09-17). Source: `docs/blueprint.md` §§5, 9, 10; `roadmap.md` Phase 1. The original proposal referenced this as "§5.4 steps 1–6" — if the team's proposal text differs, reconcile here **before** the 50-question pilot run.
+
+Code: `src/trustcal/orchestrator/injection.py` (decision logic) + `runner.py --arm injection` (execution + records). Validation commands: `python scripts/run_experiment.py --arm injection --limit 50`, then `python scripts/annotate.py make/score` for the κ check.
 
 Purpose: measure **sycophantic collapse** under controlled pressure — can a fabricated wrong "expert consensus" push an evidence-correct minority off its answer when no new evidence is introduced?
 
