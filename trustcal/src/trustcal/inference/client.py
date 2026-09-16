@@ -15,7 +15,8 @@ class VLLMClient:
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
-        self._client = OpenAI(base_url=base_url, timeout=timeout)
+        # vLLM ignores the key, but the OpenAI SDK refuses to construct without one.
+        self._client = OpenAI(base_url=base_url, api_key="EMPTY", timeout=timeout)
 
     def complete(self, system: str, user: str) -> str:
         """Single chat completion (no tool calls, no streaming — keep it simple)."""
