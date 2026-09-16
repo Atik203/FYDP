@@ -52,7 +52,8 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 - ✅ `mock_vllm.py` + end-to-end tests: injection collapse scenario, resume, stop conditions (104 tests passing)
 - ✅ `preflight.py` cost-safety gate (servers, cache, disk, context budget, keys) and κ annotation tooling
 - ✅ 50-question mock dry run PASS (injection CCR 1.0 / MPR 0.0 as designed; B3 minority preserved)
-- ⬜ Remaining: the paid GPU session itself (below)
+- ⬜ Month-1 pilot **trust-weight mode** (`--trust-weight`): assigns support/harm from the evidence side of each toy question and compares weighted vs majority aggregation — see `trustcal/PILOT_CRITERION.md` (tooling note)
+- ⬜ Remaining after that: the paid GPU session itself (below)
 
 **Time & budget — measured from Gate 0 (370.8 s/debate; card ~$0.46/hr):**
 

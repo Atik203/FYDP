@@ -341,6 +341,8 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 
 **Why this works:** The Dev models (9B–14B) run at Q4/FP8 quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B) require 4-bit quantisation on an A100 80GB, but the code is identical; only the model checkpoints change. See §13 for the exact build sequence.
 
+> **Empirical note (2026-09, Phase 0/1):** on the RTX A6000 the official Ministral FP8 checkpoint cannot be served — vLLM's W8A8 FP8 kernel fails on Ampere (`cutlass_scaled_mm_sm80_epilogue`). The Dev stack therefore uses an **AWQ-4bit quantisation of the same Ministral-3-14B-Instruct-2512 model** (with AWQ Qwen and QAT-4bit Gemma), pinned in `trustcal/configs/models.yaml`. Model identities are unchanged; only the quantisation artifacts differ. Measured Dev behaviour, environment versions and costs: `experiments/gate0/README.md`.
+
 **Contingency:** If the A100 budget is tight, the Final experiment matrix can be run at half precision (fp16) on 2× A100 for ~$2.50–3.00/hr, reducing wall-clock time by ~30–40% compared to 4-bit sequential inference on 1× A100. If the A6000 budget is tight, Dev work can run sequentially on a single ≥32 GB VRAM GPU (e.g., RTX 4090 24GB loading one Dev model at a time via model swaps).
 
 **Implementation difficulty ranking (easiest → hardest):**

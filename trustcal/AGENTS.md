@@ -37,7 +37,7 @@ Canonical agent instructions for this directory: the Phase 0+ implementation (vL
 
 ## Dev stack (RTX A6000 48GB)
 
-Quantized checkpoints pinned in `models.yaml` — the model names stay the roadmap's, the artifacts are 4-bit AWQ (Qwen), QAT w4a16 (Gemma), official FP8 (Ministral). Nightly vLLM is mandatory; `install_vllm.sh` auto-detects the wheel index from the driver (≥580 → cu130, else cu129).
+Quantized checkpoints pinned in `models.yaml` — the model names stay the roadmap's, the artifacts are 4-bit AWQ (Qwen), QAT w4a16 (Gemma), AWQ 4-bit (Ministral; the official FP8 checkpoint cannot run on Ampere). Nightly vLLM is mandatory; `install_vllm.sh` auto-detects the wheel index from the driver (≥580 → cu130, else cu129).
 
 ## Commands (run from `trustcal/`)
 
