@@ -187,12 +187,12 @@ export function PapersPage() {
             Reading Roadmap
           </>
         }
-        subtitle="39 papers across 6 stages · Verified publication status · Reading timeline · Priority & difficulty"
+        subtitle="42 papers read · 5 reviews pending team read · Verified publication status · Priority & difficulty"
         coverItems={[
-          { label: "Total Papers", value: "39" },
+          { label: "Papers Read", value: "42" },
+          { label: "Pending Read", value: "5" },
           { label: "Critical Priority", value: "14" },
-          { label: "Last Verified", value: "Jul 2026" },
-          { label: "Tracking Tool", value: "Zotero + Shared Matrix" },
+          { label: "Last Verified", value: "Sep 2026" },
         ]}
       />
 
@@ -206,7 +206,7 @@ export function PapersPage() {
           <p className="text-sm mb-2">
             Stage 4 (Closest Related Work) and every 2024–2026 paper has been
             checked via live search — publication status, venue, and DOI are
-            current as of July 2026. Older foundational papers (Stages 1, 5, 6)
+            current as of September 2026. Older foundational papers (Stages 1, 5, 6)
             are well-established, high-confidence citations.{" "}
             <strong>
               Re-verify all Stage 4 papers before final thesis submission
