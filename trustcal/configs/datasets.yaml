@@ -2,6 +2,9 @@
 # BrokenMath/BrokenArXiv are adversarial/worst-case by construction — frame results that way.
 # Provenance: all datasets are the official releases from their authors (HuggingFace orgs and
 # project pages). None are taken from Kaggle. Licenses verified 2026-09-15.
+#
+# `revision:` fields start as "main" and MUST be replaced by the exact commit hash on the
+# first Phase 0 download; every later run loads that revision (datasets.load_dataset(revision=...)).
 
 datasets:
   brokermath:
@@ -10,6 +13,7 @@ datasets:
     license: "CC BY-NC-SA 4.0 (non-commercial)"
     role: "primary adversarial stress test"
     filtering: "divergent-answer filter per §5.4 Step 1 (~60-70% retention)"
+    revision: "main"
   brokenarxiv:
     source: "MathArena/brokenarxiv (HuggingFace, official release)"
     homepage: "https://matharena.ai/"
@@ -18,24 +22,29 @@ datasets:
     role: "adversarial, monthly-refreshed"
     snapshot: "0226-0526"
     filtering: "same as brokermath"
+    revision: "main"
   hle:
     source: "cais/hle (HuggingFace, official release by Center for AI Safety and Scale AI)"
     paper: "Humanity's Last Exam, Nature 649, 1139-1146 (2026); arXiv:2501.14249"
     license: "MIT (gated: accept terms before download)"
     role: "hard scientific reasoning ceiling"
-    note: "click-through approval required — apply in Phase 0"
+    note: "access approved 2026-09-16; load with HF_TOKEN (gated repo)"
+    revision: "main"
   gpqa:
     source: "Idavidrein/gpqa (HuggingFace, official release)"
     homepage: "https://github.com/idavidrein/gpqa"
     paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
-    license: "CC BY 4.0"
+    license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
     role: "stable comparison baseline"
+    note: "terms accepted 2026-09-16; export HF_TOKEN before repro_mad.py"
+    revision: "main"
   mmlu_pro:
     source: "TIGER-Lab/MMLU-Pro (HuggingFace, official release)"
     homepage: "https://github.com/TIGER-AI-Lab/MMLU-Pro"
     paper: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, arXiv:2406.01574"
     license: "MIT"
     role: "stable comparison baseline"
+    revision: "main"
 
 seeds: [1, 2, 3]
 rounds: 3

@@ -11,13 +11,15 @@ Phase-by-phase execution plan (Jul 2026 – Apr 2027). Source of truth: `docs/bl
 
 All pipeline code is model-agnostic — the Dev→Final swap is a config edit in `configs/models.yaml`, nothing else. Total GPU budget ≈ **$500–1,000** (+ ~$5–7 Gemini oracle API).
 
+> Dev checkpoints are pinned as **quantized variants of these three models** in `trustcal/configs/models.yaml` (4-bit AWQ Qwen, QAT 4-bit Gemma, FP8 Ministral) so the trio fits one 48GB card. The model names above are the models; the config file is the servable artifacts.
+
 ---
 
 ## Phase 0 — Foundation (Jul 2026)
 
 **Objective:** literature freeze, environment setup, reproduce vanilla MAD.
 
-**Status: code part complete** (pushed to main) — `trustcal/` package with `setup.sh`, `configs/`, `src/trustcal/{config,inference,agents,retrieval,trust,orchestrator,eval}`, `scripts/{serve.sh,repro_mad.py,smoke_test.py,verify_env.py}`, `references.bib` (25 entries), trust math + boundedness tests passing. Remaining Phase 0 work is manual — checklist below.
+**Status: code part complete** (pushed to main) — `trustcal/` package with `setup.sh`, `configs/`, `src/trustcal/{config,inference,agents,retrieval,trust,orchestrator,eval}`, `scripts/{serve.sh,repro_mad.py,smoke_test.py,verify_env.py}`, `references.bib` (25 entries), trust math + boundedness tests passing. **Pre-flight pass 2026-09-16:** serve commands are generated from `models.yaml` (no drift), Gate 0 writes `results/gate0/` logs, debate loop has a GPU-free contract test, nightly-vLLM requirement documented, 4 core citations verified against AAAI/ACL/ICLR. Remaining Phase 0 work is manual — checklist below.
 
 **Keypoints:**
 - vLLM multi-model serving: all 3 Dev models load + generate correctly on the A6000 before any orchestration code
@@ -26,19 +28,21 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 - Apply for HLE access now (approval lead time), freeze dataset snapshots
 - Deliverables: `references.bib`, working serve.sh, MAD reproduction script, Month-1 pilot design finalized
 
-### Phase 0 — Manual checklist (do these on the GPU pod)
+### Phase 0 — Manual checklist (do these on the GPU instance)
 
-- [ ] **Rent the GPU pod** — RunPod (or Vast.ai): search template `RunPod PyTorch 2.x`, GPU = **RTX A6000 48GB**, storage ≥ 100GB persistent volume (keeps models + results across restarts). Approx $0.53/hr.
-- [ ] **Clone the repo on the pod** — open the pod's terminal (RunPod: Connect → Terminal):
-  `git clone https://github.com/Atik203/FYDP.git /workspace/fydp && cd /workspace/fydp/trustcal`
-- [ ] **Run the one-command setup** — `bash setup.sh`. This installs all pinned Python deps, downloads the 3 Dev models (~28GB) to `HF_HOME`, starts vLLM on ports 8000–8002, and runs the environment verification (imports + versions + server health). Expected finish: `setup.sh complete — vLLM on :8000-8002`.
-- [ ] **Confirm the health check passed** — `python scripts/verify_env.py --check-servers` should print `server OK` for ports 8000/8001/8002 and version lines for openai/numpy/datasets/vllm. If a model fails, re-run `bash scripts/serve.sh` and check the log for OOM (`--gpu-memory-utilization` too high on the card).
-- [ ] **Apply for HLE access (do now, lead time)** — go to https://huggingface.co/datasets/cais/hle → request access (click-through approval). Record the approval email. Fallback if denied: GPQA-Diamond subset (pre-approved in §8).
+- [ ] **Rent the GPU instance** — **RTX A6000 48GB**, ~$0.35–0.53/hr. Two verified options:
+  - **Thunder Compute** (access granted; ~$0.43/hr at 8 vCPU / 64GB RAM / 100GB included disk, per-minute billing, CUDA 13.0 / driver 580). Setup: `HF_TOKEN=hf_... VENV=1 bash setup.sh` (venv per Thunder's "do not touch CUDA" rule). **No native stop:** snapshot → delete instance → restore later; restore takes ~8 min/100GB, and snapshots are not durability-guaranteed — copy `results/` out first.
+  - **RunPod** (fallback): template `RunPod PyTorch 2.x`, 100GB network volume; stop (not terminate) when idle.
+- [ ] **Clone the repo on the instance** — RunPod: Connect → Terminal; Thunder: SSH/VS Code Remote (see their VS Code extension). Then:
+  `git clone https://github.com/Atik203/FYDP.git /workspace/fydp && cd /workspace/fydp/trustcal` (on Thunder use `$HOME/fydp` — there is no `/workspace`).
+- [ ] **Run the one-command setup** — `HF_TOKEN=hf_... bash setup.sh` (or `VENV=1` on Thunder). Installs pinned Python deps + **nightly vLLM** (stable cannot load `gemma4_unified`, i.e. Gemma 4 12B; the wheel index auto-detects from the driver), downloads the 3 **quantized** Dev checkpoints (~31GB) to `HF_HOME` (home dir on Thunder, `/workspace` on RunPod), starts vLLM on ports 8000–8002, and runs the environment verification. Expected finish: `setup.sh complete — vLLM on :8000-8002`.
+- [ ] **Confirm the health check passed** — `python scripts/verify_env.py --check-servers` should print `server OK` for ports 8000/8001/8002 and version lines for openai/numpy/datasets/vllm. If a model fails: `results/logs/vllm-<port>.log`, then re-run `bash scripts/serve.sh` (OOM ⇒ lower `--gpu-memory-utilization` in `configs/models.yaml`).
+- [x] **HLE access** — approved (with GPQA access) **2026-09-16**; GPQA terms accepted on the same account. Record the approval emails in the meeting notes. Fallback if either is revoked: GPQA-Diamond subset (pre-approved in §8).
 - [ ] **Freeze dataset snapshots** — confirm the BrokenArXiv monthly snapshot range **0226–0526** is recorded in `configs/datasets.yaml` (already there) and note the exact snapshot URLs in `references.bib`/notes so results cite the exact version.
 - [ ] **Run Gate 0 (vanilla MAD reproduction)** — `python scripts/repro_mad.py --limit 10`. Expected: 3 agents answer the same question, 3 rounds, positions print. Gate 0 = the loop completes and produces coherent per-agent answers.
 - [ ] **Learn LangGraph core** — CampusX Agentic AI playlist **videos 1–6 only** (StateGraph, nodes/edges, conditional edges, memory), then `pip show langgraph` to confirm the installed version matches the tutorial.
-- [ ] **Finalize the Month-1 pilot Go/No-Go criterion** — decide now, in writing: e.g. "pilot passes if trust-weight shift changes the final aggregation on ≥ 15/25 toy questions where evidence contradicts the majority; otherwise report as negative result" (blueprint §18.6).
-- [ ] **Verify references.bib** — `trustcal/references.bib` was copied from `FYDP_Summer/fydp.bib` (25 entries); spot-check iMAD (AAAI 2026), MoA (ICLR 2025), ConsensAgent (Findings ACL 2025), DebUnc (Findings EMNLP 2025) against ACL Anthology/DOI.
+- [x] **Finalize the Month-1 pilot Go/No-Go criterion** — written **2026-09-16** in `trustcal/PILOT_CRITERION.md` (PASS ≥15/25 = ≥60% of evidence-contradicts-majority questions; 10–14 ambiguous → second seed; <10 No-Go → report negative result per blueprint §18.6).
+- [x] **Verify references.bib** — `trustcal/references.bib` copied from `FYDP_Summer/fydp.bib` (25 entries); spot-checked **2026-09-16**: iMAD (AAAI 40(35):29403–29411, DOI 10.1609/aaai.v40i35.40181) · MoA (ICLR 2025 proceedings, URL resolves) · ConsensAgent (Findings ACL 2025:22112–22133, DOI 10.18653/v1/2025.findings-acl.1141) · DebUnc (Findings EMNLP 2025:23299–23315, DOI 10.18653/v1/2025.findings-emnlp.1265) — all match the primary sources.
 
 ### Phase 0 — Done criteria
 

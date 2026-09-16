@@ -13,7 +13,10 @@ class AgentConfig:
     role: str
     model: str
     port: int
-    quant: str
+    quant: str = "auto"
+    gpu_memory_utilization: float | None = None
+    max_model_len: int | None = None
+    extra_args: list[str] = field(default_factory=list)
 
     @property
     def base_url(self) -> str:
@@ -23,17 +26,22 @@ class AgentConfig:
 @dataclass
 class ModelConfig:
     rounds: int = 3
+    max_model_len: int = 4096
+    gpu_memory_utilization: float | None = None
     agents: list[AgentConfig] = field(default_factory=list)
     final_agents: list[AgentConfig] = field(default_factory=list)
 
 
 def load_models(path: Path | str) -> ModelConfig:
-    """Parse configs/models.yaml. Callers pass `phase="final"` to use the A100 stack."""
+    """Parse configs/models.yaml. Use `cfg.final_agents` for the A100 stack."""
     raw = yaml.safe_load(Path(path).read_text())
+    final = raw.get("final_phase", {})
     return ModelConfig(
         rounds=raw.get("rounds", 3),
+        max_model_len=raw.get("max_model_len", 4096),
+        gpu_memory_utilization=raw.get("gpu_memory_utilization"),
         agents=[AgentConfig(**a) for a in raw["agents"]],
-        final_agents=[AgentConfig(**a) for a in raw.get("final_phase", {}).get("agents", [])],
+        final_agents=[AgentConfig(**a) for a in final.get("agents", [])],
     )
 
 
