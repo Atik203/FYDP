@@ -4,5 +4,6 @@ Phase 2 port: LangGraph StateGraph. The loop shape below is the target state mac
 """
 
 from .debate import DebateRunner
+from .injection import SCOPES, InjectionPlan, build_injection, is_checkable
 
-__all__ = ["DebateRunner"]
+__all__ = ["DebateRunner", "InjectionPlan", "build_injection", "is_checkable", "SCOPES"]

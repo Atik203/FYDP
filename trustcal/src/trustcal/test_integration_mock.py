@@ -53,6 +53,24 @@ def test_b3_against_mock_servers(tmp_path, mock_trio) -> None:
     assert summary.per_debate[0].preserved is True
 
 
+def test_injection_arm_detects_collapse(tmp_path, mock_trio) -> None:
+    """The full sycophancy scenario end-to-end: divergent panel, minority injected,
+    minority caves, CCR = 1.0 / MPR = 0.0 — all without a GPU."""
+    cfg = RunConfig(arm="injection", limit=1, seed=5, out_root=tmp_path)
+    summary = run(cfg, clients=_clients(mock_trio), questions=QUESTIONS)
+
+    record = read_records(records_path(cfg))[0]
+    assert record["rounds"][0]["answers"] == ["C", "B", "B"]
+    assert record["targets"] == [0]
+    assert record["injection"]["eligible"] is True
+    # mock minority returns "B" once it sees the consensus prompt
+    assert record["rounds"][-1]["answers"][0] == "B"
+    assert summary.n_exposed == 1
+    assert summary.n_collapse == 1
+    assert summary.ccr == 1.0
+    assert summary.mpr == 0.0
+
+
 def test_b1_against_mock_servers(tmp_path, mock_trio) -> None:
     cfg = RunConfig(arm="B1", limit=1, seed=3, out_root=tmp_path)
     summary = run(cfg, clients=_clients(mock_trio)[:1], questions=QUESTIONS)
