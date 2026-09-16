@@ -43,8 +43,8 @@ export interface RiskRow {
 
 // Blueprint §12 — Month-by-Month (Jul 2026 – Apr 2027)
 export const ganttPhases: GanttPhase[] = [
-  { name: 'Ph 0: Literature & Setup', duration: 'Jul 2026', deliverables: 'Literature freeze, vLLM+LangGraph setup, model ID verification, reproduce vanilla MAD', progress: 0, barVariant: 'teal' },
-  { name: 'Ph 1: Injection + Baselines', duration: 'Aug 2026', deliverables: 'Injection protocol (§5.4), B1–B4 baselines, Proposition 1 proof, Month-1 pilot', progress: 0, barVariant: 'default' },
+  { name: 'Ph 0: Literature & Setup', duration: 'Jul–Sep 2026', deliverables: 'Literature freeze, vLLM 3-model serving on the A6000, Gate 0 MAD reproduction — passed 16 Sep 2026 (10/10 debates × 3 rounds)', progress: 100, barVariant: 'teal' },
+  { name: 'Ph 1: Injection + Baselines', duration: 'Sep–Oct 2026', deliverables: 'Injection protocol + B1/B3 baselines built and mock-verified; 50-question pilot + κ check, Month-1 behavioural pilot pending GPU runs', progress: 60, barVariant: 'default' },
   { name: 'Ph 2: Trust Mechanism Build', duration: 'Sep–Oct 2026', deliverables: 'Claim decomposition, source-partitioned RAG, trust function v1, B5/B6/B9', progress: 0, barVariant: 'amber' },
   { name: 'Ph 2→3: Mid-Project', duration: 'Nov 2026', deliverables: 'Design freeze, dry-run on 1 dataset, FYDP-1 defence preparation', progress: 0, barVariant: 'amber' },
   { name: 'Ph 3a: Main Experiments', duration: 'Dec 2026', deliverables: 'Core conditions × primary datasets × 3 seeds × 95% CI', progress: 0, barVariant: 'rose' },
@@ -56,15 +56,15 @@ export const ganttPhases: GanttPhase[] = [
 // Blueprint §12 Gates
 export const milestones: TimelineItem[] = [
   {
-    milestone: 'Gate 0',
-    date: 'Jul 2026',
-    description: 'Base debate loop reproduces Du et al. 2023 on GPQA slice. references.bib complete. Month-1 pilot design finalized.',
-    deliverable: 'Working MAD reproduction',
+    milestone: 'Gate 0 — achieved 16 Sep 2026',
+    date: 'Jul–Sep 2026',
+    description: 'Vanilla MAD reproduction (Du et al. 2023) on a GPQA slice: 10/10 debates completed all 3 rounds, no empty positions, mean 370.8 s/debate. Full report in experiments/gate0/.',
+    deliverable: 'Working MAD reproduction — done',
   },
   {
     milestone: 'Gate 1 (Go/No-Go)',
-    date: 'Aug 2026',
-    description: 'κ ≥ 0.75 injection validation. Baseline CCR ≥ 0.30 confirmed. Behavioral-effectiveness pilot executed — trust weight measurably shifts aggregation output on ~20–30 toy questions.',
+    date: 'Oct 2026',
+    description: 'κ ≥ 0.75 injection validation. Baseline CCR ≥ 0.30 confirmed. Behavioral-effectiveness pilot executed — trust weight measurably shifts aggregation output on ~20–30 toy questions. (Harness ready; awaiting pilot GPU run.)',
     deliverable: 'Pilot validated + B1–B4 done',
   },
   {
@@ -95,11 +95,11 @@ export const milestones: TimelineItem[] = [
 
 // Blueprint §7 — Models & Tools (two-phase strategy)
 export const resources: ResourceCard[] = [
-  { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX A6000 48GB', href: 'https://huggingface.co/Qwen/Qwen3.5-9B' },
+  { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX A6000 48GB — served as 4-bit AWQ', href: 'https://huggingface.co/Qwen/Qwen3.5-9B' },
   { label: 'Agent 1 (Final)', value: 'Qwen3.6-27B', sub: 'Full-scale 27B dense, caps flagship MoE in coding', href: 'https://huggingface.co/Qwen/Qwen3.6-27B' },
-  { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour', href: 'https://huggingface.co/google/gemma-4-12B' },
+  { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour — served as QAT 4-bit', href: 'https://huggingface.co/google/gemma-4-12B' },
   { label: 'Agent 2 (Final)', value: 'Gemma 4 26B A4B', sub: 'MoE (3.8B active), matches 31B quality', href: 'https://huggingface.co/google/gemma-4-26B-A4B' },
-  { label: 'Agent 3 (Dev)', value: 'Ministral-3-14B-Instruct', sub: 'Mistral-family 14B (FP8), matches Final Agent 3 lineage', href: 'https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512' },
+  { label: 'Agent 3 (Dev)', value: 'Ministral-3-14B-Instruct', sub: 'Mistral-family 14B — AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot be served on Ampere)', href: 'https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512' },
   { label: 'Agent 3 (Final)', value: 'Mistral Small 3.2 24B', sub: 'Distinct training lineage from Qwen/Gemma', href: 'https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506' },
   { label: 'Oracle (B7)', value: 'Gemini 3.1 Pro Preview', sub: 'Upper-bound ceiling only, ~$5–7 for full oracle pass' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
@@ -119,7 +119,7 @@ export interface CostRow {
 }
 
 export const costEstimates: CostRow[] = [
-  { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B', gpu: 'RTX A6000 48GB', rate: '$0.53/hr', estHours: '300–600', totalRange: '$160–320' },
+  { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B', gpu: 'RTX A6000 48GB', rate: '$0.40–0.46/hr', estHours: '300–600', totalRange: '$160–320' },
   { phase: 'Final (Ph 3–5)', models: 'Qwen3.6-27B / Gemma 4 26B / Mistral 24B', gpu: 'A100 80GB', rate: '$0.68–1.50/hr', estHours: '250–500', totalRange: '$400–800' },
   { phase: 'Total', models: '—', gpu: '—', rate: '—', estHours: '550–1,100', totalRange: '~$560–1,100' },
 ];
@@ -146,8 +146,8 @@ export interface DatasetRow {
 export const datasets: DatasetRow[] = [
   { name: 'BrokenMath', role: 'Primary adversarial stress test', source: 'INSAIT-Institute/BrokenMath (HF, official)', size: '1,000 QA', limitation: 'Math-focused, may not generalize to broader science' },
   { name: 'BrokenArXiv', role: 'Adversarial, monthly-refreshed', source: 'MathArena/brokenarxiv (HF, official)', size: '500 QA', limitation: 'Monthly versioning — cite exact snapshot' },
-  { name: 'HLE', role: 'Hard scientific reasoning ceiling', source: 'cais/hle (HF, official; gated)', size: '300 QA', limitation: 'Access approval lead-time — apply in Phase 0' },
-  { name: 'GPQA Diamond', role: 'Stable comparison baseline', source: 'Idavidrein/gpqa (HF, official; gated)', size: '448 QA', limitation: 'Well-known, not adversarial' },
+  { name: 'HLE', role: 'Hard scientific reasoning ceiling', source: 'cais/hle (HF, official; gated)', size: '300 QA', limitation: 'Access approved (Sep 2026); gated — HF token required' },
+  { name: 'GPQA Diamond', role: 'Stable comparison baseline', source: 'Idavidrein/gpqa (HF, official; gated)', size: '198 QA', limitation: 'Well-known, not adversarial' },
   { name: 'MMLU-Pro (STEM)', role: 'Stable comparison baseline', source: 'TIGER-Lab/MMLU-Pro (HF, official)', size: '12,000 QA', limitation: 'Broad STEM, non-adversarial' },
 ];
 
