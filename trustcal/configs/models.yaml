@@ -4,7 +4,9 @@
 # 2026-09-16 against the serving requirements of each architecture:
 #   agent1  QuantTrio/Qwen3.5-9B-AWQ               ~7GB   4-bit AWQ (mirrors Qwen3.5-9B)
 #   agent2  google/gemma-4-12B-it-qat-w4a16-ct     ~9.6GB official QAT 4-bit (compressed-tensors)
-#   agent3  mistralai/Ministral-3-14B-Instruct-2512 ~14GB  official FP8
+#   agent3  cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit  ~8GB  AWQ 4-bit
+#           (the official mistralai FP8 checkpoint cannot run on Ampere: vLLM's
+#            W8A8 sm80 kernel fails with cutlass_scaled_mm_sm80_epilogue)
 #
 # `model` is what vLLM serves AND what the OpenAI client sends — do not rename it
 # on the server (`--served-model-name` caused 404s in the first serve.sh draft).
@@ -38,18 +40,12 @@ agents:
       - "--limit-mm-per-prompt"
       - '{"image": 0, "audio": 0}'   # text-only Phase 0: skip MM profiling
   - role: "agent3"
-    model: "mistralai/Ministral-3-14B-Instruct-2512"
+    model: "cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit"
     port: 8002
-    quant: "auto"                     # FP8 checkpoint: vLLM detects it; no flag
+    quant: "auto"                     # AWQ/compressed-tensors: vLLM detects it; no flag
     gpu_memory_utilization: 0.36
     max_model_len: 4096
-    extra_args:
-      - "--tokenizer_mode"
-      - "mistral"
-      - "--config_format"
-      - "mistral"
-      - "--load_format"
-      - "mistral"
+    extra_args: []                    # standard HF-format repo; no mistral-format flags
 
 # Final phase (Ph 3-5) runs on an A100 80GB — swap here, nothing else. `quant`
 # stays "auto" until the exact quantized checkpoints are pinned at design freeze

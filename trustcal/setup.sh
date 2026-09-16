@@ -99,7 +99,7 @@ if [ "${SKIP_MODELS:-0}" != "1" ]; then
   for MODEL in \
     "QuantTrio/Qwen3.5-9B-AWQ" \
     "google/gemma-4-12B-it-qat-w4a16-ct" \
-    "mistralai/Ministral-3-14B-Instruct-2512"; do
+    "cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit"; do
     echo "Downloading $MODEL ..."
     hf_download "$MODEL"
   done
