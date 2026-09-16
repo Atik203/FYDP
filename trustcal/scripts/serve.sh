@@ -41,14 +41,31 @@ if [ "${DRY_RUN:-0}" = "1" ]; then
 fi
 
 rm -f results/vllm.pids
+# Sequential startup: vLLM profiles free GPU memory at init, so a sibling process
+# loading concurrently makes the profile unstable (false "no KV cache memory" /
+# "memory changed during profiling" errors). One server must be ready before the
+# next starts.
 while IFS= read -r cmd; do
   [ -z "$cmd" ] && continue
   PORT=$(printf '%s' "$cmd" | grep -oE -- '--port [0-9]+' | awk '{print $2}')
-  nohup bash -c "$cmd" > "results/logs/vllm-${PORT}.log" 2>&1 &
-  echo $! >> results/vllm.pids
-  echo "launched :$PORT (pid $!)  log: results/logs/vllm-${PORT}.log"
+  LOG="results/logs/vllm-${PORT}.log"
+  nohup bash -c "$cmd" > "$LOG" 2>&1 &
+  PID=$!
+  echo "$PID" >> results/vllm.pids
+  echo "launched :$PORT (pid $PID) — waiting for readiness (log: $LOG)"
+  READY=0
+  for _ in $(seq 1 60); do
+    if curl -sf -m 3 "http://localhost:${PORT}/v1/models" >/dev/null 2>&1; then READY=1; break; fi
+    kill -0 "$PID" 2>/dev/null || break
+    sleep 10
+  done
+  if [ "$READY" = "1" ]; then
+    echo ":$PORT ready"
+  else
+    echo ":$PORT did NOT become ready — last lines of $LOG:"
+    tail -5 "$LOG"
+  fi
 done < "$CMD_FILE"
 
-echo "All three launching (first load is slow: 3-8 min for the quantized trio)."
-echo "Health: python scripts/verify_env.py --check-servers"
+echo "Startup pass complete. Health: python scripts/verify_env.py --check-servers"
 wait
