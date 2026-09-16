@@ -13,6 +13,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export PYTHONPATH="${PYTHONPATH:+$PYTHONPATH:}$(pwd)/src"
+# Prefer the project venv when present (created by setup.sh VENV=1): the generated
+# `vllm` commands must resolve there, even when serve.sh runs outside `activate`.
+if [ -d .venv/bin ]; then
+  export PATH="$(pwd)/.venv/bin:$PATH"
+fi
 mkdir -p results/logs
 
 PY_CMD=python3
