@@ -15,43 +15,26 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 
 ---
 
-## Phase 0 — Foundation (Jul 2026)
+## Phase 0 — Foundation (Jul 2026) — ✅ COMPLETE (2026-09-16)
 
 **Objective:** literature freeze, environment setup, reproduce vanilla MAD.
 
-**Status: code part complete** (pushed to main) — `trustcal/` package with `setup.sh`, `configs/`, `src/trustcal/{config,inference,agents,retrieval,trust,orchestrator,eval}`, `scripts/{serve.sh,repro_mad.py,smoke_test.py,verify_env.py}`, `references.bib` (25 entries), trust math + boundedness tests passing. **Pre-flight pass 2026-09-16:** serve commands are generated from `models.yaml` (no drift), Gate 0 writes `results/gate0/` logs, debate loop has a GPU-free contract test, nightly-vLLM requirement documented, 4 core citations verified against AAAI/ACL/ICLR. Remaining Phase 0 work is manual — checklist below.
+**Outcome:** `trustcal/` package built and pushed; the quantized Dev trio served on one rented A6000 48GB (Vast.ai); **Gate 0 PASS** — 10/10 debates × 3 rounds, no empty positions, mean 370.8s/debate; GPQA + HLE access approved; Month-1 criterion fixed in `trustcal/PILOT_CRITERION.md`; 4 core citations verified. Full report, artifacts, issues+fixes, and invoice: **`experiments/gate0/`**.
 
-**Keypoints:**
-- vLLM multi-model serving: all 3 Dev models load + generate correctly on the A6000 before any orchestration code
-- LangGraph StateGraph core only (videos 1–6, not the whole library)
-- **Gate 0:** vanilla MAD reproduction (Du et al. 2023) on a GPQA slice — base debate loop works independent of our contributions
-- Apply for HLE access now (approval lead time), freeze dataset snapshots
-- Deliverables: `references.bib`, working serve.sh, MAD reproduction script, Month-1 pilot design finalized
+**Gate 0 definition:** vanilla MAD reproduction (Du et al. 2023) on a GPQA slice — the base debate loop works independent of our contributions.
 
-### Phase 0 — Manual checklist (do these on the GPU instance)
+**Lessons that carry into every later phase:**
+- Quantized Dev trio is mandatory on 48GB: AWQ Qwen, QAT Gemma, AWQ Ministral — the official Ministral FP8 checkpoint cannot run on Ampere.
+- vLLM **nightly** is required (`gemma4_unified` + Qwen3.5); transformers pinned `<5.17`; use `VENV=1` on PEP 668 images.
+- Servers must start **sequentially** (readiness-gated) or vLLM's memory profiling races and reports phantom OOM.
+- Rent hosts with **`inet_down_cost=0`**; pin `HF_HOME`; copy `results/` out before destroying an instance (disk is billed while stopped, deleted on destroy).
+- Ministral left ~17% of generations without claim tags → the §5.3 fallback extractor is load-bearing, not optional.
 
-- [x] **Rent the GPU instance** — **RTX A6000 48GB**, ~$0.35–0.53/hr. Three verified options:
-  - **Vast.ai** (marketplace; **selected for Phase 0** — host-dependent quality). Filter: CUDA ≥ 12.4, disk bandwidth ≥ 500 MB/s, inet ≥ 500 Mbps, reliability ≥ 95%, **`inet_down_cost=0`** (paid ingress at ~$0.03/GB burned $2.50 in one setup session), on-demand. **Set Disk Space to 100GB at creation** (fixed, not resizable; base image + deps + 31GB checkpoints). Skip Volumes (local to one physical machine). Setup: `HF_TOKEN=hf_... VENV=1 bash setup.sh` — Vast PyTorch images block system pip (PEP 668). Container disk is **billed while stopped and deleted on destroy** — copy `results/` out and push before destroying; `setup.sh` re-runs in ~30–40 min.
-  - **Thunder Compute** (access granted; ~$0.43/hr at 8 vCPU / 64GB RAM / 100GB included disk, per-minute billing, CUDA 13.0 / driver 580). Setup: `HF_TOKEN=hf_... VENV=1 bash setup.sh` (venv per Thunder's "do not touch CUDA" rule). **No native stop:** snapshot → delete instance → restore later; restore takes ~8 min/100GB, and snapshots are not durability-guaranteed — copy `results/` out first.
-  - **RunPod** (fallback): template `RunPod PyTorch 2.x`, 100GB network volume; stop (not terminate) when idle.
-- [x] **Clone the repo on the instance** — RunPod: Connect → Terminal; Thunder: SSH/VS Code Remote (see their VS Code extension). Then:
-  `git clone https://github.com/Atik203/FYDP.git /workspace/fydp && cd /workspace/fydp/trustcal` (on Thunder use `$HOME/fydp` — there is no `/workspace`).
-- [x] **Run the one-command setup** — `HF_TOKEN=hf_... bash setup.sh` (add `VENV=1` on Thunder Compute and on any PEP 668 / externally-managed image, e.g. Vast PyTorch). Installs pinned Python deps + **nightly vLLM** (stable cannot load `gemma4_unified`, i.e. Gemma 4 12B; the wheel index auto-detects from the driver), downloads the 3 **quantized** Dev checkpoints (~31GB) to `HF_HOME` (home dir on Thunder, `/workspace` on RunPod/Vast), starts vLLM on ports 8000–8002, and runs the environment verification. Expected finish: `setup.sh complete — vLLM on :8000-8002`. Done **2026-09-16** (see `experiments/gate0/README.md` §8 for the fixes this required).
-- [x] **Confirm the health check passed** — `python scripts/verify_env.py --check-servers` should print `server OK` for ports 8000/8001/8002 and version lines for openai/numpy/datasets/vllm. If a model fails: `results/logs/vllm-<port>.log`, then re-run `bash scripts/serve.sh` (OOM ⇒ lower `--gpu-memory-utilization` in `configs/models.yaml`). 3/3 servers healthy **2026-09-16**.
-- [x] **HLE access** — approved (with GPQA access) **2026-09-16**; GPQA terms accepted on the same account. Record the approval emails in the meeting notes. Fallback if either is revoked: GPQA-Diamond subset (pre-approved in §8).
-- [x] **Freeze dataset snapshots** — BrokenArXiv snapshot range **0226–0526** recorded in `configs/datasets.yaml`; GPQA revision pinned to `633f5ee89ab8ad4522a9f850766b73f62147ffdd` (first Phase 0 download, 2026-09-16). Record the exact BrokenArXiv snapshot URL at its first Phase-1 download.
-- [x] **Run Gate 0 (vanilla MAD reproduction)** — `python scripts/repro_mad.py --limit 10` → **PASS 2026-09-16**: 10/10 debates, 3/3 rounds each, no empty positions, mean 370.8s/debate. Report + artifacts: `experiments/gate0/`.
-- [ ] **Learn LangGraph core** — CampusX Agentic AI playlist **videos 1–6 only** (StateGraph, nodes/edges, conditional edges, memory), then `pip show langgraph` to confirm the installed version matches the tutorial.
-- [x] **Finalize the Month-1 pilot Go/No-Go criterion** — written **2026-09-16** in `trustcal/PILOT_CRITERION.md` (PASS ≥15/25 = ≥60% of evidence-contradicts-majority questions; 10–14 ambiguous → second seed; <10 No-Go → report negative result per blueprint §18.6).
-- [x] **Verify references.bib** — `trustcal/references.bib` copied from `FYDP_Summer/fydp.bib` (25 entries); spot-checked **2026-09-16**: iMAD (AAAI 40(35):29403–29411, DOI 10.1609/aaai.v40i35.40181) · MoA (ICLR 2025 proceedings, URL resolves) · ConsensAgent (Findings ACL 2025:22112–22133, DOI 10.18653/v1/2025.findings-acl.1141) · DebUnc (Findings EMNLP 2025:23299–23315, DOI 10.18653/v1/2025.findings-emnlp.1265) — all match the primary sources.
-
-### Phase 0 — Done criteria
-
-- [ ] All checkboxes above ticked + Gate 0 reproduction log saved (here: `experiments/gate0/artifacts/`, committed for the team; live runs also write `trustcal/results/gate0/`, gitignored by design). Remaining: LangGraph core videos 1–6.
+**Remaining Phase 0 item (offline, not blocking Phase 1):** LangGraph StateGraph core, videos 1–6.
 
 ---
 
-## Phase 1 — Injection Protocol & First Baselines (Aug 2026)
+## Phase 1 — Injection Protocol & First Baselines (starts 2026-09-17; ~3–4 weeks)
 
 **Objective:** injection protocol, baselines B1–B4, Proposition 1 proof, Month-1 pilot.
 
@@ -59,8 +42,28 @@ All pipeline code is model-agnostic — the Dev→Final swap is a config edit in
 - Implement §5.4 injection steps 1–6 (fabricated wrong "expert consensus" pressure at t=1→2)
 - Baselines B1–B4 (Single-Agent CoT, Single-Agent+RAG, MAD, MAD+RAG)
 - 50-question pilot + κ check (κ > 0.75 target) on the injection protocol
-- **Month-1 behavioral-effectiveness pilot:** ~20–30 toy questions — confirm trust weight *causally* shifts aggregation output before full build (highest-risk assumption; do not skip)
-- **Gate 1 (Go/No-Go):** protocol validated, baseline CCR ≥ 0.30 confirmed, pilot verdict recorded (explicit Go/No-Go criterion fixed before Phase 0 ends)
+- **Month-1 behavioral-effectiveness pilot:** ~25 toy questions — confirm trust weight *causally* shifts aggregation output before full build (highest-risk assumption; do not skip)
+- **Gate 1 (Go/No-Go):** protocol validated, baseline CCR ≥ 0.30 confirmed, pilot verdict recorded
+
+**Code items Gate 0 surfaced (fix before the pilot runs):**
+- Parser: skip formatting-only lines (`**Answer:**` / `**Conclusion:**`) — 19% of outputs
+- Claim extraction: exercise the fallback path + per-agent retry (Ministral left 5/30 generations untagged)
+- `repro_mad`: write per-question JSONL so a crash never loses the whole run
+
+**Time & budget — measured from Gate 0 (370.8 s/debate; card ~$0.46/hr):**
+
+| Item | GPU time | Wall clock (part-time) | Cost |
+| --- | --- | --- | --- |
+| Injection protocol build + debug | ~2–4 h | 3–5 days | ~$1–2 |
+| Baselines B1–B4 (50 questions each) | ~8–12 h | 3–4 days | ~$4–6 |
+| 50-question pilot + κ check | ~5.2 h | 2–3 days | ~$2.4 |
+| Month-1 behavioral pilot (25 questions) | ~2.6 h | 2 days | ~$1.2 |
+| Setup per fresh instance | ~45–60 min | — | ~$0.5 (free if `inet_down_cost=0`) |
+| **Phase total** | **~18–24 h** | **~3–4 weeks** | **~$9–12** |
+
+Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate; B1/B2 cost ~1/9 of MAD per question; the model cache (~22GB) is re-downloaded per fresh instance, so hosts with free ingress are mandatory. Keep the instance alive only during pilot runs — destroy between sessions.
+
+**Schedule note:** Phase 0 finished 2026-09-16 (environment bring-up ran long vs the July slot). Phase 1 now runs Sep–Oct; Phases 2–5 shift right by roughly six weeks — confirm the revised Month-1 pilot date with the supervisor.
 
 ---
 
