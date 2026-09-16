@@ -61,3 +61,5 @@ npx --yes skills add vast-ai/vast-cli --skill vastai -g -a opencode -y
 Key commands (see the skill for the full surface): `vastai search offers`, `vastai create instance`, `vastai show instances`, `vastai start|stop|destroy instance <id>`, `vastai ssh-url <id>`, `vastai copy`.
 
 Vast storage rules that decide the workflow: container disk is **billed while stopped and deleted on destroy**; volumes survive but are local to one physical machine. Copy `results/` out, then destroy — `setup.sh` rebuilds in ~30–40 min.
+
+**Bandwidth cost is a first-class filter:** check `inet_down_cost` when picking an offer. Paid ingress (~$0.03/GB) turned one 96GB setup session into a $2.49 charge. `serve.sh` pins `HF_HOME` to the setup cache so relaunches never re-download; export `HF_HUB_OFFLINE=1` when the cache is complete to forbid network access entirely.
