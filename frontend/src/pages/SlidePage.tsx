@@ -761,7 +761,138 @@ function CeOverviewSlide() {
   );
 }
 
-/* ── Slide 5: Complex Engineering — FYDP I scoreboard ────────────── */
+/* ── Slide 5: Attribute definitions — Washington Accord reference ── */
+function CeDefinitionsSlide() {
+  const lenses: {
+    code: string;
+    title: string;
+    color: string;
+    bg: string;
+    items: { code: string; name: string }[];
+  }[] = [
+    {
+      code: "P1–P7",
+      title: "Problem Solving",
+      color: TEAL,
+      bg: "#ccfbf1",
+      items: [
+        { code: "P1", name: "Depth of knowledge required" },
+        { code: "P2", name: "Range of conflicting requirements" },
+        { code: "P3", name: "Depth of analysis" },
+        { code: "P4", name: "Familiarity of issues" },
+        { code: "P5", name: "Extent of applicable codes" },
+        { code: "P6", name: "Extent of stakeholder involvement" },
+        { code: "P7", name: "Inter-dependence" },
+      ],
+    },
+    {
+      code: "K1–K8",
+      title: "Knowledge Profile",
+      color: ROSE,
+      bg: "#fee2e2",
+      items: [
+        { code: "K1", name: "Natural sciences" },
+        { code: "K2", name: "Mathematics" },
+        { code: "K3", name: "Engineering fundamentals" },
+        { code: "K4", name: "Specialist knowledge" },
+        { code: "K5", name: "Engineering methods" },
+        { code: "K6", name: "Computational methods" },
+        { code: "K7", name: "Codes and practices" },
+        { code: "K8", name: "Research and context" },
+      ],
+    },
+    {
+      code: "A1–A5",
+      title: "Engineering Activities",
+      color: AMBER,
+      bg: "#fef3c7",
+      items: [
+        { code: "A1", name: "Range of resources" },
+        { code: "A2", name: "Level of interaction" },
+        { code: "A3", name: "Innovation" },
+        { code: "A4", name: "Consequences for society and environment" },
+        { code: "A5", name: "Familiarity" },
+      ],
+    },
+    {
+      code: "PO1–PO12",
+      title: "Program Outcomes",
+      color: ACCENT,
+      bg: "#e0e7ff",
+      items: [
+        { code: "PO1", name: "Engineering knowledge" },
+        { code: "PO2", name: "Problem analysis" },
+        { code: "PO3", name: "Design / development of solutions" },
+        { code: "PO4", name: "Investigation" },
+        { code: "PO5", name: "Modern tool usage" },
+        { code: "PO6", name: "The engineer and society" },
+        { code: "PO7", name: "Environment and sustainability" },
+        { code: "PO8", name: "Ethics" },
+        { code: "PO9", name: "Individual and teamwork" },
+        { code: "PO10", name: "Communication" },
+        { code: "PO11", name: "Project management and finance" },
+        { code: "PO12", name: "Life-long learning" },
+      ],
+    },
+  ];
+
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="Complex Engineering Check · Washington Accord"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="Washington Accord Attributes"
+        subtitle="The official attribute lists behind each lens — the vocabulary the scoreboard and detail slides use."
+      />
+
+      <div className="grid grid-cols-4 gap-[1.4cqw] flex-1 min-h-0">
+        {lenses.map((col) => (
+          <div
+            key={col.code}
+            className="flex flex-col rounded-xl overflow-hidden border-2"
+            style={{ borderColor: col.bg }}
+          >
+            <div
+              className="px-[1.2cqw] py-[0.9cqh]"
+              style={{ background: col.color }}
+            >
+              <div
+                className="text-[1.7cqh] font-bold tracking-wide"
+                style={{ color: "#ffffffcc" }}
+              >
+                {col.code}
+              </div>
+              <div className="text-[2.05cqh] font-extrabold leading-tight text-white">
+                {col.title}
+              </div>
+            </div>
+            <div className="flex-1 min-h-0 flex flex-col justify-center gap-[1cqh] px-[1.2cqw] py-[1cqh] bg-white">
+              {col.items.map((it) => (
+                <div key={it.code} className="flex items-baseline gap-[0.7cqw]">
+                  <span
+                    className="text-[2cqh] font-extrabold flex-shrink-0 w-[4.4cqw]"
+                    style={{ color: col.color }}
+                  >
+                    {it.code}
+                  </span>
+                  <span
+                    className="text-[2cqh] font-semibold leading-snug"
+                    style={{ color: DEEP_INK }}
+                  >
+                    {it.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 6: Complex Engineering — FYDP I scoreboard ────────────── */
 function CeScoreboardSlide() {
   const tiles: {
     code: string;
@@ -906,7 +1037,7 @@ function CeScoreboardSlide() {
   );
 }
 
-/* ── Slide 6: P1–P4 — Complex problem solving, part 1 ────────────── */
+/* ── Slide 7: P1–P4 — Complex problem solving, part 1 ────────────── */
 function CeProblemOneSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1003,7 +1134,7 @@ function CeProblemOneSlide() {
   );
 }
 
-/* ── Slide 7: P5–P7 — Complex problem solving, part 2 ────────────── */
+/* ── Slide 8: P5–P7 — Complex problem solving, part 2 ────────────── */
 function CeProblemTwoSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1085,7 +1216,7 @@ function CeProblemTwoSlide() {
   );
 }
 
-/* ── Slide 8: K1–K4 — Knowledge profile, part 1 ──────────────────── */
+/* ── Slide 9: K1–K4 — Knowledge profile, part 1 ──────────────────── */
 function CeKnowledgeOneSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1181,7 +1312,7 @@ function CeKnowledgeOneSlide() {
   );
 }
 
-/* ── Slide 9: K5–K8 — Knowledge profile, part 2 ──────────────────── */
+/* ── Slide 10: K5–K8 — Knowledge profile, part 2 ──────────────────── */
 function CeKnowledgeTwoSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1282,7 +1413,7 @@ function CeKnowledgeTwoSlide() {
   );
 }
 
-/* ── Slide 10: A1–A2 — Engineering activities, resources + interaction */
+/* ── Slide 11: A1–A2 — Engineering activities, resources + interaction */
 function CeActivityOneSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1348,7 +1479,7 @@ function CeActivityOneSlide() {
   );
 }
 
-/* ── Slide 11: A3–A5 — Activities, familiarity and gaps ──────────── */
+/* ── Slide 12: A3–A5 — Activities, familiarity and gaps ──────────── */
 function CeActivityTwoSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
@@ -1430,7 +1561,7 @@ function CeActivityTwoSlide() {
   );
 }
 
-/* ── Slide 12: PO1–PO12 — Program outcomes coverage ──────────────── */
+/* ── Slide 13: PO1–PO12 — Program outcomes coverage ──────────────── */
 function CeOutcomesOneSlide() {
   const groups = [
     {
@@ -1527,7 +1658,7 @@ function CeOutcomesOneSlide() {
   );
 }
 
-/* ── Slide 13: PO1–PO12 — what covers each outcome ───────────────── */
+/* ── Slide 14: PO1–PO12 — what covers each outcome ───────────────── */
 function CeOutcomesTwoSlide() {
   const rows = [
     {
@@ -1621,7 +1752,7 @@ function CeOutcomesTwoSlide() {
   );
 }
 
-/* ── Slide 14: Overall FYDP I mapping matrix ─────────────────────── */
+/* ── Slide 15: Overall FYDP I mapping matrix ─────────────────────── */
 function CeMatrixSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -1794,7 +1925,7 @@ function CeMatrixSlide() {
   );
 }
 
-/* ── Slide 15: Thank you ─────────────────────────────────────────── */
+/* ── Slide 16: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -1831,6 +1962,7 @@ const SLIDES = [
   ImadSlideOne,
   ImadSlideTwo,
   CeOverviewSlide,
+  CeDefinitionsSlide,
   CeScoreboardSlide,
   CeProblemOneSlide,
   CeProblemTwoSlide,
