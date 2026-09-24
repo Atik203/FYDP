@@ -62,7 +62,7 @@ class ModelConfig:
 
 
 def load_models(path: Path | str) -> ModelConfig:
-    """Parse configs/models.yaml. Use `cfg.final_agents` for the A100 stack."""
+    """Parse configs/models.yaml. Use `cfg.final_agents` for the Final stack."""
     raw = yaml.safe_load(Path(path).read_text())
     final = raw.get("final_phase", {})
     return ModelConfig(

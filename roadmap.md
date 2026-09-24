@@ -7,7 +7,7 @@ Phase-by-phase execution plan (Jul 2026 – Apr 2027). Source of truth: `docs/bl
 | Phase | Agent 1 | Agent 2 | Agent 3 | GPU | Est. cost |
 | --- | --- | --- | --- | --- | --- |
 | **Dev (Ph 0–2)** | Qwen3.5-9B | Gemma 4 12B | Ministral-3-14B-Instruct-2512 | RTX A6000 48GB | ~$160–320 |
-| **Final (Ph 3–5)** | Qwen3.6-27B | Gemma 4 26B A4B | Mistral-Small-3.2-24B-Instruct-2506 | A100 80GB | ~$400–800 |
+| **Final (Ph 3–5)** | Qwen3.6-27B | Gemma 4 26B A4B | Mistral-Small-3.2-24B-Instruct-2506 | RTX PRO 6000 Blackwell 96GB | ~$400–800 |
 
 All pipeline code is model-agnostic — the Dev→Final swap is a config edit in `configs/models.yaml`, nothing else. Total GPU budget ≈ **$500–1,000** (+ ~$5–7 Gemini oracle API).
 
@@ -108,7 +108,7 @@ Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate
 **Keypoints:**
 - Core conditions (B1–B10 + ours) × primary datasets (BrokenMath, BrokenArXiv, HLE, GPQA, MMLU-Pro) × 3 seeds
 - Injection protocol applied to adversarial datasets; compute CCR/MPR/ECR per condition
-- **Model-swap smoke test first:** rent A100 ~2 hrs, 20-question run — verify claim tags parse, injection affects all 3, no NaNs, K=3 completes for every model combo
+- **Model-swap smoke test first:** rent RTX PRO 6000 Blackwell 96GB ~2 hrs, 20-question run — verify claim tags parse, injection affects all 3, no NaNs, K=3 completes for every model combo
 - Deliverable: primary results table
 
 ---
@@ -157,7 +157,7 @@ Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate
 8. Baselines B1–B4
 9. Baselines B5–B6 (parallel-izable with step 10)
 10. Baseline B9 (iMAD)
-11. Model-swap smoke test on A100 (~$3, 2 hrs)
+11. Model-swap smoke test on RTX PRO 6000 (~$3, 2 hrs)
 12. Full experiment matrix
 13. Human eval + failure analysis
 

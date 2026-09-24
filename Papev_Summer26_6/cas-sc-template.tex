@@ -270,7 +270,7 @@ A debated question uses about ten model calls. The gate uses one call, the initi
 
 \section{Experiment}\label{sec4}
 
-This section defines the datasets, the baselines, the metrics, the injection protocol, the serving setup, and the statistical tests that make up the evaluation. Table~\ref{tbl:datasets} lists the question sets, and Table~\ref{tbl:baselines} lists the baseline conditions.
+This section defines the datasets, the baselines, the metrics, the injection protocol, the serving setup, and the statistical tests that make up the evaluation. Table~\ref{tbl:datasets} lists the question sets.
 
 \begin{center}
 \captionof{table}{Datasets used in the evaluation. BrokenMath and BrokenArXiv create a false majority, HLE sets the difficulty ceiling, and GPQA and MMLU-Pro measure accuracy under stable conditions.}\label{tbl:datasets}
@@ -304,37 +304,9 @@ Two filters run before a question enters the pool. The divergent filter keeps on
 
 \subsection{Baselines}
 
-The evaluation compares the trust-calibrated system with nine baseline conditions. Table~\ref{tbl:baselines} lists the conditions. The set covers single-agent answering, debate with and without retrieval, self-consistency sampling, static aggregation, an API oracle, and the two closest published competitors. Baseline B1 answers with one chain-of-thought pass~\cite{wei2022chain}. Baseline B3 is the vanilla debate loop of Du et al.~\cite{du2024improving}, and the same loop is the Gate 0 reproduction target. Baseline B5 samples several reasoning paths and keeps the most consistent answer~\cite{wang2023selfconsistency}. Baseline B6 is the layered mixture-of-agents pipeline~\cite{wang2025mixture}. Baseline B7 sends each question to a large commercial model and records the accuracy ceiling. Baseline B9 is the iMAD reimplementation, and baseline B10 is the ConsensAgent comparison~\cite{fan2026imad,pitre-etal-2025-consensagent}. The retrieval conditions B2 and B4 use the same source-partitioned retriever as the main system. The only difference between B1 and B2, or between B3 and B4, is the evidence channel, which isolates the effect of retrieval from the effect of debate.
+The evaluation compares the trust-calibrated system with nine baseline conditions. Baseline B1 answers with one chain-of-thought pass~\cite{wei2022chain}. Baseline B2 adds the retrieval channel to the same single-agent pass, so the pair B1 and B2 isolates the effect of evidence. Baseline B3 is the vanilla debate loop of Du et al.~\cite{du2024improving}, and the same loop is the Gate 0 reproduction target. Baseline B4 combines the debate loop with retrieval. Baseline B5 samples several reasoning paths and keeps the most consistent answer~\cite{wang2023selfconsistency}. Baseline B6 is the layered mixture-of-agents pipeline of Wang et al.~\cite{wang2025mixture}. Baseline B7 sends each question to a large commercial model and records the accuracy ceiling. Baseline B8 is the trust-calibrated system. Baseline B9 is the iMAD reimplementation of Fan et al.~\cite{fan2026imad}, and baseline B10 is the ConsensAgent comparison of Pitre et al.~\cite{pitre-etal-2025-consensagent}.
 
-\begin{table}
-\caption{Baseline conditions in the evaluation.}\label{tbl:baselines}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabularx}{\textwidth}{|c|p{5.4cm}|X|}
-\hline
-\textbf{ID} & \textbf{Condition} & \textbf{Reference} \\
-\hline
-B1 & Single-agent chain of thought & Wei et al.~\cite{wei2022chain} \\
-\hline
-B2 & Single-agent with retrieval & This work, retrieval channel \\
-\hline
-B3 & Vanilla multi-agent debate & Du et al.~\cite{du2024improving} \\
-\hline
-B4 & Multi-agent debate with retrieval & This work, retrieval channel \\
-\hline
-B5 & Self-consistency sampling & Wang et al.~\cite{wang2023selfconsistency} \\
-\hline
-B6 & Mixture-of-agents aggregation & Wang et al.~\cite{wang2025mixture} \\
-\hline
-B7 & Oracle model ceiling & Commercial API model \\
-\hline
-B8 & Trust-calibrated deliberation & This work \\
-\hline
-B9 & iMAD reimplementation & Fan et al.~\cite{fan2026imad} \\
-\hline
-B10 & ConsensAgent comparison & Pitre et al.~\cite{pitre-etal-2025-consensagent} \\
-\hline
-\end{tabularx}
-\end{table}
+The set answers the two objections that matter for this study. B5 covers the self-consistency question, and B6, B9, and B10 cover the question of an existing aggregation or efficiency method. The two retrieval pairs also serve the ablation plan. The only difference between B1 and B2, or between B3 and B4, is the evidence channel, so the comparison separates the effect of retrieval from the effect of debate.
 
 \subsection{Metrics}
 
@@ -368,7 +340,7 @@ where $p_o$ is the observed agreement and $p_e$ is the agreement expected by cha
 
 \subsection{Experimental Setup}
 
-All models run as served inference, and no model is fine-tuned. The development stack uses Qwen3.5-9B, Gemma 4 12B, and Ministral-3-14B-Instruct-2512, and the final stack replaces them with Qwen3.6-27B, Gemma 4 26B A4B, and Mistral-Small-3.2-24B-Instruct-2506. The development stack runs on one rented RTX A6000 with 48 GB of memory. The checkpoints run at 4-bit precision, namely AWQ for Qwen and Ministral and QAT for Gemma, because the official Ministral FP8 checkpoint does not load on this card. The final stack runs on an A100 80GB.
+All models run as served inference, and no model is fine-tuned. The development stack uses Qwen3.5-9B, Gemma 4 12B, and Ministral-3-14B-Instruct-2512, and the final stack replaces them with Qwen3.6-27B, Gemma 4 26B A4B, and Mistral-Small-3.2-24B-Instruct-2506. The development stack runs on one rented RTX A6000 with 48 GB of memory. The checkpoints run at 4-bit precision, namely AWQ for Qwen and Ministral and QAT for Gemma, because the official Ministral FP8 checkpoint does not load on this card. The final stack runs on an RTX PRO 6000 Blackwell with 96 GB of memory.
 
 Serving uses vLLM behind an OpenAI-compatible interface, with one server per agent and three servers on one card. Each server starts in sequence, and a readiness check gates the next start so that the memory profiling of one server does not disturb the others. A debate uses at most three rounds, the sampling temperature is 0.7, and each response is capped at 1{,}024 tokens. Every condition runs with three seeds, and each agent receives a seed derived from the run seed. A pilot run of ten GPQA questions on the development stack completed all three rounds for every debate, with a mean debate time of 370.8 seconds.
 

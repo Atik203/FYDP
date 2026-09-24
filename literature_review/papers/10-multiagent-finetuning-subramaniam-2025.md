@@ -101,7 +101,7 @@ The intervention requires fine-tuning each agent on interaction-generated data â
 | **Diversity strategy** | Independent data partitions + role specialization | Heterogeneous model families + source-partitioned retrieval |
 | **Correctness signal** | None â€” self-generated data only | External evidence (PubMed/ArXiv/Semantic Scholar) |
 | **Aggregation** | Majority voting after debate | Trust-weighted aggregation (evidence-calibrated) |
-| **Resource profile** | Multiple fine-tuning runs | Served inference only (vLLM, A6000/A100) |
+| **Resource profile** | Multiple fine-tuning runs | Served inference only (vLLM, A6000/RTX PRO 6000) |
 | **Failure it leaves open** | Jointly-wrong diverse consensus | Addressed by evidence-grounded trust |
 
 ### 6. Our Positioning Strategy

@@ -37,7 +37,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 2, topic: 'Transformer Architecture', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Foundation of all LLM agents', link: { label: '100 Days of DL — Transformer units', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
       { num: 3, topic: 'Attention Mechanism', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understanding trust influence and context handling', link: { label: '100 Days of DL (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
       { num: 4, topic: 'Embeddings & Vector Representations', level: 'Intermediate', levelEmoji: '🟢', importance: 'Critical', whyNeeded: 'Core of RAG and retrieval pipelines', link: { label: '100 Days of ML (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH' } },
-      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient local inference on A100', link: { label: 'vLLM quantization docs', href: 'https://docs.vllm.ai/' } },
+      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient local inference on the 96GB Blackwell card', link: { label: 'vLLM quantization docs', href: 'https://docs.vllm.ai/' } },
       { num: 6, topic: 'Inference vs Fine-Tuning', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Your work focuses on inference orchestration', link: { label: 'HF docs', href: 'https://huggingface.co/docs' } },
     ],
   },

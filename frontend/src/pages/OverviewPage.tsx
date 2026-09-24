@@ -77,7 +77,7 @@ export function OverviewPage() {
               <p className="text-sm sm:text-base leading-relaxed">
                 We target <strong>≥20% sycophancy reduction</strong> (CCR
                 metric) vs. vanilla MAD on adversarial benchmarks (BrokenMath,
-                BrokenArXiv, HLE) within a 10-month, single-A100 inference-only
+                BrokenArXiv, HLE) within a 10-month, single-GPU inference-only
                 FYDP project.
               </p>
             </div>

@@ -527,7 +527,7 @@ export function ProposalPage() {
           For the final experiment matrix (Ph 3–5) we swap to{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a></strong>,{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a></strong>, and{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a></strong> on an A100 80GB (~$0.68–1.50/hr).
+          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a></strong> on an RTX PRO 6000 Blackwell 96GB ($1.10-2.70/hr).
           All three families (Alibaba, Google, Mistral) are genuinely distinct
           for true heterogeneity. The pipeline code is model-agnostic — only
           the model config changes between phases. The <em>N</em> = 3 configuration is chosen as
@@ -896,10 +896,10 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Sharpened differentiation: only evidence-grounded, numeric, formally bounded approach; B10 comparison</td>
             </tr>
             <tr>
-              <td style={tdStyle}>Single A100 compute ceiling</td>
+              <td style={tdStyle}>Single 96GB GPU compute ceiling</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>4-bit quantization; core replication budgeted at 72 hours</td>
+              <td style={tdStyle}>FP8 native on Blackwell; core replication budgeted at 250-500 GPU-hours</td>
             </tr>
             <tr>
               <td style={tdStyle}>iMAD reimplementation divergence</td>

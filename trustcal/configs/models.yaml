@@ -47,7 +47,7 @@ agents:
     max_model_len: 4096
     extra_args: []                    # standard HF-format repo; no mistral-format flags
 
-# Final phase (Ph 3-5) runs on an A100 80GB — swap here, nothing else. `quant`
+# Final phase (Ph 3-5) runs on an RTX PRO 6000 Blackwell 96GB — swap here, nothing else. `quant`
 # stays "auto" until the exact quantized checkpoints are pinned at design freeze
 # (a placeholder like "q4" is not a valid vLLM flag and would fail on launch).
 final_phase:

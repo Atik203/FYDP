@@ -26,7 +26,7 @@ export function SiteFooter() {
               Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning.
             </p>
             <p className="text-sm mt-2 text-[rgba(255,255,255,0.45)]">
-              Jul 2026 – Apr 2027 &middot; Single A100 &middot; Open-weight Models
+              Jul 2026 – Apr 2027 &middot; Single RTX PRO 6000 &middot; Open-weight Models
             </p>
           </div>
 

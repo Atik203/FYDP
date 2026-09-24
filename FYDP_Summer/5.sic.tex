@@ -75,7 +75,7 @@ Each source of evidence is accessed via its public REST interfaces: PubMed e-uti
 
 \section{Cost Analysis}
 
-The budget for this project consists of renting a GPU and for storing all data and for using the Research Services that do not require an additional charge to fine tune our results. Cost analysis is based almost entirely on the amount of time spent running our model on a rented GPU. The greatest expense (in terms of time) was inference time on the RTX PRO 6000 Blackwell which totaled approximately 300 hours during both development and testing. Hours were not distributed in proportion across each phase of the project. For example, Phase-0 and Phase-1 used about 30 total hours for setting up baseline models. Phase-2 also used about 60 total hours to develop the Claim Split and RAG models. Phase-3a and Phase-3b combined used about 140 hours for the Main Runs and Ablations. Phase-4 used about 40 total hours for conducting Human Study checks, while Phase-5 used about 30 hours for Final Runs and Packaging. These numbers show how Phase-3 had the most significant impact on costs. Table~\\ref{tab:budget} shows the major budget for the project and Table~\\ref{tab:budget-phase} details the number of GPU hours per phase.
+The budget for this project consists of renting a GPU and for storing all data and for using the Research Services that do not require an additional charge to fine tune our results. Cost analysis is based almost entirely on the amount of time spent running our model on a rented GPU. The greatest expense (in terms of time) was inference time on the RTX PRO 6000 Blackwell which totaled approximately 300 hours during both development and testing. Hours were not distributed in proportion across each phase of the project. For example, Phase-0 and Phase-1 used about 30 total hours for setting up baseline models. Phase-2 also used about 60 total hours to develop the Claim Split and RAG models. Phase-3a and Phase-3b combined used about 140 hours for the Main Runs and Ablations. Phase-4 used about 40 total hours for conducting Human Study checks, while Phase-5 used about 30 hours for Final Runs and Packaging. These numbers show how Phase-3 had the most significant impact on costs. The hourly rate is the market average checked on Vast.ai in September 2026, namely \$1.10 to \$2.70 per hour with a median near \$1.60 per hour, and RunPod lists the same card at about \$1.70 to \$2.10 per hour. Table~\\ref{tab:budget} shows the major budget for the project and Table~\\ref{tab:budget-phase} details the number of GPU hours per phase.
 
 \begin{center}
     \begin{table}[ht]
@@ -86,7 +86,7 @@ The budget for this project consists of renting a GPU and for storing all data a
             \hline
             Item                                         & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
-            RTX PRO 6000 Blackwell 96GB rental           & 300 hours & 0.70--1.90 / hour & 210--570          \\
+            RTX PRO 6000 Blackwell 96GB rental           & 300 hours & 1.10--2.70 / hour & 330--810          \\
             \hline
             Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & ---       & 0 (free tier)     & 0                 \\
             \hline
@@ -94,7 +94,7 @@ The budget for this project consists of renting a GPU and for storing all data a
             \hline
             Storage (model weights, logs)                & 200 GB    & 0.05 / GB         & 10                \\
             \hline
-            \textbf{Total}                               &           &                   & \textbf{220--580} \\
+            \textbf{Total}                               &           &                   & \textbf{340--820} \\
             \hline
         \end{tabular}
         \label{tab:budget}
@@ -104,23 +104,23 @@ The budget for this project consists of renting a GPU and for storing all data a
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{GPU hours and cost split by phase (RTX PRO 6000, USD 0.70--1.90 per hour).}
+        \caption{GPU hours and cost split by phase (RTX PRO 6000, USD 1.10--2.70 per hour).}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
             \hline
             Phase                                  & Hours        & Cost (USD)        \\
             \hline
-            Phase-0 and Phase-1 (setup, baselines) & 30           & 21--57            \\
+            Phase-0 and Phase-1 (setup, baselines) & 30           & 33--81            \\
             \hline
-            Phase-2 (trust build)                  & 60           & 42--114           \\
+            Phase-2 (trust build)                  & 60           & 66--162           \\
             \hline
-            Phase-3a and Phase-3b (main runs)      & 140          & 98--266           \\
+            Phase-3a and Phase-3b (main runs)      & 140          & 154--378          \\
             \hline
-            Phase-4 (human eval)                   & 40           & 28--76            \\
+            Phase-4 (human eval)                   & 40           & 44--108           \\
             \hline
-            Phase-5 (writing, final checks)        & 30           & 21--57            \\
+            Phase-5 (writing, final checks)        & 30           & 33--81            \\
             \hline
-            \textbf{Total}                         & \textbf{300} & \textbf{210--570} \\
+            \textbf{Total}                         & \textbf{300} & \textbf{330--810} \\
             \hline
         \end{tabular}
         \label{tab:budget-phase}
@@ -129,7 +129,7 @@ The budget for this project consists of renting a GPU and for storing all data a
 
 Costs for storage are estimated as \$10.00 based upon an initial cost of \$0.05/GB and a total of 200 GB. Logs and result package models will be approximately 180 GB in size while the remaining space will be used for the workspace. The direct costs of the retrieval API services from PubMed, arXiv, Semantic Scholar and OpenAlex are free due to their use of free tier service levels; however, the limits imposed may increase the time required to retrieve the data. As both GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} datasets are publicly available, there were no additional costs associated with these datasets. Costs associated with printing (approximately \$15) and Internet connectivity were assumed to be fixed, therefore included in the overall estimate. Overleaf was provided to the team, thus eliminating any costs for this platform.
 
-Additionally, an alternative budget was developed. Rented usage of an A100 80GB would be approximately \$0.68 - \$1.50/hour or 204 -- 450 dollars over the course of 300 hours. Although renting would produce significant savings over purchasing, the cost savings would be modest and come at a trade-off: reduced FP8 support from the Blackwell Path would necessitate tighter quantization or sequential loading, each of which would introduce engineering time and risk. Therefore, the RTX PRO 6000 was chosen because the Blackwell FP8 path would allow the pipeline to remain uncomplicated and avoid the engineering risks associated with those alternatives.
+Additionally, an alternative budget was developed. Rented usage of an A100 80GB is currently about \$1.78 per hour, or about \$534 over the course of 300 hours. The A100 is no longer the cheaper option, and it also offers less memory, namely 80 GB against 96 GB, and a weaker FP8 path than the RTX PRO 6000. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids the engineering risk of tighter quantization or sequential model loading.
 
 There is no revenue stream anticipated for this project. This project represents an academic deliverable produced by a university and a team with funding provided exclusively through grants awarded to the university and team. The only products expected from this effort include a written report and an open-source framework. An example of an alternate budget for comparison purposes is shown in Table~\\ref\{tab:budget-alt\}.
 
@@ -143,7 +143,7 @@ There is no revenue stream anticipated for this project. This project represents
             \hline
             Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
-            A100 80GB rental & 300 hours & 0.68--1.50 / hour & 204--450          \\
+            A100 80GB rental & 300 hours & 1.78 / hour & 534               \\
             \hline
             Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
             \hline
@@ -151,14 +151,14 @@ There is no revenue stream anticipated for this project. This project represents
             \hline
             Storage          & 200 GB    & 0.05 / GB         & 10                \\
             \hline
-            \textbf{Total}   &           &                   & \textbf{214--460} \\
+            \textbf{Total}   &           &                   & \textbf{544}       \\
             \hline
         \end{tabular}
         \label{tab:budget-alt}
     \end{table}
 \end{center}
 
-A ten percent buffer (approximately \$25-\$55) is maintained to cover unexpected price increases and extended operating time in the event of a failed run. The buffer can be used to fund up to thirty additional hours of operation if either an ablation run fails or a maintenance call is required on a gate before the end of the plan period.
+A ten percent buffer (approximately \$34-\$82) is maintained to cover unexpected price increases and extended operating time in the event of a failed run. The buffer can be used to fund up to thirty additional hours of operation if either an ablation run fails or a maintenance call is required on a gate before the end of the plan period.
 
 
 \section{Complex Engineering Problem}

@@ -120,7 +120,7 @@ export interface CostRow {
 
 export const costEstimates: CostRow[] = [
   { phase: 'Dev (Ph 0–2)', models: 'Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B', gpu: 'RTX A6000 48GB', rate: '$0.40–0.46/hr', estHours: '300–600', totalRange: '$160–320' },
-  { phase: 'Final (Ph 3–5)', models: 'Qwen3.6-27B / Gemma 4 26B / Mistral 24B', gpu: 'A100 80GB', rate: '$0.68–1.50/hr', estHours: '250–500', totalRange: '$400–800' },
+  { phase: 'Final (Ph 3–5)', models: 'Qwen3.6-27B / Gemma 4 26B / Mistral 24B', gpu: 'RTX PRO 6000 Blackwell 96GB', rate: '$1.10-2.70/hr', estHours: '250–500', totalRange: '$400–800' },
   { phase: 'Total', models: '—', gpu: '—', rate: '—', estHours: '550–1,100', totalRange: '~$560–1,100' },
 ];
 
@@ -131,7 +131,7 @@ export const risks: RiskRow[] = [
   { risk: 'Reviewers see as incremental over MoA/iMAD', likelihood: 'Low-Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: 'B6/B9 direct comparisons; "+X% CCR over iMAD" as headline' },
   { risk: 'Timeline overload (Phase 2)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'High', impactVariant: 'rose', mitigation: 'Use iMAD published numbers for easy conditions; reserve reimplementation for adversarial' },
   { risk: 'iMAD reimplementation fidelity', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '~10-day dedicated budget; explicit divergence documentation' },
-  { risk: 'Single A100 compute ceiling', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '4-bit quantization; core replication targeted at 72 hours' },
+  { risk: 'Single 96GB GPU compute ceiling', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: 'FP8 native on Blackwell; core replication budgeted at 250-500 GPU-hours' },
 ];
 
 // Blueprint §8 — Dataset Plan
