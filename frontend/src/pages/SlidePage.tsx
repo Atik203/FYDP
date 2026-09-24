@@ -3,11 +3,28 @@ import {
   AlertTriangle,
   ArrowRight,
   BarChart3,
+  BookOpen,
+  Boxes,
   Brain,
+  Calendar,
+  ClipboardCheck,
+  Code,
+  Cog,
+  Compass,
   Crown,
+  FileCode,
+  FlaskConical,
+  Globe,
+  GraduationCap,
   Layers,
+  Lightbulb,
   Link2,
   Maximize,
+  MessageSquare,
+  Network,
+  Scale,
+  Search,
+  Sigma,
   Target,
   TrendingUp,
   Users,
@@ -173,7 +190,7 @@ function Card({
 
 function Bullet({ children }: { children: React.ReactNode }) {
   return (
-    <li className="flex items-start gap-[0.9cqw] mb-[1cqh] last:mb-0">
+    <li className="flex items-start gap-[0.9cqw] mb-[0.7cqh] last:mb-0">
       <span
         className="rounded-full flex-shrink-0 mt-[1.1cqh]"
         style={{ width: "1.1cqh", height: "1.1cqh", background: DEEP_INK }}
@@ -379,7 +396,7 @@ function ImadSlideTwo() {
           title="Relevant to Our Idea"
           color={ACCENT}
         >
-          <ul className="flex flex-col justify-between h-full">
+          <ul className="flex flex-col justify-center h-full">
             <Bullet>
               Our <b>closest published, efficiency-focused baseline (B9)</b>.
             </Bullet>
@@ -410,7 +427,7 @@ function ImadSlideTwo() {
           title="Gap / Limitations"
           color={ROSE}
         >
-          <ul className="flex flex-col justify-between h-full">
+          <ul className="flex flex-col justify-center h-full">
             <Bullet>
               <b>No evidence grounding</b> — influence is never tied to external
               facts, only internal cues.
@@ -462,1579 +479,1322 @@ function ImadSlideTwo() {
   );
 }
 
-/* ── Slide 4: ConsensAgent — Summary + Method + Results ──────────── */
-function ConsensSlideOne() {
+/* ── Complex Engineering helpers ─────────────────────────────────── */
+function Mark({ ok, size = "2.4cqh" }: { ok: boolean; size?: string }) {
   return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      {/* Header */}
-      <div className="mb-[2.2cqh]">
+    <span
+      className="font-extrabold leading-none"
+      style={{ fontSize: size, color: ok ? TEAL : ROSE }}
+    >
+      {ok ? "✓" : "✗"}
+    </span>
+  );
+}
+
+function AttrChip({
+  code,
+  ok,
+  color,
+  className,
+}: {
+  code: string;
+  ok: boolean;
+  color: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-between gap-[0.6cqw] rounded-lg border-2 px-[1cqw] py-[0.7cqh]",
+        className,
+      )}
+      style={{
+        borderColor: ok ? color : ROSE,
+        background: ok ? "#ffffff" : "#fef2f2",
+      }}
+    >
+      <span
+        className="text-[1.9cqh] font-extrabold"
+        style={{ color: ok ? color : ROSE }}
+      >
+        {code}
+      </span>
+      <Mark ok={ok} size="1.8cqh" />
+    </div>
+  );
+}
+
+function CoverageStrip({
+  items,
+  color,
+}: {
+  items: { code: string; ok: boolean }[];
+  color: string;
+}) {
+  return (
+    <div className="flex items-stretch gap-[0.7cqw]">
+      {items.map((it) => (
+        <AttrChip
+          key={it.code}
+          code={it.code}
+          ok={it.ok}
+          color={color}
+          className="flex-1"
+        />
+      ))}
+    </div>
+  );
+}
+
+function SlideHeader({
+  badge,
+  badgeBg,
+  badgeColor,
+  title,
+  subtitle,
+}: {
+  badge: string;
+  badgeBg: string;
+  badgeColor: string;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="mb-[1.5cqh]">
+      <div
+        className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
+        style={{ background: badgeBg, color: badgeColor }}
+      >
+        {badge}
+      </div>
+      <h1
+        className="mt-[1.1cqh] text-[4cqh] font-extrabold leading-tight"
+        style={{ color: NEAR_BLACK }}
+      >
+        {title}
+      </h1>
+      {subtitle && (
         <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#ccfbf1", color: TEAL }}
-        >
-          Paper Review · Nearest Neighbor
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          CONSENSAGENT: Efficient &amp; Effective Consensus via Sycophancy
-          Mitigation
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          className="mt-[0.7cqh] text-[2.25cqh] font-semibold"
           style={{ color: DEEP_INK }}
         >
-          <span>Priya Pitre, Naren Ramakrishnan, Xuan Wang · 2025</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
-            Findings of ACL 2025
-          </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            aclanthology.org/2025.findings-acl.1141
-          </span>
+          {subtitle}
         </div>
-      </div>
+      )}
+    </div>
+  );
+}
 
-      {/* Body: summary + results */}
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
+/* ── FYDP I attribute marks (Chapter 5 of the FYDP report) ───────── */
+const P_MARKS: { code: string; name: string; ok: boolean }[] = [
+  { code: "P1", name: "Depth of knowledge", ok: true },
+  { code: "P2", name: "Conflicting requirements", ok: true },
+  { code: "P3", name: "Depth of analysis", ok: true },
+  { code: "P4", name: "Familiarity of issues", ok: true },
+  { code: "P5", name: "Applicable codes", ok: true },
+  { code: "P6", name: "Stakeholder involvement", ok: false },
+  { code: "P7", name: "Inter-dependence", ok: true },
+];
+
+const K_MARKS: { code: string; name: string; ok: boolean }[] = [
+  { code: "K1", name: "Natural sciences", ok: true },
+  { code: "K2", name: "Mathematics", ok: true },
+  { code: "K3", name: "Engineering fundamentals", ok: true },
+  { code: "K4", name: "Specialist knowledge", ok: true },
+  { code: "K5", name: "Engineering methods", ok: true },
+  { code: "K6", name: "Computational methods", ok: true },
+  { code: "K7", name: "Codes and practices", ok: true },
+  { code: "K8", name: "Research and context", ok: true },
+];
+
+const A_MARKS: { code: string; name: string; ok: boolean }[] = [
+  { code: "A1", name: "Range of resources", ok: true },
+  { code: "A2", name: "Level of interaction", ok: true },
+  { code: "A3", name: "Innovation", ok: false },
+  { code: "A4", name: "Consequences", ok: false },
+  { code: "A5", name: "Familiarity", ok: true },
+];
+
+const PO_TILES: { code: string; name: string; ok: boolean }[] = [
+  { code: "PO1", name: "Engineering knowledge", ok: true },
+  { code: "PO2", name: "Problem analysis", ok: true },
+  { code: "PO3", name: "Design / development of solutions", ok: false },
+  { code: "PO4", name: "Investigation", ok: true },
+  { code: "PO5", name: "Modern tool usage", ok: false },
+  { code: "PO6", name: "The engineer and society", ok: false },
+  { code: "PO7", name: "Environment and sustainability", ok: false },
+  { code: "PO8", name: "Ethics", ok: false },
+  { code: "PO9", name: "Individual and teamwork", ok: false },
+  { code: "PO10", name: "Communication", ok: true },
+  { code: "PO11", name: "Project management and finance", ok: true },
+  { code: "PO12", name: "Life-long learning", ok: true },
+];
+
+const MATRIX_GROUPS: {
+  title: string;
+  color: string;
+  bg: string;
+  items: { code: string; name: string; ok: boolean }[];
+}[] = [
+  {
+    title: "Program Outcomes",
+    color: ACCENT,
+    bg: "#e0e7ff",
+    items: PO_TILES,
+  },
+  {
+    title: "Knowledge Profile",
+    color: ROSE,
+    bg: "#fee2e2",
+    items: K_MARKS,
+  },
+  {
+    title: "Complex Engineering Problem Solving",
+    color: TEAL,
+    bg: "#ccfbf1",
+    items: P_MARKS,
+  },
+  {
+    title: "Complex Engineering Activities",
+    color: AMBER,
+    bg: "#fef3c7",
+    items: A_MARKS,
+  },
+];
+
+/* ── Slide 4: Complex Engineering — why this project qualifies ───── */
+function CeOverviewSlide() {
+  const lenses = [
+    { code: "P1–P7", label: "Complex Problem Solving" },
+    { code: "K1–K8", label: "Knowledge Profile" },
+    { code: "A1–A5", label: "Engineering Activities" },
+    { code: "PO1–PO12", label: "Program Outcomes" },
+  ];
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="Complex Engineering Problem · Washington Accord"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="Why FYDP I Is a Complex Engineering Problem"
+        subtitle="The Washington Accord judges complex problems through four lenses — problem solving, knowledge, activities, and outcomes."
+      />
+
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
         <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
+          icon={<Compass size="2.4cqh" color="#fff" />}
+          title="The Four Lenses"
           color={ACCENT}
         >
-          <ul>
+          <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              <b>First to study sycophancy inside multi-agent debate</b> —
-              agents copy/swap answers instead of reasoning.
+              <b>P — Complex Problem Solving</b>: seven attributes P1–P7, from
+              depth of knowledge to inter-dependence.
             </Bullet>
             <Bullet>
-              The correct answer is present but <b>ignored in &gt;20%</b> of
-              wrong-answer cases — lost to conformity.
+              <b>K — Knowledge Profile</b>: eight knowledge areas K1–K8 that a
+              complex problem demands.
             </Bullet>
             <Bullet>
-              A <b>trigger</b> detects stalling or copying (explanation cosine
-              similarity &gt; 0.8).
+              <b>A — Complex Engineering Activities</b>: five activities A1–A5,
+              from resources to innovation.
             </Bullet>
             <Bullet>
-              On trigger, a fine-tuned GPT-4o <b>rewrites the task prompt</b> to
-              remove ambiguity → re-debate.
+              <b>PO — Program Outcomes</b>: twelve outcomes PO1–PO12 the
+              programme must demonstrate.
+            </Bullet>
+            <Bullet>
+              A problem is complex when it <b>cannot be solved by routine
+              methods</b> alone.
             </Bullet>
           </ul>
         </Card>
 
         <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
+          icon={<Layers size="2.4cqh" color="#fff" />}
+          title="Why This Project Qualifies"
           color={TEAL}
         >
-          <div className="flex flex-col justify-center h-full gap-[2cqh]">
-            <div className="text-center">
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              <b>Multi-disciplinary</b>: machine learning, NLP,
+              retrieval-augmented generation, distributed model serving.
+            </Bullet>
+            <Bullet>
+              <b>Conflicting requirements</b>: accuracy vs latency vs cost;
+              debate rounds vs the GPU bill.
+            </Bullet>
+            <Bullet>
+              <b>No textbook solution</b>: no standard method exists for
+              sycophantic consensus in LLM debate.
+            </Bullet>
+            <Bullet>
+              <b>Interdependent parts</b>: a retrieval error propagates through
+              the trust score into the final verdict.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[1.6cqh] flex items-center justify-between gap-[1.6cqw]"
+        style={{ background: ACCENT }}
+      >
+        {lenses.map((l) => (
+          <div key={l.code} className="flex items-center gap-[1cqw]">
+            <span
+              className="text-[2.6cqh] font-extrabold"
+              style={{ color: "#ffffff" }}
+            >
+              {l.code}
+            </span>
+            <span
+              className="text-[2cqh] font-semibold"
+              style={{ color: "#dbeafe" }}
+            >
+              {l.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 5: Complex Engineering — FYDP I scoreboard ────────────── */
+function CeScoreboardSlide() {
+  const tiles: {
+    code: string;
+    name: string;
+    value: string;
+    color: string;
+    bg: string;
+    items: { code: string; ok: boolean }[];
+    note: string;
+  }[] = [
+    {
+      code: "P",
+      name: "Problem solving",
+      value: "6/7",
+      color: ACCENT,
+      bg: "#e0e7ff",
+      items: P_MARKS,
+      note: "P6: no external stakeholders",
+    },
+    {
+      code: "K",
+      name: "Knowledge",
+      value: "8/8",
+      color: TEAL,
+      bg: "#ccfbf1",
+      items: K_MARKS,
+      note: "Every knowledge area covered",
+    },
+    {
+      code: "A",
+      name: "Activities",
+      value: "3/5",
+      color: AMBER,
+      bg: "#fef3c7",
+      items: A_MARKS,
+      note: "A3/A4 beyond prototype scope",
+    },
+    {
+      code: "PO",
+      name: "Outcomes",
+      value: "6/12",
+      color: ROSE,
+      bg: "#fee2e2",
+      items: PO_TILES,
+      note: "Six outcomes in FYDP II/III",
+    },
+  ];
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="FYDP I · Mapping Scoreboard"
+        badgeBg="#ccfbf1"
+        badgeColor={TEAL}
+        title="FYDP I at a Glance"
+        subtitle="Every attribute is marked covered or not covered in Chapter 5 — here is the summary."
+      />
+
+      <div className="grid grid-cols-4 gap-[1.6cqw] flex-1 min-h-0">
+        {tiles.map((t) => (
+          <div
+            key={t.code}
+            className="rounded-xl border-2 flex flex-col items-center justify-between text-center px-[1.2cqw] py-[2cqh]"
+            style={{ borderColor: t.color, background: "#ffffff" }}
+          >
+            <div>
               <div
-                className="text-[7cqh] font-extrabold leading-none"
-                style={{ color: TEAL }}
+                className="text-[2.1cqh] font-extrabold uppercase tracking-[0.15em]"
+                style={{ color: t.color }}
               >
-                ↓ 7–30%
+                {t.code}
               </div>
               <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
+                className="text-[1.7cqh] font-bold"
+                style={{ color: DEEP_INK }}
               >
-                less sycophancy
+                {t.name}
               </div>
             </div>
-            <div className="text-center">
-              <div
-                className="text-[4.6cqh] font-extrabold leading-none"
-                style={{ color: ACCENT }}
-              >
-                Best in Class
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
+            <div className="flex items-baseline gap-[0.8cqw]">
+              <span
+                className="text-[9cqh] font-extrabold leading-none"
                 style={{ color: NEAR_BLACK }}
               >
-                on all 6 datasets
-              </div>
+                {t.value}
+              </span>
+              <span
+                className="text-[1.9cqh] font-bold"
+                style={{ color: "#64748b" }}
+              >
+                covered
+              </span>
+            </div>
+            <div className="grid w-full grid-cols-4 gap-[0.4cqw]">
+              {t.items.map((it) => (
+                <span
+                  key={it.code}
+                  className="flex items-center justify-center gap-[0.3cqw] rounded-md border px-[0.4cqw] py-[0.35cqh]"
+                  style={{
+                    borderColor: it.ok ? t.color : ROSE,
+                    background: it.ok ? "#ffffff" : "#fef2f2",
+                  }}
+                >
+                  <span
+                    className="text-[1.6cqh] font-bold"
+                    style={{ color: it.ok ? t.color : ROSE }}
+                  >
+                    {it.code}
+                  </span>
+                  <Mark ok={it.ok} size="1.5cqh" />
+                </span>
+              ))}
             </div>
             <div
-              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
-              style={{ background: "#f1f5f9" }}
+              className="rounded-lg px-[1cqw] py-[0.6cqh] text-[1.8cqh] font-semibold"
+              style={{ background: t.bg, color: t.color }}
             >
+              {t.note}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        className="mt-[2cqh] flex items-center justify-between rounded-xl px-[2.4cqw] py-[1.5cqh]"
+        style={{ background: "#f1f5f9" }}
+      >
+        <span
+          className="text-[2.2cqh] font-bold"
+          style={{ color: DEEP_INK }}
+        >
+          Marks follow FYDP I, the only phase completed — later phases move the
+          remaining marks.
+        </span>
+        <span
+          className="text-[2.2cqh] font-extrabold flex items-center gap-[0.7cqw]"
+          style={{ color: ACCENT }}
+        >
+          Next: P1–P7 <ArrowRight size="2.2cqh" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 6: P1–P4 — Complex problem solving, part 1 ────────────── */
+function CeProblemOneSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="P1–P7 · Complex Problem Solving"
+        badgeBg="#ccfbf1"
+        badgeColor={TEAL}
+        title="Complex Problem Solving — Part 1"
+        subtitle="Four of the seven Washington Accord problem attributes and what covers each in FYDP I."
+      />
+
+      <CoverageStrip items={P_MARKS} color={TEAL} />
+
+      <div className="grid grid-cols-2 gap-[1.2cqh_2cqw] mt-[1.4cqh] flex-1 min-h-0">
+        <Card
+          icon={<BookOpen size="2.4cqh" color="#fff" />}
+          title="P1 · Depth of Knowledge"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Machine learning, NLP, RAG and distributed model serving.
+            </Bullet>
+            <Bullet>
+              The trust update runs through the vLLM serving layer.
+            </Bullet>
+            <Bullet>
+              No single discipline suffices for the pipeline.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Scale size="2.4cqh" color="#fff" />}
+          title="P2 · Conflicting Requirements"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Accuracy vs latency vs cost; more rounds raise the GPU bill.
+            </Bullet>
+            <Bullet>
+              Trust weighting vs diversity; evidence coverage vs rate limits.
+            </Bullet>
+            <Bullet>
+              Round caps and clamping bounds resolve the conflicts.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<FlaskConical size="2.4cqh" color="#fff" />}
+          title="P3 · Depth of Analysis"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              No textbook solution — compared majority vote, MoA, iMAD and
+              DebUnc.
+            </Bullet>
+            <Bullet>
+              Four metric families plus a fake-consensus injection stress test.
+            </Bullet>
+            <Bullet>
+              Injection measures collapse under controlled stress.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Search size="2.4cqh" color="#fff" />}
+          title="P4 · Familiarity of Issues"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Multi-agent LLM debate is new; closest work is 2024–2026.
+            </Bullet>
+            <Bullet>
+              No standard fix for sycophantic consensus; a literature review
+              preceded any design.
+            </Bullet>
+            <Bullet>
+              Baselines and metrics came before the mechanism.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1cqh] text-[1.9cqh] font-semibold"
+        style={{ color: DEEP_INK }}
+      >
+        6 of 7 P attributes are covered — P5–P7 follow, including the P6 gap.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 7: P5–P7 — Complex problem solving, part 2 ────────────── */
+function CeProblemTwoSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="P1–P7 · Complex Problem Solving"
+        badgeBg="#ccfbf1"
+        badgeColor={TEAL}
+        title="Codes, Inter-dependence, and the P6 Gap"
+        subtitle="Completing the seven attributes — one of them cannot be claimed in FYDP I."
+      />
+
+      <div className="grid grid-cols-3 gap-[1.8cqw] flex-1 min-h-0">
+        <Card
+          icon={<FileCode size="2.4cqh" color="#fff" />}
+          title="P5 · Applicable Codes"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Standards apply: JSON (RFC 8259), HTTP over TLS, the
+              OpenAI-compatible API.
+            </Bullet>
+            <Bullet>
+              No code covers evidence-grounded trust — the framework defines its
+              own trust rules and four verdicts.
+            </Bullet>
+            <Bullet>
+              JSON payloads over TLS carry those rules between components.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Link2 size="2.4cqh" color="#fff" />}
+          title="P7 · Inter-dependence"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Gate → Orchestrator → Claim Decomposer → Retrieval → Trust Updater
+              → Aggregator.
+            </Bullet>
+            <Bullet>
+              A retrieval error reaches the final answer through the trust
+              score.
+            </Bullet>
+            <Bullet>
+              The failure-isolation rule (Section 3.1.1) contains a fault to one
+              component.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Users size="2.4cqh" color="#fff" />}
+          title="P6 · Stakeholders — Not Covered"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              No external stakeholders: only the supervisor and the examiners.
+            </Bullet>
+            <Bullet>
+              No industry partner or community group joins design or testing.
+            </Bullet>
+            <Bullet>
+              Engagement stays inside the university for FYDP I.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1.2cqh] rounded-xl px-[2.4cqw] py-[1.4cqh] text-[2.1cqh] font-bold"
+        style={{ background: "#f1f5f9", color: DEEP_INK }}
+      >
+        6 of 7 P attributes are covered. P6 is the expected FYDP I gap —
+        engagement stays inside the university.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 8: K1–K4 — Knowledge profile, part 1 ──────────────────── */
+function CeKnowledgeOneSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="K1–K8 · Knowledge Profile"
+        badgeBg="#fee2e2"
+        badgeColor={ROSE}
+        title="Knowledge Profile — Part 1"
+        subtitle="The knowledge areas every complex problem demands, and where FYDP I applies them."
+      />
+
+      <CoverageStrip items={K_MARKS} color={ROSE} />
+
+      <div className="grid grid-cols-2 gap-[1.6cqh_2cqw] mt-[2cqh] flex-1 min-h-0">
+        <Card
+          icon={<FlaskConical size="2.4cqh" color="#fff" />}
+          title="K1 · Natural Sciences"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Answers are verified against PubMed, arXiv, Semantic Scholar and
+              OpenAlex.
+            </Bullet>
+            <Bullet>
+              The domain is natural science; no new theory is claimed.
+            </Bullet>
+            <Bullet>
+              Scientific QA is the application domain.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Sigma size="2.4cqh" color="#fff" />}
+          title="K2 · Mathematics"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Softmax, clamping and renormalization of trust.
+            </Bullet>
+            <Bullet>
+              Trust stays a valid distribution across rounds.
+            </Bullet>
+            <Bullet>
+              Paired bootstrap and effect sizes back the results.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Cog size="2.4cqh" color="#fff" />}
+          title="K3 · Engineering Fundamentals"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              System design, state machines and failure handling.
+            </Bullet>
+            <Bullet>
+              Standard design practice guides the confidence gate.
+            </Bullet>
+            <Bullet>
+              Failure handling is specified per component.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Brain size="2.4cqh" color="#fff" />}
+          title="K4 · Specialist Knowledge"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              LLMs, multi-agent debate, RAG and sycophancy.
+            </Bullet>
+            <Bullet>
+              Three model families keep the debate heterogeneous.
+            </Bullet>
+            <Bullet>
+              Sycophancy is the failure mode under study.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1.6cqh] text-[1.9cqh] font-semibold"
+        style={{ color: DEEP_INK }}
+      >
+        All eight K areas are covered — K5–K8 follow.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 9: K5–K8 — Knowledge profile, part 2 ──────────────────── */
+function CeKnowledgeTwoSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="K1–K8 · Knowledge Profile"
+        badgeBg="#fee2e2"
+        badgeColor={ROSE}
+        title="Knowledge Profile — Part 2"
+        subtitle="The remaining knowledge areas, and why the profile is broad rather than deep."
+      />
+
+      <div className="grid grid-cols-2 gap-[1.6cqh_2cqw] flex-1 min-h-0">
+        <Card
+          icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
+          title="K5 · Engineering Methods"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Controlled experiments, confidence intervals, baseline comparison
+              and injection studies.
+            </Bullet>
+            <Bullet>
+              All studies share one setup so injection effects stay comparable.
+            </Bullet>
+            <Bullet>
+              Results are reported with confidence intervals and baselines.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Code size="2.4cqh" color="#fff" />}
+          title="K6 · Computational Methods"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Python, PyTorch, vLLM, FastAPI, sentence-transformers and Git.
+            </Bullet>
+            <Bullet>
+              The stack is inference-only — no fine-tuning, so the toolchain
+              stays light.
+            </Bullet>
+            <Bullet>
+              Cross-encoders rerank retrieved passages before the trust update.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<FileCode size="2.4cqh" color="#fff" />}
+          title="K7 · Codes and Practices"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              JSON (RFC 8259), HTTP over TLS, the OpenAI-compatible API and
+              version control.
+            </Bullet>
+            <Bullet>
+              Result packages are validated against a JSON schema before they
+              leave the framework.
+            </Bullet>
+            <Bullet>
+              Git tracks every change to code, configs and results.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Globe size="2.4cqh" color="#fff" />}
+          title="K8 · Research and Context"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Ethical bounds for AI output in scientific QA; literature review
+              and gap analysis set the context.
+            </Bullet>
+            <Bullet>
+              The journal and the independent learning record document the
+              research context.
+            </Bullet>
+            <Bullet>
+              The gap analysis links the literature directly to the
+              requirements.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1.8cqh] rounded-xl px-[2.4cqw] py-[1.4cqh] text-[2.1cqh] font-bold"
+        style={{ background: "#f1f5f9", color: DEEP_INK }}
+      >
+        The profile is broad rather than deep in one spot — K4 and K5 run
+        through every chapter, K6 and K7 through the implementation.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 10: A1–A2 — Engineering activities, resources + interaction */
+function CeActivityOneSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="A1–A5 · Complex Engineering Activities"
+        badgeBg="#fef3c7"
+        badgeColor={AMBER}
+        title="Engineering Activities — Resources and Interaction"
+        subtitle="Two of the five activities, and the resources and interactions each demands."
+      />
+
+      <CoverageStrip items={A_MARKS} color={AMBER} />
+
+      <div className="grid grid-cols-2 gap-[2cqw] mt-[2cqh] flex-1 min-h-0">
+        <Card
+          icon={<Boxes size="2.4cqh" color="#fff" />}
+          title="A1 · Range of Resources"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Three model family sources, four literature APIs, six team members
+              and a rented Blackwell GPU.
+            </Bullet>
+            <Bullet>
+              Chapter 3 assigns each task to a specific member with weeks and
+              deliverables.
+            </Bullet>
+            <Bullet>
+              Compute, APIs and people are all locked into that phase plan.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Network size="2.4cqh" color="#fff" />}
+          title="A2 · Level of Interaction"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Every debate round calls three external model endpoints and three
+              literature API endpoints.
+            </Bullet>
+            <Bullet>
+              Communication with the rented cloud GPU, plus the shared
+              repository and weekly meetings.
+            </Bullet>
+            <Bullet>
+              Closed APIs and local vLLM models share one OpenAI-compatible
+              surface.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1.6cqh] text-[1.9cqh] font-semibold"
+        style={{ color: DEEP_INK }}
+      >
+        3 of 5 A activities are covered — A5 follows, then the A3/A4 gaps.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 11: A3–A5 — Activities, familiarity and gaps ──────────── */
+function CeActivityTwoSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="A1–A5 · Complex Engineering Activities"
+        badgeBg="#fef3c7"
+        badgeColor={AMBER}
+        title="Familiarity, Innovation and Consequences"
+        subtitle="A5 is claimed; A3 and A4 are marked not covered, and this is deliberate."
+      />
+
+      <div className="grid grid-cols-3 gap-[1.8cqw] flex-1 min-h-0">
+        <Card
+          icon={<Compass size="2.4cqh" color="#fff" />}
+          title="A5 · Familiarity"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Multi-agent debate and evidence verification were uncharted for
+              the team.
+            </Bullet>
+            <Bullet>
+              A structured literature review and baseline study preceded
+              implementation.
+            </Bullet>
+            <Bullet>
+              Specialist reading and baseline runs closed the knowledge gap.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Lightbulb size="2.4cqh" color="#fff" />}
+          title="A3 · Innovation — Not Covered"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Combines pre-existing concepts: multi-agent debate and RAG with
+              trust weighting.
+            </Bullet>
+            <Bullet>
+              No new device or theory; the step is incremental and not
+              patentable.
+            </Bullet>
+            <Bullet>
+              The combination is new to this project, not to the field.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Globe size="2.4cqh" color="#fff" />}
+          title="A4 · Consequences — Not Covered"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              A lab prototype, not a deployed product; no large user base.
+            </Bullet>
+            <Bullet>
+              About 300 GPU-hours, no fine-tuning, so social and environmental
+              impact stays minimal.
+            </Bullet>
+            <Bullet>
+              No deployment means no broad societal consequences yet.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+
+      <div
+        className="mt-[1.8cqh] rounded-xl px-[2.4cqw] py-[1.4cqh] text-[2.1cqh] font-bold"
+        style={{ background: "#f1f5f9", color: DEEP_INK }}
+      >
+        A3 and A4 sit beyond FYDP I scope — the report marks them not covered
+        rather than overclaiming.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 12: PO1–PO12 — Program outcomes coverage ──────────────── */
+function CeOutcomesOneSlide() {
+  const groups = [
+    {
+      title: "Covered in FYDP I",
+      items: PO_TILES.filter((t) => t.ok),
+      color: ACCENT,
+      bg: "#eef2ff",
+    },
+    {
+      title: "Deferred to FYDP II / III",
+      items: PO_TILES.filter((t) => !t.ok),
+      color: "#475569",
+      bg: "#f8fafc",
+    },
+  ];
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="PO1–PO12 · Program Outcomes"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="Program Outcomes — FYDP I Coverage"
+        subtitle="Twelve outcomes; six are addressed in FYDP I and six are scheduled for later phases."
+      />
+
+      <div className="flex items-center gap-[1.6cqw]">
+        <div className="flex flex-1 gap-[0.5cqw]">
+          {PO_TILES.map((t) => (
+            <div
+              key={t.code}
+              className="flex-1 rounded-full"
+              style={{
+                height: "1.7cqh",
+                background: t.ok ? ACCENT : "#cbd5e1",
+              }}
+            />
+          ))}
+        </div>
+        <div
+          className="text-[2.2cqh] font-extrabold"
+          style={{ color: ACCENT }}
+        >
+          6/12 covered
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-[2cqw] mt-[2cqh] flex-1 min-h-0">
+        {groups.map((g) => (
+          <div
+            key={g.title}
+            className="rounded-xl border-2 px-[1.6cqw] py-[1.5cqh] flex flex-col"
+            style={{ borderColor: g.color, background: "#ffffff" }}
+          >
+            <div
+              className="text-[2.2cqh] font-extrabold uppercase tracking-wide"
+              style={{ color: g.color }}
+            >
+              {g.title}
+            </div>
+            <div className="mt-[1.4cqh] grid grid-cols-2 gap-[1cqh_1cqw] flex-1 min-h-0">
+              {g.items.map((t) => (
+                <div
+                  key={t.code}
+                  className="rounded-lg px-[1cqw] py-[0.9cqh] flex items-center gap-[0.8cqw]"
+                  style={{ background: g.bg }}
+                >
+                  <span
+                    className="text-[2.1cqh] font-extrabold"
+                    style={{ color: g.color }}
+                  >
+                    {t.code}
+                  </span>
+                  <Mark ok={t.ok} size="2cqh" />
+                  <span
+                    className="text-[2cqh] font-bold leading-snug"
+                    style={{ color: t.ok ? NEAR_BLACK : "#64748b" }}
+                  >
+                    {t.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div
+        className="mt-[1.6cqh] text-[1.9cqh] font-semibold"
+        style={{ color: DEEP_INK }}
+      >
+        The six deferred outcomes belong to FYDP II and FYDP III.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 13: PO1–PO12 — what covers each outcome ───────────────── */
+function CeOutcomesTwoSlide() {
+  const rows = [
+    {
+      code: "PO1 · Engineering knowledge",
+      icon: <BookOpen size="2.4cqh" color="#fff" />,
+      color: ACCENT,
+      text: "Real-life problem statement (Chapter 1)",
+      sub: "Problem context is a real scientific-QA system.",
+    },
+    {
+      code: "PO2 · Problem analysis",
+      icon: <Search size="2.4cqh" color="#fff" />,
+      color: AMBER,
+      text: "Requirements engineering (Chapter 3)",
+      sub: "Functional and non-functional requirements are specified.",
+    },
+    {
+      code: "PO4 · Investigation",
+      icon: <FlaskConical size="2.4cqh" color="#fff" />,
+      color: TEAL,
+      text: "Literature review and gap analysis (Chapter 2)",
+      sub: "Systematic review of 2024–2026 literature.",
+    },
+    {
+      code: "PO10 · Communication",
+      icon: <MessageSquare size="2.4cqh" color="#fff" />,
+      color: ACCENT,
+      text: "Interim report and oral presentation",
+      sub: "Written report plus this defence deck.",
+    },
+    {
+      code: "PO11 · Project management",
+      icon: <Calendar size="2.4cqh" color="#fff" />,
+      color: AMBER,
+      text: "Timeline and budget (Chapter 5)",
+      sub: "Budget tracks GPU hours per phase.",
+    },
+    {
+      code: "PO12 · Life-long learning",
+      icon: <GraduationCap size="2.4cqh" color="#fff" />,
+      color: TEAL,
+      text: "Journal write-up and independent learning record",
+      sub: "Independent learning record accompanies the journal.",
+    },
+  ];
+  return (
+    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
+      <SlideHeader
+        badge="PO1–PO12 · Program Outcomes"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="What Covers Each FYDP I Outcome"
+        subtitle="Each addressed outcome maps to a concrete FYDP I deliverable."
+      />
+
+      <div className="grid grid-cols-3 grid-rows-2 gap-[1.4cqh_1.6cqw] flex-1 min-h-0">
+        {rows.map((r) => (
+          <Card key={r.code} icon={r.icon} title={r.code} color={r.color}>
+            <div className="flex flex-col justify-center h-full gap-[1cqh]">
+              <div className="flex items-center gap-[0.9cqw]">
+                <ArrowRight
+                  size="2.4cqh"
+                  style={{ color: r.color }}
+                  className="flex-shrink-0"
+                />
+                <span
+                  className="text-[2.3cqh] font-semibold leading-snug"
+                  style={{ color: NEAR_BLACK }}
+                >
+                  {r.text}
+                </span>
+              </div>
               <div
-                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
+                className="pl-[3.3cqw] text-[1.9cqh] font-medium leading-snug"
                 style={{ color: "#475569" }}
               >
-                consensus in 1–2 rounds
-              </div>
-              <div
-                className="text-[2cqh] font-bold leading-snug"
-                style={{ color: DEEP_INK }}
-              >
-                KITAB · CLUTRR · HotpotQA
-                <br />
-                Ethics · GSM8K · TriviaQA
+                {r.sub}
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        ))}
       </div>
 
-      {/* Method flow strip */}
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          Four-Phase Pipeline
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Phase 1: Zero-shot CoT answers + confidence",
-            "Phase 2: Multi-round debate (≤5 rounds)",
-            "Trigger: stall / copy detected (cos sim > 0.8)",
-            "Phase 3: Fine-tuned GPT-4o rewrites task prompt",
-            "Phase 4: Weighted vote (confidence × consistency)",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
+      <div
+        className="mt-[1.6cqh] text-[1.9cqh] font-semibold"
+        style={{ color: DEEP_INK }}
+      >
+        PO3, PO5–PO9 are scheduled for FYDP II and FYDP III.
+      </div>
+    </div>
+  );
+}
+
+/* ── Slide 14: Overall FYDP I mapping matrix ─────────────────────── */
+function CeMatrixSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Overall Mapping · FYDP I"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="FYDP I Against Every Attribute"
+        subtitle="Program Outcomes · Knowledge Profile · Complex Engineering Problem Solving · Complex Engineering Activities"
+      />
+
+      <table
+        className="w-full border-collapse"
+        style={{ tableLayout: "fixed" }}
+      >
+        <colgroup>
+          <col style={{ width: "9cqw" }} />
+          {MATRIX_GROUPS.flatMap((g) =>
+            g.items.map((it) => <col key={it.code} />),
+          )}
+        </colgroup>
+        <thead>
+          <tr>
+            <th
+              rowSpan={3}
+              className="align-middle text-[2.1cqh] font-extrabold uppercase tracking-wide"
+              style={{
+                border: "2px solid #94a3b8",
+                background: "#0f172a",
+                color: "#ffffff",
+              }}
+            >
+              Attributes
+            </th>
+            {MATRIX_GROUPS.map((g) => (
+              <th
+                key={g.title}
+                colSpan={g.items.length}
+                className="px-[0.4cqw] py-[1.8cqh] text-[1.85cqh] font-extrabold leading-tight"
                 style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
+                  border: "2px solid #94a3b8",
+                  background: g.bg,
+                  color: g.color,
                 }}
               >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+                {g.title}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            {MATRIX_GROUPS.flatMap((g) =>
+              g.items.map((it) => (
+                <th
+                  key={it.code}
+                  className="py-[1.1cqh] text-[1.9cqh] font-bold"
+                  style={{
+                    border: "1.5px solid #cbd5e1",
+                    background: "#ffffff",
+                    color: g.color,
+                  }}
+                >
+                  {it.code}
+                </th>
+              )),
+            )}
+          </tr>
+          <tr style={{ height: "40cqh" }}>
+            {MATRIX_GROUPS.flatMap((g) =>
+              g.items.map((it) => (
+                <td
+                  key={it.code}
+                  className="align-middle text-center"
+                  style={{
+                    border: "1.5px solid #cbd5e1",
+                    background: "#ffffff",
+                  }}
+                >
+                  <div
+                    className="mx-auto text-[2cqh] font-semibold leading-tight"
+                    style={{
+                      writingMode: "vertical-rl",
+                      transform: "rotate(180deg)",
+                      color: g.color,
+                    }}
+                  >
+                    {it.name}
+                  </div>
+                </td>
+              )),
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td
+              className="text-center text-[2.2cqh] font-extrabold"
+              style={{
+                border: "2px solid #94a3b8",
+                background: "#0f172a",
+                color: "#ffffff",
+              }}
+            >
+              FYDP I
+            </td>
+            {MATRIX_GROUPS.flatMap((g) =>
+              g.items.map((it) => (
+                <td
+                  key={it.code}
+                  className="py-[2.6cqh] text-center"
+                  style={{
+                    border: "1.5px solid #cbd5e1",
+                    background: it.ok ? "#f0fdfa" : "#fef2f2",
+                  }}
+                >
+                  <Mark ok={it.ok} size="3cqh" />
+                </td>
+              )),
+            )}
+          </tr>
+          <tr>
+            <td
+              className="py-[1.1cqh] text-center text-[2cqh] font-extrabold"
+              style={{
+                border: "2px solid #94a3b8",
+                background: "#f1f5f9",
+                color: DEEP_INK,
+              }}
+            >
+              Covered
+            </td>
+            {MATRIX_GROUPS.map((g) => (
+              <td
+                key={g.title}
+                colSpan={g.items.length}
+                className="py-[1.1cqh] text-center text-[2.1cqh] font-extrabold"
+                style={{
+                  border: "1.5px solid #cbd5e1",
+                  background: "#f8fafc",
+                  color: g.color,
+                }}
+              >
+                {g.items.filter((it) => it.ok).length}/{g.items.length}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
 
-/* ── Slide 5: ConsensAgent — Relevance + Gap ─────────────────────── */
-function ConsensSlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
+      <div className="mt-[3cqh] flex items-center justify-between">
         <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#ccfbf1", color: TEAL }}
-        >
-          ConsensAgent · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Our Closest Competitor — Same Problem, Different Fix
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              Our <b>nearest published neighbor</b> — same target: sycophantic
-              collapse in debate.
-            </Bullet>
-            <Bullet>
-              Shares our motivation: a <b>correct minority is overwhelmed</b> by
-              a confident majority.
-            </Bullet>
-            <Bullet>
-              Its <b>&gt;20% correct-but-ignored</b> finding is our strongest
-              proof the problem is real.
-            </Bullet>
-            <Bullet>
-              Its sycophancy metric (copy/swap via cosine similarity) is a{" "}
-              <b>ready baseline</b> for our eval harness.
-            </Bullet>
-            <Bullet>
-              Beats strong baselines including <b>ReConcile</b> (Chen et al.,
-              2024)
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              Fixes sycophancy <b>indirectly</b> — rewrites the prompt{" "}
-              <b>before</b> debate, no in-debate trust weighting.
-            </Bullet>
-            <Bullet>
-              Fails when the prompt is{" "}
-              <b>clear but the majority is confidently wrong</b>.
-            </Bullet>
-            <Bullet>
-              Final vote still uses <b>self-reported confidence</b> — the
-              manipulable signal.
-            </Bullet>
-            <Bullet>
-              Needs a <b>per-dataset fine-tuned</b> GPT-4o + labeled samples.
-            </Bullet>
-            <Bullet>
-              Authors admit it treats the <b>symptom, not the root cause</b>.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      {/* Our contribution banner */}
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            We calibrate trust <i>during</i> the debate using external retrieved
-            evidence — not pre-debate prompt clarity or self-reported
-            confidence. Prompt clarification ≠ agent trust calibration.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 6: DebUnc — Summary + Method + Results ────────────────── */
-function DebUncSlideOne() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2.2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#ccfbf1", color: TEAL }}
-        >
-          Paper Review · Closest on Mechanism
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          DebUnc: LLM Agent Communication with Uncertainty Metrics
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
+          className="flex items-center gap-[1.6cqw] text-[2.3cqh] font-semibold"
           style={{ color: DEEP_INK }}
         >
-          <span>Luke Yoffe, Alfonso Amayuelas, William Yang Wang · 2025</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
           <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
-            Findings of EMNLP 2025
+            <Mark ok={true} size="2.2cqh" /> covered
           </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            aclanthology.org/2025.findings-emnlp.1265
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
-          color={ACCENT}
-        >
-          <ul>
-            <Bullet>
-              In standard debate, a <b>confidently-wrong</b> agent can mislead
-              peers because they cannot see how confident one another is.
-            </Bullet>
-            <Bullet>
-              After each round, it scores uncertainty with token-level metrics:
-              <b> Mean Token Entropy</b> or <b>TokenSAR</b>.
-            </Bullet>
-            <Bullet>
-              It shares a 1–10 confidence score in the prompt, or uses{" "}
-              <b>attention-scaling</b> to change the weight of peer tokens.
-            </Bullet>
-            <Bullet>
-              Attention-scaling beats prompt-based confidence, but deployable
-              metrics add only a <b>small gain</b> over standard debate.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
-          color={TEAL}
-        >
-          <div className="flex flex-col justify-center h-full gap-[2cqh]">
-            <div className="text-center">
-              <div
-                className="text-[6.5cqh] font-extrabold leading-none"
-                style={{ color: TEAL }}
-              >
-                0.63 → 0.64
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                standard → best deployable metric
-              </div>
-            </div>
-            <div
-              className="text-center rounded-lg py-[1.2cqh] px-[1cqw]"
-              style={{ background: "#fef2f2" }}
-            >
-              <div
-                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
-                style={{ color: ROSE }}
-              >
-                Ground-Truth oracle
-              </div>
-              <div
-                className="text-[2.1cqh] font-bold leading-snug"
-                style={{ color: DEEP_INK }}
-              >
-                <b>0.73 average accuracy</b> (+0.10), but it needs the correct
-                answer in advance, so it cannot be deployed.
-              </div>
-            </div>
-            <div
-              className="text-center text-[1.9cqh] font-semibold"
-              style={{ color: "#475569" }}
-            >
-              MMLU · GSM8K · TruthfulQA · Arithmetic
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          Per-Round Pipeline
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Agents answer",
-            "Measure uncertainty (entropy / TokenSAR)",
-            "Convert to 1–10 confidence",
-            "Communicate: prompt or attention-scaling",
-            "Peers weight confident agents more",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
-                style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
-                }}
-              >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 7: DebUnc — Relevance + Gap ───────────────────────────── */
-function DebUncSlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#ccfbf1", color: TEAL }}
-        >
-          DebUnc · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Right Lever, Wrong Signal — Confidence Isn't Correctness
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>Closest on mechanism</b> — reweights agent influence{" "}
-              <b>during debate rounds</b>, exactly like our Trust Calibration
-              Module.
-            </Bullet>
-            <Bullet>
-              It validates the lever: attention-scaling beats prompt-based
-              confidence.
-            </Bullet>
-            <Bullet>
-              Its <b>Ground-Truth oracle</b> adds <b>+0.10</b> average accuracy,
-              showing that signal quality is the bottleneck.
-            </Bullet>
-            <Bullet>
-              Confidence-in-prompt mode is <b>API-portable</b> → a clean
-              baseline (B-DebUnc).
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              Deployable entropy/TokenSAR gives only a <b>small gain</b> (about
-              +0.01 average on Llama-3).
-            </Bullet>
-            <Bullet>
-              The signal is <b>internal</b>: it reflects how a model{" "}
-              <i>feels</i>, not whether its claim is <i>right</i>.
-            </Bullet>
-            <Bullet>
-              The Ground-Truth oracle needs the correct answer in advance, so it
-              is <b>not deployable</b>.
-            </Bullet>
-            <Bullet>
-              Attention-scaling needs <b>white-box</b> model access; token-level
-              metrics also need logits that most closed APIs hide.
-            </Bullet>
-            <Bullet>
-              There is <b>no external evidence</b>, so a confidently-wrong agent
-              can still receive high influence.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            We use retrieved external evidence as a deployable proxy for the
-            missing truth signal, with message-level weighting that works with
-            closed APIs.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 8: MoA — Summary + Method + Results ───────────────────── */
-function MoaSlideOne() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2.2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#e0e7ff", color: ACCENT }}
-        >
-          Paper Review · Foundational Architecture
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Mixture-of-Agents Enhances Large Language Model Capabilities
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          <span>Junlin Wang et al. (Together AI) · 2025</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
           <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: ACCENT }} />
-            ICLR 2025
+            <Mark ok={false} size="2.2cqh" /> not covered / deferred
           </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            https://doi.org/10.48550/arXiv.2406.04692
-          </span>
+          <span style={{ color: "#64748b" }}>Group 6 · Phantom Devs</span>
         </div>
-      </div>
-
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
-          color={ACCENT}
-        >
-          <ul>
-            <Bullet>
-              LLMs are <b>collaborative</b> — a model answers better when shown
-              other models' outputs, even weaker ones.
-            </Bullet>
-            <Bullet>
-              <b>Layered pipeline</b>: proposers generate → aggregator
-              synthesizes → repeat; <b>no fine-tuning</b>, prompt-only.
-            </Bullet>
-            <Bullet>
-              An ensemble-by-synthesis, <b>not a debate</b> — proposers never
-              revise in response to peers.
-            </Bullet>
-          </ul>
-          <div
-            className="mt-[1.4cqh] rounded-lg px-[1.4cqw] py-[1cqh]"
-            style={{ background: "#f1f5f9" }}
-          >
-            <div
-              className="text-[1.9cqh] font-bold"
-              style={{ color: DEEP_INK }}
-            >
-              Compared with: GPT-4 Omni · GPT-4 Turbo · GPT-4o ·
-              Qwen1.5-110B/72B
-            </div>
-            <div
-              className="text-[1.9cqh] font-bold"
-              style={{ color: DEEP_INK }}
-            >
-              · WizardLM-8x22B · Mixtral-8x22B · LLaMA-3-70B · dbrx
-            </div>
-          </div>
-        </Card>
-
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
-          color={TEAL}
-        >
-          <div className="flex flex-col justify-center h-full gap-[1.8cqh]">
-            <div className="text-center">
-              <div
-                className="text-[6.4cqh] font-extrabold leading-none"
-                style={{ color: TEAL }}
-              >
-                65.1%
-              </div>
-              <div
-                className="text-[2.1cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                AlpacaEval 2.0 · MT-Bench · FLASK (open-source only)
-              </div>
-            </div>
-            <div className="text-center">
-              <div
-                className="text-[3.2cqh] font-extrabold leading-none"
-                style={{ color: ACCENT }}
-              >
-                &gt; GPT-4 Omni &amp; GPT-4 Turbo
-              </div>
-              <div
-                className="text-[2.1cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                GPT-4 Omni 57.5% beaten · GPT-4 Turbo matched at ~2× lower cost
-              </div>
-            </div>
-            <div className="text-center">
-              <div
-                className="text-[3.2cqh] font-extrabold leading-none"
-                style={{ color: AMBER }}
-              >
-                65.7%
-              </div>
-              <div
-                className="text-[2.1cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                MoA w/ GPT-4o aggregator
-              </div>
-            </div>
-            <div
-              className="text-center rounded-lg py-[0.8cqh] px-[1cqw] text-[2cqh] font-bold"
-              style={{ background: "#f1f5f9", color: DEEP_INK }}
-            >
-              More diverse proposers → monotonically better
-              <br />
-              (n=1 → 6 : 47.8% → 61.3%)
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          Layered Architecture
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Layer 1 proposers answer",
-            "Concatenate all outputs",
-            "Aggregator synthesizes",
-            "Feed into next layer",
-            "Final aggregator → answer",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
-                style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
-                }}
-              >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
+        <div className="flex items-center gap-[1.6cqw] text-[2.4cqh] font-extrabold">
+          <span style={{ color: TEAL }}>P 6/7</span>
+          <span style={{ color: ROSE }}>K 8/8</span>
+          <span style={{ color: AMBER }}>A 3/5</span>
+          <span style={{ color: ACCENT }}>PO 6/12</span>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── Slide 9: MoA — Relevance + Gap ──────────────────────────────── */
-function MoaSlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#e0e7ff", color: ACCENT }}
-        >
-          MoA · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Aggregation Works — But It's Trust-Blind and Evidence-Free
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              The canonical proof that <b>multi-model aggregation works</b> —
-              motivates using multiple agents at all.
-            </Bullet>
-            <Bullet>
-              <b>Diversity helps</b>: more varied proposers give better answers.
-            </Bullet>
-            <Bullet>
-              Defines the <b>trust-blind baseline</b> our mechanism improves on.
-            </Bullet>
-            <Bullet>
-              A different paradigm (ensemble, not debate) → cited as{" "}
-              <b>context</b>, not a competitor.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>No per-agent trust and no external evidence</b> — every
-              proposer's text enters on equal footing under the aggregator's own
-              judgment.
-            </Bullet>
-            <Bullet>
-              A weak aggregator <b>degrades</b> everything (e.g. 60.6% → 45.0%).
-            </Bullet>
-            <Bullet>
-              Cannot detect or down-weight a <b>confidently-wrong</b> proposer.
-            </Bullet>
-            <Bullet>
-              Feed-forward → <b>can't model</b> round-over-round sycophancy.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            We add what MoA lacks: an explicit, evidence-grounded trust weight
-            per agent — so a confidently-wrong proposer is down-weighted, not
-            blindly synthesized in.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 10: Minority Sentinel — Summary + Method + Results ────── */
-function MinoritySlideOne() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2.2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#fef3c7", color: AMBER }}
-        >
-          Paper Review · Competitor
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Minority Sentinel: When to Overturn Majority Voting in Multi-Agent LLM
-          Debates
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          <span>Chuan He et al. (UNSW / Euler AI) · 2026</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: AMBER }} />
-            AgentSearch Workshop @ SIGIR 2026
-          </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            https://doi.org/10.48550/arXiv.2606.29270
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
-          color={ACCENT}
-        >
-          <ul>
-            <Bullet>
-              Majority voting assumes <b>independent errors</b> (Condorcet) —
-              LLMs share training data, so errors are <b>correlated</b>.
-            </Bullet>
-            <Bullet>
-              The majority then suppresses correct minorities:{" "}
-              <b>Minority Truth</b> in <b>25.5%</b> of 2:1 splits →{" "}
-              <b>10.0pp</b> recovery margin (74.3% MV vs 84.3% Oracle).
-            </Bullet>
-            <Bullet>
-              <b>Diagnosis–Cure</b>: 3 heterogeneous agents debate, then a{" "}
-              <b>22-feature debate fingerprint</b> (dynamics + voting + semantic
-              audit) feeds a <b>LightGBM</b> meta-classifier.
-            </Bullet>
-            <Bullet>
-              Flips the vote only when safe — per-dataset threshold keeps{" "}
-              <b>≥95% of correct majorities</b> ("first, do no harm").
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
-          color={TEAL}
-        >
-          <div className="flex flex-col justify-center h-full gap-[1.6cqh]">
-            <div className="text-center">
-              <div
-                className="text-[6.6cqh] font-extrabold leading-none"
-                style={{ color: TEAL }}
-              >
-                +1.71%
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                Net Gain · CF 39 / WF 9 · Flip Precision 81.2%
-              </div>
-            </div>
-            <div
-              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
-              style={{ background: "#fef2f2" }}
-            >
-              <div
-                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
-                style={{ color: ROSE }}
-              >
-                LLM-as-Judge is harmful
-              </div>
-              <div
-                className="text-[2.1cqh] font-bold leading-snug"
-                style={{ color: DEEP_INK }}
-              >
-                GPT-4o ruling on logs: <b>NG −1.37%</b> (FP 42.7%) — judges
-                share the agents' blind spots.
-              </div>
-            </div>
-            <div
-              className="text-center text-[1.9cqh] font-semibold"
-              style={{ color: "#475569" }}
-            >
-              positive NG on all 6 datasets · all 20 seeds (+1.65%±0.19%)
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          Diagnosis–Cure Pipeline
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Round 0: independent answers",
-            "2 debate rounds + stance tracking",
-            "Detect 2:1 divergence (686 / 1,754)",
-            "Extract 22-feature fingerprint",
-            "LightGBM: flip or keep (per-dataset τ)",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
-                style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
-                }}
-              >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 11: Minority Sentinel — Relevance + Gap ───────────────── */
-function MinoritySlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#fef3c7", color: AMBER }}
-        >
-          Minority Sentinel · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          After the Debate Is Too Late — It Flips Votes, Not Trust
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>Closest on problem framing</b> — independently quantifies the
-              collapse we target (25.5% / 10.0pp margin).
-            </Bullet>
-            <Bullet>
-              Its <b>LLM-as-Judge failure (−1.37%)</b> is direct evidence for
-              our Challenge C: correlated errors can't be arbitrated by another
-              LLM.
-            </Bullet>
-            <Bullet>
-              Shows <b>behavioral signals</b> (how agents argued) do encode
-              consensus reliability — informative for our design.
-            </Bullet>
-            <Bullet>
-              Its <b>"do no harm" constraint</b> + per-dataset reporting are
-              precedents for our evaluation harness.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>Post-hoc only</b>: binary flip after the debate — the majority
-              pressure on the minority <b>already happened</b>.
-            </Bullet>
-            <Bullet>
-              <b>Self-referential signal</b> — fingerprint mined from the very
-              agents whose errors are correlated; no external evidence.
-            </Bullet>
-            <Bullet>
-              <b>Supervised</b>: needs labeled divergent samples + per-dataset
-              threshold tuning.
-            </Bullet>
-            <Bullet>
-              Semantic audit features depend on <b>GPT-4o calls</b> (cost +
-              residual LLM bias).
-            </Bullet>
-            <Bullet>
-              Fixed <b>3 agents / 2 rounds</b>; small sample (686 divergent)
-              risks threshold overfitting.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            We re-weight trust <i>during</i> the debate, grounded in external
-            retrieved evidence — so the minority's argument is never crushed.
-            Sentinel is complementary: a post-hoc safety valve on top of our
-            in-debate calibration.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 12: Estornell & Liu — Summary + Method + Results ─────── */
-function EstornellSlideOne() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2.2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#e0e7ff", color: ACCENT }}
-        >
-          Paper Review · Theoretical Foundation
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Multi-LLM Debate: Framework, Principals, and Interventions
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          <span>Andrew Estornell, Yang Liu · 2024</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: TEAL }} />
-            NeurIPS 2024 (Main)
-          </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            proceedings.neurips.cc · 32e07a11
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
-          color={ACCENT}
-        >
-          <ul>
-            <Bullet>
-              First <b>Bayesian theory of debate</b> — prior-round responses act
-              as in-context examples skewing each agent's posterior.
-            </Bullet>
-            <Bullet>
-              <b>Theorem 5.1:</b> identical models → static dynamics, debate
-              freezes on one concept.
-            </Bullet>
-            <Bullet>
-              <b>Theorem 5.2:</b> similar responses →{" "}
-              <b>tyranny of the majority</b>; shared misconceptions decay
-              accuracy (Thm 5.4).
-            </Bullet>
-            <Bullet>
-              Three fixes: <b>diversity pruning</b> + <b>quality pruning</b> +{" "}
-              <b>misconception refutation</b>.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
-          color={TEAL}
-        >
-          <div className="flex flex-col justify-center h-full gap-[2cqh]">
-            <div className="text-center">
-              <div
-                className="text-[7cqh] font-extrabold leading-none"
-                style={{ color: TEAL }}
-              >
-                .74 → .79
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                MMLU (6×GPT-3.5)
-              </div>
-            </div>
-            <div className="text-center">
-              <div
-                className="text-[7cqh] font-extrabold leading-none"
-                style={{ color: ACCENT }}
-              >
-                .88 → .93
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                Math (6×GPT-3.5)
-              </div>
-            </div>
-            <div
-              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
-              style={{ background: "#f1f5f9" }}
-            >
-              <div
-                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
-                style={{ color: "#475569" }}
-              >
-                across 4 benchmarks
-              </div>
-              <div
-                className="text-[2cqh] font-bold leading-snug"
-                style={{ color: DEEP_INK }}
-              >
-                BoolQ · MMLU · TruthfulQA · MathQ
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          Theory → Intervention Pipeline
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Latent-concept framework",
-            "Prove static dynamics (Thm 5.1)",
-            "Prove majority tyranny (Thm 5.2)",
-            "Prune + refute responses",
-            "Test on 4 benchmarks",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
-                style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
-                }}
-              >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 13: Estornell & Liu — Relevance + Gap ─────────────────── */
-function EstornellSlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#e0e7ff", color: ACCENT }}
-        >
-          Estornell &amp; Liu · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          The Theory Behind Our Problem — But No Evidence Fix
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>Formal proof</b> that debate converges to the majority — not an
-              accident, but expected.
-            </Bullet>
-            <Bullet>
-              <b>Shared-misconception decay</b> (Thm 5.4) motivates heterogeneous
-              agents + external retrieval.
-            </Bullet>
-            <Bullet>
-              Echo-rate plots are the precedent for our{" "}
-              <b>injection protocol</b>.
-            </Bullet>
-            <Bullet>
-              Pruning changes <b>what the next round reads</b> — we change{" "}
-              <b>whose evidence counts</b>.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              Concept distributions are <b>intractable</b> — proxied by ADA-2
-              embeddings, weak on arithmetic.
-            </Bullet>
-            <Bullet>
-              <b>No external verification</b> — rearranges peer text, never
-              checks claims against sources.
-            </Bullet>
-            <Bullet>
-              <b>No persistent trust</b> — pruning affects one round only, not
-              agent standing.
-            </Bullet>
-            <Bullet>
-              Refutation <b>re-prompts every debater</b> — costly, no citations
-              returned.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            We keep every response but re-weight who counts — a bounded trust
-            score from retrieved evidence, with citations in the final answer.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 14: MAST (Cemri et al.) — Summary + Method + Results ─── */
-function MastSlideOne() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2.2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#fef3c7", color: AMBER }}
-        >
-          Paper Review · Failure Taxonomy
-        </div>
-        <h1
-          className="mt-[1.2cqh] text-[4.4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          Why Do Multi-Agent LLM Systems Fail?
-        </h1>
-        <div
-          className="mt-[0.8cqh] flex flex-wrap items-center gap-x-[2cqw] gap-y-[0.4cqh] text-[2.3cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          <span>Mert Cemri et al. (UC Berkeley) · 2025</span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span className="flex items-center gap-[0.5cqw]">
-            <BarChart3 size="2.3cqh" style={{ color: AMBER }} />
-            NeurIPS 2025 (Datasets &amp; Benchmarks)
-          </span>
-          <span style={{ color: "#94a3b8" }}>|</span>
-          <span
-            className="flex items-center gap-[0.5cqw]"
-            style={{ color: ACCENT }}
-          >
-            <Link2 size="2.3cqh" />
-            arxiv.org/abs/2503.13657
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-[1.55fr_1fr] gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Brain size="2.4cqh" color="#fff" />}
-          title="What It Does"
-          color={ACCENT}
-        >
-          <ul>
-            <Bullet>
-              Builds <b>MAST-Data</b>: 1,642 annotated execution traces from{" "}
-              <b>7 popular multi-agent frameworks</b>.
-            </Bullet>
-            <Bullet>
-              Builds <b>MAST</b>: 14 failure modes in 3 categories — system
-              design, inter-agent misalignment, task verification.
-            </Bullet>
-            <Bullet>
-              Human annotators agree at <b>κ = 0.88</b>; an LLM-as-judge pipeline
-              reaches <b>κ = 0.77</b> and scales annotation.
-            </Bullet>
-            <Bullet>
-              Failures are <b>design-level</b> — they repeat across model
-              families and tasks.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Key Results"
-          color={TEAL}
-        >
-          <div className="flex flex-col justify-center h-full gap-[1.8cqh]">
-            <div className="text-center">
-              <div
-                className="text-[6cqh] font-extrabold leading-none"
-                style={{ color: AMBER }}
-              >
-                41–86.7%
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                failure rate across 7 SOTA open-source MAS
-              </div>
-            </div>
-            <div className="text-center">
-              <div
-                className="text-[4.8cqh] font-extrabold leading-none"
-                style={{ color: ACCENT }}
-              >
-                14 modes · 3 categories
-              </div>
-              <div
-                className="text-[2.3cqh] font-semibold"
-                style={{ color: NEAR_BLACK }}
-              >
-                first grounded taxonomy of MAS failures
-              </div>
-            </div>
-            <div
-              className="text-center rounded-lg py-[0.9cqh] px-[1cqw]"
-              style={{ background: "#f1f5f9" }}
-            >
-              <div
-                className="text-[1.7cqh] font-bold uppercase tracking-wide mb-[0.5cqh]"
-                style={{ color: "#475569" }}
-              >
-                MAST-guided fix
-              </div>
-              <div
-                className="text-[2cqh] font-bold leading-snug"
-                style={{ color: DEEP_INK }}
-              >
-                ChatDev task success <b>+9.4%</b> after a workflow change
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div className="mt-[2cqh]">
-        <div
-          className="text-[2.1cqh] font-extrabold uppercase tracking-wide mb-[1cqh]"
-          style={{ color: AMBER }}
-        >
-          From Traces to Taxonomy
-        </div>
-        <div className="flex items-stretch gap-[0.6cqw]">
-          {[
-            "Run 7 popular MAS",
-            "Collect 1,642 traces",
-            "Annotate with MAST (κ=0.88)",
-            "Scale with LLM judge (κ=0.77)",
-            "Diagnose + targeted fixes",
-          ].map((step, i, arr) => (
-            <div key={step} className="flex items-center flex-1">
-              <div
-                className="flex-1 rounded-lg px-[1.2cqw] py-[1.2cqh] text-[2cqh] font-bold text-center h-full flex items-center justify-center border-2"
-                style={{
-                  borderColor: AMBER,
-                  background: "#fffbeb",
-                  color: NEAR_BLACK,
-                }}
-              >
-                {step}
-              </div>
-              {i < arr.length - 1 && (
-                <ArrowRight
-                  size="2.6cqh"
-                  style={{ color: AMBER }}
-                  className="mx-[0.3cqw] flex-shrink-0"
-                />
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 15: MAST — Relevance + Gap ────────────────────────────── */
-function MastSlideTwo() {
-  return (
-    <div className="w-full h-full flex flex-col px-[5cqw] py-[3.5cqh]">
-      <div className="mb-[2cqh]">
-        <div
-          className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-          style={{ background: "#fef3c7", color: AMBER }}
-        >
-          MAST · Relevance &amp; Gap
-        </div>
-        <h1
-          className="mt-[1cqh] text-[4.2cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
-        >
-          The Failure Map Behind Our Problem — Diagnostic, Not Corrective
-        </h1>
-      </div>
-
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Target size="2.4cqh" color="#fff" />}
-          title="Relevant to Our Idea"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              Strongest evidence that MAS fail in{" "}
-              <b>recurring, classifiable ways</b> — 41–86.7% of runs.
-            </Bullet>
-            <Bullet>
-              Two categories map to our target:{" "}
-              <b>inter-agent misalignment</b> (correct information not used) and{" "}
-              <b>task verification</b> (premature consensus, unverified claims).
-            </Bullet>
-            <Bullet>
-              Its <b>κ-validated LLM-judge pipeline</b> is a precedent for our
-              evaluation and human study.
-            </Bullet>
-            <Bullet>
-              Gives our motivation and failure analysis an{" "}
-              <b>independently validated vocabulary</b>.
-            </Bullet>
-          </ul>
-        </Card>
-
-        <Card
-          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
-          title="Gap / Limitations"
-          color={ROSE}
-        >
-          <ul className="flex flex-col justify-between h-full">
-            <Bullet>
-              <b>Diagnostic only</b> — it classifies and measures failures but
-              proposes no mechanism to fix them.
-            </Bullet>
-            <Bullet>
-              Says robust reliability needs{" "}
-              <b>more than isolated fixes</b> — correction is left to future
-              work.
-            </Bullet>
-            <Bullet>
-              Does not isolate <b>sycophancy as a trust-signal problem</b>;
-              misalignment is one broad category among many.
-            </Bullet>
-            <Bullet>
-              <b>No external evidence and no in-debate trust</b> — nothing ties
-              agent influence to verified claims.
-            </Bullet>
-          </ul>
-        </Card>
-      </div>
-
-      <div
-        className="mt-[2cqh] rounded-xl px-[2.6cqw] py-[2cqh] flex items-center gap-[1.6cqw]"
-        style={{ background: TEAL }}
-      >
-        <Layers size="4.4cqh" color="#ffffff" className="flex-shrink-0" />
-        <div>
-          <div
-            className="text-[2.1cqh] font-bold uppercase tracking-wide"
-            style={{ color: "#d1fae5" }}
-          >
-            Our Contribution Fills This Gap
-          </div>
-          <div
-            className="text-[2.7cqh] font-extrabold leading-snug"
-            style={{ color: "#ffffff" }}
-          >
-            MAST shows where multi-agent systems break. We supply the missing
-            corrective mechanism — evidence-grounded trust weighting that keeps a
-            correct minority alive during the debate.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Slide 16: Thank you ─────────────────────────────────────────── */
+/* ── Slide 15: Thank you ─────────────────────────────────────────── */
 function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
@@ -2070,18 +1830,17 @@ const SLIDES = [
   GroupSlide,
   ImadSlideOne,
   ImadSlideTwo,
-  ConsensSlideOne,
-  ConsensSlideTwo,
-  DebUncSlideOne,
-  DebUncSlideTwo,
-  MoaSlideOne,
-  MoaSlideTwo,
-  MinoritySlideOne,
-  MinoritySlideTwo,
-  EstornellSlideOne,
-  EstornellSlideTwo,
-  MastSlideOne,
-  MastSlideTwo,
+  CeOverviewSlide,
+  CeScoreboardSlide,
+  CeProblemOneSlide,
+  CeProblemTwoSlide,
+  CeKnowledgeOneSlide,
+  CeKnowledgeTwoSlide,
+  CeActivityOneSlide,
+  CeActivityTwoSlide,
+  CeOutcomesOneSlide,
+  CeOutcomesTwoSlide,
+  CeMatrixSlide,
   ThankYouSlide,
 ];
 
