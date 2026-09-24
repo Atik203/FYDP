@@ -2,10 +2,10 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const PROVIDERS = [
-  { name: "Vast.ai (spot)", devRate: 0.25, finalRate: 0.68 },
-  { name: "Vast.ai (on-demand)", devRate: 0.45, finalRate: 1.20 },
-  { name: "RunPod", devRate: 0.53, finalRate: 1.49 },
-  { name: "JarvisLabs", devRate: 0.55, finalRate: 1.49 },
+  { name: "Vast.ai (spot)", devRate: 0.40, finalRate: 1.13 },
+  { name: "Vast.ai (on-demand)", devRate: 0.60, finalRate: 1.60 },
+  { name: "RunPod", devRate: 0.53, finalRate: 1.79 },
+  { name: "JarvisLabs", devRate: 0.55, finalRate: 1.89 },
 ] as const;
 
 export function CostTable() {
@@ -65,7 +65,7 @@ export function CostTable() {
       <div>
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-semibold text-[#1e2d3d] dark:text-[#e2e8f0]">
-            Final GPU hours <span className="font-normal text-[#64748b]">(A100 @ ${p.finalRate.toFixed(2)}/hr)</span>
+            Final GPU hours <span className="font-normal text-[#64748b]">(RTX PRO 6000 @ ${p.finalRate.toFixed(2)}/hr)</span>
           </span>
           <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded text-[#0ca678] bg-[rgba(12,166,120,0.12)]">
             {finalHours}h
@@ -109,7 +109,7 @@ export function CostTable() {
             </tr>
             <tr className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
               <td className="p-2.5 font-medium">Final (Ph 3–5)</td>
-              <td className="p-2.5">A100 80GB</td>
+              <td className="p-2.5">RTX PRO 6000 96GB</td>
               <td className="p-2.5 font-mono">${p.finalRate.toFixed(2)}/hr</td>
               <td className="p-2.5 font-mono">{finalHours}</td>
               <td className="p-2.5 font-mono font-bold text-[#0ca678]">${finalCost.toFixed(0)}</td>
@@ -129,7 +129,7 @@ export function CostTable() {
         <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> on an RTX A6000 48GB. The Final phase uses{" "}
         <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a> /{" "}
         <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a> /{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> on an A100 80GB. Pipeline code is identical between phases — only the model config changes.
+        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> on an RTX PRO 6000 Blackwell 96GB. Pipeline code is identical between phases — only the model config changes.
       </p>
     </div>
   );

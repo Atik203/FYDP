@@ -30,14 +30,6 @@ Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
   language models?
 \newblock In {\em Advances in Neural Information Processing Systems}, 2025.
 
-\bibitem{pitre-etal-2025-consensagent}
-Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
-\newblock {CONSENSAGENT}: Towards efficient and effective consensus in
-  multi-agent {LLM} interactions through sycophancy mitigation.
-\newblock In {\em Findings of the Association for Computational Linguistics:
-  ACL 2025}, pages 22112--22133, Vienna, Austria, July 2025. Association for
-  Computational Linguistics.
-
 \bibitem{ibrahim2026training}
 L.~Ibrahim, F.~S. Hafner, and L.~Rocher.
 \newblock Training language models to be warm can reduce accuracy and increase
@@ -74,6 +66,14 @@ Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong
 \newblock In {\em Proceedings of the AgentSearch Workshop at SIGIR 2026},
   Melbourne, Australia, 2026.
 \newblock arXiv:2606.29270.
+
+\bibitem{pitre-etal-2025-consensagent}
+Priya Pitre, Naren Ramakrishnan, and Xuan Wang.
+\newblock {CONSENSAGENT}: Towards efficient and effective consensus in
+  multi-agent {LLM} interactions through sycophancy mitigation.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2025}, pages 22112--22133, Vienna, Austria, July 2025. Association for
+  Computational Linguistics.
 
 \bibitem{karpukhin2020dense}
 Vladimir Karpukhin, Barlas Oguz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey
@@ -300,5 +300,35 @@ Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K\'{a}ri R\"{o}gnvaldsson,
 \newblock Beyond benchmarks: {MathArena} as an evaluation platform for
   mathematics with {LLM}s.
 \newblock {\em arXiv preprint arXiv:2605.00674}, 2026.
+
+\bibitem{subramaniam2025multiagent}
+Vighnesh Subramaniam, Yilun Du, Joshua~B. Tenenbaum, Antonio Torralba, Shuang
+  Li, and Igor Mordatch.
+\newblock Multiagent finetuning: Self improvement with diverse reasoning
+  chains.
+\newblock In {\em The Thirteenth International Conference on Learning
+  Representations}, 2025.
+
+\bibitem{guo2017calibration}
+Chuan Guo, Geoff Pleiss, Yu~Sun, and Kilian~Q. Weinberger.
+\newblock On calibration of modern neural networks.
+\newblock In {\em Proceedings of the 34th International Conference on Machine
+  Learning}, volume~70 of {\em Proceedings of Machine Learning Research}, pages
+  1321--1330, 2017.
+
+\bibitem{koehn2004statistical}
+Philipp Koehn.
+\newblock Statistical significance tests for machine translation evaluation.
+\newblock In {\em Proceedings of the 2004 Conference on Empirical Methods in
+  Natural Language Processing}, pages 388--395, Barcelona, Spain, July 2004.
+  Association for Computational Linguistics.
+
+\bibitem{wang2023selfconsistency}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc~V. Le, Ed~H. Chi, Sharan Narang,
+  Aakanksha Chowdhery, and Denny Zhou.
+\newblock Self-consistency improves chain of thought reasoning in language
+  models.
+\newblock In {\em The Eleventh International Conference on Learning
+  Representations}, 2023.
 
 \end{thebibliography}

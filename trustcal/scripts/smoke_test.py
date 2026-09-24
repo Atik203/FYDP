@@ -1,4 +1,4 @@
-"""Model-swap smoke test — §13 step 11. Cheap insurance before the A100 matrix."""
+"""Model-swap smoke test — §13 step 11. Cheap insurance before the Final matrix."""
 
 from __future__ import annotations
 
