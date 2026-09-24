@@ -270,20 +270,10 @@ A debated question uses about ten model calls. The gate uses one call, the initi
 
 \section{Experiment}\label{sec4}
 
-This section defines the datasets, the baselines, the metrics, the injection protocol, the serving setup, and the statistical tests that make up the evaluation.
+This section defines the datasets, the baselines, the metrics, the injection protocol, the serving setup, and the statistical tests that make up the evaluation. Table~\ref{tbl:datasets} lists the question sets, and Table~\ref{tbl:baselines} lists the baseline conditions.
 
-\subsection{Datasets}
-
-The evaluation uses five public scientific question sets. The sets fall into three roles. Two adversarial sets create a false majority on purpose, one set holds expert-level questions that act as a difficulty ceiling, and two sets measure accuracy without adversarial pressure. Table~\ref{tbl:datasets} lists the role, the source, the license, and the official size of each set.
-
-The adversarial pair is BrokenMath~\cite{petrov2025brokenmath} and BrokenArXiv~\cite{dekoninck2026matharena}. BrokenMath is built from 2025 competition problems that a language model perturbs into false statements, and human experts then review the perturbed versions. The release contains 451 benchmark problems written as proof tasks. BrokenArXiv turns false statements from recent arXiv papers into problems and publishes new snapshots each month, and the 2026 release used here contains 87 problems. Both sets place an agent in front of a wrong premise that reads as plausible, which is the condition that drives sycophantic agreement in a debate.
-
-Humanity's Last Exam~\cite{phan2026hle} sets the ceiling. The set contains 2{,}500 expert-written questions across dozens of subject areas, and the release is gated behind a free click-through agreement with a no-redistribution rule. GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} give the stable comparison. GPQA contains 448 graduate-level multiple-choice questions in biology, physics, and chemistry, and this study uses the 198-question Diamond subset. MMLU-Pro raises the number of answer options from four to ten and adds reasoning-focused items, and its release holds over 12{,}000 questions across 14 domains. The two stable sets answer a different question than the adversarial pair. They check that the mechanism keeps baseline accuracy, while BrokenMath and BrokenArXiv check the behavior under pressure.
-
-Two filters run before a question enters the pool. The divergent filter keeps only questions where the three agents give at least two different answers in round one, which removes items that the agents already agree on. Retention on the adversarial sets is about 60 to 70 percent. The answer-type filter keeps only questions with a checkable answer, such as a multiple-choice option or a number, because the injected consensus and the collapse score both need a discrete answer. The main matrix draws 1{,}000 questions per dataset and the pilot draws 50, and the sample caps are recorded in the project configuration.
-
-\begin{table}
-\caption{Datasets used in the evaluation. BrokenMath and BrokenArXiv create a false majority, HLE sets the difficulty ceiling, and GPQA and MMLU-Pro measure accuracy under stable conditions.}\label{tbl:datasets}
+\begin{center}
+\captionof{table}{Datasets used in the evaluation. BrokenMath and BrokenArXiv create a false majority, HLE sets the difficulty ceiling, and GPQA and MMLU-Pro measure accuracy under stable conditions.}\label{tbl:datasets}
 \renewcommand{\arraystretch}{1.2}
 \begin{tabularx}{\textwidth}{|p{2.1cm}|p{2.4cm}|X|p{2.2cm}|p{2.3cm}|}
 \hline
@@ -300,7 +290,17 @@ GPQA Diamond & Stable baseline & Idavidrein, Hugging Face~\cite{rein2024gpqa} & 
 MMLU-Pro & Stable baseline & TIGER-Lab, Hugging Face~\cite{wang2024mmlupro} & MIT & Over 12{,}000 questions \\
 \hline
 \end{tabularx}
-\end{table}
+\end{center}
+
+\subsection{Datasets}
+
+The evaluation uses five public scientific question sets. The sets fall into three roles. Two adversarial sets create a false majority on purpose, one set holds expert-level questions that act as a difficulty ceiling, and two sets measure accuracy without adversarial pressure. Table~\ref{tbl:datasets} lists the role, the source, the license, and the official size of each set.
+
+The adversarial pair is BrokenMath~\cite{petrov2025brokenmath} and BrokenArXiv~\cite{dekoninck2026matharena}. BrokenMath is built from 2025 competition problems that a language model perturbs into false statements, and human experts then review the perturbed versions. The release contains 451 benchmark problems written as proof tasks. BrokenArXiv turns false statements from recent arXiv papers into problems and publishes new snapshots each month, and the 2026 release used here contains 87 problems. Both sets place an agent in front of a wrong premise that reads as plausible, which is the condition that drives sycophantic agreement in a debate.
+
+Humanity's Last Exam~\cite{phan2026hle} sets the ceiling. The set contains 2{,}500 expert-written questions across dozens of subject areas, and the release is gated behind a free click-through agreement with a no-redistribution rule. GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} give the stable comparison. GPQA contains 448 graduate-level multiple-choice questions in biology, physics, and chemistry, and this study uses the 198-question Diamond subset. MMLU-Pro raises the number of answer options from four to ten and adds reasoning-focused items, and its release holds over 12{,}000 questions across 14 domains. The two stable sets answer a different question than the adversarial pair. They check that the mechanism keeps baseline accuracy, while BrokenMath and BrokenArXiv check the behavior under pressure.
+
+Two filters run before a question enters the pool. The divergent filter keeps only questions where the three agents give at least two different answers in round one, which removes items that the agents already agree on. Retention on the adversarial sets is about 60 to 70 percent. The answer-type filter keeps only questions with a checkable answer, such as a multiple-choice option or a number, because the injected consensus and the collapse score both need a discrete answer. The main matrix draws 1{,}000 questions per dataset and the pilot draws 50, and the sample caps are recorded in the project configuration.
 
 \subsection{Baselines}
 
