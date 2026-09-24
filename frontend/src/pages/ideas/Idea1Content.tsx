@@ -829,8 +829,8 @@ export function Idea1Content() {
 
         <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
-          Two-phase strategy: develop on RTX A6000 48GB ($0.40–0.46/hr on
-          Vast.ai) with smaller models, then run final experiments on A100 80GB ($0.68–1.50/hr) with
+          Two-phase strategy: develop on RTX A6000 48GB ($0.40-0.60/hr on
+          Vast.ai) with smaller models, then run final experiments on RTX PRO 6000 Blackwell 96GB ($1.10-2.70/hr) with
           the full-scale stack. Use the sliders below to estimate your budget.
         </p>
         <CostTable />
@@ -1284,7 +1284,7 @@ export function Idea1Content() {
             {
               step: 11,
               title: "Model-swap smoke test (two-phase gate)",
-              desc: "~$3, 2-hour A100 rental. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. Fix any model-specific issues before full matrix.",
+              desc: "~$3, 2-hour RTX PRO 6000 rental. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. Fix any model-specific issues before full matrix.",
             },
             {
               step: 12,
