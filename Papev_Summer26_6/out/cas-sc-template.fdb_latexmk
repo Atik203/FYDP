@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex out/cas-sc-template"] 1789503118.01238 "out/cas-sc-template.aux" "out/cas-sc-template.bbl" "out/cas-sc-template" 1789503122.35852 0
-  "./cas-refs.bib" 1789503095 19730 154e60edf1c79ddc5e6a86179ffbd47c ""
+["bibtex out/cas-sc-template"] 1790363613.67335 "out/cas-sc-template.aux" "out/cas-sc-template.bbl" "out/cas-sc-template" 1790363619.11048 0
+  "./cas-refs.bib" 1790270956 21209 11a2ad948b7ae83d1e1114e9b4018ac9 ""
   "c:/texlive/2025/texmf-dist/bibtex/bst/elsarticle/elsarticle-num.bst" 1761153866 29462 3b2a1af2ce1e224a3b46ee048ffd4b98 ""
-  "out/cas-sc-template.aux" 1789503120 11215 89a4342e90861ccf051fa1117a88f058 "pdflatex"
+  "out/cas-sc-template.aux" 1790363617 12431 63ae667e60dfc8a6e4fd342be563a168 "pdflatex"
   (generated)
   "out/cas-sc-template.bbl"
   "out/cas-sc-template.blg"
   (rewritten before read)
-["pdflatex"] 1789503118.56768 "cas-sc-template.tex" "out/cas-sc-template.pdf" "cas-sc-template" 1789503122.35962 0
+["pdflatex"] 1790363614.3096 "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" "out/cas-sc-template.pdf" "cas-sc-template" 1790363619.11143 0
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1761152797 2971 def0b6c1f0b107b3b936def894055589 ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/stix/stix-t1.enc" 1761161519 7013 c55cc8669071ac14036c4a0c96c16202 ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/stix/stix-ts1.enc" 1761161519 2836 154e6b0061f9b8cb549144b55b268339 ""
@@ -38,6 +38,7 @@
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/stix-mathsfit.tfm" 1761161519 2560 304766c612fce5d4ce94849df0676616 ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/stix-mathtt.tfm" 1761161519 1396 56f228418b8da227ec737e2e8eb165ee ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/t1-stixgeneral-bold.tfm" 1761161519 11012 fe8465b2dc4812fb0ce069fcb0fe6af8 ""
+  "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/t1-stixgeneral-bolditalic.tfm" 1761161519 11132 876cc1f68923277b90e950337bde364f ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/t1-stixgeneral-italic.tfm" 1761161519 11156 e8d76832153748248385d623691129d7 ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/t1-stixgeneral.tfm" 1761161519 11184 42ce9dfc058df87da7094b2e2fab1260 ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/public/stix/ts1-stixgeneral.tfm" 1761161519 1420 a3fb73e1fffd188e53dd5a0b1edb271e ""
@@ -47,6 +48,7 @@
   "c:/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sftt0800.pfb" 1761152797 175641 e37e2df5b70b76a1b78bfb3b804197c7 ""
   "c:/texlive/2025/texmf-dist/fonts/type1/public/cm-super/sftt1000.pfb" 1761152797 169201 651a6333c3213b38091f54d2ab2d2cd6 ""
   "c:/texlive/2025/texmf-dist/fonts/type1/public/stix/STIXGeneral-Bold.pfb" 1761161519 250376 bf3a400e1273354c5c26332493ec1650 ""
+  "c:/texlive/2025/texmf-dist/fonts/type1/public/stix/STIXGeneral-BoldItalic.pfb" 1761161519 216153 2b0506dffa76b1f1641e55650131767e ""
   "c:/texlive/2025/texmf-dist/fonts/type1/public/stix/STIXGeneral-Italic.pfb" 1761161519 221139 9f909fb310c9861a9dcd561488bde33b ""
   "c:/texlive/2025/texmf-dist/fonts/type1/public/stix/STIXGeneral-Regular.pfb" 1761161519 547522 236ff2bb503aa0bb9279bcfcb1c68020 ""
   "c:/texlive/2025/texmf-dist/fonts/type1/public/stix/stix-mathex.pfb" 1761161519 26156 d6751631159a7cd0a5d264b2d10a82fe ""
@@ -236,18 +238,19 @@
   "c:/texlive/2025/texmf-var/web2c/pdftex/pdflatex.fmt" 1761163389 3629008 a48baa9d78f9198f4318d3cc7e36e9fa ""
   "c:/texlive/2025/texmf.cnf" 1761163137 713 e69b156964470283e0530f5060668171 ""
   "cas-common.sty" 1789463446 76661 edd5b8a98de28a359bf90630ef49c969 ""
-  "cas-sc-template.tex" 1789498870 28127 fd633ddd2f6903b2860f166cc4bd7de2 ""
+  "cas-sc-template.tex" 1790363580 45705 33135ae522b8a92660909dfd50d5fa2a ""
   "cas-sc.cls" 1789463446 4409 f271eb20a758fc9ea5551304eb312def ""
+  "e:/FYDP/Papev_Summer26_6/cas-sc-template.tex" 1790363580 45705 33135ae522b8a92660909dfd50d5fa2a ""
   "fig-claim-example.png" 1789489763 1728135 d21cb78625b94e4066e861c4804b711f ""
   "fig-context.png" 1789489213 1959442 55c5a666377fb58f0f786224fb9bb037 ""
   "fig-dataflow.png" 1789495305 193405 2874c28d112e23bd22bf96bfd9170f1c ""
   "fig-pipeline.png" 1789495306 261347 30ea284d878347ca117797ed35348417 ""
   "fig-round-loop.png" 1789493035 2025956 2e0906fc7c6f1b3d411ca033782d8a61 ""
   "fig-trust-detail.png" 1789492089 1882159 935fdfbddaf76b9ed4d062c5b3c8506c ""
-  "out/cas-sc-template.abs" 1789503120 1886 ed2b09db654f00fcb279273a752cae1f "pdflatex"
-  "out/cas-sc-template.aux" 1789503120 11215 89a4342e90861ccf051fa1117a88f058 "pdflatex"
-  "out/cas-sc-template.bbl" 1789503118 18960 d1b3cf2f78fd523c6e093078fe39b833 "bibtex out/cas-sc-template"
-  "out/cas-sc-template.out" 1789503120 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "out/cas-sc-template.abs" 1790363616 1886 ed2b09db654f00fcb279273a752cae1f "pdflatex"
+  "out/cas-sc-template.aux" 1790363617 12431 63ae667e60dfc8a6e4fd342be563a168 "pdflatex"
+  "out/cas-sc-template.bbl" 1790363614 19762 ed8031bfe1f5396975ea577ef651cdd2 "bibtex out/cas-sc-template"
+  "out/cas-sc-template.out" 1790363616 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   (generated)
   "out/cas-sc-template.abs"
   "out/cas-sc-template.aux"
