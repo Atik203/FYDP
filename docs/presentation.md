@@ -1,17 +1,24 @@
 # Complex Engineering Slides — Presentation Script
 
-> Deck: `/slide` route. These 12 slides are deck slides 4–15, after the title slide and the two iMAD reference slides.
-> Six presenters, two slides each, about 1.5–2 minutes per person.
-> Speak slowly, about 120 words per minute. Short sentences. One idea per sentence.
-> When you say a code like "P1" or "PO10", point at it on the screen.
+> Deck: `/slide`. Numbers here match the team list: **1 = title slide**, **2 = deck slide 4** (first Complex Engineering slide), **3 = deck slide 5**, and so on — **13 = deck slide 15** (matrix). Deck slides 2–3 (iMAD reference slides) are not part of this script.
+>
+> Speaking order: Rakibul → Yousuf → Atik → Pratay → Limu → Salman. Two slides each, about 1.5–2 minutes per person.
+>
+> Speak slowly, about 120 words per minute. Short sentences. One idea per sentence. Point at codes like "P1" or "PO10" when you say them.
 
 ---
 
-## Presenter 1 — Md. Atikur Rahaman · Slides 4–5
+## Opening — Slide 1 (Title)
 
-### Slide 4 — Why FYDP I Is a Complex Engineering Problem
+*(Rakibul reads this before Slide 2.)*
 
-Good morning everyone. My name is Md. Atikur Rahaman. I will start the Complex Engineering part of our presentation.
+Good morning everyone. We are Group 6, Team Phantom Devs. Our project is "Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning". Our supervisor is Dr. Mohammad Nurul Huda. Today we will present our Complex Engineering check for FYDP I.
+
+---
+
+## 1. Rakibul Hasan · Slides 2–3
+
+### Slide 2 — Why FYDP I Is a Complex Engineering Problem
 
 Our project asks one question: can we stop a confident wrong majority from pushing a correct minority agent to give up its answer? This is a hard problem. So we checked it against the Washington Accord.
 
@@ -19,21 +26,21 @@ The Accord uses four lenses. They are problem solving, knowledge, activities, an
 
 Our project qualifies for three reasons. First, it is multi-disciplinary. Second, it has conflicting requirements. Third, there is no textbook solution, and the parts depend on each other. For example, one retrieval error can change the final answer.
 
-### Slide 5 — Washington Accord Attributes
+### Slide 3 — Washington Accord Attributes
 
 This slide shows the official attributes inside each lens. These names are our checklist for the rest of this section.
 
 P1 to P7 are the problem attributes. K1 to K8 are the knowledge areas. A1 to A5 are the engineering activities. PO1 to PO12 are the program outcomes.
 
-We will now go through them one by one. Rakibul will show our scoreboard first.
+We will now go through them one by one. Yousuf will show our scoreboard first.
 
 ---
 
-## Presenter 2 — Rakibul Hasan · Slides 6–7
+## 2. Yousuf Kamal Himel · Slides 4–5
 
-### Slide 6 — FYDP I at a Glance
+### Slide 4 — FYDP I at a Glance
 
-Thank you, Atikur. This is our scoreboard for FYDP I. It has four numbers.
+Thank you, Rakibul. This is our scoreboard for FYDP I. It has four numbers.
 
 For problem solving, we cover six of seven attributes. Only P6 is not covered, because we have no external stakeholders.
 
@@ -41,7 +48,7 @@ For knowledge, we cover all eight areas. For activities, we cover three of five.
 
 These marks are only for FYDP I, because it is the only completed phase.
 
-### Slide 7 — Complex Problem Solving, Part 1
+### Slide 5 — Complex Problem Solving, Part 1
 
 Now I will explain P1 to P4.
 
@@ -53,13 +60,15 @@ P3 is depth of analysis. There is no textbook solution. So we compare our system
 
 P4 is familiarity of issues. This field is new. The closest work is from 2024 to 2026. We did a full literature review before any design work.
 
+Atik will now complete the P attributes.
+
 ---
 
-## Presenter 3 — Md. Salman Rohoman Nayeem · Slides 8–9
+## 3. Md. Atikur Rahaman · Slides 6–7
 
-### Slide 8 — Codes, Inter-dependence, and the P6 Gap
+### Slide 6 — Codes, Inter-dependence, and the P6 Gap
 
-Thank you, Rakibul. This slide completes the problem attributes.
+Thank you, Yousuf. This slide completes the problem attributes.
 
 P5 is applicable codes. We follow JSON, HTTP over TLS, and the OpenAI-compatible API. No standard covers evidence-based trust. So we define our own rules for the trust score and the four verdicts.
 
@@ -67,7 +76,7 @@ P7 is inter-dependence. The gate, orchestrator, claim decomposer, retrieval, tru
 
 P6 is not covered. We have no industry partner or community group. Engagement stays inside the university. So we cover six of seven P attributes, and P6 is the expected gap for FYDP I.
 
-### Slide 9 — Knowledge Profile, Part 1
+### Slide 7 — Knowledge Profile, Part 1
 
 Now the knowledge areas, K1 to K4.
 
@@ -79,13 +88,15 @@ K3 is engineering fundamentals. The system uses state machines, standard design 
 
 K4 is specialist knowledge. Our areas are LLMs, multi-agent debate, RAG, and sycophancy. Three different model families keep the debate heterogeneous.
 
+Pratay will continue with K5 to K8.
+
 ---
 
-## Presenter 4 — Pratay Paul · Slides 10–11
+## 4. Pratay Paul · Slides 8–9
 
-### Slide 10 — Knowledge Profile, Part 2
+### Slide 8 — Knowledge Profile, Part 2
 
-Thank you, Salman. This slide finishes the knowledge profile, K5 to K8.
+Thank you, Atik. This slide finishes the knowledge profile, K5 to K8.
 
 K5 is engineering methods. We use controlled experiments, confidence intervals, baseline comparison, and injection studies. All studies share one setup, so the results stay comparable.
 
@@ -97,7 +108,7 @@ K8 is research and context. We follow ethical bounds for AI in scientific questi
 
 All eight knowledge areas are covered.
 
-### Slide 11 — Engineering Activities: Resources and Interaction
+### Slide 9 — Engineering Activities: Resources and Interaction
 
 Now the first two activities.
 
@@ -105,13 +116,13 @@ A1 is the range of resources. We use three model families, four literature APIs,
 
 A2 is the level of interaction. Each debate round calls three model endpoints and three literature endpoints. We also communicate with the cloud GPU. The team works through a shared repository and weekly meetings. Closed APIs and local models share one OpenAI-compatible interface.
 
-Three of five activities are covered. Yousuf will now present A5 and the two gaps.
+Three of five activities are covered. Limu will now present A5 and the two gaps.
 
 ---
 
-## Presenter 5 — Yousuf Kamal Himel · Slides 12–13
+## 5. Mst. Farjana Akter Limu · Slides 10–11
 
-### Slide 12 — Familiarity, Innovation and Consequences
+### Slide 10 — Familiarity, Innovation and Consequences
 
 Thank you, Pratay. This slide covers A5, A3, and A4.
 
@@ -123,7 +134,7 @@ A4 is consequences, and it is also not covered. This is a lab prototype, not a d
 
 We mark A3 and A4 as not covered on purpose. We do not want to overclaim.
 
-### Slide 13 — Program Outcomes Coverage
+### Slide 11 — Program Outcomes Coverage
 
 Now the program outcomes. FYDP I covers six of twelve.
 
@@ -131,15 +142,15 @@ The covered outcomes are PO1, PO2, PO4, PO10, PO11, and PO12. You can see them i
 
 The other six outcomes are deferred: PO3, and PO5 to PO9. They will be addressed in FYDP II and FYDP III. Together, these six outcomes show that FYDP I already produces real results.
 
-Farjana will now show what covers each outcome.
+Salman will now show what covers each outcome.
 
 ---
 
-## Presenter 6 — Mst. Farjana Akter Limu · Slides 14–15
+## 6. Md. Salman Rohoman Nayeem · Slides 12–13
 
-### Slide 14 — What Covers Each FYDP I Outcome
+### Slide 12 — What Covers Each FYDP I Outcome
 
-Thank you, Yousuf. This slide connects each outcome to a real deliverable.
+Thank you, Limu. This slide connects each outcome to a real deliverable.
 
 PO1 comes from the real-life problem in Chapter 1. PO2 comes from the requirements in Chapter 3. PO4 comes from the literature review and gap analysis in Chapter 2.
 
@@ -147,7 +158,7 @@ PO10 comes from the interim report and this oral presentation. PO11 comes from t
 
 PO3 and PO5 to PO9 are scheduled for FYDP II and FYDP III. Each covered outcome maps to one concrete FYDP I deliverable.
 
-### Slide 15 — Overall Mapping Matrix
+### Slide 13 — Overall Mapping Matrix
 
 Finally, this is our full mapping matrix. Every column is one attribute. There are twelve program outcomes, eight knowledge areas, seven problem attributes, and five activities.
 
