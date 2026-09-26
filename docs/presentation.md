@@ -1,93 +1,156 @@
-# Presentation Script — Estornell & Liu Slides 12 & 13 (~1.5–2 min)
+# Complex Engineering Slides — Presentation Script
 
-> Written for non-native speakers: short sentences, one idea per sentence, ~120 words per minute.
-
----
-
-## Slide 12 — Multi-LLM Debate: Summary + Method + Results
-
-**Opening:**
-
-I am presenting **Multi-LLM Debate: Framework, Principals, and Interventions**. The authors are Andrew Estornell and Yang Liu. It comes from **NeurIPS 2024**, the Main Conference Track. This is our **theoretical foundation** paper.
-
-**The main idea:**
-
-This is the first paper that gives a **formal theory of debate**. It treats last-round responses as examples. Each agent updates its beliefs the way models learn from examples. This is Lemma 4.2 in the paper.
-
-Then it proves three principles. **Theorem 5.1**: identical models produce **static debate**. The discussion freezes on one idea. **Theorem 5.2**: similar responses cause the **tyranny of the majority**. Repeated answers drown out the rest. **Theorem 5.4**: when many agents share the **same misconception**, accuracy falls as more agents share it. Adding more models does not help.
-
-**How it works:**
-
-They design **three interventions**. First, **diversity pruning**. Keep the responses that are most different from each other. Second, **quality pruning**. Keep the responses closest to the question. Third, **misconception refutation**. An LLM lists the errors in a response, refutes them, and rewrites a corrected version.
-
-**Key results:**
-
-Tested on **four benchmarks**: BoolQ, MMLU, TruthfulQA, and MathQ. With GPT, Llama, and Mistral models. Six agents, ten rounds. MMLU accuracy rose from **0.74 to 0.79**. Math rose from **0.88 to 0.93**. TruthfulQA rose from **0.63 to 0.69**. The gain is largest exactly where responses are **most similar**. That confirms the theory.
+> Deck: `/slide` route. These 12 slides are deck slides 4–15, after the title slide and the two iMAD reference slides.
+> Six presenters, two slides each, about 1.5–2 minutes per person.
+> Speak slowly, about 120 words per minute. Short sentences. One idea per sentence.
+> When you say a code like "P1" or "PO10", point at it on the screen.
 
 ---
 
-## Slide 13 — Estornell & Liu: Relevance & Gap
+## Presenter 1 — Md. Atikur Rahaman · Slides 4–5
 
-**Why it matters to us:**
+### Slide 4 — Why FYDP I Is a Complex Engineering Problem
 
-This paper **proves our problem is real**. Debate converges to the majority. Not by accident, but by theory. That is our starting point.
+Good morning everyone. My name is Md. Atikur Rahaman. I will start the Complex Engineering part of our presentation.
 
-Their finding on **shared misconceptions** motivates our design. Models trained on similar data share the same blind spots. So we need **heterogeneous agents** plus outside evidence.
+Our project asks one question: can we stop a confident wrong majority from pushing a correct minority agent to give up its answer? This is a hard problem. So we checked it against the Washington Accord.
 
-Their echo-rate plots are the precedent for our **injection protocol**. We measure the same collapse, but under controlled pressure.
+The Accord uses four lenses. They are problem solving, knowledge, activities, and program outcomes. You can see them at the bottom of the slide.
 
-**The gap:**
+Our project qualifies for three reasons. First, it is multi-disciplinary. Second, it has conflicting requirements. Third, there is no textbook solution, and the parts depend on each other. For example, one retrieval error can change the final answer.
 
-First, the theory needs **concept distributions** that cannot be computed. They use sentence embeddings as a proxy. This proxy **fails on arithmetic**. Embeddings cannot tell two calculations apart.
+### Slide 5 — Washington Accord Attributes
 
-Second, there is **no external verification**. The method rearranges peer text. It never checks a claim against a real source.
+This slide shows the official attributes inside each lens. These names are our checklist for the rest of this section.
 
-Third, there is **no persistent trust**. Pruning affects only the next round. No agent carries a standing across rounds.
+P1 to P7 are the problem attributes. K1 to K8 are the knowledge areas. A1 to A5 are the engineering activities. PO1 to PO12 are the program outcomes.
 
-Fourth, refutation **re-prompts every debater**. That is costly. And it returns no citations.
-
-**Our contribution:**
-
-We keep every response. But we re-weight **who counts**. A bounded trust score comes from **retrieved evidence**. With citations in the final answer. Pruning changes what the next round reads. We change whose evidence-backed position decides.
+We will now go through them one by one. Rakibul will show our scoreboard first.
 
 ---
 
-# Presentation Script — MAST (Paper #9) Slides 1 & 2 (~1.5–2 min)
+## Presenter 2 — Rakibul Hasan · Slides 6–7
 
-> Separate talk. The Estornell & Liu script above is a different presentation and stays unchanged.
+### Slide 6 — FYDP I at a Glance
+
+Thank you, Atikur. This is our scoreboard for FYDP I. It has four numbers.
+
+For problem solving, we cover six of seven attributes. Only P6 is not covered, because we have no external stakeholders.
+
+For knowledge, we cover all eight areas. For activities, we cover three of five. A3 and A4 are beyond prototype scope. For program outcomes, we cover six of twelve. The other six come in FYDP II and FYDP III.
+
+These marks are only for FYDP I, because it is the only completed phase.
+
+### Slide 7 — Complex Problem Solving, Part 1
+
+Now I will explain P1 to P4.
+
+P1 is depth of knowledge. The work needs machine learning, NLP, retrieval, and model serving. The trust update runs through the serving layer.
+
+P2 is conflicting requirements. Accuracy fights latency and cost. More debate rounds raise the GPU bill. We used round limits and clamp bounds to balance them.
+
+P3 is depth of analysis. There is no textbook solution. So we compare our system against majority voting, MoA, iMAD, and DebUnc. We also run a fake-consensus stress test.
+
+P4 is familiarity of issues. This field is new. The closest work is from 2024 to 2026. We did a full literature review before any design work.
 
 ---
 
-## Slide 1 — Why Do Multi-Agent LLM Systems Fail?
+## Presenter 3 — Md. Salman Rohoman Nayeem · Slides 8–9
 
-**Opening:**
+### Slide 8 — Codes, Inter-dependence, and the P6 Gap
 
-This presentation covers our failure-taxonomy paper, **Why Do Multi-Agent LLM Systems Fail?** The authors are Mert Cemri and co-authors from UC Berkeley. It comes from **NeurIPS 2025**, the Datasets and Benchmarks Track. This is the paper that maps how multi-agent systems break.
+Thank you, Rakibul. This slide completes the problem attributes.
 
-**The main idea:**
+P5 is applicable codes. We follow JSON, HTTP over TLS, and the OpenAI-compatible API. No standard covers evidence-based trust. So we define our own rules for the trust score and the four verdicts.
 
-Multi-agent systems are popular, but their gains over a single agent are often small. This paper asks a direct question: why do they fail? The team collects **1,642 execution traces** from **seven popular multi-agent frameworks**. Then they annotate the traces and build **MAST**, the first taxonomy of multi-agent failures. MAST has **14 failure modes** in **three categories**: system design issues, inter-agent misalignment, and task verification.
+P7 is inter-dependence. The gate, orchestrator, claim decomposer, retrieval, trust updater, and aggregator form one chain. A retrieval error reaches the final answer through the trust score. Our failure-isolation rule keeps a fault inside one component.
 
-**How it works:**
+P6 is not covered. We have no industry partner or community group. Engagement stays inside the university. So we cover six of seven P attributes, and P6 is the expected gap for FYDP I.
 
-Human experts label the traces and agree at **κ = 0.88**. To scale the work, the team builds an **LLM-as-a-judge pipeline**. It agrees with the human labels at **κ = 0.77**. On unseen frameworks and benchmarks it still holds at **κ = 0.79**.
+### Slide 9 — Knowledge Profile, Part 1
 
-**Key results:**
+Now the knowledge areas, K1 to K4.
 
-Across the seven systems, the failure rate is **41 to 86.7 percent**. The failures repeat across model families and tasks. So they come from system design, not just from the model. In one case study, a MAST-guided workflow fix raised ChatDev task success by **9.4 percent**.
+K1 is natural sciences. Our answers are checked against PubMed, arXiv, Semantic Scholar, and OpenAlex.
+
+K2 is mathematics. The trust update uses softmax, clamping, and renormalization. Our results use a paired bootstrap and effect sizes.
+
+K3 is engineering fundamentals. The system uses state machines, standard design practice for the confidence gate, and failure handling in each component.
+
+K4 is specialist knowledge. Our areas are LLMs, multi-agent debate, RAG, and sycophancy. Three different model families keep the debate heterogeneous.
 
 ---
 
-## Slide 2 — MAST: Relevance & Gap
+## Presenter 4 — Pratay Paul · Slides 10–11
 
-**Why it matters to us:**
+### Slide 10 — Knowledge Profile, Part 2
 
-This is our strongest evidence that multi-agent systems fail in **recurring, classifiable ways**. Two MAST categories match our problem. **Inter-agent misalignment** covers agents that do not use correct information. **Task verification** covers premature consensus and unverified claims. Its **κ-validated judge pipeline** is also a template for our evaluation and our human study. MAST gives our motivation and failure analysis an independently validated vocabulary.
+Thank you, Salman. This slide finishes the knowledge profile, K5 to K8.
 
-**The gap:**
+K5 is engineering methods. We use controlled experiments, confidence intervals, baseline comparison, and injection studies. All studies share one setup, so the results stay comparable.
 
-First, MAST is **diagnostic only**. It measures failures but proposes no mechanism to prevent them. Second, the authors say robust reliability needs **more than isolated fixes**. Third, it never isolates **sycophancy as a trust-signal problem**. Fourth, there is **no external evidence and no in-debate trust**, so no agent's influence is tied to verified claims.
+K6 is computational methods. Our tools are Python, PyTorch, vLLM, FastAPI, sentence-transformers, and Git. We only run inference, so there is no fine-tuning.
 
-**Our contribution:**
+K7 is codes and practices. We use JSON, HTTP over TLS, and the OpenAI-compatible API. Every result package is checked against a JSON schema. Git tracks every change.
 
-MAST shows where multi-agent systems break. We add the missing corrective part: an **evidence-grounded trust score** that keeps a correct minority alive during the debate itself.
+K8 is research and context. We follow ethical bounds for AI in scientific question answering. The journal and the independent learning record document the research context.
+
+All eight knowledge areas are covered.
+
+### Slide 11 — Engineering Activities: Resources and Interaction
+
+Now the first two activities.
+
+A1 is the range of resources. We use three model families, four literature APIs, six team members, and a rented Blackwell GPU. Chapter 3 assigns every task to a member, with weeks and deliverables.
+
+A2 is the level of interaction. Each debate round calls three model endpoints and three literature endpoints. We also communicate with the cloud GPU. The team works through a shared repository and weekly meetings. Closed APIs and local models share one OpenAI-compatible interface.
+
+Three of five activities are covered. Yousuf will now present A5 and the two gaps.
+
+---
+
+## Presenter 5 — Yousuf Kamal Himel · Slides 12–13
+
+### Slide 12 — Familiarity, Innovation and Consequences
+
+Thank you, Pratay. This slide covers A5, A3, and A4.
+
+A5 is familiarity, and it is covered. Multi-agent debate and evidence verification were new for our team. We started with a structured literature review and a baseline study.
+
+A3 is innovation, and it is not covered. We combine existing ideas: debate, retrieval, and trust weighting. So the step is incremental and not patentable.
+
+A4 is consequences, and it is also not covered. This is a lab prototype, not a deployed product. We use about 300 GPU-hours and no fine-tuning, so the social and environmental impact stays small.
+
+We mark A3 and A4 as not covered on purpose. We do not want to overclaim.
+
+### Slide 13 — Program Outcomes Coverage
+
+Now the program outcomes. FYDP I covers six of twelve.
+
+The covered outcomes are PO1, PO2, PO4, PO10, PO11, and PO12. You can see them in the green bar.
+
+The other six outcomes are deferred: PO3, and PO5 to PO9. They will be addressed in FYDP II and FYDP III. Together, these six outcomes show that FYDP I already produces real results.
+
+Farjana will now show what covers each outcome.
+
+---
+
+## Presenter 6 — Mst. Farjana Akter Limu · Slides 14–15
+
+### Slide 14 — What Covers Each FYDP I Outcome
+
+Thank you, Yousuf. This slide connects each outcome to a real deliverable.
+
+PO1 comes from the real-life problem in Chapter 1. PO2 comes from the requirements in Chapter 3. PO4 comes from the literature review and gap analysis in Chapter 2.
+
+PO10 comes from the interim report and this oral presentation. PO11 comes from the timeline and the budget in Chapter 5. PO12 comes from the journal and the independent learning record.
+
+PO3 and PO5 to PO9 are scheduled for FYDP II and FYDP III. Each covered outcome maps to one concrete FYDP I deliverable.
+
+### Slide 15 — Overall Mapping Matrix
+
+Finally, this is our full mapping matrix. Every column is one attribute. There are twelve program outcomes, eight knowledge areas, seven problem attributes, and five activities.
+
+The FYDP I row shows a check or a cross for each attribute. The bottom row summarizes the result: program outcomes 6 of 12, knowledge 8 of 8, problem attributes 6 of 7, and activities 3 of 5.
+
+This is our complex engineering check. The project meets the criteria for FYDP I, and the remaining gaps are planned for later phases. Thank you.
