@@ -215,17 +215,12 @@ function FinalObjectiveSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Design a bounded trust update that re-weights agents from
-              retrieved evidence.
+              Design a bounded trust update from retrieved evidence.
             </Bullet>
             <Bullet>
-              Raw score rises with supported claims (αV) and falls with
-              contradicted ones (βH).
+              Raw score rises with support, falls with contradiction.
             </Bullet>
-            <Bullet>
-              Bounded by design (no agent silenced or dominant); no
-              fine-tuning.
-            </Bullet>
+            <Bullet>Bounded by design; no fine-tuning.</Bullet>
           </ul>
         </Card>
         <Card
@@ -236,14 +231,13 @@ function FinalObjectiveSlide() {
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
               Build a reproducible protocol that measures collapse under
-              controlled pressure.
+              pressure.
             </Bullet>
             <Bullet>
-              Fabricate a wrong expert consensus between round 1 and round 2.
+              Fabricate a wrong expert consensus between rounds 1 and 2.
             </Bullet>
             <Bullet>
-              Keep divergent, checkable questions; validate annotations
-              (κ ≥ 0.75) and count CCR/MPR.
+              Keep divergent, checkable questions; validate κ ≥ 0.75.
             </Bullet>
           </ul>
         </Card>
@@ -254,13 +248,14 @@ function FinalObjectiveSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Ten baselines (B1–B10), including majority vote, MoA, iMAD and
-              ConsensAgent.
+              Ten baselines (B1–B10), including MoA, iMAD and ConsensAgent.
             </Bullet>
-            <Bullet>Four metrics: accuracy, CCR, MPR and ECR.</Bullet>
             <Bullet>
-              Three seeds, 95% confidence intervals, paired bootstrap and
-              Cohen's d.
+              Metrics: accuracy, collapse (CCR), minority survival (MPR),
+              calibration (ECR).
+            </Bullet>
+            <Bullet>
+              Three seeds, 95% confidence intervals and Cohen's d.
             </Bullet>
           </ul>
         </Card>
@@ -635,16 +630,14 @@ function FinalSetupSlide() {
   const debate = [
     "K = 3 rounds",
     "Temperature 0.7",
-    "1,024 output tokens",
+    "1,024 output tokens · 4,096 context",
     "Three seeds",
-    "Context window 4,096 tokens",
     "Retry cap 3 per agent",
   ];
   const stress = [
     "Injection between rounds 1 and 2",
     "Annotation κ ≥ 0.75",
-    "Paired bootstrap 95% CI",
-    "10,000 bootstrap resamples",
+    "Paired bootstrap, 10,000 resamples",
     "Injection off in B1–B4",
     "Cohen's d for effect size",
   ];
@@ -664,8 +657,10 @@ function FinalSetupSlide() {
           color={ACCENT}
         >
           <ul className="flex flex-col justify-center h-full">
-            <Bullet>Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B, 4-bit.</Bullet>
-            <Bullet>One RTX A6000 48 GB.</Bullet>
+            <Bullet>
+              Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B, 4-bit, on one RTX
+              A6000 48 GB.
+            </Bullet>
           </ul>
         </Card>
         <Card
@@ -675,9 +670,9 @@ function FinalSetupSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B, FP8.
+              Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B, FP8, on
+              one RTX PRO 6000 96 GB.
             </Bullet>
-            <Bullet>One RTX PRO 6000 Blackwell 96 GB.</Bullet>
           </ul>
         </Card>
         <Card
@@ -686,8 +681,7 @@ function FinalSetupSlide() {
           color={AMBER}
         >
           <ul className="flex flex-col justify-center h-full">
-            <Bullet>vLLM behind an OpenAI-compatible API.</Bullet>
-            <Bullet>One server per agent; no model is fine-tuned.</Bullet>
+            <Bullet>vLLM, OpenAI-compatible; one server per agent.</Bullet>
           </ul>
         </Card>
       </div>
@@ -762,13 +756,8 @@ function FinalResultsSlide() {
             <Bullet>A correct minority survives more often (MPR up).</Bullet>
             <Bullet>Evidence calibration above 0.80 on the expert set.</Bullet>
             <Bullet>No accuracy regression on the stable sets.</Bullet>
-            <Bullet>
-              Largest gains expected on the adversarial sets, where collapse
-              is highest.
-            </Bullet>
-            <Bullet>
-              A reusable CCR/MPR/ECR harness ships with the mechanism.
-            </Bullet>
+            <Bullet>Largest gains expected on the adversarial sets.</Bullet>
+            <Bullet>A reusable CCR/MPR/ECR harness ships with the mechanism.</Bullet>
           </ul>
         </Card>
         <Card
@@ -779,15 +768,11 @@ function FinalResultsSlide() {
           <ul className="flex flex-col justify-center h-full">
             <Bullet>10 GPQA questions, three rounds each.</Bullet>
             <Bullet>10/10 debates completed · 90/90 non-empty positions.</Bullet>
-            <Bullet>Mean 370.8 seconds per debate on the dev trio.</Bullet>
-            <Bullet>Claim tags parsed on every generation (fallback included).</Bullet>
             <Bullet>
-              Total runtime 3,708 seconds; variation only 21.5 seconds across
-              debates.
+              Mean 370.8 s per debate (3,708 s total); 21.5 s variation.
             </Bullet>
-            <Bullet>
-              Fallback claim extraction used in 5 of 30 Ministral generations.
-            </Bullet>
+            <Bullet>Claim tags parsed on every generation.</Bullet>
+            <Bullet>Fallback extraction used in 5 of 30 Ministral generations.</Bullet>
           </ul>
         </Card>
       </div>
@@ -870,16 +855,12 @@ function FinalConclusionSlide() {
               sycophantic consensus.
             </Bullet>
             <Bullet>
-              A bounded trust score from retrieved evidence re-weights each
-              agent during the debate.
+              A bounded trust score from retrieved evidence re-weights agents,
+              and CCR/MPR/ECR measures the effect against the baselines.
             </Bullet>
             <Bullet>
-              An injection protocol with CCR, MPR and ECR measures the effect
-              against majority vote, MoA, iMAD and ConsensAgent.
-            </Bullet>
-            <Bullet>
-              Every result package returns the answer, its citations and the
-              trust trajectory.
+              Every result package returns the answer, citations and trust
+              trajectory.
             </Bullet>
           </ul>
         </Card>
@@ -890,20 +871,19 @@ function FinalConclusionSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Expected: fewer collapses, a preserved correct minority, and
-              calibrated trust.
+              Expected: fewer collapses, a preserved minority, calibrated
+              trust.
             </Bullet>
             <Bullet>
-              Completed runs already show the pipeline works end to end on
-              three heterogeneous models.
+              Completed runs show the pipeline works end to end on three
+              models.
             </Bullet>
             <Bullet>
-              Remaining work: full experiment matrix, ablations, human study
-              and an open-source release.
+              Remaining: full matrix, ablations, human study, open-source
+              release.
             </Bullet>
             <Bullet>
-              The design extends to any domain with an evidence corpus, such
-              as law or medicine.
+              The design extends to law, medicine, or any evidence corpus.
             </Bullet>
           </ul>
         </Card>
