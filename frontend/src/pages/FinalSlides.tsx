@@ -18,21 +18,54 @@ import {
   GroupSlide,
   ThankYouSlide,
 } from "@/pages/SlidePage";
+import type { ReactNode } from "react";
 import {
+  AlertTriangle,
   BarChart3,
   BookOpen,
-  Calendar,
+  Boxes,
   ClipboardCheck,
+  Code,
   FlaskConical,
+  Globe,
   Layers,
+  Network,
+  Scale,
+  Search,
   Target,
   TrendingUp,
 } from "lucide-react";
 
 /* ────────────────────────────────────────────────────────────────
-   Final FYDP I defence deck — route /slide/final
+   Final defence deck — route /slide/final
    Follows Final_Slide_Guideline.md. No group names anywhere.
    ──────────────────────────────────────────────────────────────── */
+
+/* Accent note strip — shared footer band for final slides. */
+function NoteStrip({
+  children,
+  color = ACCENT,
+}: {
+  children: ReactNode;
+  color?: string;
+}) {
+  return (
+    <div
+      className="relative mt-[1.6cqh] rounded-xl overflow-hidden px-[2.6cqw] py-[1.3cqh] text-[2.05cqh] font-bold"
+      style={{
+        background: `linear-gradient(90deg, ${color}14, #f8fafc 65%)`,
+        color: DEEP_INK,
+        border: `1.5px solid ${color}33`,
+      }}
+    >
+      <div
+        className="absolute left-0 top-0 bottom-0 w-[0.5cqw]"
+        style={{ background: `linear-gradient(180deg, ${color}, ${color}66)` }}
+      />
+      {children}
+    </div>
+  );
+}
 
 /* ── Slide 1: Title (same as /slide; group number hidden) ───────── */
 function FinalTitleSlide() {
@@ -50,29 +83,36 @@ function FinalIntroSlide() {
         title="Debate Helps, but the Final Vote Is Weak"
         subtitle="Multi-agent debate improves reasoning. Majority voting is where the failure enters."
       />
-      <div className="flex gap-[2.4cqw] flex-1 min-h-0">
-        <ul className="flex-1 flex flex-col justify-center">
-          <Bullet>
-            Large language models answer hard science questions, but they can be
-            confidently wrong.
-          </Bullet>
-          <Bullet>
-            In multi-agent debate, three models solve the same question and
-            compare their reasoning over rounds.
-          </Bullet>
-          <Bullet>
-            Most systems then decide by majority vote, where every agent counts
-            the same.
-          </Bullet>
-          <Bullet>
-            A confident wrong majority can talk a correct minority out of its
-            answer. This is sycophantic consensus.
-          </Bullet>
-          <Bullet>
-            No current debate system checks claims against outside evidence
-            while the debate runs.
-          </Bullet>
-        </ul>
+      <div className="flex gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<BookOpen size="2.4cqh" color="#fff" />}
+          title="Key Points"
+          color={ACCENT}
+          className="w-[40%] flex-shrink-0"
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Large language models answer hard science questions, but they can
+              be confidently wrong.
+            </Bullet>
+            <Bullet>
+              In multi-agent debate, three models solve the same question and
+              compare their reasoning over rounds.
+            </Bullet>
+            <Bullet>
+              Most systems then decide by majority vote, where every agent
+              counts the same.
+            </Bullet>
+            <Bullet>
+              A confident wrong majority can talk a correct minority out of its
+              answer. This is sycophantic consensus.
+            </Bullet>
+            <Bullet>
+              No current debate system checks claims against outside evidence
+              while the debate runs.
+            </Bullet>
+          </ul>
+        </Card>
         <Figure
           src="/figures/fig-claim-example.png"
           alt="A single claim checked against a retrieved passage"
@@ -101,20 +141,57 @@ function FinalMotivationSlide() {
         <Stat value="+10%" label="gain from a truth-aware oracle over proxy signals" color={TEAL} />
         <Stat value="≈1/4" label="of disagreements hide a correct minority" color={ACCENT} />
       </div>
-      <ul className="mt-[2.4cqh]">
-        <Bullet>
-          ConsensAgent (Findings of ACL 2025) found the correct answer present
-          but ignored in more than 20 percent of wrong-answer cases.
-        </Bullet>
-        <Bullet>
-          MAST (NeurIPS 2025) measured 41 to 86.7 percent failure across seven
-          multi-agent frameworks.
-        </Bullet>
-        <Bullet>
-          Estornell and Liu (NeurIPS 2024) prove that agents follow a wrong
-          majority when no outside correction enters the loop.
-        </Bullet>
-      </ul>
+      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[2cqh] flex-1 min-h-0">
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Ignored Evidence"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              ConsensAgent (ACL 2025): the correct answer was present but
+              ignored in over 20 percent of wrong-answer cases.
+            </Bullet>
+            <Bullet>
+              Agents copy and swap answers; the pressure is social, not
+              evidential.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<BarChart3 size="2.4cqh" color="#fff" />}
+          title="Recurring Failures"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              MAST (NeurIPS 2025): 41 to 86.7 percent failure across seven
+              multi-agent frameworks.
+            </Bullet>
+            <Bullet>
+              The failures repeat across models and tasks, so they come from
+              the design.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Weak Trust Signal"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              DebUnc (EMNLP 2025): a truth-aware oracle beats deployable
+              confidence metrics by up to +10 percent.
+            </Bullet>
+            <Bullet>Self-reported confidence cannot carry the decision.</Bullet>
+          </ul>
+        </Card>
+      </div>
+      <NoteStrip color={ACCENT}>
+        Theory agrees: without an outside correction, agents converge on the
+        wrong majority (Estornell and Liu, NeurIPS 2024).
+      </NoteStrip>
     </div>
   );
 }
@@ -127,7 +204,7 @@ function FinalObjectiveSlide() {
         badge="Objective"
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
-        title="What FYDP I Set Out to Build"
+        title="What the Project Sets Out to Build"
         subtitle="Four objectives guide the project."
       />
       <div className="grid grid-cols-2 grid-rows-2 gap-[1.8cqh_2cqw] flex-1 min-h-0">
@@ -213,16 +290,56 @@ function FinalDatasetSlide() {
           ["BrokenArXiv", "Adversarial, monthly", "new problem sets each month", "CC BY-SA 4.0"],
         ]}
       />
-      <ul className="mt-[2cqh]">
-        <Bullet>
-          Two pre-filters keep only divergent questions with checkable answers,
-          about 60 to 70 percent retention.
-        </Bullet>
-        <Bullet>
-          Main matrix draws 1,000 questions per dataset; the pilot draws 50.
-          Gold answers are used for scoring only.
-        </Bullet>
-      </ul>
+      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[2cqh] flex-1 min-h-0">
+        <Card
+          icon={<Search size="2.4cqh" color="#fff" />}
+          title="Divergent Filter"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Only questions where the three agents disagree survive the first
+              filter.
+            </Bullet>
+            <Bullet>About 60 to 70 percent of each original set passes.</Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
+          title="Answer-Type Filter"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Only multiple-choice and numeric answers stay; free text is
+              excluded.
+            </Bullet>
+            <Bullet>
+              Every surviving question can be checked against a gold answer.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="How They Are Used"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              The main matrix draws 1,000 questions per dataset; the pilot
+              draws 50.
+            </Bullet>
+            <Bullet>
+              Gold answers are used for selection and scoring only; agents
+              never see them.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+      <NoteStrip color={TEAL}>
+        GPQA and HLE need a click-through access agreement; BrokenArXiv rotates
+        monthly, so every result cites its snapshot.
+      </NoteStrip>
     </div>
   );
 }
@@ -298,13 +415,10 @@ function FinalConventionalSlide() {
           </div>
         </Card>
       </div>
-      <div
-        className="mt-[1.6cqh] rounded-xl px-[2.4cqw] py-[1.3cqh] text-[2.1cqh] font-bold"
-        style={{ background: "#f1f5f9", color: DEEP_INK }}
-      >
+      <NoteStrip color={ACCENT}>
         Gap: no existing method ties an agent's influence to external evidence
         while the debate runs.
-      </div>
+      </NoteStrip>
     </div>
   );
 }
@@ -320,35 +434,133 @@ function FinalMethodSlide() {
         title="Evidence-Grounded Trust, Updated In-Debate"
         subtitle="Claims are checked against retrieved literature each round, and the result sets each agent's influence."
       />
-      <div className="flex gap-[2.4cqw] flex-1 min-h-0">
-        <ul className="flex-1 flex flex-col justify-center">
-          <Bullet>
-            Confidence gate: easy questions are answered directly; hard ones
-            start a debate.
-          </Bullet>
-          <Bullet>
-            Three heterogeneous agents: Qwen, Gemma and Mistral. No fine-tuning.
-          </Bullet>
-          <Bullet>
-            Each answer is split into atomic claims, then checked per source:
-            PubMed, arXiv, Semantic Scholar (OpenAlex fallback).
-          </Bullet>
-          <Bullet>
-            Every claim gets one verdict: supported, contradicted, unverifiable
-            or contested.
-          </Bullet>
-          <Bullet>
-            Trust update each round: S(t+1) = S(t) + αV − βH, then softmax →
-            clamp [0.1, 0.9] → renormalize.
-          </Bullet>
-          <Bullet>
-            Final answer by trust-weighted aggregation, not a head count.
-          </Bullet>
-        </ul>
+      <div className="flex gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<FlaskConical size="2.4cqh" color="#fff" />}
+          title="Working Principles"
+          color={TEAL}
+          className="w-[40%] flex-shrink-0"
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Confidence gate: easy questions are answered directly; hard ones
+              start a debate.
+            </Bullet>
+            <Bullet>
+              Three heterogeneous agents: Qwen, Gemma and Mistral. No
+              fine-tuning.
+            </Bullet>
+            <Bullet>
+              Each answer is split into atomic claims, then checked per source:
+              PubMed, arXiv, Semantic Scholar (OpenAlex fallback).
+            </Bullet>
+            <Bullet>
+              Every claim gets one verdict: supported, contradicted,
+              unverifiable or contested.
+            </Bullet>
+            <Bullet>
+              Trust update each round: S(t+1) = S(t) + αV − βH, then softmax →
+              clamp [0.1, 0.9] → renormalize.
+            </Bullet>
+            <Bullet>
+              Final answer by trust-weighted aggregation, not a head count.
+            </Bullet>
+          </ul>
+        </Card>
         <Figure
           src="/figures/fig-pipeline.png"
           alt="End-to-end pipeline of the framework"
           caption="Gate → debate → claims → evidence → trust → aggregation."
+          className="flex-1 min-h-0"
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ── Debate Protocol ────────────────────────────────────────────── */
+function FinalProtocolSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Debate Protocol"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="One Round, Six Steps, One Injection Point"
+        subtitle="Each round follows the same order; only the stress test adds pressure."
+      />
+      <div className="flex gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Layers size="2.4cqh" color="#fff" />}
+          title="Round Order"
+          color={ACCENT}
+          className="w-[40%] flex-shrink-0"
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>Positions, then claim decomposition.</Bullet>
+            <Bullet>Source-partitioned retrieval, then claim verdicts.</Bullet>
+            <Bullet>Trust update, then revision from peers and own trust.</Bullet>
+            <Bullet>The loop runs three rounds at most.</Bullet>
+            <Bullet>
+              Injection sits between round 1 and round 2, and only in stress
+              tests.
+            </Bullet>
+            <Bullet>
+              A timeout makes one agent's round inconclusive; the debate
+              continues.
+            </Bullet>
+          </ul>
+        </Card>
+        <Figure
+          src="/figures/fig-round-loop.png"
+          alt="One debate round as a loop with the injection point"
+          caption="One debate round; the dashed box is the injection point used in stress tests."
+          className="flex-1 min-h-0"
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ── Trust Update in Detail ─────────────────────────────────────── */
+function FinalTrustSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Trust Update"
+        badgeBg="#ccfbf1"
+        badgeColor={TEAL}
+        title="From Verdicts to Bounded Weights"
+        subtitle="The evidence verdicts become each agent's influence in five steps."
+      />
+      <div className="flex gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Scale size="2.4cqh" color="#fff" />}
+          title="Trust Math"
+          color={TEAL}
+          className="w-[40%] flex-shrink-0"
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Supported claims raise the raw score (αV); contradicted claims
+              lower it (βH).
+            </Bullet>
+            <Bullet>
+              Softmax, then clamp to [0.1, 0.9], then renormalize — in that
+              order.
+            </Bullet>
+            <Bullet>No agent is ever silenced, and no agent can dominate.</Bullet>
+            <Bullet>The weights decide the final answer, not a head count.</Bullet>
+            <Bullet>
+              Evidence-calibration rate checks that the weights track
+              correctness.
+            </Bullet>
+          </ul>
+        </Card>
+        <Figure
+          src="/figures/fig-trust-detail.png"
+          alt="The five steps of the trust update"
+          caption="Verdict counts to bounded weights, step by step."
           className="flex-1 min-h-0"
         />
       </div>
@@ -379,6 +591,18 @@ function FinalDataFlowSlide() {
 
 /* ── Slide 9: Experimental Setup ────────────────────────────────── */
 function FinalSetupSlide() {
+  const debate = [
+    "K = 3 rounds",
+    "temperature 0.7",
+    "1,024 output tokens",
+    "three seeds",
+  ];
+  const stress = [
+    "injection between rounds 1 and 2",
+    "annotation κ ≥ 0.75",
+    "paired bootstrap 95% CI",
+    "Cohen's d",
+  ];
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
       <SlideHeader
@@ -386,41 +610,94 @@ function FinalSetupSlide() {
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
         title="How the Experiments Run"
-        subtitle="Two model stacks, one code path: the Dev to Final swap is a config change."
+        subtitle="Two model stacks, one code path: the swap is a config change."
       />
-      <SlideTable
-        head={["Setting", "Value"]}
-        colWidths={["27%", "73%"]}
-        accent={ACCENT}
-        rows={[
-          [
-            "Agent models — Dev",
-            "Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B (4-bit, one RTX A6000 48 GB)",
-          ],
-          [
-            "Agent models — Final",
-            "Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B (FP8, RTX PRO 6000 96 GB)",
-          ],
-          ["Serving", "vLLM behind an OpenAI-compatible interface, one server per agent"],
-          [
-            "Debate",
-            "K = 3 rounds · temperature 0.7 · 1,024 output tokens · three seeds",
-          ],
-          [
-            "Stress test",
-            "Fabricated expert consensus injected between round 1 and round 2",
-          ],
-          [
-            "Validation",
-            "annotation agreement κ ≥ 0.75 · paired bootstrap 95% CI · Cohen's d",
-          ],
-          ["Compute", "about 300 GPU-hours · budget USD 340–820"],
-        ]}
-      />
-      <div className="mt-[1.6cqh] text-[2cqh] font-semibold" style={{ color: DEEP_INK }}>
-        No model is fine-tuned, and evaluation sets keep only questions that
-        produce divergent initial answers.
+      <div className="grid grid-cols-3 gap-[1.8cqw]">
+        <Card
+          icon={<Boxes size="2.4cqh" color="#fff" />}
+          title="Dev Stack"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B, 4-bit.</Bullet>
+            <Bullet>One RTX A6000 48 GB.</Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Layers size="2.4cqh" color="#fff" />}
+          title="Final Stack"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B, FP8.
+            </Bullet>
+            <Bullet>One RTX PRO 6000 Blackwell 96 GB.</Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Network size="2.4cqh" color="#fff" />}
+          title="Serving"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>vLLM behind an OpenAI-compatible API.</Bullet>
+            <Bullet>One server per agent; no model is fine-tuned.</Bullet>
+          </ul>
+        </Card>
       </div>
+      <div className="grid grid-cols-2 gap-[1.8cqw] mt-[1.8cqh] flex-1 min-h-0">
+        <Card
+          icon={<Code size="2.4cqh" color="#fff" />}
+          title="Debate Configuration"
+          color={ACCENT}
+        >
+          <div className="h-full flex items-center">
+            <div className="grid grid-cols-2 w-full gap-[0.9cqh_0.8cqw]">
+              {debate.map((d) => (
+                <div
+                  key={d}
+                  className="rounded-xl border px-[0.9cqw] py-[1.2cqh] text-center text-[2.3cqh] font-bold"
+                  style={{
+                    borderColor: "#dbe3ee",
+                    background: "#f8fafc",
+                    color: DEEP_INK,
+                  }}
+                >
+                  {d}
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+        <Card
+          icon={<FlaskConical size="2.4cqh" color="#fff" />}
+          title="Stress Test & Validation"
+          color={AMBER}
+        >
+          <div className="h-full flex items-center">
+            <div className="grid grid-cols-2 w-full gap-[0.9cqh_0.8cqw]">
+              {stress.map((d) => (
+                <div
+                  key={d}
+                  className="rounded-xl border px-[0.9cqw] py-[1.2cqh] text-center text-[2.3cqh] font-bold"
+                  style={{
+                    borderColor: "#f3e2c4",
+                    background: "#fffdf7",
+                    color: DEEP_INK,
+                  }}
+                >
+                  {d}
+                </div>
+              ))}
+            </div>
+          </div>
+        </Card>
+      </div>
+      <NoteStrip color={ACCENT}>
+        Compute: about 300 GPU-hours · budget USD 340–820. Evaluation sets keep
+        only questions with divergent first answers.
+      </NoteStrip>
     </div>
   );
 }
@@ -433,13 +710,13 @@ function FinalResultsSlide() {
         badge="Results"
         badgeBg="#ccfbf1"
         badgeColor={TEAL}
-        title="Expected Results and Pilot Evidence"
-        subtitle="The full matrix runs in FYDP II. The pilot already validates the pipeline end to end."
+        title="Project Results"
+        subtitle="Expected outcomes and the results already measured."
       />
       <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
         <Card
           icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Expected · FYDP II"
+          title="Expected Results"
           color={ACCENT}
         >
           <ul className="flex flex-col justify-center h-full">
@@ -451,7 +728,7 @@ function FinalResultsSlide() {
         </Card>
         <Card
           icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
-          title="Pilot · Gate 0 (FYDP I)"
+          title="Completed Experiments"
           color={TEAL}
         >
           <ul className="flex flex-col justify-center h-full">
@@ -462,13 +739,10 @@ function FinalResultsSlide() {
           </ul>
         </Card>
       </div>
-      <div
-        className="mt-[1.6cqh] rounded-xl px-[2.4cqw] py-[1.3cqh] text-[2.1cqh] font-bold"
-        style={{ background: "#f1f5f9", color: DEEP_INK }}
-      >
+      <NoteStrip color={TEAL}>
         Metrics: answer accuracy · consensus-collapse rate · minority-preservation
         rate · evidence-calibration rate.
-      </div>
+      </NoteStrip>
     </div>
   );
 }
@@ -484,25 +758,32 @@ function FinalApplicationSlide() {
         title="Where This Helps"
         subtitle="Any setting that needs a trustworthy answer plus the evidence behind it."
       />
-      <div className="flex gap-[2.4cqw] flex-1 min-h-0">
-        <ul className="flex-1 flex flex-col justify-center">
-          <Bullet>
-            Scientific question answering with citations a reader can check.
-          </Bullet>
-          <Bullet>
-            Research assistants that link every answer to retrieved papers.
-          </Bullet>
-          <Bullet>
-            Education and decision support where errors are flagged, not
-            hidden.
-          </Bullet>
-          <Bullet>
-            A reusable evaluation harness for other research groups.
-          </Bullet>
-          <Bullet>
-            The same design extends to legal or medical evidence corpora.
-          </Bullet>
-        </ul>
+      <div className="flex gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Globe size="2.4cqh" color="#fff" />}
+          title="Where It Helps"
+          color={AMBER}
+          className="w-[40%] flex-shrink-0"
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Scientific question answering with citations a reader can check.
+            </Bullet>
+            <Bullet>
+              Research assistants that link every answer to retrieved papers.
+            </Bullet>
+            <Bullet>
+              Education and decision support where errors are flagged, not
+              hidden.
+            </Bullet>
+            <Bullet>
+              A reusable evaluation harness for other research groups.
+            </Bullet>
+            <Bullet>
+              The same design extends to legal or medical evidence corpora.
+            </Bullet>
+          </ul>
+        </Card>
         <Figure
           src="/figures/fig-context.png"
           alt="System boundary and external actors"
@@ -522,54 +803,54 @@ function FinalConclusionSlide() {
         badge="Conclusion"
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
-        title="What FYDP I Delivered"
-        subtitle="One phase done, with the expensive work planned on purpose for later phases."
+        title="The Project in One View"
+        subtitle="The problem, the mechanism, and what the evaluation shows."
       />
       <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
         <Card
-          icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
-          title="Delivered"
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="The Project"
           color={ACCENT}
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Full pipeline: gate, debate, claim decomposition, retrieval, trust
-              update, aggregation.
+              A confident wrong majority can push a correct minority into
+              sycophantic consensus.
             </Bullet>
             <Bullet>
-              Injection protocol and the CCR/MPR/ECR evaluation harness.
+              A bounded trust score from retrieved evidence re-weights each
+              agent during the debate.
             </Bullet>
             <Bullet>
-              Gate 0 passed: vanilla debate runs end to end on three
-              heterogeneous models.
+              An injection protocol with CCR, MPR and ECR measures the effect
+              against majority vote, MoA, iMAD and ConsensAgent.
             </Bullet>
           </ul>
         </Card>
         <Card
-          icon={<Calendar size="2.4cqh" color="#fff" />}
-          title="Next Steps"
-          color={AMBER}
+          icon={<TrendingUp size="2.4cqh" color="#fff" />}
+          title="Outcome and Next Steps"
+          color={TEAL}
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Phase 2: retrieval and trust runs, baselines B5, B6, B9 and B10.
+              Expected: fewer collapses, a preserved correct minority, and
+              calibrated trust.
             </Bullet>
             <Bullet>
-              Phase 3: main matrix, ablations and N-scaling across three seeds.
+              Completed runs already show the pipeline works end to end on
+              three heterogeneous models.
             </Bullet>
             <Bullet>
-              Limitation: no external stakeholders (P6) and incremental
-              innovation (A3) stay open.
+              Remaining work: full experiment matrix, ablations, human study
+              and an open-source release.
             </Bullet>
           </ul>
         </Card>
       </div>
-      <div
-        className="mt-[1.6cqh] rounded-xl px-[2.4cqw] py-[1.3cqh] text-[2.1cqh] font-bold"
-        style={{ background: "#f1f5f9", color: DEEP_INK }}
-      >
+      <NoteStrip color={ACCENT}>
         Evidence decides who wins the debate, not the number of voices.
-      </div>
+      </NoteStrip>
     </div>
   );
 }
@@ -589,6 +870,8 @@ export const FINAL_SLIDES = [
   FinalDatasetSlide,
   FinalConventionalSlide,
   FinalMethodSlide,
+  FinalProtocolSlide,
+  FinalTrustSlide,
   FinalDataFlowSlide,
   FinalSetupSlide,
   FinalResultsSlide,
