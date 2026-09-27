@@ -164,4 +164,23 @@ Finally, this is our full mapping matrix. Every column is one attribute. There a
 
 The FYDP I row shows a check or a cross for each attribute. The bottom row summarizes the result: program outcomes 6 of 12, knowledge 8 of 8, problem attributes 6 of 7, and activities 4 of 5.
 
+The table also shows what each attribute needs. PO1 and PO2 need K1 to K4. PO3 needs K5, PO4 needs K8, and PO5 needs K6. PO6 to PO8 need K7. P1 needs K3 to K6 and K8. The P attributes relate to PO1 to PO8, and the activities relate to PO10, communication.
+
 This is our complex engineering check. The project meets the criteria for FYDP I, and the remaining gaps are planned for later phases. Thank you.
+
+---
+
+## Faculty Q&A — quick answers
+
+Short answers for the questions that came up today. Any presenter can use these.
+
+- **For P1, which K areas are needed?** K3, K4, K5, K6, and K8. This is the exact Washington Accord wording for P1.
+- **Do P2 to P7 need a K area?** No. Only P1 has a defined K requirement. P2 to P7 are defined by their own criteria, like conflicting requirements or no obvious solution.
+- **Which POs do the P attributes relate to?** PO1 to PO8 — engineering knowledge, problem analysis, design, investigation, modern tool usage, the engineer and society, environment and sustainability, and ethics.
+- **For the A activities, which POs are needed?** PO10 — communication. The official PO10 wording is about communicating on complex engineering activities, for example through reports and presentations. PO9, PO11, and PO12 are also related.
+- **Which POs need K7?** PO6, PO7, and PO8 — the engineer and society, environment and sustainability, and ethics.
+- **Which K areas do PO1 and PO2 need?** K1 to K4.
+- **Why is P6 not covered?** We have no external stakeholders. Engagement stays inside the university in FYDP I.
+- **Why is A3 not covered?** We combine existing concepts, so the innovation is incremental and not patentable.
+- **Why is A4 covered?** We assessed the social and environmental consequences. The target harm is real, and the energy use stays low.
+- **Which K does our project not use?** None. All eight K areas are covered, so every needed K is available.
