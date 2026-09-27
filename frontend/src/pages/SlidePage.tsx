@@ -611,7 +611,7 @@ const A_MARKS: { code: string; name: string; ok: boolean }[] = [
   { code: "A1", name: "Range of resources", ok: true },
   { code: "A2", name: "Level of interaction", ok: true },
   { code: "A3", name: "Innovation", ok: false },
-  { code: "A4", name: "Consequences", ok: false },
+  { code: "A4", name: "Consequences", ok: true },
   { code: "A5", name: "Familiarity", ok: true },
 ];
 
@@ -924,11 +924,11 @@ function CeScoreboardSlide() {
     {
       code: "A",
       name: "Activities",
-      value: "3/5",
+      value: "4/5",
       color: AMBER,
       bg: "#fef3c7",
       items: A_MARKS,
-      note: "A3/A4 beyond prototype scope",
+      note: "A3 beyond prototype scope",
     },
     {
       code: "PO",
@@ -1473,7 +1473,7 @@ function CeActivityOneSlide() {
         className="mt-[1.6cqh] text-[1.9cqh] font-semibold"
         style={{ color: DEEP_INK }}
       >
-        3 of 5 A activities are covered — A5 follows, then the A3/A4 gaps.
+        4 of 5 A activities are covered — A5 and A4 follow, then the A3 gap.
       </div>
     </div>
   );
@@ -1488,7 +1488,7 @@ function CeActivityTwoSlide() {
         badgeBg="#fef3c7"
         badgeColor={AMBER}
         title="Familiarity, Innovation and Consequences"
-        subtitle="A5 is claimed; A3 and A4 are marked not covered, and this is deliberate."
+        subtitle="A5 and A4 are claimed; A3 is marked not covered, and this is deliberate."
       />
 
       <div className="grid grid-cols-3 gap-[1.8cqw] flex-1 min-h-0">
@@ -1532,19 +1532,21 @@ function CeActivityTwoSlide() {
         </Card>
         <Card
           icon={<Globe size="2.4cqh" color="#fff" />}
-          title="A4 · Consequences — Not Covered"
-          color={ROSE}
+          title="A4 · Consequences"
+          color={ACCENT}
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              A lab prototype, not a deployed product; no large user base.
+              The consequences at stake are real: unreliable AI answers in
+              scientific question answering.
             </Bullet>
             <Bullet>
-              About 300 GPU-hours, no fine-tuning, so social and environmental
-              impact stays minimal.
+              Environmental cost stays low: about 300 GPU-hours, standard
+              configurations, no fine-tuning.
             </Bullet>
             <Bullet>
-              No deployment means no broad societal consequences yet.
+              The prototype shows a pathway to safer AI-assisted research;
+              deployment stays future work.
             </Bullet>
           </ul>
         </Card>
@@ -1554,8 +1556,8 @@ function CeActivityTwoSlide() {
         className="mt-[1.8cqh] rounded-xl px-[2.4cqw] py-[1.4cqh] text-[2.1cqh] font-bold"
         style={{ background: "#f1f5f9", color: DEEP_INK }}
       >
-        A3 and A4 sit beyond FYDP I scope — the report marks them not covered
-        rather than overclaiming.
+        A3 sits beyond FYDP I scope — the report marks it not covered rather
+        than overclaiming.
       </div>
     </div>
   );
@@ -1917,7 +1919,7 @@ function CeMatrixSlide() {
         <div className="flex items-center gap-[1.6cqw] text-[2.4cqh] font-extrabold">
           <span style={{ color: TEAL }}>P 6/7</span>
           <span style={{ color: ROSE }}>K 8/8</span>
-          <span style={{ color: AMBER }}>A 3/5</span>
+          <span style={{ color: AMBER }}>A 4/5</span>
           <span style={{ color: ACCENT }}>PO 6/12</span>
         </div>
       </div>
