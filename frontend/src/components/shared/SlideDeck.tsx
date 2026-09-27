@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type ComponentType } from "re
    Shared projector-safe slide deck chrome.
    - 16:9 canvas, letterboxed on any screen
    - Keyboard-only navigation: ← → , PageUp/PageDown (clicker), Home/End
+   - Click the left/right third of the canvas (or swipe on touch) to navigate
    - Press F to toggle fullscreen
    ──────────────────────────────────────────────────────────────── */
 
@@ -12,12 +13,50 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
   const [index, setIndex] = useState(0);
   const [isFs, setIsFs] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const [flash, setFlash] = useState<"prev" | "next" | null>(null);
 
   const go = useCallback(
     (dir: number) => {
       setIndex((i) => Math.min(slides.length - 1, Math.max(0, i + dir)));
+      setFlash(dir < 0 ? "prev" : "next");
     },
     [slides.length],
+  );
+
+  useEffect(() => {
+    if (!flash) return;
+    const t = window.setTimeout(() => setFlash(null), 260);
+    return () => window.clearTimeout(t);
+  }, [flash]);
+
+  const onCanvasClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      if (x < rect.width / 3) go(-1);
+      else if (x > (rect.width * 2) / 3) go(1);
+    },
+    [go],
+  );
+
+  const onTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    const t = e.touches[0];
+    touchStartRef.current = { x: t.clientX, y: t.clientY };
+  }, []);
+
+  const onTouchEnd = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const start = touchStartRef.current;
+      touchStartRef.current = null;
+      if (!start) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - start.x;
+      const dy = t.clientY - start.y;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+      go(dx < 0 ? 1 : -1);
+    },
+    [go],
   );
 
   const toggleFullscreen = useCallback(() => {
@@ -83,6 +122,9 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
       {/* 16:9 slide canvas — fills height, letterboxes width */}
       <div
         className="relative shadow-2xl"
+        onClick={onCanvasClick}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
         style={{
           aspectRatio: "16 / 9",
           width: "min(100vw, calc(100vh * 16 / 9))",
@@ -131,6 +173,28 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
           <Slide />
         </div>
 
+        {/* Tap zones — left/right thirds click to navigate (mobile-friendly) */}
+        <div className="absolute inset-y-0 left-0 w-1/3 z-[3] cursor-pointer" aria-hidden="true">
+          <div
+            className="absolute inset-y-0 left-0 w-full transition-opacity duration-200"
+            style={{
+              opacity: flash === "prev" ? 1 : 0,
+              background:
+                "linear-gradient(90deg, rgba(30,64,175,0.16), transparent 85%)",
+            }}
+          />
+        </div>
+        <div className="absolute inset-y-0 right-0 w-1/3 z-[3] cursor-pointer" aria-hidden="true">
+          <div
+            className="absolute inset-y-0 right-0 w-full transition-opacity duration-200"
+            style={{
+              opacity: flash === "next" ? 1 : 0,
+              background:
+                "linear-gradient(270deg, rgba(15,118,110,0.16), transparent 85%)",
+            }}
+          />
+        </div>
+
         {/* Slide counter — inside the canvas, bottom-right */}
         <div
           className="absolute bottom-[1cqh] right-[1.4cqw] z-[2] text-[1.8cqh] font-extrabold tabular-nums select-none pointer-events-none"
@@ -154,8 +218,8 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
       )}
 
       {/* One-time hint (does not print/interfere) */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[110] text-[13px] font-medium text-white/50 select-none pointer-events-none">
-        ← → to navigate · F for fullscreen
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[110] text-[13px] font-medium text-white/50 select-none pointer-events-none text-center px-4">
+        Tap / click the sides · ← → · swipe · F for fullscreen
       </div>
     </div>
   );
