@@ -1,4 +1,16 @@
 import { SlideDeck } from "@/components/shared/SlideDeck";
+import {
+  ACCENT,
+  AMBER,
+  Bullet,
+  Card,
+  DEEP_INK,
+  Mark,
+  NEAR_BLACK,
+  ROSE,
+  SlideHeader,
+  TEAL,
+} from "@/components/shared/slideKit";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -42,13 +54,6 @@ import {
      the slide, not the browser window
    ──────────────────────────────────────────────────────────────── */
 
-const NEAR_BLACK = "#0a0a0a";
-const DEEP_INK = "#101828"; // secondary near-black for supporting text
-const ACCENT = "#1e40af"; // deep blue
-const TEAL = "#0f766e";
-const AMBER = "#b45309";
-const ROSE = "#b91c1c";
-
 const MEMBERS: { name: string; id: string; leader?: boolean }[] = [
   { name: "Md. Atikur Rahaman", id: "0112310298" },
   { name: "Rakibul Hasan", id: "0112310530" },
@@ -59,7 +64,11 @@ const MEMBERS: { name: string; id: string; leader?: boolean }[] = [
 ];
 
 /* ── Slide 1: Group info ─────────────────────────────────────────── */
-function GroupSlide() {
+export function GroupSlide({
+  showGroupNo = true,
+}: {
+  showGroupNo?: boolean;
+}) {
   return (
     <div className="w-full h-full flex flex-col justify-center px-[7cqw] py-[4cqh]">
       <div className="text-center mb-[2.6cqh]">
@@ -80,12 +89,14 @@ function GroupSlide() {
           className="mt-[1.4cqh] flex items-center justify-center gap-[2cqw] text-[2.7cqh] font-bold"
           style={{ color: DEEP_INK }}
         >
-          <span
-            className="rounded-lg px-[2cqw] py-[0.6cqh]"
-            style={{ background: "#e0e7ff", color: ACCENT }}
-          >
-            Group No. 6
-          </span>
+          {showGroupNo && (
+            <span
+              className="rounded-lg px-[2cqw] py-[0.6cqh]"
+              style={{ background: "#e0e7ff", color: ACCENT }}
+            >
+              Group No. 6
+            </span>
+          )}
           <span className="flex items-center gap-[0.8cqw]">
             <Users size="2.6cqh" style={{ color: ACCENT }} />
             Team&nbsp;<span style={{ color: ACCENT }}>Phantom Devs</span>
@@ -145,64 +156,6 @@ function GroupSlide() {
         ))}
       </div>
     </div>
-  );
-}
-
-/* ── Small reusable card for paper slides ────────────────────────── */
-function Card({
-  icon,
-  title,
-  color,
-  children,
-  className,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  color: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-xl border-2 px-[2.2cqw] py-[1.8cqh] flex flex-col",
-        className,
-      )}
-      style={{ borderColor: color, background: "#ffffff" }}
-    >
-      <div className="flex items-center gap-[1cqw] mb-[1.2cqh]">
-        <span
-          className="flex items-center justify-center rounded-lg flex-shrink-0"
-          style={{ width: "4cqh", height: "4cqh", background: color }}
-        >
-          {icon}
-        </span>
-        <span
-          className="text-[2.7cqh] font-extrabold uppercase tracking-wide"
-          style={{ color }}
-        >
-          {title}
-        </span>
-      </div>
-      <div className="flex-1">{children}</div>
-    </div>
-  );
-}
-
-function Bullet({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-start gap-[0.9cqw] mb-[0.7cqh] last:mb-0">
-      <span
-        className="rounded-full flex-shrink-0 mt-[1.1cqh]"
-        style={{ width: "1.1cqh", height: "1.1cqh", background: DEEP_INK }}
-      />
-      <span
-        className="text-[2.55cqh] font-medium leading-snug"
-        style={{ color: NEAR_BLACK }}
-      >
-        {children}
-      </span>
-    </li>
   );
 }
 
@@ -481,17 +434,6 @@ function ImadSlideTwo() {
 }
 
 /* ── Complex Engineering helpers ─────────────────────────────────── */
-function Mark({ ok, size = "2.4cqh" }: { ok: boolean; size?: string }) {
-  return (
-    <span
-      className="font-extrabold leading-none"
-      style={{ fontSize: size, color: ok ? TEAL : ROSE }}
-    >
-      {ok ? "✓" : "✗"}
-    </span>
-  );
-}
-
 function AttrChip({
   code,
   ok,
@@ -543,45 +485,6 @@ function CoverageStrip({
           className="flex-1"
         />
       ))}
-    </div>
-  );
-}
-
-function SlideHeader({
-  badge,
-  badgeBg,
-  badgeColor,
-  title,
-  subtitle,
-}: {
-  badge: string;
-  badgeBg: string;
-  badgeColor: string;
-  title: string;
-  subtitle?: string;
-}) {
-  return (
-    <div className="mb-[1.5cqh]">
-      <div
-        className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-        style={{ background: badgeBg, color: badgeColor }}
-      >
-        {badge}
-      </div>
-      <h1
-        className="mt-[1.1cqh] text-[4cqh] font-extrabold leading-tight"
-        style={{ color: NEAR_BLACK }}
-      >
-        {title}
-      </h1>
-      {subtitle && (
-        <div
-          className="mt-[0.7cqh] text-[2.25cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          {subtitle}
-        </div>
-      )}
     </div>
   );
 }
@@ -664,7 +567,7 @@ const MATRIX_GROUPS: {
 ];
 
 /* ── Slide 4: Complex Engineering — why this project qualifies ───── */
-function CeOverviewSlide() {
+export function CeOverviewSlide() {
   const lenses = [
     { code: "P1–P7", label: "Complex Problem Solving" },
     { code: "K1–K8", label: "Knowledge Profile" },
@@ -763,7 +666,7 @@ function CeOverviewSlide() {
 }
 
 /* ── Slide 5: Attribute definitions — Washington Accord reference ── */
-function CeDefinitionsSlide() {
+export function CeDefinitionsSlide() {
   const lenses: {
     code: string;
     title: string;
@@ -1756,7 +1659,7 @@ function CeOutcomesTwoSlide() {
 }
 
 /* ── Slide 15: Overall FYDP I mapping matrix ─────────────────────── */
-function CeMatrixSlide() {
+export function CeMatrixSlide() {
   const needsK: Record<string, string> = {
     PO1: "K1–K4",
     PO2: "K1–K4",
@@ -1981,8 +1884,8 @@ function CeMatrixSlide() {
   );
 }
 
-/* ── Slide 16: Thank you ─────────────────────────────────────────── */
-function ThankYouSlide() {
+/* ── Slide 16: Thank you (no group number) ───────────────────────── */
+export function ThankYouSlide() {
   return (
     <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
       <h1
@@ -1995,7 +1898,7 @@ function ThankYouSlide() {
         className="mt-[3cqh] text-[3.2cqh] font-bold"
         style={{ color: ACCENT }}
       >
-        Group 6 · Phantom Devs
+        Phantom Devs
       </div>
       <div
         className="mt-[1cqh] text-[2.5cqh] font-semibold"
