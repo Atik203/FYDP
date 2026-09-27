@@ -1,3 +1,4 @@
+import { SlideDeck } from "@/components/shared/SlideDeck";
 import { cn } from "@/lib/utils";
 import {
   AlertTriangle,
@@ -19,7 +20,6 @@ import {
   Layers,
   Lightbulb,
   Link2,
-  Maximize,
   MessageSquare,
   Network,
   Scale,
@@ -29,10 +29,11 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 /* ────────────────────────────────────────────────────────────────
-   Projector-safe slide deck. Route: /slide (intentionally not in nav)
+   Projector-safe slide decks. Routes (intentionally not in nav):
+   - /slide     — main deck: title, iMAD reference, thank you
+   - /slide/ce  — Complex Engineering deck: title, 12 CE slides, thank you
    - 16:9 canvas, letterboxed on any screen
    - Keyboard-only navigation: ← → , PageUp/PageDown (clicker), Home/End
    - Press F to toggle fullscreen
@@ -2012,10 +2013,9 @@ function ThankYouSlide() {
   );
 }
 
-const SLIDES = [
-  GroupSlide,
-  ImadSlideOne,
-  ImadSlideTwo,
+/* ── Deck compositions ───────────────────────────────────────────── */
+
+export const CE_SLIDES = [
   CeOverviewSlide,
   CeDefinitionsSlide,
   CeScoreboardSlide,
@@ -2028,107 +2028,18 @@ const SLIDES = [
   CeOutcomesOneSlide,
   CeOutcomesTwoSlide,
   CeMatrixSlide,
+];
+
+export const MAIN_SLIDES = [
+  GroupSlide,
+  ImadSlideOne,
+  ImadSlideTwo,
   ThankYouSlide,
 ];
 
+export const CE_DECK_SLIDES = [GroupSlide, ...CE_SLIDES, ThankYouSlide];
+
+/* Main deck: /slide — title, iMAD reference, thank you. */
 export function SlidePage() {
-  const [index, setIndex] = useState(0);
-  const [isFs, setIsFs] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const go = useCallback((dir: number) => {
-    setIndex((i) => Math.min(SLIDES.length - 1, Math.max(0, i + dir)));
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    if (!document.fullscreenElement) {
-      el.requestFullscreen?.().catch(() => {});
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-    }
-  }, []);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      switch (e.key) {
-        case "ArrowRight":
-        case "PageDown":
-        case " ":
-          e.preventDefault();
-          go(1);
-          break;
-        case "ArrowLeft":
-        case "PageUp":
-          e.preventDefault();
-          go(-1);
-          break;
-        case "Home":
-          e.preventDefault();
-          setIndex(0);
-          break;
-        case "End":
-          e.preventDefault();
-          setIndex(SLIDES.length - 1);
-          break;
-        case "f":
-        case "F":
-          e.preventDefault();
-          toggleFullscreen();
-          break;
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [go, toggleFullscreen]);
-
-  useEffect(() => {
-    const onFsChange = () => setIsFs(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", onFsChange);
-    return () => document.removeEventListener("fullscreenchange", onFsChange);
-  }, []);
-
-  const Slide = SLIDES[index];
-
-  return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ background: "#1e293b" }}
-    >
-      {/* 16:9 slide canvas — fills height, letterboxes width */}
-      <div
-        className="relative bg-white shadow-2xl"
-        style={{
-          aspectRatio: "16 / 9",
-          width: "min(100vw, calc(100vh * 16 / 9))",
-          height: "min(100vh, calc(100vw * 9 / 16))",
-          containerType: "size",
-        }}
-      >
-        <div key={index} className="w-full h-full animate-fade-in">
-          <Slide />
-        </div>
-      </div>
-
-      {/* Fullscreen toggle — only shown when NOT in fullscreen (use Esc / F to exit) */}
-      {!isFs && (
-        <button
-          onClick={toggleFullscreen}
-          title="Enter fullscreen (F)"
-          aria-label="Enter fullscreen"
-          className="fixed top-4 right-4 z-[110] flex items-center justify-center w-11 h-11 rounded-lg border-0 cursor-pointer text-white/80 hover:text-white"
-          style={{ background: "rgba(15,23,42,0.6)" }}
-        >
-          <Maximize size={20} />
-        </button>
-      )}
-
-      {/* One-time hint (does not print/interfere) */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[110] text-[13px] font-medium text-white/50 select-none pointer-events-none">
-        ← → to navigate · F for fullscreen
-      </div>
-    </div>
-  );
+  return <SlideDeck slides={MAIN_SLIDES} />;
 }

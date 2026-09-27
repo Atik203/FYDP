@@ -8,6 +8,7 @@ import { PapersPage } from "@/pages/PapersPage";
 import { ProposalPage } from "@/pages/ProposalPage";
 import { RoadmapPage } from "@/pages/RoadmapPage";
 import { SlidePage } from "@/pages/SlidePage";
+import { SlidesCePage } from "@/pages/SlidesCePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function SiteLayout() {
@@ -34,8 +35,10 @@ function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          {/* Standalone presentation deck — intentionally not in the navbar. Reach it via /slide */}
+          {/* Standalone presentation decks — intentionally not in the navbar.
+              Main deck: /slide · Complex Engineering deck: /slide/ce */}
           <Route path="/slide" element={<SlidePage />} />
+          <Route path="/slide/ce" element={<SlidesCePage />} />
           <Route path="/*" element={<SiteLayout />} />
         </Routes>
       </BrowserRouter>
