@@ -1,186 +1,124 @@
-# Complex Engineering Slides — Presentation Script
+# Final Defence Slides — Presentation Script
 
-> Deck: `/slide/ce`. Numbers here match the team list: **1 = title slide**, **2 = the first Complex Engineering slide**, and so on — **13 = the matrix**. (The main `/slide` deck keeps the title, iMAD reference, and thank-you slides.)
->
-> Speaking order: Rakibul → Yousuf → Atik → Pratay → Limu → Salman. Two slides each, about 1.5–2 minutes per person.
->
-> Speak slowly, about 120 words per minute. Short sentences. One idea per sentence. Point at codes like "P1" or "PO10" when you say them.
-
----
-
-## Opening — Slide 1 (Title)
-
-*(Rakibul reads this before Slide 2.)*
-
-Good morning everyone. We are Group 6, Team Phantom Devs. Our project is "Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning". Our supervisor is Dr. Mohammad Nurul Huda. Today we will present our Complex Engineering check for FYDP I.
+> Deck: `/slide/final` — **17 slides**, six presenters, target **8–10 minutes**.
+> Speaking order: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu** (about 1.5 minutes each; Limu about 1 minute).
+> Speak slowly, about 120 words per minute. Short sentences. One idea per sentence.
+> Point at the slide when you say a code like "P1", "K4" or "B10".
 
 ---
 
-## 1. Rakibul Hasan · Slides 2–3
+## M1 — Rakibul Hasan · Slides 1–3
 
-### Slide 2 — Why FYDP I Is a Complex Engineering Problem
+### Slide 1 — Title
 
-Our project asks one question: can we stop a confident wrong majority from pushing a correct minority agent to give up its answer? This is a hard problem. So we checked it against the Washington Accord.
+Good morning everyone. We are Team Phantom Devs. Our project is "Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning". Our supervisor is Dr. Mohammad Nurul Huda. Today we present our FYDP I defence.
 
-The Accord uses four lenses. They are problem solving, knowledge, activities, and program outcomes. You can see them at the bottom of the slide.
+### Slide 2 — Introduction
 
-Our project qualifies for three reasons. First, it is multi-disciplinary. Second, it has conflicting requirements. Third, there is no textbook solution, and the parts depend on each other. For example, one retrieval error can change the final answer.
+Large language models can answer hard science questions, but they can also be confidently wrong. Multi-agent debate helps: three models answer the same question and compare their reasoning. But most systems decide by majority vote, and every agent counts the same. A confident wrong majority can push a correct minority to give up its answer. We call this sycophantic consensus. No current debate system checks the claims against outside evidence while the debate runs. Our project fixes this.
 
-### Slide 3 — Washington Accord Attributes
+### Slide 3 — Motivation
 
-This slide shows the official attributes inside each lens. These names are our checklist for the rest of this section.
+Four findings motivate the project. ConsensAgent found that in over twenty percent of wrong-answer cases, the correct answer was already present but ignored. MAST measured failure rates from forty-one to eighty-six point seven percent across seven multi-agent systems. DebUnc showed that a truth-aware oracle beats deployable confidence signals by up to ten percent. And about one in four disagreements hides a correct minority. The problem is real, and confidence is not a reliable signal.
 
-P1 to P7 are the problem attributes. K1 to K8 are the knowledge areas. A1 to A5 are the engineering activities. PO1 to PO12 are the program outcomes.
-
-We will now go through them one by one. Yousuf will show our scoreboard first.
+Yousuf will present our objectives and the data.
 
 ---
 
-## 2. Yousuf Kamal Himel · Slides 4–5
+## M2 — Yousuf Kamal Himel · Slides 4–6
 
-### Slide 4 — FYDP I at a Glance
+### Slide 4 — Objective
 
-Thank you, Rakibul. This is our scoreboard for FYDP I. It has four numbers.
+We set four objectives. First, design a bounded trust update from retrieved evidence. Second, build a reproducible injection protocol that measures collapse under pressure, with annotation agreement of at least zero point seven five. Third, compare against ten baselines, including MoA, iMAD and ConsensAgent, using four metrics: accuracy, collapse rate, minority survival and calibration. Fourth, prove early that the trust signal changes decisions, not just the context.
 
-For problem solving, we cover six of seven attributes. Only P6 is not covered, because we have no external stakeholders.
+### Slide 5 — Dataset
 
-For knowledge, we cover all eight areas. For activities, we cover four of five. A3 is beyond prototype scope. For program outcomes, we cover six of twelve. The other six come in FYDP II and FYDP III.
+We use five scientific question sets. GPQA and MMLU-Pro are stable sets for accuracy. HLE is the expert ceiling. BrokenMath and BrokenArXiv are adversarial sets that stress-test sycophancy. Two filters keep only divergent questions with checkable answers, and about sixty to seventy percent pass. The main matrix uses one thousand questions per dataset; the pilot uses fifty.
 
-These marks are only for FYDP I, because it is the only completed phase.
+### Slide 6 — Conventional Method
 
-### Slide 5 — Complex Problem Solving, Part 1
+Today, debate decides in different ways. Majority voting gives every agent equal weight. Confidence weighting uses self-reported scores. Prompt rewriting tries to reduce sycophancy before the debate. Static aggregation merges the outputs once. And iMAD predicts when a debate is needed. We test ten baselines, B1 to B10. The gap is clear: none of them ties an agent's influence to external evidence while the debate runs.
 
-Now I will explain P1 to P4.
-
-P1 is depth of knowledge. The work needs machine learning, NLP, retrieval, and model serving. The trust update runs through the serving layer.
-
-P2 is conflicting requirements. Accuracy fights latency and cost. More debate rounds raise the GPU bill. We used round limits and clamp bounds to balance them.
-
-P3 is depth of analysis. There is no textbook solution. So we compare our system against majority voting, MoA, iMAD, and DebUnc. We also run a fake-consensus stress test.
-
-P4 is familiarity of issues. This field is new. The closest work is from 2024 to 2026. We did a full literature review before any design work.
-
-Atik will now complete the P attributes.
+Atik will explain our method.
 
 ---
 
-## 3. Md. Atikur Rahaman · Slides 6–7
+## M3 — Md. Atikur Rahaman · Slides 7–9
 
-### Slide 6 — Codes, Inter-dependence, and the P6 Gap
+### Slide 7 — Proposed Method
 
-Thank you, Yousuf. This slide completes the problem attributes.
+Our method works in steps. A confidence gate sends easy questions to a direct answer, and hard questions to a debate. Three different agents answer: Qwen, Gemma and Mistral, with no fine-tuning. Each answer is split into atomic claims, and every claim is checked against PubMed, arXiv or Semantic Scholar. Each claim gets one verdict: supported, contradicted, unverifiable or contested. The trust score updates every round. It rises with support, falls with contradiction, then softmax, clamp to zero point one to zero point nine, and renormalize. The final answer is a trust-weighted vote, not a head count.
 
-P5 is applicable codes. We follow JSON, HTTP over TLS, and the OpenAI-compatible API. No standard covers evidence-based trust. So we define our own rules for the trust score and the four verdicts.
+### Slide 8 — Pipeline
 
-P7 is inter-dependence. The gate, orchestrator, claim decomposer, retrieval, trust updater, and aggregator form one chain. A retrieval error reaches the final answer through the trust score. Our failure-isolation rule keeps a fault inside one component.
+This is the full pipeline. Eight stages, from the question to the final package. The dashed box is the injection point, and we use it only in the stress tests. The bottom strip shows the datasets and the four metrics.
 
-P6 is not covered. We have no industry partner or community group. Engagement stays inside the university. So we cover six of seven P attributes, and P6 is the expected gap for FYDP I.
+### Slide 9 — Flow Diagram
 
-### Slide 7 — Knowledge Profile, Part 1
+This is the level-one data flow. Seven processes, four external entities, and three data stores. Questions enter at the gate. Claims and passages flow through verification. The trust update feeds the aggregation. The result package carries the answer, the citations and the trust trajectory.
 
-Now the knowledge areas, K1 to K4.
-
-K1 is natural sciences. Our answers are checked against PubMed, arXiv, Semantic Scholar, and OpenAlex.
-
-K2 is mathematics. The trust update uses softmax, clamping, and renormalization. Our results use a paired bootstrap and effect sizes.
-
-K3 is engineering fundamentals. The system uses state machines, standard design practice for the confidence gate, and failure handling in each component.
-
-K4 is specialist knowledge. Our areas are LLMs, multi-agent debate, RAG, and sycophancy. Three different model families keep the debate heterogeneous.
-
-Pratay will continue with K5 to K8.
+Pratay will present the experimental setup and results.
 
 ---
 
-## 4. Pratay Paul · Slides 8–9
+## M4 — Pratay Paul · Slides 10–12
 
-### Slide 8 — Knowledge Profile, Part 2
+### Slide 10 — Experimental Setup
 
-Thank you, Atik. This slide finishes the knowledge profile, K5 to K8.
+The setup has two model stacks. The development stack is Qwen3.5-9B, Gemma 4 12B and Ministral-3-14B in four-bit, on one RTX A6000. The final stack is Qwen3.6-27B, Gemma 4 26B and Mistral Small 24B in FP8, on one RTX PRO 6000. Serving uses vLLM with an OpenAI-compatible API. Debates run three rounds with three seeds. The stress test injects a fake expert consensus between rounds one and two, and it is off in baselines B1 to B4. Validation uses annotation agreement and bootstrap confidence intervals. Total compute is about three hundred GPU-hours.
 
-K5 is engineering methods. We use controlled experiments, confidence intervals, baseline comparison, and injection studies. All studies share one setup, so the results stay comparable.
+### Slide 11 — Project Results
 
-K6 is computational methods. Our tools are Python, PyTorch, vLLM, FastAPI, sentence-transformers, and Git. We only run inference, so there is no fine-tuning.
+These are the expected results. Collapse rate should drop by twenty to thirty percent. A correct minority should survive more often. Calibration should be above zero point eight. Accuracy should not regress, and the largest gains should appear on the adversarial sets. The completed experiments already show the pipeline works: ten GPQA questions, three rounds each, ten out of ten debates completed, ninety out of ninety non-empty positions, mean three hundred seventy point eight seconds per debate.
 
-K7 is codes and practices. We use JSON, HTTP over TLS, and the OpenAI-compatible API. Every result package is checked against a JSON schema. Git tracks every change.
+### Slide 12 — System Context and Application
 
-K8 is research and context. We follow ethical bounds for AI in scientific question answering. The journal and the independent learning record document the research context.
+This is the system boundary. The harness sends questions in. The evidence sources and the model servers work alongside. The user receives the answer with citations. The same design helps in scientific question answering, in research assistants and in education. It also extends to law or medicine.
 
-All eight knowledge areas are covered.
-
-### Slide 9 — Engineering Activities: Resources and Interaction
-
-Now the first two activities.
-
-A1 is the range of resources. We use three model families, four literature APIs, six team members, and a rented Blackwell GPU. Chapter 3 assigns every task to a member, with weeks and deliverables.
-
-A2 is the level of interaction. Each debate round calls three model endpoints and three literature endpoints. We also communicate with the cloud GPU. The team works through a shared repository and weekly meetings. Closed APIs and local models share one OpenAI-compatible interface.
-
-Three of five activities are covered. Limu will now present A5 and the two gaps.
+Salman will present the complex engineering check.
 
 ---
 
-## 5. Mst. Farjana Akter Limu · Slides 10–11
+## M5 — Md. Salman Rohoman Nayeem · Slides 13–15
 
-### Slide 10 — Familiarity, Innovation and Consequences
+### Slide 13 — Why Complex Engineering
 
-Thank you, Pratay. This slide covers A5, A3, and A4.
+The Washington Accord uses four lenses: problem solving, knowledge, activities and program outcomes. Our project is a complex engineering problem. It is multi-disciplinary, it has conflicting requirements, there is no textbook solution, and its parts depend on each other. For example, one retrieval error can change the final answer.
 
-A5 is familiarity, and it is covered. Multi-agent debate and evidence verification were new for our team. We started with a structured literature review and a baseline study.
+### Slide 14 — Washington Accord Attributes
 
-A3 is innovation, and it is not covered. We combine existing ideas: debate, retrieval, and trust weighting. So the step is incremental and not patentable.
+This slide lists the official attributes in each lens. P1 to P7 are the problem attributes. K1 to K8 are the knowledge areas. A1 to A5 are the engineering activities. PO1 to PO12 are the program outcomes. These names are our checklist for the matrix.
 
-A4 is consequences, and it is covered. The consequences at stake are real: unreliable AI answers in scientific question answering. We also kept the environmental cost low: about 300 GPU-hours, standard configurations, and no fine-tuning.
+### Slide 15 — Complex Engineering Matrix
 
-We mark A3 as not covered on purpose. We do not want to overclaim.
+This is the full mapping. The needs row shows what each attribute requires. PO1 and PO2 need K1 to K4. P1 needs K3 to K6 and K8. The P attributes relate to PO1 to PO8, and the activities relate to PO10. The FYDP I row shows covered and not covered. The summary: P six of seven, K eight of eight, A four of five, PO six of twelve. P6, A3 and the remaining outcomes carry into the later phases.
 
-### Slide 11 — Program Outcomes Coverage
-
-Now the program outcomes. FYDP I covers six of twelve.
-
-The covered outcomes are PO1, PO2, PO4, PO10, PO11, and PO12. You can see them in the green bar.
-
-The other six outcomes are deferred: PO3, and PO5 to PO9. They will be addressed in FYDP II and FYDP III. Together, these six outcomes show that FYDP I already produces real results.
-
-Salman will now show what covers each outcome.
+Limu will close the presentation.
 
 ---
 
-## 6. Md. Salman Rohoman Nayeem · Slides 12–13
+## M6 — Mst. Farjana Akter Limu · Slides 16–17
 
-### Slide 12 — What Covers Each FYDP I Outcome
+### Slide 16 — Conclusion
 
-Thank you, Limu. This slide connects each outcome to a real deliverable.
+To conclude. The project addresses a real failure: a confident wrong majority pushing a correct minority into sycophantic consensus. Our mechanism is a bounded trust score from retrieved evidence, updated during the debate. The evaluation uses the injection protocol and the CCR, MPR and ECR metrics against the baselines. Completed runs show the pipeline works end to end on three models. The design applies to scientific QA, education and other evidence domains. Remaining work: the full experiment matrix, ablations, the human study and an open-source release.
 
-PO1 comes from the real-life problem in Chapter 1. PO2 comes from the requirements in Chapter 3. PO4 comes from the literature review and gap analysis in Chapter 2.
+### Slide 17 — Thank You
 
-PO10 comes from the interim report and this oral presentation. PO11 comes from the timeline and the budget in Chapter 5. PO12 comes from the journal and the independent learning record.
-
-PO3 and PO5 to PO9 are scheduled for FYDP II and FYDP III. Each covered outcome maps to one concrete FYDP I deliverable.
-
-### Slide 13 — Overall Mapping Matrix
-
-Finally, this is our full mapping matrix. Every column is one attribute. There are twelve program outcomes, eight knowledge areas, seven problem attributes, and five activities.
-
-The FYDP I row shows a check or a cross for each attribute. The bottom row summarizes the result: program outcomes 6 of 12, knowledge 8 of 8, problem attributes 6 of 7, and activities 4 of 5.
-
-The table also shows what each attribute needs. PO1 and PO2 need K1 to K4. PO3 needs K5, PO4 needs K8, and PO5 needs K6. PO6 to PO8 need K7. P1 needs K3 to K6 and K8. The P attributes relate to PO1 to PO8, and the activities relate to PO10, communication.
-
-This is our complex engineering check. The project meets the criteria for FYDP I, and the remaining gaps are planned for later phases. Thank you.
+Thank you for your attention. We are happy to take your questions.
 
 ---
 
 ## Faculty Q&A — quick answers
 
-Short answers for the questions that came up today. Any presenter can use these.
+Any presenter can use these.
 
-- **For P1, which K areas are needed?** K3, K4, K5, K6, and K8. This is the exact Washington Accord wording for P1.
-- **Do P2 to P7 need a K area?** No. Only P1 has a defined K requirement. P2 to P7 are defined by their own criteria, like conflicting requirements or no obvious solution.
-- **Which POs do the P attributes relate to?** PO1 to PO8 — engineering knowledge, problem analysis, design, investigation, modern tool usage, the engineer and society, environment and sustainability, and ethics.
-- **For the A activities, which POs are needed?** PO10 — communication. The official PO10 wording is about communicating on complex engineering activities, for example through reports and presentations. PO9, PO11, and PO12 are also related.
-- **Which POs need K7?** PO6, PO7, and PO8 — the engineer and society, environment and sustainability, and ethics.
-- **Which K areas do PO1 and PO2 need?** K1 to K4.
+- **For P1, which K areas are needed?** K3, K4, K5, K6 and K8. This is the exact Washington Accord wording.
+- **For the activities, which PO is needed?** PO10 — communication. Its official wording is about complex engineering activities.
+- **Which POs do the P attributes relate to?** PO1 to PO8.
+- **Which POs need K7?** PO6, PO7 and PO8 — society, environment and ethics.
 - **Why is P6 not covered?** We have no external stakeholders. Engagement stays inside the university in FYDP I.
 - **Why is A3 not covered?** We combine existing concepts, so the innovation is incremental and not patentable.
-- **Why is A4 covered?** We assessed the social and environmental consequences. The target harm is real, and the energy use stays low.
-- **Which K does our project not use?** None. All eight K areas are covered, so every needed K is available.
+- **Why is A4 covered?** We assessed the social and environmental consequences; the target harm is real and the energy use stays low.
+- **What are CCR, MPR and ECR?** Collapse rate, minority preservation, and evidence calibration.
+- **Why no fine-tuning?** The mechanism must work with served models; fine-tuning would hide the effect.
