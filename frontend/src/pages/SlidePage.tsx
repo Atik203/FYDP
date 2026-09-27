@@ -1756,8 +1756,19 @@ function CeOutcomesTwoSlide() {
 
 /* ── Slide 15: Overall FYDP I mapping matrix ─────────────────────── */
 function CeMatrixSlide() {
+  const needsK: Record<string, string> = {
+    PO1: "K1–K4",
+    PO2: "K1–K4",
+    PO3: "K5",
+    PO4: "K8",
+    PO5: "K6",
+    PO6: "K7",
+    PO7: "K7",
+    PO8: "K7",
+  };
+  const [poGroup, kGroup, pGroup, aGroup] = MATRIX_GROUPS;
   return (
-    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+    <div className="w-full h-full flex flex-col px-[2cqw] py-[2.2cqh]">
       <SlideHeader
         badge="Overall Mapping · FYDP I"
         badgeBg="#e0e7ff"
@@ -1793,7 +1804,7 @@ function CeMatrixSlide() {
               <th
                 key={g.title}
                 colSpan={g.items.length}
-                className="px-[0.4cqw] py-[1.8cqh] text-[1.85cqh] font-extrabold leading-tight"
+                className="px-[0.4cqw] py-[1.3cqh] text-[2.05cqh] font-extrabold leading-tight"
                 style={{
                   border: "2px solid #94a3b8",
                   background: g.bg,
@@ -1809,7 +1820,7 @@ function CeMatrixSlide() {
               g.items.map((it) => (
                 <th
                   key={it.code}
-                  className="py-[1.1cqh] text-[1.9cqh] font-bold"
+                  className="py-[0.9cqh] text-[2.1cqh] font-bold"
                   style={{
                     border: "1.5px solid #cbd5e1",
                     background: "#ffffff",
@@ -1821,7 +1832,7 @@ function CeMatrixSlide() {
               )),
             )}
           </tr>
-          <tr style={{ height: "40cqh" }}>
+          <tr style={{ height: "44cqh" }}>
             {MATRIX_GROUPS.flatMap((g) =>
               g.items.map((it) => (
                 <td
@@ -1833,7 +1844,7 @@ function CeMatrixSlide() {
                   }}
                 >
                   <div
-                    className="mx-auto text-[2cqh] font-semibold leading-tight"
+                    className="mx-auto text-[2.1cqh] font-semibold leading-tight"
                     style={{
                       writingMode: "vertical-rl",
                       transform: "rotate(180deg)",
@@ -1850,6 +1861,69 @@ function CeMatrixSlide() {
         <tbody>
           <tr>
             <td
+              className="py-[0.9cqh] text-center text-[1.85cqh] font-extrabold"
+              style={{
+                border: "2px solid #94a3b8",
+                background: "#f1f5f9",
+                color: DEEP_INK,
+              }}
+            >
+              Needs K
+            </td>
+            {poGroup.items.map((it) => (
+              <td
+                key={it.code}
+                className="py-[0.9cqh] text-center text-[1.55cqh] font-bold"
+                style={{
+                  border: "1.5px solid #e2e8f0",
+                  background: "#ffffff",
+                  color: DEEP_INK,
+                }}
+              >
+                {needsK[it.code] ?? ""}
+              </td>
+            ))}
+            <td
+              colSpan={kGroup.items.length}
+              style={{ border: "1.5px solid #e2e8f0", background: "#ffffff" }}
+            />
+            <td
+              className="py-[0.7cqh] text-center text-[1.45cqh] font-bold leading-[1.2]"
+              style={{
+                border: "1.5px solid #e2e8f0",
+                background: "#f0fdfa",
+                color: TEAL,
+              }}
+            >
+              K3–K6
+              <br />
+              &amp; K8
+            </td>
+            <td
+              colSpan={pGroup.items.length - 1}
+              className="py-[0.9cqh] text-center text-[1.7cqh] font-bold"
+              style={{
+                border: "1.5px solid #e2e8f0",
+                background: "#f0fdfa",
+                color: TEAL,
+              }}
+            >
+              PO1–PO8
+            </td>
+            <td
+              colSpan={aGroup.items.length}
+              className="py-[0.9cqh] text-center text-[1.65cqh] font-bold"
+              style={{
+                border: "1.5px solid #e2e8f0",
+                background: "#fffbeb",
+                color: AMBER,
+              }}
+            >
+              PO10
+            </td>
+          </tr>
+          <tr>
+            <td
               className="text-center text-[2.2cqh] font-extrabold"
               style={{
                 border: "2px solid #94a3b8",
@@ -1863,20 +1937,20 @@ function CeMatrixSlide() {
               g.items.map((it) => (
                 <td
                   key={it.code}
-                  className="py-[2.6cqh] text-center"
+                  className="py-[1.9cqh] text-center"
                   style={{
                     border: "1.5px solid #cbd5e1",
                     background: it.ok ? "#f0fdfa" : "#fef2f2",
                   }}
                 >
-                  <Mark ok={it.ok} size="3cqh" />
+                  <Mark ok={it.ok} size="3.4cqh" />
                 </td>
               )),
             )}
           </tr>
           <tr>
             <td
-              className="py-[1.1cqh] text-center text-[2cqh] font-extrabold"
+              className="py-[1.1cqh] text-center text-[2.2cqh] font-extrabold"
               style={{
                 border: "2px solid #94a3b8",
                 background: "#f1f5f9",
@@ -1889,7 +1963,7 @@ function CeMatrixSlide() {
               <td
                 key={g.title}
                 colSpan={g.items.length}
-                className="py-[1.1cqh] text-center text-[2.1cqh] font-extrabold"
+                className="py-[1.1cqh] text-center text-[2.35cqh] font-extrabold"
                 style={{
                   border: "1.5px solid #cbd5e1",
                   background: "#f8fafc",
@@ -1902,27 +1976,6 @@ function CeMatrixSlide() {
           </tr>
         </tbody>
       </table>
-
-      <div className="mt-[3cqh] flex items-center justify-between">
-        <div
-          className="flex items-center gap-[1.6cqw] text-[2.3cqh] font-semibold"
-          style={{ color: DEEP_INK }}
-        >
-          <span className="flex items-center gap-[0.5cqw]">
-            <Mark ok={true} size="2.2cqh" /> covered
-          </span>
-          <span className="flex items-center gap-[0.5cqw]">
-            <Mark ok={false} size="2.2cqh" /> not covered / deferred
-          </span>
-          <span style={{ color: "#64748b" }}>Group 6 · Phantom Devs</span>
-        </div>
-        <div className="flex items-center gap-[1.6cqw] text-[2.4cqh] font-extrabold">
-          <span style={{ color: TEAL }}>P 6/7</span>
-          <span style={{ color: ROSE }}>K 8/8</span>
-          <span style={{ color: AMBER }}>A 4/5</span>
-          <span style={{ color: ACCENT }}>PO 6/12</span>
-        </div>
-      </div>
     </div>
   );
 }
