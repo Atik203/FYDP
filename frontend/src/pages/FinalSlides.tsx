@@ -30,7 +30,6 @@ import {
   Globe,
   Layers,
   Network,
-  Scale,
   Search,
   Target,
   TrendingUp,
@@ -141,7 +140,7 @@ function FinalMotivationSlide() {
         <Stat value="+10%" label="gain from a truth-aware oracle over proxy signals" color={TEAL} />
         <Stat value="≈1/4" label="of disagreements hide a correct minority" color={ACCENT} />
       </div>
-      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[3.4cqh] auto-rows-[40cqh] my-auto">
+      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[3.4cqh] flex-1 min-h-0">
         <Card
           icon={<AlertTriangle size="2.4cqh" color="#fff" />}
           title="Ignored Evidence"
@@ -188,10 +187,6 @@ function FinalMotivationSlide() {
           </ul>
         </Card>
       </div>
-      <NoteStrip color={ACCENT}>
-        Theory agrees: without an outside correction, agents converge on the
-        wrong majority (Estornell and Liu, NeurIPS 2024).
-      </NoteStrip>
     </div>
   );
 }
@@ -220,7 +215,7 @@ function FinalObjectiveSlide() {
             <Bullet>
               Raw score rises with support, falls with contradiction.
             </Bullet>
-            <Bullet>Bounded by design; no fine-tuning.</Bullet>
+            <Bullet>Bounded by design.</Bullet>
           </ul>
         </Card>
         <Card
@@ -295,11 +290,11 @@ function FinalDatasetSlide() {
         colWidths={["16%", "22%", "38%", "24%"]}
         accent={TEAL}
         rows={[
-          ["GPQA", "Stable comparison", "448 questions · Diamond subset 198", "CC BY 4.0"],
-          ["MMLU-Pro", "Stable comparison", "12,032 questions · 14 disciplines", "MIT"],
-          ["HLE", "Expert ceiling", "2,500+ expert-written questions", "MIT · gated access"],
-          ["BrokenMath", "Adversarial stress", "504 samples · 183 final-answer", "CC BY-NC-SA 4.0"],
-          ["BrokenArXiv", "Adversarial, monthly", "new problem sets each month", "CC BY-SA 4.0"],
+          ["GPQA", "Stable", "448 questions · Diamond 198", "CC BY 4.0"],
+          ["MMLU-Pro", "Stable", "12,032 questions · 14 subjects", "MIT"],
+          ["HLE", "Expert ceiling", "2,500+ expert questions", "MIT · gated"],
+          ["BrokenMath", "Adversarial", "504 samples · 183 final-answer", "CC BY-NC-SA 4.0"],
+          ["BrokenArXiv", "Adversarial, monthly", "monthly sets", "CC BY-SA 4.0"],
         ]}
       />
       <div className="grid grid-cols-3 gap-[1.8cqw] mt-[2cqh] flex-1 min-h-0">
@@ -386,27 +381,17 @@ function FinalConventionalSlide() {
           color={ACCENT}
         >
           <ul className="flex flex-col justify-center h-full [&>li:not(:last-child)]:mb-[1.8cqh]">
+            <Bullet>Majority voting: equal weight (Du et al., ICML 2024).</Bullet>
             <Bullet>
-              Majority voting gives every agent equal weight (Du et al., ICML
-              2024).
+              Confidence weighting: self-reported scores (DebUnc, EMNLP 2025).
             </Bullet>
             <Bullet>
-              Confidence weighting uses self-reported signals (DebUnc, EMNLP
-              2025).
+              Prompt rewriting before debate (ConsensAgent, ACL 2025).
             </Bullet>
+            <Bullet>Static aggregation once (MoA, ICLR 2025).</Bullet>
+            <Bullet>Debate prediction (iMAD, AAAI 2026).</Bullet>
             <Bullet>
-              Prompt rewriting targets sycophancy before the debate
-              (ConsensAgent, ACL 2025).
-            </Bullet>
-            <Bullet>
-              Static aggregation merges model outputs once (MoA, ICLR 2025).
-            </Bullet>
-            <Bullet>
-              Debate prediction decides when to debate at all (iMAD, AAAI
-              2026).
-            </Bullet>
-            <Bullet>
-              Every method then aggregates by a vote or an internal score.
+              All of them aggregate by a vote or an internal score.
             </Bullet>
           </ul>
         </Card>
@@ -499,97 +484,7 @@ function FinalMethodSlide() {
               clamp [0.1, 0.9] → renormalize.
             </Bullet>
             <Bullet>
-              Final answer by trust-weighted aggregation, not a head count.
-            </Bullet>
-          </ul>
-        </Card>
-        <Figure
-          src="/figures/fig-pipeline.png"
-          alt="End-to-end pipeline of the framework"
-          caption="Gate → debate → claims → evidence → trust → aggregation."
-          className="flex-1 min-h-0"
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ── Debate Protocol ────────────────────────────────────────────── */
-function FinalProtocolSlide() {
-  return (
-    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
-      <SlideHeader
-        badge="Debate Protocol"
-        badgeBg="#e0e7ff"
-        badgeColor={ACCENT}
-        title="One Round, Six Steps, One Injection Point"
-        subtitle="Each round follows the same order; only the stress test adds pressure."
-      />
-      <div className="flex gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Layers size="2.4cqh" color="#fff" />}
-          title="Round Order"
-          color={ACCENT}
-          className="w-[40%] flex-shrink-0"
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>Positions, then claim decomposition.</Bullet>
-            <Bullet>Source-partitioned retrieval, then claim verdicts.</Bullet>
-            <Bullet>Trust update, then revision from peers and own trust.</Bullet>
-            <Bullet>The loop runs three rounds at most.</Bullet>
-            <Bullet>
-              Injection sits between round 1 and round 2, and only in stress
-              tests.
-            </Bullet>
-            <Bullet>
-              A timeout makes one agent's round inconclusive; the debate
-              continues.
-            </Bullet>
-          </ul>
-        </Card>
-        <Figure
-          src="/figures/fig-round-loop.png"
-          alt="One debate round as a loop with the injection point"
-          caption="One debate round; the dashed box is the injection point used in stress tests."
-          className="flex-1 min-h-0"
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ── Trust Update in Detail ─────────────────────────────────────── */
-function FinalTrustSlide() {
-  return (
-    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
-      <SlideHeader
-        badge="Trust Update"
-        badgeBg="#ccfbf1"
-        badgeColor={TEAL}
-        title="From Verdicts to Bounded Weights"
-        subtitle="The evidence verdicts become each agent's influence in five steps."
-      />
-      <div className="flex gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<Scale size="2.4cqh" color="#fff" />}
-          title="Trust Math"
-          color={TEAL}
-          className="w-[40%] flex-shrink-0"
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>
-              Supported claims raise the raw score (αV); contradicted claims
-              lower it (βH).
-            </Bullet>
-            <Bullet>
-              Softmax, then clamp to [0.1, 0.9], then renormalize — in that
-              order.
-            </Bullet>
-            <Bullet>No agent is ever silenced, and no agent can dominate.</Bullet>
-            <Bullet>The weights decide the final answer, not a head count.</Bullet>
-            <Bullet>
-              Evidence-calibration rate checks that the weights track
-              correctness.
+              The weighted vote decides the final answer, not a head count.
             </Bullet>
           </ul>
         </Card>
@@ -600,6 +495,29 @@ function FinalTrustSlide() {
           className="flex-1 min-h-0"
         />
       </div>
+    </div>
+  );
+}
+
+
+
+/* ── Pipeline ───────────────────────────────────────────────────── */
+function FinalPipelineSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[3cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Pipeline"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="The Pipeline, End to End"
+        subtitle="Eight stages, one injection point, and the evaluation strip."
+      />
+      <Figure
+        src="/figures/fig-pipeline.png"
+        alt="Eight-stage pipeline with the injection point and evaluation strip"
+        caption="The dashed box is the injection point, used only in stress tests; the evaluation strip lists the datasets and metrics."
+        className="flex-1 min-h-0"
+      />
     </div>
   );
 }
@@ -636,8 +554,8 @@ function FinalSetupSlide() {
   ];
   const stress = [
     "Injection between rounds 1 and 2",
-    "Annotation κ ≥ 0.75",
-    "Paired bootstrap, 10,000 resamples",
+    "Annotation agreement κ ≥ 0.75",
+    "Paired bootstrap 95% CI (10,000 resamples)",
     "Injection off in B1–B4",
     "Cohen's d for effect size",
   ];
@@ -691,18 +609,12 @@ function FinalSetupSlide() {
           title="Debate Configuration"
           color={ACCENT}
         >
-          <div className="h-full flex flex-col justify-center gap-[1.8cqh]">
+          <div className="h-full flex flex-col justify-center">
             <ul>
               {debate.map((d) => (
                 <Bullet key={d}>{d}</Bullet>
               ))}
             </ul>
-            <div
-              className="text-[1.9cqh] font-semibold leading-snug"
-              style={{ color: "#475569" }}
-            >
-              Every round uses the same prompts and the same three models.
-            </div>
           </div>
         </Card>
         <Card
@@ -710,19 +622,12 @@ function FinalSetupSlide() {
           title="Stress Test & Validation"
           color={AMBER}
         >
-          <div className="h-full flex flex-col justify-center gap-[1.8cqh]">
+          <div className="h-full flex flex-col justify-center">
             <ul>
               {stress.map((d) => (
                 <Bullet key={d}>{d}</Bullet>
               ))}
             </ul>
-            <div
-              className="text-[1.9cqh] font-semibold leading-snug"
-              style={{ color: "#475569" }}
-            >
-              The fabricated consensus is the wrong majority answer from round
-              1.
-            </div>
           </div>
         </Card>
       </div>
@@ -771,8 +676,9 @@ function FinalResultsSlide() {
             <Bullet>
               Mean 370.8 s per debate (3,708 s total); 21.5 s variation.
             </Bullet>
-            <Bullet>Claim tags parsed on every generation.</Bullet>
-            <Bullet>Fallback extraction used in 5 of 30 Ministral generations.</Bullet>
+            <Bullet>
+              Claim tags parsed every generation; fallback used in 5 of 30.
+            </Bullet>
           </ul>
         </Card>
       </div>
@@ -784,16 +690,19 @@ function FinalResultsSlide() {
   );
 }
 
-/* ── Slide 11: Application ──────────────────────────────────────── */
-function FinalApplicationSlide() {
+
+
+/* ── Slide 15: Conclusion ───────────────────────────────────────── */
+/* ── System Context · Application ───────────────────────────────── */
+function FinalContextSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
       <SlideHeader
-        badge="Application"
+        badge="System Context · Application"
         badgeBg="#fef3c7"
         badgeColor={AMBER}
-        title="Where This Helps"
-        subtitle="Any setting that needs a trustworthy answer plus the evidence behind it."
+        title="Where It Plugs In"
+        subtitle="The system boundary, and the settings it helps."
       />
       <div className="flex gap-[2cqw] flex-1 min-h-0">
         <Card
@@ -810,21 +719,14 @@ function FinalApplicationSlide() {
               Research assistants that link every answer to retrieved papers.
             </Bullet>
             <Bullet>
-              Education and decision support where errors are flagged, not
-              hidden.
-            </Bullet>
-            <Bullet>
-              A reusable evaluation harness for other research groups.
-            </Bullet>
-            <Bullet>
-              The same design extends to legal or medical evidence corpora.
+              A reusable evaluation harness; extends to law or medicine.
             </Bullet>
           </ul>
         </Card>
         <Figure
           src="/figures/fig-context.png"
           alt="System boundary and external actors"
-          caption="System boundary: harness in, evidence and models alongside, result package out."
+          caption="Harness in, evidence and models alongside, result package out."
           className="flex-1 min-h-0"
         />
       </div>
@@ -832,7 +734,6 @@ function FinalApplicationSlide() {
   );
 }
 
-/* ── Slide 15: Conclusion ───────────────────────────────────────── */
 function FinalConclusionSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -879,11 +780,11 @@ function FinalConclusionSlide() {
               models.
             </Bullet>
             <Bullet>
-              Remaining: full matrix, ablations, human study, open-source
-              release.
+              Applies to scientific QA, education and other evidence domains.
             </Bullet>
             <Bullet>
-              The design extends to law, medicine, or any evidence corpus.
+              Remaining: full matrix, ablations, human study, open-source
+              release.
             </Bullet>
           </ul>
         </Card>
@@ -910,12 +811,11 @@ export const FINAL_SLIDES = [
   FinalDatasetSlide,
   FinalConventionalSlide,
   FinalMethodSlide,
-  FinalProtocolSlide,
-  FinalTrustSlide,
+  FinalPipelineSlide,
   FinalDataFlowSlide,
   FinalSetupSlide,
   FinalResultsSlide,
-  FinalApplicationSlide,
+  FinalContextSlide,
   CeOverviewSlide,
   CeDefinitionsSlide,
   CeMatrixSlide,
