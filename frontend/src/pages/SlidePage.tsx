@@ -785,12 +785,12 @@ export function CeDefinitionsSlide() {
               style={{ background: col.color }}
             >
               <div
-                className="text-[1.7cqh] font-bold tracking-wide"
+                className="text-[1.85cqh] font-bold tracking-wide"
                 style={{ color: "#ffffffcc" }}
               >
                 {col.code}
               </div>
-              <div className="text-[2.05cqh] font-extrabold leading-tight text-white">
+              <div className="text-[2.2cqh] font-extrabold leading-tight text-white">
                 {col.title}
               </div>
             </div>
@@ -798,13 +798,13 @@ export function CeDefinitionsSlide() {
               {col.items.map((it) => (
                 <div key={it.code} className="flex items-baseline gap-[0.7cqw]">
                   <span
-                    className="text-[2cqh] font-extrabold flex-shrink-0 w-[4.4cqw]"
+                    className="text-[2.15cqh] font-extrabold flex-shrink-0 w-[4.4cqw]"
                     style={{ color: col.color }}
                   >
                     {it.code}
                   </span>
                   <span
-                    className="text-[2cqh] font-semibold leading-snug"
+                    className="text-[2.15cqh] font-semibold leading-snug"
                     style={{ color: DEEP_INK }}
                   >
                     {it.name}
