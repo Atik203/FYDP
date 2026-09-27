@@ -1,4 +1,4 @@
-Slide No:
+Guideline for Final Slide Presentation
 
 1. Title Slide - Current Slide no need to change
 2. Introduction - Key points , if have images, please add them
