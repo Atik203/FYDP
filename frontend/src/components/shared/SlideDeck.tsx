@@ -90,6 +90,14 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
         <div key={index} className="w-full h-full animate-fade-in">
           <Slide />
         </div>
+
+        {/* Slide counter — inside the canvas, bottom-right */}
+        <div
+          className="absolute bottom-[1cqh] right-[1.4cqw] text-[1.8cqh] font-extrabold tabular-nums select-none pointer-events-none"
+          style={{ color: "#0f172a" }}
+        >
+          {index + 1} / {slides.length}
+        </div>
       </div>
 
       {/* Fullscreen toggle — only shown when NOT in fullscreen (use Esc / F to exit) */}

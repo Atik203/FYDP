@@ -1805,7 +1805,7 @@ function CeMatrixSlide() {
               <th
                 key={g.title}
                 colSpan={g.items.length}
-                className="px-[0.4cqw] py-[1.3cqh] text-[2.05cqh] font-extrabold leading-tight"
+                className="px-[0.4cqw] py-[1.1cqh] text-[2.05cqh] font-extrabold leading-tight"
                 style={{
                   border: "2px solid #94a3b8",
                   background: g.bg,
@@ -1821,7 +1821,7 @@ function CeMatrixSlide() {
               g.items.map((it) => (
                 <th
                   key={it.code}
-                  className="py-[0.9cqh] text-[2.1cqh] font-bold"
+                  className="py-[0.8cqh] text-[2.1cqh] font-bold"
                   style={{
                     border: "1.5px solid #cbd5e1",
                     background: "#ffffff",
@@ -1833,7 +1833,7 @@ function CeMatrixSlide() {
               )),
             )}
           </tr>
-          <tr style={{ height: "44cqh" }}>
+          <tr style={{ height: "43cqh" }}>
             {MATRIX_GROUPS.flatMap((g) =>
               g.items.map((it) => (
                 <td
@@ -1938,7 +1938,7 @@ function CeMatrixSlide() {
               g.items.map((it) => (
                 <td
                   key={it.code}
-                  className="py-[1.9cqh] text-center"
+                  className="py-[1.7cqh] text-center"
                   style={{
                     border: "1.5px solid #cbd5e1",
                     background: it.ok ? "#f0fdfa" : "#fef2f2",
@@ -1951,7 +1951,7 @@ function CeMatrixSlide() {
           </tr>
           <tr>
             <td
-              className="py-[1.1cqh] text-center text-[2.2cqh] font-extrabold"
+              className="py-[1cqh] text-center text-[2.2cqh] font-extrabold"
               style={{
                 border: "2px solid #94a3b8",
                 background: "#f1f5f9",
@@ -1964,7 +1964,7 @@ function CeMatrixSlide() {
               <td
                 key={g.title}
                 colSpan={g.items.length}
-                className="py-[1.1cqh] text-center text-[2.35cqh] font-extrabold"
+                className="py-[1cqh] text-center text-[2.35cqh] font-extrabold"
                 style={{
                   border: "1.5px solid #cbd5e1",
                   background: "#f8fafc",
