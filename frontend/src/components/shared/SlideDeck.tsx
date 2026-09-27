@@ -75,25 +75,65 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
     <div
       ref={containerRef}
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
-      style={{ background: "#1e293b" }}
+      style={{
+        background:
+          "radial-gradient(1100px 620px at 18% -10%, #2b3a63 0%, #1e293b 48%, #0b1120 100%)",
+      }}
     >
       {/* 16:9 slide canvas — fills height, letterboxes width */}
       <div
-        className="relative bg-white shadow-2xl"
+        className="relative shadow-2xl"
         style={{
           aspectRatio: "16 / 9",
           width: "min(100vw, calc(100vh * 16 / 9))",
           height: "min(100vh, calc(100vw * 9 / 16))",
           containerType: "size",
+          background:
+            "linear-gradient(180deg, #ffffff 0%, #fbfcfe 55%, #f2f6fb 100%)",
+          boxShadow:
+            "0 3.4cqh 8cqh -3cqh rgba(2,6,23,0.85), 0 0 0 1px rgba(148,163,184,0.35)",
         }}
       >
-        <div key={index} className="w-full h-full animate-fade-in">
+        {/* Slide chrome: top rule + soft colour fields (behind content) */}
+        <div
+          className="absolute inset-x-0 top-0 h-[0.6cqh]"
+          style={{
+            background:
+              "linear-gradient(90deg, #1e40af 0%, #0f766e 55%, #b45309 100%)",
+          }}
+        />
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "-20cqh",
+            right: "-14cqw",
+            width: "52cqw",
+            height: "52cqw",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(closest-side, rgba(30,64,175,0.10), transparent 72%)",
+          }}
+        />
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            bottom: "-26cqh",
+            left: "-16cqw",
+            width: "46cqw",
+            height: "46cqw",
+            borderRadius: "50%",
+            background:
+              "radial-gradient(closest-side, rgba(15,118,110,0.09), transparent 72%)",
+          }}
+        />
+
+        <div key={index} className="relative z-[1] w-full h-full animate-slide-in">
           <Slide />
         </div>
 
         {/* Slide counter — inside the canvas, bottom-right */}
         <div
-          className="absolute bottom-[1cqh] right-[1.4cqw] text-[1.8cqh] font-extrabold tabular-nums select-none pointer-events-none"
+          className="absolute bottom-[1cqh] right-[1.4cqw] z-[2] text-[1.8cqh] font-extrabold tabular-nums select-none pointer-events-none"
           style={{ color: "#0f172a" }}
         >
           {index + 1} / {slides.length}
