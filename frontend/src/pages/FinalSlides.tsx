@@ -141,7 +141,7 @@ function FinalMotivationSlide() {
         <Stat value="+10%" label="gain from a truth-aware oracle over proxy signals" color={TEAL} />
         <Stat value="≈1/4" label="of disagreements hide a correct minority" color={ACCENT} />
       </div>
-      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[2cqh] auto-rows-[40cqh] my-auto">
+      <div className="grid grid-cols-3 gap-[1.8cqw] mt-[3.4cqh] auto-rows-[40cqh] my-auto">
         <Card
           icon={<AlertTriangle size="2.4cqh" color="#fff" />}
           title="Ignored Evidence"
