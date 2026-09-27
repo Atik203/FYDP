@@ -209,7 +209,7 @@ export function Stat({
 }) {
   return (
     <div
-      className="relative rounded-2xl border-2 flex flex-col items-center justify-center text-center px-[1.2cqw] py-[1.7cqh] overflow-hidden"
+      className="relative rounded-2xl border-2 flex flex-col items-center justify-center text-center px-[1.2cqw] py-[2.2cqh] overflow-hidden"
       style={{
         borderColor: `${color}4d`,
         background: "linear-gradient(180deg, #ffffff 50%, #f8fafc 100%)",
@@ -223,7 +223,7 @@ export function Stat({
         }}
       />
       <span
-        className="text-[6.2cqh] font-black leading-none tracking-tight"
+        className="text-[6.9cqh] font-black leading-none tracking-tight"
         style={{
           background: `linear-gradient(135deg, ${color}, ${color}b3)`,
           WebkitBackgroundClip: "text",
@@ -234,7 +234,7 @@ export function Stat({
         {value}
       </span>
       <span
-        className="mt-[1cqh] text-[2.1cqh] font-bold leading-snug tracking-wide"
+        className="mt-[1.1cqh] text-[2.3cqh] font-bold leading-snug tracking-wide"
         style={{ color: DEEP_INK, opacity: 0.8 }}
       >
         {label}
