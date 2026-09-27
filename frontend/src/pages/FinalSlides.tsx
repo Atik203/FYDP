@@ -215,10 +215,17 @@ function FinalObjectiveSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Design a bounded trust update that re-weights each agent from
+              Design a bounded trust update that re-weights agents from
               retrieved evidence.
             </Bullet>
-            <Bullet>No fine-tuning; models run as served inference.</Bullet>
+            <Bullet>
+              Raw score rises with supported claims (αV) and falls with
+              contradicted ones (βH).
+            </Bullet>
+            <Bullet>
+              Bounded by design (no agent silenced or dominant); no
+              fine-tuning.
+            </Bullet>
           </ul>
         </Card>
         <Card
@@ -232,7 +239,11 @@ function FinalObjectiveSlide() {
               controlled pressure.
             </Bullet>
             <Bullet>
-              Validate annotations before any pilot run (κ ≥ 0.75).
+              Fabricate a wrong expert consensus between round 1 and round 2.
+            </Bullet>
+            <Bullet>
+              Keep divergent, checkable questions; validate annotations
+              (κ ≥ 0.75) and count CCR/MPR.
             </Bullet>
           </ul>
         </Card>
@@ -243,10 +254,13 @@ function FinalObjectiveSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Compare against majority vote, MoA, iMAD and ConsensAgent.
+              Ten baselines (B1–B10), including majority vote, MoA, iMAD and
+              ConsensAgent.
             </Bullet>
+            <Bullet>Four metrics: accuracy, CCR, MPR and ECR.</Bullet>
             <Bullet>
-              Four metrics: accuracy, CCR, MPR and ECR.
+              Three seeds, 95% confidence intervals, paired bootstrap and
+              Cohen's d.
             </Bullet>
           </ul>
         </Card>
@@ -259,7 +273,10 @@ function FinalObjectiveSlide() {
             <Bullet>
               Confirm the trust signal changes decisions, not just context.
             </Bullet>
-            <Bullet>Run the check early, before the full build.</Bullet>
+            <Bullet>
+              Run the check early with a frozen Go/No-Go criterion.
+            </Bullet>
+            <Bullet>A negative result is reported honestly as a finding.</Bullet>
           </ul>
         </Card>
       </div>
@@ -373,12 +390,29 @@ function FinalConventionalSlide() {
           title="Conventional Methods"
           color={ACCENT}
         >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>Majority voting gives every agent equal weight.</Bullet>
-            <Bullet>Confidence weighting uses self-reported signals.</Bullet>
-            <Bullet>Prompt rewriting targets sycophancy before the debate.</Bullet>
-            <Bullet>Static aggregation merges outputs once.</Bullet>
-            <Bullet>Debate prediction decides when to debate at all.</Bullet>
+          <ul className="flex flex-col justify-center h-full [&>li:not(:last-child)]:mb-[1.8cqh]">
+            <Bullet>
+              Majority voting gives every agent equal weight (Du et al., ICML
+              2024).
+            </Bullet>
+            <Bullet>
+              Confidence weighting uses self-reported signals (DebUnc, EMNLP
+              2025).
+            </Bullet>
+            <Bullet>
+              Prompt rewriting targets sycophancy before the debate
+              (ConsensAgent, ACL 2025).
+            </Bullet>
+            <Bullet>
+              Static aggregation merges model outputs once (MoA, ICLR 2025).
+            </Bullet>
+            <Bullet>
+              Debate prediction decides when to debate at all (iMAD, AAAI
+              2026).
+            </Bullet>
+            <Bullet>
+              Every method then aggregates by a vote or an internal score.
+            </Bullet>
           </ul>
         </Card>
         <Card
@@ -386,31 +420,38 @@ function FinalConventionalSlide() {
           title="Evaluation Baselines"
           color={TEAL}
         >
-          <div className="h-full flex items-center">
-            <div className="grid grid-cols-2 w-full gap-[0.9cqh_0.8cqw]">
+          <div className="h-full flex flex-col justify-center gap-[1.8cqh]">
+            <div className="grid grid-cols-2 w-full gap-[1cqh_0.8cqw]">
               {baselines.map(([code, name]) => (
                 <div
                   key={code}
-                  className="flex items-center gap-[0.6cqw] rounded-md border px-[0.7cqw] py-[0.7cqh]"
+                  className="flex items-center gap-[0.6cqw] rounded-lg border px-[0.7cqw] py-[0.85cqh]"
                   style={{
                     borderColor: code === "B8" ? ACCENT : "#cbd5e1",
                     background: code === "B8" ? "#eef2ff" : "#ffffff",
                   }}
                 >
                   <span
-                    className="text-[1.9cqh] font-extrabold"
+                    className="text-[2.15cqh] font-extrabold"
                     style={{ color: code === "B8" ? ACCENT : TEAL }}
                   >
                     {code}
                   </span>
                   <span
-                    className="text-[1.75cqh] font-semibold leading-snug"
+                    className="text-[1.95cqh] font-semibold leading-snug"
                     style={{ color: DEEP_INK }}
                   >
                     {name}
                   </span>
                 </div>
               ))}
+            </div>
+            <div
+              className="text-[1.9cqh] font-semibold leading-snug"
+              style={{ color: "#475569" }}
+            >
+              B1–B4 isolate debate and retrieval; B5–B10 are the published
+              competitors.
             </div>
           </div>
         </Card>
@@ -593,15 +634,19 @@ function FinalDataFlowSlide() {
 function FinalSetupSlide() {
   const debate = [
     "K = 3 rounds",
-    "temperature 0.7",
+    "Temperature 0.7",
     "1,024 output tokens",
-    "three seeds",
+    "Three seeds",
+    "Context window 4,096 tokens",
+    "Retry cap 3 per agent",
   ];
   const stress = [
-    "injection between rounds 1 and 2",
-    "annotation κ ≥ 0.75",
-    "paired bootstrap 95% CI",
-    "Cohen's d",
+    "Injection between rounds 1 and 2",
+    "Annotation κ ≥ 0.75",
+    "Paired bootstrap 95% CI",
+    "10,000 bootstrap resamples",
+    "Injection off in B1–B4",
+    "Cohen's d for effect size",
   ];
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -652,21 +697,17 @@ function FinalSetupSlide() {
           title="Debate Configuration"
           color={ACCENT}
         >
-          <div className="h-full flex items-center">
-            <div className="grid grid-cols-2 w-full gap-[0.9cqh_0.8cqw]">
+          <div className="h-full flex flex-col justify-center gap-[1.8cqh]">
+            <ul>
               {debate.map((d) => (
-                <div
-                  key={d}
-                  className="rounded-xl border px-[0.9cqw] py-[1.2cqh] text-center text-[2.3cqh] font-bold"
-                  style={{
-                    borderColor: "#dbe3ee",
-                    background: "#f8fafc",
-                    color: DEEP_INK,
-                  }}
-                >
-                  {d}
-                </div>
+                <Bullet key={d}>{d}</Bullet>
               ))}
+            </ul>
+            <div
+              className="text-[1.9cqh] font-semibold leading-snug"
+              style={{ color: "#475569" }}
+            >
+              Every round uses the same prompts and the same three models.
             </div>
           </div>
         </Card>
@@ -675,21 +716,18 @@ function FinalSetupSlide() {
           title="Stress Test & Validation"
           color={AMBER}
         >
-          <div className="h-full flex items-center">
-            <div className="grid grid-cols-2 w-full gap-[0.9cqh_0.8cqw]">
+          <div className="h-full flex flex-col justify-center gap-[1.8cqh]">
+            <ul>
               {stress.map((d) => (
-                <div
-                  key={d}
-                  className="rounded-xl border px-[0.9cqw] py-[1.2cqh] text-center text-[2.3cqh] font-bold"
-                  style={{
-                    borderColor: "#f3e2c4",
-                    background: "#fffdf7",
-                    color: DEEP_INK,
-                  }}
-                >
-                  {d}
-                </div>
+                <Bullet key={d}>{d}</Bullet>
               ))}
+            </ul>
+            <div
+              className="text-[1.9cqh] font-semibold leading-snug"
+              style={{ color: "#475569" }}
+            >
+              The fabricated consensus is the wrong majority answer from round
+              1.
             </div>
           </div>
         </Card>
@@ -724,6 +762,13 @@ function FinalResultsSlide() {
             <Bullet>A correct minority survives more often (MPR up).</Bullet>
             <Bullet>Evidence calibration above 0.80 on the expert set.</Bullet>
             <Bullet>No accuracy regression on the stable sets.</Bullet>
+            <Bullet>
+              Largest gains expected on the adversarial sets, where collapse
+              is highest.
+            </Bullet>
+            <Bullet>
+              A reusable CCR/MPR/ECR harness ships with the mechanism.
+            </Bullet>
           </ul>
         </Card>
         <Card
@@ -736,6 +781,13 @@ function FinalResultsSlide() {
             <Bullet>10/10 debates completed · 90/90 non-empty positions.</Bullet>
             <Bullet>Mean 370.8 seconds per debate on the dev trio.</Bullet>
             <Bullet>Claim tags parsed on every generation (fallback included).</Bullet>
+            <Bullet>
+              Total runtime 3,708 seconds; variation only 21.5 seconds across
+              debates.
+            </Bullet>
+            <Bullet>
+              Fallback claim extraction used in 5 of 30 Ministral generations.
+            </Bullet>
           </ul>
         </Card>
       </div>
@@ -825,6 +877,10 @@ function FinalConclusionSlide() {
               An injection protocol with CCR, MPR and ECR measures the effect
               against majority vote, MoA, iMAD and ConsensAgent.
             </Bullet>
+            <Bullet>
+              Every result package returns the answer, its citations and the
+              trust trajectory.
+            </Bullet>
           </ul>
         </Card>
         <Card
@@ -844,6 +900,10 @@ function FinalConclusionSlide() {
             <Bullet>
               Remaining work: full experiment matrix, ablations, human study
               and an open-source release.
+            </Bullet>
+            <Bullet>
+              The design extends to any domain with an evidence corpus, such
+              as law or medicine.
             </Bullet>
           </ul>
         </Card>
