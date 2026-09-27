@@ -69,9 +69,9 @@ export function Card({
 
 export function Bullet({ children }: { children: ReactNode }) {
   return (
-    <li className="flex items-start gap-[0.9cqw] mb-[0.7cqh] last:mb-0">
+    <li className="flex items-start gap-[0.9cqw] mb-[1.15cqh] last:mb-0">
       <span
-        className="flex-shrink-0 mt-[1cqh]"
+        className="flex-shrink-0 mt-[1.35cqh]"
         style={{
           width: "0.9cqh",
           height: "0.9cqh",
@@ -81,7 +81,7 @@ export function Bullet({ children }: { children: ReactNode }) {
         }}
       />
       <span
-        className="text-[2.55cqh] font-medium leading-snug"
+        className="text-[2.55cqh] font-medium leading-[1.45]"
         style={{ color: NEAR_BLACK }}
       >
         {children}
@@ -209,7 +209,7 @@ export function Stat({
 }) {
   return (
     <div
-      className="relative rounded-2xl border-2 flex flex-col items-center justify-center text-center px-[1.2cqw] py-[1.5cqh] overflow-hidden"
+      className="relative rounded-2xl border-2 flex flex-col items-center justify-center text-center px-[1.2cqw] py-[1.7cqh] overflow-hidden"
       style={{
         borderColor: `${color}4d`,
         background: "linear-gradient(180deg, #ffffff 50%, #f8fafc 100%)",
@@ -223,7 +223,7 @@ export function Stat({
         }}
       />
       <span
-        className="text-[5.4cqh] font-black leading-none tracking-tight"
+        className="text-[6.2cqh] font-black leading-none tracking-tight"
         style={{
           background: `linear-gradient(135deg, ${color}, ${color}b3)`,
           WebkitBackgroundClip: "text",
@@ -234,7 +234,7 @@ export function Stat({
         {value}
       </span>
       <span
-        className="mt-[0.9cqh] text-[1.85cqh] font-bold leading-snug tracking-wide"
+        className="mt-[1cqh] text-[2.1cqh] font-bold leading-snug tracking-wide"
         style={{ color: DEEP_INK, opacity: 0.8 }}
       >
         {label}
