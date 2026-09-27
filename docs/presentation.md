@@ -1,6 +1,6 @@
 # Complex Engineering Slides — Presentation Script
 
-> Deck: `/slide`. Numbers here match the team list: **1 = title slide**, **2 = deck slide 4** (first Complex Engineering slide), **3 = deck slide 5**, and so on — **13 = deck slide 15** (matrix). Deck slides 2–3 (iMAD reference slides) are not part of this script.
+> Deck: `/slide/ce`. Numbers here match the team list: **1 = title slide**, **2 = the first Complex Engineering slide**, and so on — **13 = the matrix**. (The main `/slide` deck keeps the title, iMAD reference, and thank-you slides.)
 >
 > Speaking order: Rakibul → Yousuf → Atik → Pratay → Limu → Salman. Two slides each, about 1.5–2 minutes per person.
 >
