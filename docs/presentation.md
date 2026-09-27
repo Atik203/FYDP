@@ -44,7 +44,7 @@ Thank you, Rakibul. This is our scoreboard for FYDP I. It has four numbers.
 
 For problem solving, we cover six of seven attributes. Only P6 is not covered, because we have no external stakeholders.
 
-For knowledge, we cover all eight areas. For activities, we cover three of five. A3 and A4 are beyond prototype scope. For program outcomes, we cover six of twelve. The other six come in FYDP II and FYDP III.
+For knowledge, we cover all eight areas. For activities, we cover four of five. A3 is beyond prototype scope. For program outcomes, we cover six of twelve. The other six come in FYDP II and FYDP III.
 
 These marks are only for FYDP I, because it is the only completed phase.
 
@@ -130,9 +130,9 @@ A5 is familiarity, and it is covered. Multi-agent debate and evidence verificati
 
 A3 is innovation, and it is not covered. We combine existing ideas: debate, retrieval, and trust weighting. So the step is incremental and not patentable.
 
-A4 is consequences, and it is also not covered. This is a lab prototype, not a deployed product. We use about 300 GPU-hours and no fine-tuning, so the social and environmental impact stays small.
+A4 is consequences, and it is covered. The consequences at stake are real: unreliable AI answers in scientific question answering. We also kept the environmental cost low: about 300 GPU-hours, standard configurations, and no fine-tuning.
 
-We mark A3 and A4 as not covered on purpose. We do not want to overclaim.
+We mark A3 as not covered on purpose. We do not want to overclaim.
 
 ### Slide 11 — Program Outcomes Coverage
 
@@ -162,6 +162,6 @@ PO3 and PO5 to PO9 are scheduled for FYDP II and FYDP III. Each covered outcome 
 
 Finally, this is our full mapping matrix. Every column is one attribute. There are twelve program outcomes, eight knowledge areas, seven problem attributes, and five activities.
 
-The FYDP I row shows a check or a cross for each attribute. The bottom row summarizes the result: program outcomes 6 of 12, knowledge 8 of 8, problem attributes 6 of 7, and activities 3 of 5.
+The FYDP I row shows a check or a cross for each attribute. The bottom row summarizes the result: program outcomes 6 of 12, knowledge 8 of 8, problem attributes 6 of 7, and activities 4 of 5.
 
 This is our complex engineering check. The project meets the criteria for FYDP I, and the remaining gaps are planned for later phases. Thank you.
