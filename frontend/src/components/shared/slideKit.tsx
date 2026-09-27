@@ -259,9 +259,9 @@ export function SlideTable({
     <div
       className="rounded-2xl overflow-hidden"
       style={{
-        border: "1.5px solid #cbd5e1",
+        border: "1.5px solid #dbe3ee",
         boxShadow:
-          "0 1.8cqh 3cqh -2cqh rgba(15,23,42,0.35), 0 0.4cqh 0.8cqh -0.4cqh rgba(15,23,42,0.08)",
+          "0 2cqh 3.4cqh -2.2cqh rgba(15,23,42,0.35), 0 0.4cqh 0.8cqh -0.4cqh rgba(15,23,42,0.08)",
       }}
     >
       <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
@@ -273,11 +273,11 @@ export function SlideTable({
             {head.map((h) => (
               <th
                 key={h}
-                className="px-[1cqw] py-[1.1cqh] text-left text-[2.05cqh] font-extrabold uppercase tracking-[0.1em]"
+                className="px-[1.2cqw] py-[1.25cqh] text-left text-[2cqh] font-extrabold uppercase tracking-[0.12em]"
                 style={{
-                  border: "1.5px solid #cbd5e1",
-                  background: `linear-gradient(180deg, ${accent}1f, ${accent}0a)`,
+                  background: `linear-gradient(180deg, ${accent}1f, ${accent}0d)`,
                   color: accent,
+                  borderBottom: `2px solid ${accent}59`,
                 }}
               >
                 {h}
@@ -287,15 +287,22 @@ export function SlideTable({
         </thead>
         <tbody>
           {rows.map((r, ri) => (
-            <tr key={ri}>
+            <tr
+              key={ri}
+              style={{ background: ri % 2 ? "#f8fafc" : "#ffffff" }}
+            >
               {r.map((c, ci) => (
                 <td
                   key={ci}
-                  className="px-[1cqw] py-[1cqh] align-top text-[2cqh] font-medium leading-snug"
+                  className={
+                    ci === 0
+                      ? "px-[1.2cqw] py-[1.25cqh] align-top text-[2.1cqh] font-extrabold leading-snug"
+                      : "px-[1.2cqw] py-[1.25cqh] align-top text-[2.05cqh] font-medium leading-snug"
+                  }
                   style={{
-                    border: "1.5px solid #cbd5e1",
-                    background: ri % 2 ? "#f8fafc" : "#ffffff",
-                    color: NEAR_BLACK,
+                    color: ci === 0 ? NEAR_BLACK : "#334155",
+                    borderBottom:
+                      ri === rows.length - 1 ? "none" : "1px solid #e8edf5",
                   }}
                 >
                   {c}
