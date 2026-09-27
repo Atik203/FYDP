@@ -70,29 +70,40 @@ export function GroupSlide({
   showGroupNo?: boolean;
 }) {
   return (
-    <div className="w-full h-full flex flex-col justify-center px-[7cqw] py-[4cqh]">
+    <div className="relative w-full h-full flex flex-col justify-center px-[7cqw] py-[4cqh]">
       <div className="text-center mb-[2.6cqh]">
         <div
           className="inline-block rounded-full px-[2.4cqw] py-[0.9cqh] text-[1.9cqh] font-bold uppercase tracking-[0.18em]"
-          style={{ background: ACCENT, color: "#ffffff" }}
+          style={{
+            background: "linear-gradient(135deg, #1e40af, #3b5bdb)",
+            color: "#ffffff",
+            boxShadow: "0 1.4cqh 3cqh -1.6cqh rgba(30,64,175,0.85)",
+          }}
         >
           CSE 4000A (B) · Final Year Design Project – I · Section B
         </div>
         <h1
-          className="mt-[2cqh] text-[4cqh] font-extrabold leading-tight"
-          style={{ color: NEAR_BLACK }}
+          className="mt-[2cqh] text-[4.3cqh] font-extrabold leading-[1.12] tracking-tight"
+          style={{
+            color: NEAR_BLACK,
+            fontFamily: "'Source Serif 4', Georgia, serif",
+          }}
         >
           Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating
           Sycophantic Consensus in LLM Reasoning
         </h1>
         <div
-          className="mt-[1.4cqh] flex items-center justify-center gap-[2cqw] text-[2.7cqh] font-bold"
+          className="mt-[1.5cqh] flex items-center justify-center gap-[1.6cqw] text-[2.6cqh] font-bold"
           style={{ color: DEEP_INK }}
         >
           {showGroupNo && (
             <span
-              className="rounded-lg px-[2cqw] py-[0.6cqh]"
-              style={{ background: "#e0e7ff", color: ACCENT }}
+              className="rounded-full px-[2cqw] py-[0.7cqh] text-[2.2cqh] font-extrabold uppercase tracking-[0.1em]"
+              style={{
+                background: "#e0e7ff",
+                color: ACCENT,
+                boxShadow: "0 0.8cqh 1.8cqh -1cqh rgba(30,64,175,0.7)",
+              }}
             >
               Group No. 6
             </span>
@@ -103,8 +114,12 @@ export function GroupSlide({
           </span>
         </div>
         <div
-          className="mt-[1.4cqh] inline-flex items-center gap-[1cqw] rounded-lg px-[2.2cqw] py-[0.8cqh] text-[2.4cqh] font-bold"
-          style={{ background: "#ccfbf1", color: TEAL }}
+          className="mt-[1.5cqh] inline-flex items-center gap-[1cqw] rounded-full px-[2.2cqw] py-[0.8cqh] text-[2.3cqh] font-bold"
+          style={{
+            background: "linear-gradient(135deg, #ccfbf1, #f0fdfa)",
+            color: TEAL,
+            boxShadow: "0 1cqh 2.2cqh -1.2cqh rgba(15,118,110,0.7)",
+          }}
         >
           Supervisor:&nbsp;
           <span style={{ color: NEAR_BLACK }}>Dr. Mohammad Nurul Huda</span>
@@ -115,10 +130,15 @@ export function GroupSlide({
         {MEMBERS.map((m) => (
           <div
             key={m.id}
-            className="flex items-center gap-[1.4cqw] rounded-xl px-[2.2cqw] py-[1.5cqh] border-2"
+            className="flex items-center gap-[1.4cqw] rounded-2xl px-[2.2cqw] py-[1.5cqh] border-2"
             style={{
-              borderColor: m.leader ? ACCENT : "#cbd5e1",
-              background: m.leader ? "#eef2ff" : "#f8fafc",
+              borderColor: m.leader ? `${ACCENT}66` : "#dbe3ee",
+              background: m.leader
+                ? "linear-gradient(135deg, #eef2ff, #ffffff)"
+                : "linear-gradient(135deg, #f8fafc, #ffffff)",
+              boxShadow: m.leader
+                ? "0 1.6cqh 2.8cqh -1.8cqh rgba(30,64,175,0.55)"
+                : "0 1.4cqh 2.6cqh -1.9cqh rgba(15,23,42,0.35)",
             }}
           >
             <div
@@ -126,7 +146,10 @@ export function GroupSlide({
               style={{
                 width: "4.6cqh",
                 height: "4.6cqh",
-                background: m.leader ? ACCENT : "#334155",
+                background: m.leader
+                  ? "linear-gradient(135deg, #1e40af, #3b5bdb)"
+                  : "linear-gradient(135deg, #334155, #475569)",
+                boxShadow: "0 0.8cqh 1.6cqh -0.8cqh rgba(15,23,42,0.6)",
               }}
             >
               {m.leader ? (
@@ -1887,30 +1910,58 @@ export function CeMatrixSlide() {
 /* ── Slide 16: Thank you (no group number) ───────────────────────── */
 export function ThankYouSlide() {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center">
-      <h1
-        className="text-[10cqh] font-extrabold leading-none"
-        style={{ color: NEAR_BLACK }}
-      >
-        Thank You
-      </h1>
+    <div className="relative w-full h-full flex flex-col items-center justify-center px-[8cqw] text-center overflow-hidden">
       <div
-        className="mt-[3cqh] text-[3.2cqh] font-bold"
-        style={{ color: ACCENT }}
-      >
-        Phantom Devs
-      </div>
-      <div
-        className="mt-[1cqh] text-[2.5cqh] font-semibold"
-        style={{ color: DEEP_INK }}
-      >
-        Trust-Calibrated Multi-Agent Scientific Deliberation
-      </div>
-      <div
-        className="mt-[4cqh] text-[2.3cqh] font-medium"
-        style={{ color: "#475569" }}
-      >
-        Questions &amp; Discussion Welcome
+        className="absolute pointer-events-none"
+        style={{
+          width: "64cqw",
+          height: "64cqw",
+          borderRadius: "50%",
+          background:
+            "radial-gradient(closest-side, rgba(30,64,175,0.10), transparent 70%)",
+        }}
+      />
+      <div className="relative">
+        <div
+          className="mx-auto mb-[1.8cqh] h-[0.55cqh] w-[9cqw] rounded-full"
+          style={{
+            background: "linear-gradient(90deg, #1e40af, #0f766e, #b45309)",
+          }}
+        />
+        <h1
+          className="text-[11cqh] font-extrabold leading-none tracking-tight"
+          style={{
+            fontFamily: "'Source Serif 4', Georgia, serif",
+            background: "linear-gradient(135deg, #0a0a0a 25%, #1e40af 80%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          Thank You
+        </h1>
+        <div
+          className="mt-[3cqh] text-[3cqh] font-extrabold uppercase tracking-[0.22em]"
+          style={{ color: ACCENT }}
+        >
+          Phantom Devs
+        </div>
+        <div
+          className="mt-[1cqh] text-[2.4cqh] font-semibold"
+          style={{ color: DEEP_INK, opacity: 0.8 }}
+        >
+          Trust-Calibrated Multi-Agent Scientific Deliberation
+        </div>
+        <div
+          className="mt-[4cqh] inline-flex items-center rounded-full px-[2.4cqw] py-[1cqh] text-[2.2cqh] font-bold"
+          style={{
+            background: "#f1f5f9",
+            color: "#475569",
+            boxShadow: "0 1cqh 2.2cqh -1.3cqh rgba(15,23,42,0.5)",
+          }}
+        >
+          Questions &amp; Discussion Welcome
+        </div>
       </div>
     </div>
   );

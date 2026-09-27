@@ -30,20 +30,33 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border-2 px-[2.2cqw] py-[1.8cqh] flex flex-col",
+        "relative rounded-2xl border-2 flex flex-col px-[2.2cqw] py-[1.8cqh] overflow-hidden",
         className,
       )}
-      style={{ borderColor: color, background: "#ffffff" }}
+      style={{
+        borderColor: `${color}4d`,
+        background: "linear-gradient(180deg, #ffffff 55%, #f8fafc 100%)",
+        boxShadow: `0 1.6cqh 2.8cqh -1.8cqh ${color}40, 0 0.4cqh 0.8cqh -0.4cqh rgba(15,23,42,0.10)`,
+      }}
     >
+      <div
+        className="absolute inset-x-0 top-0 h-[0.42cqh]"
+        style={{ background: `linear-gradient(90deg, ${color}, ${color}22)` }}
+      />
       <div className="flex items-center gap-[1cqw] mb-[1.2cqh]">
         <span
-          className="flex items-center justify-center rounded-lg flex-shrink-0"
-          style={{ width: "4cqh", height: "4cqh", background: color }}
+          className="flex items-center justify-center rounded-xl flex-shrink-0"
+          style={{
+            width: "4cqh",
+            height: "4cqh",
+            background: `linear-gradient(135deg, ${color}, ${color}c9)`,
+            boxShadow: `0 0.8cqh 1.6cqh -0.8cqh ${color}99`,
+          }}
         >
           {icon}
         </span>
         <span
-          className="text-[2.7cqh] font-extrabold uppercase tracking-wide"
+          className="text-[2.55cqh] font-extrabold uppercase tracking-[0.06em]"
           style={{ color }}
         >
           {title}
@@ -58,8 +71,14 @@ export function Bullet({ children }: { children: ReactNode }) {
   return (
     <li className="flex items-start gap-[0.9cqw] mb-[0.7cqh] last:mb-0">
       <span
-        className="rounded-full flex-shrink-0 mt-[1.1cqh]"
-        style={{ width: "1.1cqh", height: "1.1cqh", background: DEEP_INK }}
+        className="flex-shrink-0 mt-[1cqh]"
+        style={{
+          width: "0.9cqh",
+          height: "0.9cqh",
+          background: `linear-gradient(135deg, ${DEEP_INK}, ${ACCENT})`,
+          transform: "rotate(45deg)",
+          borderRadius: "0.15cqh",
+        }}
       />
       <span
         className="text-[2.55cqh] font-medium leading-snug"
@@ -96,23 +115,40 @@ export function SlideHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="mb-[1.5cqh]">
+    <div className="relative mb-[1.4cqh] pl-[1.3cqw]">
       <div
-        className="inline-block rounded px-[1.6cqw] py-[0.5cqh] text-[1.9cqh] font-bold uppercase tracking-wider"
-        style={{ background: badgeBg, color: badgeColor }}
+        className="absolute left-0 top-[0.3cqh] bottom-[0.3cqh] w-[0.38cqw] rounded-full"
+        style={{
+          background: `linear-gradient(180deg, ${badgeColor}, ${badgeColor}44)`,
+        }}
+      />
+      <div
+        className="inline-flex items-center gap-[0.7cqw] rounded-full px-[1.4cqw] py-[0.45cqh] text-[1.75cqh] font-extrabold uppercase tracking-[0.14em]"
+        style={{
+          background: badgeBg,
+          color: badgeColor,
+          boxShadow: `0 0.8cqh 1.8cqh -1cqh ${badgeColor}99`,
+        }}
       >
+        <span
+          className="rounded-full"
+          style={{ width: "0.85cqh", height: "0.85cqh", background: badgeColor }}
+        />
         {badge}
       </div>
       <h1
-        className="mt-[1.1cqh] text-[4cqh] font-extrabold leading-tight"
-        style={{ color: NEAR_BLACK }}
+        className="mt-[0.9cqh] text-[4cqh] font-extrabold leading-[1.08] tracking-tight"
+        style={{
+          color: NEAR_BLACK,
+          fontFamily: "'Source Serif 4', Georgia, serif",
+        }}
       >
         {title}
       </h1>
       {subtitle && (
         <div
-          className="mt-[0.7cqh] text-[2.25cqh] font-semibold"
-          style={{ color: DEEP_INK }}
+          className="mt-[0.5cqh] text-[2.15cqh] font-semibold leading-snug"
+          style={{ color: DEEP_INK, opacity: 0.72 }}
         >
           {subtitle}
         </div>
@@ -143,8 +179,11 @@ export function Figure({
       <img
         src={src}
         alt={alt}
-        className="max-h-full max-w-full object-contain rounded-lg border-2"
-        style={{ borderColor: "#cbd5e1" }}
+        className="max-h-full max-w-full object-contain rounded-xl border-2"
+        style={{
+          borderColor: "#cbd5e1",
+          boxShadow: "0 2cqh 4cqh -2.4cqh rgba(15,23,42,0.45)",
+        }}
       />
       {caption && (
         <figcaption
@@ -170,18 +209,33 @@ export function Stat({
 }) {
   return (
     <div
-      className="rounded-xl border-2 px-[1.2cqw] py-[1.5cqh] flex flex-col items-center justify-center text-center"
-      style={{ borderColor: color, background: "#ffffff" }}
+      className="relative rounded-2xl border-2 flex flex-col items-center justify-center text-center px-[1.2cqw] py-[1.5cqh] overflow-hidden"
+      style={{
+        borderColor: `${color}4d`,
+        background: "linear-gradient(180deg, #ffffff 50%, #f8fafc 100%)",
+        boxShadow: `0 1.6cqh 2.8cqh -1.9cqh ${color}59`,
+      }}
     >
+      <div
+        className="absolute inset-x-0 top-0 h-[0.42cqh]"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${color}, transparent)`,
+        }}
+      />
       <span
-        className="text-[5cqh] font-extrabold leading-none"
-        style={{ color }}
+        className="text-[5.4cqh] font-black leading-none tracking-tight"
+        style={{
+          background: `linear-gradient(135deg, ${color}, ${color}b3)`,
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          color: "transparent",
+        }}
       >
         {value}
       </span>
       <span
-        className="mt-[0.9cqh] text-[1.9cqh] font-semibold leading-snug"
-        style={{ color: DEEP_INK }}
+        className="mt-[0.9cqh] text-[1.85cqh] font-bold leading-snug tracking-wide"
+        style={{ color: DEEP_INK, opacity: 0.8 }}
       >
         {label}
       </span>
@@ -202,49 +256,55 @@ export function SlideTable({
   accent?: string;
 }) {
   return (
-    <table
-      className="w-full border-collapse"
-      style={{ tableLayout: "fixed" }}
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{
+        border: "1.5px solid #cbd5e1",
+        boxShadow:
+          "0 1.8cqh 3cqh -2cqh rgba(15,23,42,0.35), 0 0.4cqh 0.8cqh -0.4cqh rgba(15,23,42,0.08)",
+      }}
     >
-      <colgroup>
-        {colWidths?.map((w, i) => <col key={i} style={{ width: w }} />)}
-      </colgroup>
-      <thead>
-        <tr>
-          {head.map((h) => (
-            <th
-              key={h}
-              className="px-[1cqw] py-[1.1cqh] text-left text-[2.1cqh] font-extrabold uppercase tracking-wide"
-              style={{
-                border: "2px solid #94a3b8",
-                background: `${accent}14`,
-                color: accent,
-              }}
-            >
-              {h}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r, ri) => (
-          <tr key={ri}>
-            {r.map((c, ci) => (
-              <td
-                key={ci}
-                className="px-[1cqw] py-[1cqh] align-top text-[2cqh] font-medium leading-snug"
+      <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
+        <colgroup>
+          {colWidths?.map((w, i) => <col key={i} style={{ width: w }} />)}
+        </colgroup>
+        <thead>
+          <tr>
+            {head.map((h) => (
+              <th
+                key={h}
+                className="px-[1cqw] py-[1.1cqh] text-left text-[2.05cqh] font-extrabold uppercase tracking-[0.1em]"
                 style={{
                   border: "1.5px solid #cbd5e1",
-                  background: ri % 2 ? "#f8fafc" : "#ffffff",
-                  color: NEAR_BLACK,
+                  background: `linear-gradient(180deg, ${accent}1f, ${accent}0a)`,
+                  color: accent,
                 }}
               >
-                {c}
-              </td>
+                {h}
+              </th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((r, ri) => (
+            <tr key={ri}>
+              {r.map((c, ci) => (
+                <td
+                  key={ci}
+                  className="px-[1cqw] py-[1cqh] align-top text-[2cqh] font-medium leading-snug"
+                  style={{
+                    border: "1.5px solid #cbd5e1",
+                    background: ri % 2 ? "#f8fafc" : "#ffffff",
+                    color: NEAR_BLACK,
+                  }}
+                >
+                  {c}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
