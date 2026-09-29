@@ -28,7 +28,9 @@ Qineng Wang, Zihao Wang, Ying Su, Hanghang Tong, and Yangqiu Song.
 Hyeong~Kyu Choi, Jerry Zhu, and Sharon Li.
 \newblock Debate or vote: Which yields better decisions in multi-agent large
   language models?
-\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~38, 2025.
+\newblock Spotlight presentation.
 
 \bibitem{ibrahim2026training}
 L.~Ibrahim, F.~S. Hafner, and L.~Rocher.
@@ -42,6 +44,7 @@ Wei Fan, JinYi Yoon, and Bo~Ji.
   {LLM} inference.
 \newblock In {\em Proceedings of the Fortieth AAAI Conference on Artificial
   Intelligence}, pages 29403--29411, 2026.
+\newblock Oral presentation.
 
 \bibitem{yoffe-etal-2025-debunc}
 Luke Yoffe, Alfonso Amayuelas, and William~Yang Wang.
@@ -55,8 +58,7 @@ Luke Yoffe, Alfonso Amayuelas, and William~Yang Wang.
 Junlin Wang, Jue Wang, Ben Athiwaratkun, Ce~Zhang, and James~Y Zou.
 \newblock Mixture-of-agents enhances large language model capabilities.
 \newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em
-  International Conference on Learning Representations}, volume 2025, pages
-  33944--33963, 2025.
+  International Conference on Learning Representations}, 2025.
 
 \bibitem{he2026minority}
 Chuan He, Zebin Chen, Zhengyi Yang, Shaobo Qiao, Mingchen Ju, Jiate Liu, Dong
@@ -118,16 +120,16 @@ Yubo Wang, Xueguang Ma, Ge~Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo,
 \bibitem{zhang2025from}
 D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng,
   X.~Chen, Y.~Zhang, F.~Yin, J.~Dong, Z.~Guo, L.~Song, and C.-L. Liu.
-\newblock From system 1 to system 2: a survey of reasoning large language
+\newblock From system 1 to system 2: A survey of reasoning large language
   models.
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  pages 1--20, 2025.
+  48(3):3335--3354, 2026.
 
 \bibitem{li2024survey}
 Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.
 \newblock A survey on {LLM}-based multi-agent systems: workflow,
   infrastructure, and challenges.
-\newblock {\em Vicinagearth}, 1(9), 2024.
+\newblock {\em Vicinagearth}, 1(1):9, 2024.
 
 \bibitem{zhou2025reso}
 Heng Zhou, Hejia Geng, Xiangyuan Xue, Li~Kang, Yiran Qin, Zhiyong Wang, Zhenfei
@@ -157,7 +159,7 @@ Yuru Wang, Kaiyan Zhang, Kai Tian, Sihang Zeng, Xingtai Lv, Ning Ding, Biqing
   Association for Computational Linguistics.
 
 \bibitem{cau2025selective}
-E.~Cau, V.~Pansanella, D.~Pedreschi, et~al.
+E.~Cau, V.~Pansanella, D.~Pedreschi, and G.~Rossetti.
 \newblock Selective agreement, not sycophancy: investigating opinion dynamics
   in {LLM} interactions.
 \newblock {\em EPJ Data Science}, 14:59, August 2025.
@@ -173,7 +175,8 @@ Xian~Yeow Lee, Shunichi Akatsuka, Lasitha Vidyaratne, Aman Kumar, Ahmed
 Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
 \newblock {FREE-MAD}: Consensus-free multi-agent debate.
 \newblock In {\em Findings of the Association for Computational Linguistics:
-  ACL 2026}, 2026.
+  ACL 2026}, pages 31977--31997, San Diego, California, United States, July
+  2026. Association for Computational Linguistics.
 
 \bibitem{chen2025self}
 Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
@@ -189,11 +192,6 @@ Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan
 \newblock A diagnostic study of multi-agent llms for real-world debates.
 \newblock In {\em Proceedings of the 43rd International Conference on Machine
   Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
-
-\bibitem{han2024synergizing}
-Dongqi Han, Kenji Doya, Dongsheng Li, and Jun Tani.
-\newblock Synergizing habits and goals with variational bayes.
-\newblock {\em Nature Communications}, 15(1):4461, 2024.
 
 \bibitem{yao2025peacemaker}
 Binwei Yao, Chao Shang, Wanyu Du, Jianfeng He, Ruixue Lian, Yi~Zhang, Hang Su,
@@ -236,8 +234,7 @@ Yexiang Liu, Jie Cao, Zekun Li, Ran He, and Tieniu Tan.
 \newblock Breaking mental set to improve reasoning through diverse multi-agent
   debate.
 \newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em
-  International Conference on Learning Representations}, volume 2025, pages
-  24666--24725, 2025.
+  International Conference on Learning Representations}, 2025.
 
 \bibitem{li-etal-2024-improving-multi}
 Yunxuan Li, Yibing Du, Jiageng Zhang, Le~Hou, Peter Grabowski, Yeqing Li, and
@@ -265,7 +262,7 @@ Y.~Zhou and Y.~Chen.
 Wenli Yang, Lilian Some, Michael Bain, and Byeong Kang.
 \newblock A comprehensive survey on integrating large language models with
   knowledge-based methods.
-\newblock {\em Knowledge-Based Systems}, 2025.
+\newblock {\em Knowledge-Based Systems}, 318:113503, 2025.
 
 \bibitem{cemri2025why}
 Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra,
