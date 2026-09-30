@@ -590,7 +590,11 @@ const MATRIX_GROUPS: {
 ];
 
 /* ── Slide 4: Complex Engineering — why this project qualifies ───── */
-export function CeOverviewSlide() {
+export function CeOverviewSlide({
+  title = "Why FYDP I Is a Complex Engineering Problem",
+}: {
+  title?: string;
+}) {
   const lenses = [
     { code: "P1–P7", label: "Complex Problem Solving" },
     { code: "K1–K8", label: "Knowledge Profile" },
@@ -603,7 +607,7 @@ export function CeOverviewSlide() {
         badge="Complex Engineering Problem · Washington Accord"
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
-        title="Why FYDP I Is a Complex Engineering Problem"
+        title={title}
         subtitle="The Washington Accord judges complex problems through four lenses — problem solving, knowledge, activities, and outcomes."
       />
 
@@ -1682,7 +1686,13 @@ function CeOutcomesTwoSlide() {
 }
 
 /* ── Slide 15: Overall FYDP I mapping matrix ─────────────────────── */
-export function CeMatrixSlide() {
+export function CeMatrixSlide({
+  badge = "Overall Mapping · FYDP I",
+  title = "FYDP I Against Every Attribute",
+}: {
+  badge?: string;
+  title?: string;
+}) {
   const needsK: Record<string, string> = {
     PO1: "K1–K4",
     PO2: "K1–K4",
@@ -1697,10 +1707,10 @@ export function CeMatrixSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[2cqw] py-[2.2cqh]">
       <SlideHeader
-        badge="Overall Mapping · FYDP I"
+        badge={badge}
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
-        title="FYDP I Against Every Attribute"
+        title={title}
         subtitle="Program Outcomes · Knowledge Profile · Complex Engineering Problem Solving · Complex Engineering Activities"
       />
 
