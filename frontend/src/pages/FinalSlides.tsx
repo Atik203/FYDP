@@ -23,13 +23,11 @@ import {
   AlertTriangle,
   BarChart3,
   BookOpen,
-  Boxes,
   ClipboardCheck,
   Code,
   FlaskConical,
   Globe,
   Layers,
-  Network,
   Search,
   Target,
   TrendingUp,
@@ -290,7 +288,7 @@ function FinalDatasetSlide() {
         colWidths={["16%", "22%", "38%", "24%"]}
         accent={TEAL}
         rows={[
-          ["GPQA", "Stable", "448 questions · Diamond 198", "CC BY 4.0"],
+          ["GPQA", "Stable", "≈450 questions · Diamond 198", "CC BY 4.0"],
           ["MMLU-Pro", "Stable", "12,032 questions · 14 subjects", "MIT"],
           ["HLE", "Expert ceiling", "2,500+ expert questions", "MIT · gated"],
           ["BrokenMath", "Adversarial", "504 samples · 183 final-answer", "CC BY-NC-SA 4.0"],
@@ -501,7 +499,7 @@ function FinalMethodSlide() {
 
 
 
-/* ── Pipeline ───────────────────────────────────────────────────── */
+/* ── Slide 8: Pipeline ──────────────────────────────────────────── */
 function FinalPipelineSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[3cqw] py-[3cqh]">
@@ -522,7 +520,7 @@ function FinalPipelineSlide() {
   );
 }
 
-/* ── Slide 8: Flow Diagram (DataFlow) ───────────────────────────── */
+/* ── Slide 9: Flow Diagram (DataFlow) ───────────────────────────── */
 function FinalDataFlowSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[3cqw] py-[3cqh]">
@@ -543,7 +541,7 @@ function FinalDataFlowSlide() {
   );
 }
 
-/* ── Slide 9: Experimental Setup ────────────────────────────────── */
+/* ── Slide 10: Experimental Setup ───────────────────────────────── */
 function FinalSetupSlide() {
   const debate = [
     "K = 3 rounds",
@@ -568,41 +566,25 @@ function FinalSetupSlide() {
         title="How the Experiments Run"
         subtitle="Two model stacks, one code path: the swap is a config change."
       />
-      <div className="grid grid-cols-3 gap-[1.8cqw]">
-        <Card
-          icon={<Boxes size="2.4cqh" color="#fff" />}
-          title="Dev Stack"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>
-              Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B, 4-bit, on one RTX
-              A6000 48 GB.
-            </Bullet>
-          </ul>
-        </Card>
-        <Card
-          icon={<Layers size="2.4cqh" color="#fff" />}
-          title="Final Stack"
-          color={TEAL}
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>
-              Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B, FP8, on
-              one RTX PRO 6000 96 GB.
-            </Bullet>
-          </ul>
-        </Card>
-        <Card
-          icon={<Network size="2.4cqh" color="#fff" />}
-          title="Serving"
-          color={AMBER}
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>vLLM, OpenAI-compatible; one server per agent.</Bullet>
-          </ul>
-        </Card>
-      </div>
+      <SlideTable
+        head={["Stack", "Agents", "Hardware", "Precision"]}
+        colWidths={["12%", "48%", "26%", "14%"]}
+        accent={ACCENT}
+        rows={[
+          [
+            "Dev",
+            "Qwen3.5-9B · Gemma 4 12B · Ministral-3-14B",
+            "RTX A6000 48 GB",
+            "4-bit",
+          ],
+          [
+            "Final",
+            "Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B",
+            "RTX PRO 6000 96 GB",
+            "FP8",
+          ],
+        ]}
+      />
       <div className="grid grid-cols-2 gap-[1.8cqw] mt-[1.8cqh] flex-1 min-h-0">
         <Card
           icon={<Code size="2.4cqh" color="#fff" />}
@@ -632,14 +614,14 @@ function FinalSetupSlide() {
         </Card>
       </div>
       <NoteStrip color={ACCENT}>
-        Compute: about 300 GPU-hours · budget USD 340–820. Evaluation sets keep
-        only questions with divergent first answers.
+        Serving: vLLM, OpenAI-compatible, one server per agent · compute ≈300
+        GPU-hours · budget USD 340–820.
       </NoteStrip>
     </div>
   );
 }
 
-/* ── Slide 10: Results (expected + pilot) ───────────────────────── */
+/* ── Slide 11: Results (expected + pilot) ───────────────────────── */
 function FinalResultsSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -650,21 +632,36 @@ function FinalResultsSlide() {
         title="Project Results"
         subtitle="Expected outcomes and the results already measured."
       />
-      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
-        <Card
-          icon={<TrendingUp size="2.4cqh" color="#fff" />}
-          title="Expected Results"
-          color={ACCENT}
-        >
-          <ul className="flex flex-col justify-center h-full">
-            <Bullet>CCR: 20 to 30 percent lower than standard debate.</Bullet>
-            <Bullet>A correct minority survives more often (MPR up).</Bullet>
-            <Bullet>Evidence calibration above 0.80 on the expert set.</Bullet>
-            <Bullet>No accuracy regression on the stable sets.</Bullet>
-            <Bullet>Largest gains expected on the adversarial sets.</Bullet>
-            <Bullet>A reusable CCR/MPR/ECR harness ships with the mechanism.</Bullet>
-          </ul>
-        </Card>
+      <div className="grid grid-cols-[1.45fr_1fr] gap-[2cqw] flex-1 min-h-0">
+        <div className="flex flex-col justify-center min-h-0">
+          <SlideTable
+            head={["Metric", "What it measures", "Expected"]}
+            colWidths={["15%", "45%", "40%"]}
+            accent={ACCENT}
+            rows={[
+              [
+                "Accuracy",
+                "correct final answers",
+                "no regression on GPQA / MMLU-Pro",
+              ],
+              [
+                "CCR",
+                "correct agents who cave under pressure",
+                "20–30% lower than debate",
+              ],
+              [
+                "MPR",
+                "debates where a correct minority survives",
+                "higher than debate",
+              ],
+              [
+                "ECR",
+                "does the trust weight track correctness",
+                "above 0.80 on the expert set",
+              ],
+            ]}
+          />
+        </div>
         <Card
           icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
           title="Completed Experiments"
@@ -683,8 +680,8 @@ function FinalResultsSlide() {
         </Card>
       </div>
       <NoteStrip color={TEAL}>
-        Metrics: answer accuracy · consensus-collapse rate · minority-preservation
-        rate · evidence-calibration rate.
+        Largest gains expected on the adversarial sets · a reusable CCR/MPR/ECR
+        harness ships with the mechanism.
       </NoteStrip>
     </div>
   );
@@ -692,8 +689,7 @@ function FinalResultsSlide() {
 
 
 
-/* ── Slide 15: Conclusion ───────────────────────────────────────── */
-/* ── System Context · Application ───────────────────────────────── */
+/* ── Slide 12: System Context · Application ─────────────────────── */
 function FinalContextSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -734,6 +730,83 @@ function FinalContextSlide() {
   );
 }
 
+/* ── Slide 16: Limitations ──────────────────────────────────────── */
+function FinalLimitationsSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Limitations"
+        badgeBg="#fee2e2"
+        badgeColor={ROSE}
+        title="What the Study Cannot Claim"
+        subtitle="Known limitations and threats to validity, stated honestly."
+      />
+      <div className="grid grid-cols-3 gap-[1.8cqw] flex-1 min-h-0">
+        <Card
+          icon={<Search size="2.4cqh" color="#fff" />}
+          title="Evidence Limits"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Claims no source can verify are excluded from the trust update.
+            </Bullet>
+            <Bullet>
+              Retrieval coverage varies by field; niche claims stay sparse.
+            </Bullet>
+            <Bullet>
+              The mechanism is only as strong as the passages the sources
+              return.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<AlertTriangle size="2.4cqh" color="#fff" />}
+          title="Model Limits"
+          color={AMBER}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Heterogeneous families reduce correlated errors but do not remove
+              them.
+            </Bullet>
+            <Bullet>
+              Three model families are a finite pool with shared blind spots.
+            </Bullet>
+            <Bullet>
+              No fine-tuning means no model is adapted to the task.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<FlaskConical size="2.4cqh" color="#fff" />}
+          title="Study Limits"
+          color={ROSE}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              The pilot covers 10 questions; the main matrix is still to run.
+            </Bullet>
+            <Bullet>
+              Injection is an explicit upper-bound stress test, not everyday
+              sycophancy.
+            </Bullet>
+            <Bullet>
+              Scope stops at scientific QA where a corpus and a gold answer
+              exist.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+      <NoteStrip color={ROSE}>
+        The behavioral Go/No-Go criterion was frozen before the pilot ran; a
+        negative result is reported as a finding, not hidden.
+      </NoteStrip>
+    </div>
+  );
+}
+
+/* ── Slide 17: Conclusion ───────────────────────────────────────── */
 function FinalConclusionSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
@@ -796,9 +869,25 @@ function FinalConclusionSlide() {
   );
 }
 
-/* ── Slide 16: Thank You (same as /slide) ───────────────────────── */
+/* ── Slide 18: Thank You (same as /slide) ───────────────────────── */
 function FinalThankYouSlide() {
   return <ThankYouSlide />;
+}
+
+/* ── CE slides retitled for the final defence ───────────────────── */
+function FinalCeOverviewSlide() {
+  return (
+    <CeOverviewSlide title="Why This Project Is a Complex Engineering Problem" />
+  );
+}
+
+function FinalCeMatrixSlide() {
+  return (
+    <CeMatrixSlide
+      badge="Overall Mapping · This Project"
+      title="This Project Against Every Attribute (FYDP I)"
+    />
+  );
 }
 
 /* ── Final deck composition ─────────────────────────────────────── */
@@ -816,9 +905,10 @@ export const FINAL_SLIDES = [
   FinalSetupSlide,
   FinalResultsSlide,
   FinalContextSlide,
-  CeOverviewSlide,
+  FinalCeOverviewSlide,
   CeDefinitionsSlide,
-  CeMatrixSlide,
+  FinalCeMatrixSlide,
+  FinalLimitationsSlide,
   FinalConclusionSlide,
   FinalThankYouSlide,
 ];

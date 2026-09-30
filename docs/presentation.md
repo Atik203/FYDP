@@ -1,7 +1,7 @@
 # Final Defence Slides — Presentation Script
 
-> Deck: `/slide/final` — **17 slides**, six presenters, target **8–10 minutes**.
-> Speaking order: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu** (about 1.5 minutes each; Limu about 1 minute).
+> Deck: `/slide/final` — **18 slides**, six presenters, target **8–10 minutes**.
+> Speaking order: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu** (three slides each, about 1.5 minutes each).
 > Speak slowly, about 120 words per minute. Short sentences. One idea per sentence.
 > Point at the slide when you say a code like "P1", "K4" or "B10".
 
@@ -97,13 +97,17 @@ Limu will close the presentation.
 
 ---
 
-## M6 — Mst. Farjana Akter Limu · Slides 16–17
+## M6 — Mst. Farjana Akter Limu · Slides 16–18
 
-### Slide 16 — Conclusion
+### Slide 16 — Limitations
+
+Every method has boundaries, and we state ours honestly. The evidence limit: claims that no source can verify are excluded from the trust update, so the mechanism is only as strong as the passages the sources return. The model limit: different model families reduce correlated errors, but they do not remove them. The study limit: the pilot covers ten questions, and the injection is an explicit upper-bound stress test. The scope stops at scientific QA, where a corpus and a gold answer exist.
+
+### Slide 17 — Conclusion
 
 To conclude. The project addresses a real failure: a confident wrong majority pushing a correct minority into sycophantic consensus. Our mechanism is a bounded trust score from retrieved evidence, updated during the debate. The evaluation uses the injection protocol and the CCR, MPR and ECR metrics against the baselines. Completed runs show the pipeline works end to end on three models. The design applies to scientific QA, education and other evidence domains. Remaining work: the full experiment matrix, ablations, the human study and an open-source release.
 
-### Slide 17 — Thank You
+### Slide 18 — Thank You
 
 Thank you for your attention. We are happy to take your questions.
 
