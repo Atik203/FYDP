@@ -869,6 +869,71 @@ function FinalConclusionSlide() {
   );
 }
 
+/* ── Compact-only Conclusion — Application content merged in ────── */
+function FinalCompactConclusionSlide() {
+  return (
+    <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
+      <SlideHeader
+        badge="Conclusion · Application"
+        badgeBg="#e0e7ff"
+        badgeColor={ACCENT}
+        title="The Project in One View"
+        subtitle="The problem, the mechanism, where it applies, and what comes next."
+      />
+      <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
+        <Card
+          icon={<Target size="2.4cqh" color="#fff" />}
+          title="The Project"
+          color={ACCENT}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              A confident wrong majority can push a correct minority into
+              sycophantic consensus.
+            </Bullet>
+            <Bullet>
+              A bounded trust score from retrieved evidence re-weights agents,
+              and CCR/MPR/ECR measures the effect against the baselines.
+            </Bullet>
+            <Bullet>
+              Every result package returns the answer, citations and trust
+              trajectory.
+            </Bullet>
+          </ul>
+        </Card>
+        <Card
+          icon={<Globe size="2.4cqh" color="#fff" />}
+          title="Applications and Next Steps"
+          color={TEAL}
+        >
+          <ul className="flex flex-col justify-center h-full">
+            <Bullet>
+              Scientific question answering with citations a reader can check.
+            </Bullet>
+            <Bullet>
+              Research assistants that link every answer to retrieved papers.
+            </Bullet>
+            <Bullet>
+              Extends to law or medicine where an evidence corpus exists.
+            </Bullet>
+            <Bullet>
+              Expected: fewer collapses, a preserved minority, calibrated
+              trust.
+            </Bullet>
+            <Bullet>
+              Remaining: full matrix, ablations, human study, open-source
+              release.
+            </Bullet>
+          </ul>
+        </Card>
+      </div>
+      <NoteStrip color={ACCENT}>
+        Evidence decides who wins the debate, not the number of voices.
+      </NoteStrip>
+    </div>
+  );
+}
+
 /* ── Slide 18: Thank You (same as /slide) ───────────────────────── */
 function FinalThankYouSlide() {
   return <ThankYouSlide />;
@@ -910,5 +975,26 @@ export const FINAL_SLIDES = [
   FinalCeMatrixSlide,
   FinalLimitationsSlide,
   FinalConclusionSlide,
+  FinalThankYouSlide,
+];
+
+/* Compact defence deck — route /slide/final/1.
+   14 slides: Title + 12 content + Thank You, so the first and last
+   presenters cover 3 slides and the other four cover 2 slides each.
+   Cut from the full deck: Pipeline, Context, CE Definitions, Limitations. */
+export const FINAL_SLIDES_COMPACT = [
+  FinalTitleSlide,
+  FinalIntroSlide,
+  FinalMotivationSlide,
+  FinalObjectiveSlide,
+  FinalDatasetSlide,
+  FinalConventionalSlide,
+  FinalMethodSlide,
+  FinalDataFlowSlide,
+  FinalSetupSlide,
+  FinalResultsSlide,
+  FinalCeOverviewSlide,
+  FinalCeMatrixSlide,
+  FinalCompactConclusionSlide,
   FinalThankYouSlide,
 ];
