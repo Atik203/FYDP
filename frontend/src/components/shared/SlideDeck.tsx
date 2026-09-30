@@ -200,7 +200,7 @@ export function SlideDeck({ slides }: { slides: ComponentType[] }) {
           className="absolute bottom-[1cqh] right-[1.4cqw] z-[2] text-[1.8cqh] font-extrabold tabular-nums select-none pointer-events-none"
           style={{ color: "#0f172a" }}
         >
-          {index + 1} / {slides.length}
+          {index + 1}
         </div>
       </div>
 
