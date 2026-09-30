@@ -7,7 +7,7 @@ import { OverviewPage } from "@/pages/OverviewPage";
 import { PapersPage } from "@/pages/PapersPage";
 import { ProposalPage } from "@/pages/ProposalPage";
 import { RoadmapPage } from "@/pages/RoadmapPage";
-import { FinalSlidePage } from "@/pages/FinalSlidePage";
+import { FinalCompactSlidePage, FinalSlidePage } from "@/pages/FinalSlidePage";
 import { SlidePage } from "@/pages/SlidePage";
 import { SlidesCePage } from "@/pages/SlidesCePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -37,10 +37,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Standalone presentation decks — intentionally not in the navbar.
-              Main deck: /slide · Complex Engineering: /slide/ce · Final defence: /slide/final */}
+              Main deck: /slide · Complex Engineering: /slide/ce
+              Final defence: /slide/final (18 slides) · compact: /slide/final/1 (14 slides) */}
           <Route path="/slide" element={<SlidePage />} />
           <Route path="/slide/ce" element={<SlidesCePage />} />
           <Route path="/slide/final" element={<FinalSlidePage />} />
+          <Route path="/slide/final/1" element={<FinalCompactSlidePage />} />
           <Route path="/*" element={<SiteLayout />} />
         </Routes>
       </BrowserRouter>

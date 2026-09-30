@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'dist');
-const routes = ['/', '/idea/1', '/roadmap', '/papers', '/proposal', '/slide', '/slide/ce', '/slide/final'];
+const routes = ['/', '/idea/1', '/roadmap', '/papers', '/proposal', '/slide', '/slide/ce', '/slide/final', '/slide/final/1'];
 
 async function findChrome() {
   if (process.platform === 'linux') {
