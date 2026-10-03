@@ -4,6 +4,7 @@
 > Speaking order: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu** (three slides each, about 1.5 minutes each).
 > Speak slowly, about 120 words per minute. Short sentences. One idea per sentence.
 > Point at the slide when you say a code like "P1", "K4" or "B10".
+> Reference deck only — the final defence uses the compact deck at the bottom of this file.
 
 ---
 
@@ -129,81 +130,83 @@ Any presenter can use these.
 
 ---
 
-## Compact Deck — `/slide/final/1` (14 slides)
+## Compact Deck — `/slide/final/1` (14 slides) · Final Deck
 
-> Same order and pace: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu**. The first and last presenters cover **3 slides**; the other four cover **2 slides** each. Target **8–10 minutes** (about 1.5 minutes per person).
-> Cut from the full deck: Pipeline, System Context, CE Definitions, Limitations. The Application content from the System Context slide is merged into the compact Conclusion. The Faculty Q&A answers above apply unchanged.
+> The final defence uses this deck. **Total: ~850 words — about 7 minutes at 120 wpm, max 8 minutes live.**
+> Same order: **Rakibul → Yousuf → Atik → Pratay → Salman → Limu**. The first and last presenters cover **3 slides**; the other four cover **2 slides** each.
+> Short sentences. One idea per sentence. Point at the slide for codes like "P1", "K4", "B10", "CCR".
+> Cut from the full deck: Pipeline, System Context, CE Definitions, Limitations. The Application content is merged into the compact Conclusion. The Faculty Q&A answers above apply unchanged.
 
-| Presenter | Slides | Content |
-| --- | --- | --- |
-| M1 — Rakibul Hasan | 1–3 | Title · Introduction · Motivation |
-| M2 — Yousuf Kamal Himel | 4–5 | Objective · Dataset |
-| M3 — Md. Atikur Rahaman | 6–7 | Conventional Method · Proposed Method |
-| M4 — Pratay Paul | 8–9 | Flow Diagram · Experimental Setup |
-| M5 — Md. Salman Rohoman Nayeem | 10–11 | Project Results · Why Complex Engineering |
-| M6 — Mst. Farjana Akter Limu | 12–14 | Complex Engineering Matrix · Conclusion · Thank You |
+| Presenter | Slides | Words | Content |
+| --- | --- | --- | --- |
+| M1 — Rakibul Hasan | 1–3 | 169 | Title · Introduction · Motivation |
+| M2 — Yousuf Kamal Himel | 4–5 | 130 | Objective · Dataset |
+| M3 — Md. Atikur Rahaman | 6–7 | 148 | Conventional Method · Proposed Method |
+| M4 — Pratay Paul | 8–9 | 131 | Flow Diagram · Experimental Setup |
+| M5 — Md. Salman Rohoman Nayeem | 10–11 | 111 | Project Results · Why Complex Engineering |
+| M6 — Mst. Farjana Akter Limu | 12–14 | 159 | Complex Engineering Matrix · Conclusion · Thank You |
 
 ### Slide 1 — Title
 
-Good morning everyone. We are Team Phantom Devs. Our project is "Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning". Our supervisor is Dr. Mohammad Nurul Huda. Today we present our FYDP I defence.
+Good morning, everyone. We are Team Phantom Devs. Our project is trust-calibrated multi-agent debate for science questions. Our supervisor is Dr. Mohammad Nurul Huda. Today we present our FYDP I defence.
 
 ### Slide 2 — Introduction
 
-Large language models can answer hard science questions, but they can also be confidently wrong. Multi-agent debate helps: three models answer the same question and compare their reasoning. But most systems decide by majority vote, and every agent counts the same. A confident wrong majority can push a correct minority to give up its answer. We call this sycophantic consensus. No current debate system checks the claims against outside evidence while the debate runs. Our project fixes this.
+LLMs can answer hard science questions. They can also be wrong with full confidence. Multi-agent debate helps: three models answer, then compare. But most systems use a majority vote. Every agent counts the same. So a wrong majority can push a correct agent to give up. We call this sycophantic consensus. No debate system checks claims against real evidence while it runs. Our project fixes that.
 
 ### Slide 3 — Motivation
 
-Four findings motivate the project. ConsensAgent found that in over twenty percent of wrong-answer cases, the correct answer was already present but ignored. MAST measured failure rates from forty-one to eighty-six point seven percent across seven multi-agent systems. DebUnc showed that a truth-aware oracle beats deployable confidence signals by up to ten percent. And about one in four disagreements hides a correct minority. The problem is real, and confidence is not a reliable signal.
+Four findings. In over twenty percent of wrong answers, the correct answer was on the table, but the group ignored it. Across seven multi-agent systems, failure rates ran from forty-one to eighty-seven percent. A truth-aware oracle beats self-reported confidence by up to ten percent. About one in four disagreements hides a correct minority. The problem is real, and confidence is not a safe signal.
 
-Yousuf will present our objectives and the data.
+Yousuf will present our goals and the data.
 
 ### Slide 4 — Objective
 
-We set four objectives. First, design a bounded trust update from retrieved evidence. Second, build a reproducible injection protocol that measures collapse under pressure, with annotation agreement of at least zero point seven five. Third, compare against ten baselines, including MoA, iMAD and ConsensAgent, using four metrics: accuracy, collapse rate, minority survival and calibration. Fourth, prove early that the trust signal changes decisions, not just the context.
+We set four goals. One: design a bounded trust score from retrieved evidence. Two: build a repeatable stress test that measures collapse, with annotation agreement of at least zero point seven five. Three: compare against ten baselines, including MoA, iMAD and ConsensAgent, on four metrics: accuracy, collapse, minority survival and calibration. Four: prove the trust score changes decisions, not just the prompt.
 
 ### Slide 5 — Dataset
 
-We use five scientific question sets. GPQA and MMLU-Pro are stable sets for accuracy. HLE is the expert ceiling. BrokenMath and BrokenArXiv are adversarial sets that stress-test sycophancy. Two filters keep only divergent questions with checkable answers, and about sixty to seventy percent pass. The main matrix uses one thousand questions per dataset; the pilot uses fifty.
+Five science question sets. GPQA and MMLU-Pro are the stable sets for accuracy. HLE is the expert ceiling. BrokenMath and BrokenArXiv are the hard sets that stress-test sycophancy. Two filters keep only questions where agents disagree, and answers can be checked. About sixty to seventy percent pass. The full matrix uses one thousand questions per set. The pilot uses fifty.
 
-Atik will present the conventional methods and our proposed approach.
+Atik will present the methods and our approach.
 
 ### Slide 6 — Conventional Method
 
-Today, debate decides in different ways. Majority voting gives every agent equal weight. Confidence weighting uses self-reported scores. Prompt rewriting tries to reduce sycophancy before the debate. Static aggregation merges the outputs once. And iMAD predicts when a debate is needed. We test ten baselines, B1 to B10. The gap is clear: none of them ties an agent's influence to external evidence while the debate runs.
+Debate decides in different ways today. Majority voting: every agent weighs the same. Confidence weighting: trust in self-reported scores. Prompt rewriting: fix sycophancy before the debate starts. Static aggregation: merge the outputs once. And iMAD predicts when debate is needed. We test ten baselines, B1 to B10. The gap: none ties an agent's influence to outside evidence during the debate.
 
 ### Slide 7 — Proposed Method
 
-Our method works in steps. A confidence gate sends easy questions to a direct answer, and hard questions to a debate. Three different agents answer: Qwen, Gemma and Mistral, with no fine-tuning. Each answer is split into atomic claims, and every claim is checked against PubMed, arXiv or Semantic Scholar. Each claim gets one verdict: supported, contradicted, unverifiable or contested. The trust score updates every round. It rises with support, falls with contradiction, then softmax, clamp to zero point one to zero point nine, and renormalize. The final answer is a trust-weighted vote, not a head count.
+Our method has clear steps. A confidence gate sends easy questions straight to an answer. Hard questions start a debate. Three models answer: Qwen, Gemma, Mistral. No fine-tuning. Each answer is split into small claims. Each claim is checked against PubMed, arXiv and Semantic Scholar. Every claim gets one label: supported, contradicted, unverifiable or contested. Trust updates each round: up with support, down with contradiction. Softmax, clamp, renormalize. The final answer is a weighted vote, not a head count.
 
-Pratay will present the flow diagram and the experimental setup.
+Pratay will present the flow diagram and the setup.
 
 ### Slide 8 — Flow Diagram
 
-This is the level-one data flow. Seven processes, four external entities, and three data stores. Questions enter at the gate. Claims and passages flow through verification. The trust update feeds the aggregation. The result package carries the answer, the citations and the trust trajectory.
+This is the level-one data flow. Seven processes, four external entities, three data stores. Questions enter at the gate. Claims and passages flow through verification. The trust update feeds the final vote. And the result package carries the answer, the citations and the trust path.
 
 ### Slide 9 — Experimental Setup
 
-The setup has two model stacks. The development stack is Qwen3.5-9B, Gemma 4 12B and Ministral-3-14B in four-bit, on one RTX A6000. The final stack is Qwen3.6-27B, Gemma 4 26B and Mistral Small 24B in FP8, on one RTX PRO 6000. Serving uses vLLM with an OpenAI-compatible API. Debates run three rounds with three seeds. The stress test injects a fake expert consensus between rounds one and two, and it is off in baselines B1 to B4. Validation uses annotation agreement and bootstrap confidence intervals. Total compute is about three hundred GPU-hours.
+Two model stacks. The dev stack: Qwen3.5-9B, Gemma 4 12B and Ministral-3-14B, four-bit, on one RTX A6000. The final stack: Qwen3.6-27B, Gemma 4 26B and Mistral Small 24B, FP8, on one RTX PRO 6000. Serving is vLLM, OpenAI-compatible. Three rounds, three seeds. The stress test injects a fake expert consensus between rounds one and two. It is off in baselines B1 to B4. Validation: annotation agreement and bootstrap confidence intervals. Total compute: about three hundred GPU-hours.
 
 Salman will present the results and the complex engineering check.
 
 ### Slide 10 — Project Results
 
-These are the expected results. Collapse rate should drop by twenty to thirty percent. A correct minority should survive more often. Calibration should be above zero point eight. Accuracy should not regress, and the largest gains should appear on the adversarial sets. The completed experiments already show the pipeline works: ten GPQA questions, three rounds each, ten out of ten debates completed, ninety out of ninety non-empty positions, mean three hundred seventy point eight seconds per debate.
+Expected results. Collapse should drop by twenty to thirty percent. The correct minority should survive more often. Calibration should pass zero point eight. Accuracy should hold, and the biggest gains should come on the hard sets. The pipeline already works: ten GPQA questions, three rounds each. All ten debates finished, and all ninety positions filled. About six minutes per debate.
 
 ### Slide 11 — Why Complex Engineering
 
-The Washington Accord uses four lenses: problem solving, knowledge, activities and program outcomes. Our project is a complex engineering problem. It is multi-disciplinary, it has conflicting requirements, there is no textbook solution, and its parts depend on each other. For example, one retrieval error can change the final answer.
+The Washington Accord uses four lenses: problem solving, knowledge, activities and outcomes. Our project is a complex engineering problem. Why? It is multi-disciplinary. It has conflicting requirements. No textbook solution exists. And its parts depend on each other. One retrieval error can change the final answer.
 
 Limu will close the presentation.
 
 ### Slide 12 — Complex Engineering Matrix
 
-This is the full mapping. The needs row shows what each attribute requires. PO1 and PO2 need K1 to K4. P1 needs K3 to K6 and K8. The P attributes relate to PO1 to PO8, and the activities relate to PO10. The FYDP I row shows covered and not covered. The summary: P six of seven, K eight of eight, A four of five, PO six of twelve. P6, A3 and the remaining outcomes carry into the later phases.
+This is the full map. Read the two rows: what each attribute needs, and what we covered. PO1 and PO2 need K1 to K4. P1 needs K3 to K6 and K8. The P attributes link to PO1 to PO8. The activities link to PO10. Our score: six of seven P, all eight K, four of five A, six of twelve PO. P6, A3 and the rest move to later phases.
 
 ### Slide 13 — Conclusion · Application
 
-To conclude. The project addresses a real failure: a confident wrong majority pushing a correct minority into sycophantic consensus. Our mechanism is a bounded trust score from retrieved evidence, updated during the debate. The evaluation uses the injection protocol and the CCR, MPR and ECR metrics against the baselines. The design applies to scientific QA and research assistants, and it extends to law or medicine where an evidence corpus exists. Remaining work: the full experiment matrix, ablations, the human study and an open-source release.
+Our project targets a real failure: a wrong majority pushing a correct agent into sycophantic consensus. Our fix is a bounded trust score from retrieved evidence, updated during the debate. We measure it with the injection protocol and the CCR, MPR and ECR metrics, against the baselines. The same design fits scientific QA and research assistants. It extends to law or medicine, wherever evidence exists. Next: the full matrix, ablations, a human study, and an open-source release.
 
 ### Slide 14 — Thank You
 
