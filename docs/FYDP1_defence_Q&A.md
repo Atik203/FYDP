@@ -513,16 +513,16 @@ Pending: retrieval + trust wiring, 50-question κ pilot, injection arms on GPU, 
 
 ## 10. Team Contributions
 
-**Module ownership** (from `FYDP_Summer/3.design.tex:183-198`):
+**Module ownership**:
 
-| Member | Primary modules |
-| --- | --- |
-| Md. Atikur Rahaman | Full module: architecture design · trust mechanism · first experiment plan and full experiment execution (Gate 0) · coordination |
-| Rakibul Hasan | Vanilla MAD reproduction, injection protocol |
-| Md. Salman Rohoman Nayeem | Claim decomposition, source-partitioned retrieval |
-| Pratay Paul | Evaluation harness, CCR/MPR/ECR metrics |
-| Yousuf Kamal Himel | Baselines B1–B9, vLLM serving |
-| Mst. Farjana Akter Limu | Evidence APIs, dashboard, result packages |
+| Module | Assigned member | Currently done by |
+| --- | --- | --- |
+| Architecture design, trust mechanism, first experiment plan and full experiment execution (Gate 0), coordination | Md. Atikur Rahaman | Atik (full module) |
+| Vanilla MAD reproduction, injection protocol | Rakibul Hasan | Atik |
+| Claim decomposition, source-partitioned retrieval | Md. Salman Rohoman Nayeem | Atik |
+| Evaluation harness, CCR/MPR/ECR metrics | Pratay Paul | Atik |
+| Baselines B1–B9, vLLM serving | Yousuf Kamal Himel | Atik |
+| Evidence APIs, dashboard, result packages | Mst. Farjana Akter Limu | Atik |
 
 ## 11. Emergency Answers
 
