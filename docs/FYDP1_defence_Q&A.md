@@ -21,3 +21,11 @@ A single model has blind spots and can be confidently wrong without realizing it
 
 ### Why is simple majority voting problematic in scientific reasoning?
 Scientific truth is based on facts and evidence, not on a popularity contest. If a majority of models agree on an incorrect answer early on, it creates a peer-pressure effect. The other models abandon their correct answers just to fit in with the group. Relying on a simple vote means the loudest or earliest mistake wins, hiding the real truth.
+
+---
+
+## Team Contributions
+* **Yousuf:** Handled Chapter 1 (Introduction and Project Scope)
+* **Salman and Prottoy:** Handled Chapter 2 (Background and Literature Review)
+* **Rakibul and Limu:** Handled Chapter 3 (Project Design and Methodology)
+* **Atik:** Handled Chapter 5 (Standards, Constraints, and Analysis)
