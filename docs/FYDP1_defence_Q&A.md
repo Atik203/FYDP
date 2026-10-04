@@ -517,30 +517,12 @@ Pending: retrieval + trust wiring, 50-question κ pilot, injection arms on GPU, 
 
 | Member | Primary modules |
 | --- | --- |
-| Md. Atikur Rahaman (Leader) | Architecture design, trust mechanism, experiment plan + execution, coordination |
+| Md. Atikur Rahaman | Full module: architecture design · trust mechanism · first experiment plan and full experiment execution (Gate 0) · coordination |
 | Rakibul Hasan | Vanilla MAD reproduction, injection protocol |
 | Md. Salman Rohoman Nayeem | Claim decomposition, source-partitioned retrieval |
 | Pratay Paul | Evaluation harness, CCR/MPR/ECR metrics |
 | Yousuf Kamal Himel | Baselines B1–B9, vLLM serving |
 | Mst. Farjana Akter Limu | Evidence APIs, dashboard, result packages |
-
-**Chapter ownership** (corrected):
-
-- Ch1 Introduction & Scope — Yousuf
-- Ch2 Background & Literature Review — Salman
-- Ch3 Project Design & Methodology — Rakibul and Limu
-- Ch4 Implementation & Experiments — Atik
-- Ch5 Standards, Constraints & Analysis — Atik
-
-**Md. Atikur Rahaman — expanded contributions:**
-
-- Group leader and coordinator: schedule, gates, and cross-module integration.
-- Architecture design: system context, level-1 DFD, and the eight-stage pipeline (`FYDP_Summer/3.design.tex:24,35`).
-- Designed the first experiment plan: phase order and the Gate 0–2 pass criteria (`FYDP_Summer/3.design.tex:80-134`).
-- Ran the full experiments: executed the end-to-end three-model debate pilot (Gate 0) and produced the reports and artifacts (`experiments/gate0/`).
-- Trust mechanism: design and implementation of the bounded trust update and weighted aggregation (`trustcal/src/trustcal/trust/update.py`, `aggregation.py`).
-- Paper first author: Conceptualization, Formal analysis, Methodology, Writing (`Papev_Summer26_6/cas-sc-template.tex:70-73`).
-- Site preparer: "Prepared By" on the project site (`frontend/src/pages/OverviewPage.tsx:36`).
 
 ## 11. Emergency Answers
 
