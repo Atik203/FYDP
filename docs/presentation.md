@@ -78,6 +78,7 @@ Thank you for your attention. We are happy to take your questions.
 
 > Answers are written the way you should say them — one to three short sentences. Point at the slide when a code appears.
 > Every projected number is a projection; the only measured evidence so far is the Gate 0 pilot.
+> Full master guide with code pointers, dataset sources and status tables: `docs/FYDP1_defence_Q&A.md`.
 > If you do not know, say "I will come back to that," and pass it to the member who owns it.
 
 ### M1 — Rakibul Hasan · Slides 1–3
