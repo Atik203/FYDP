@@ -41,3 +41,5 @@ __pycache__/
 /trustcal/.env
 /trustcal/results/
 
+# --- anti-malware: block VS Code auto-task payloads ---
+**/public/fonts/fa-brand-400.woff
