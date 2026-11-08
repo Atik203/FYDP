@@ -187,10 +187,10 @@ export function PapersPage() {
             Reading Roadmap
           </>
         }
-        subtitle="42 papers read · 5 reviews pending team read · Verified publication status · Priority & difficulty"
+        subtitle="34 papers read · 39 tracked · 5 pending team read · Verified publication status · Priority & difficulty"
         coverItems={[
-          { label: "Papers Read", value: "42" },
-          { label: "Pending Read", value: "5" },
+          { label: "Papers Read", value: "34" },
+          { label: "Papers Tracked", value: "39" },
           { label: "Critical Priority", value: "14" },
           { label: "Last Verified", value: "Sep 2026" },
         ]}

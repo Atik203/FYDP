@@ -163,8 +163,24 @@ export function ProposalPage() {
         </p>
         <div style={metaStyle}>
           Domain: Agentic AI &middot; Multi-Agent Systems &middot; Trustworthy NLP
-          &nbsp;|&nbsp; Group 6 &middot; Phantom Devs &nbsp;|&nbsp; Jul 2026 &ndash; Apr 2027
+          &nbsp;|&nbsp; Group 6 &middot; Phantom Devs &nbsp;|&nbsp; Nov 2026 &ndash; Dec 2027
         </div>
+        <p
+          style={{
+            fontSize: "8.8pt",
+            color: "#7a2e00",
+            background: "#fff4e6",
+            border: "1px solid #f0b37e",
+            padding: "4pt 6pt",
+            margin: "0 0 9pt",
+            textAlign: "left",
+          }}
+        >
+          <strong>Implementation status (Nov 2026).</strong> P0 is engineering
+          readiness: 478 tests, 11/13 gate checks passed, with WP-13
+          (B8-no-trust) and WP-09 (B8+injection) pending. No efficacy result has
+          been measured. Planned work is labelled as planned throughout.
+        </p>
 
         <h2 style={h2Style}>Abstract</h2>
         <p>
@@ -181,14 +197,16 @@ export function ProposalPage() {
           of its claims against retrieved scientific literature. The final
           answer is produced by trust-weighted aggregation rather than a
           headcount, allowing an evidence-backed minority to outweigh an
-          unsupported majority. Alongside the mechanism, we release a
+          unsupported majority. Alongside the mechanism, the project targets a
           reproducible <strong>sycophancy-stress evaluation harness</strong> &mdash;
           a controlled injection protocol and three metrics (CCR, MPR, ECR) &mdash;
-          and evaluate against nine baselines across five benchmarks, with an
-          additional comparison against the strongest published mitigation
-          (ConsensAgent, Findings of ACL 2025). The work runs entirely at
-          inference time (no fine-tuning), targeting a single-GPU, ten-month
-          FYDP timeline. Expected outcomes include a statistically significant
+          and a pre-registered causal study: four executable arms now, a
+          six-arm target, three primary datasets, and HLE as an abstention
+          control. The planned benchmark follows a scale ladder of 180 items as
+          the floor, 300 as the target, 600 as a stretch, and 800 as a no-go.
+          The work runs entirely at inference time (no fine-tuning) on a
+          single-GPU budget. Expected outcomes are stated as pre-registered
+          success criteria, not as results: a statistically significant
           reduction in collapse rate and an open-source evaluation suite
           reusable by the research community.
         </p>
@@ -397,12 +415,12 @@ export function ProposalPage() {
           abandoning correct answers under social pressure &mdash; will measurably
           decrease relative to standard majority-vote debate,{" "}
           <em>without any model fine-tuning</em>. This decomposes into three
-          testable sub-hypotheses:
+          pre-registered targets, to be tested rather than assumed:
         </p>
         <ul>
           <li>
             <strong>H1 (collapse):</strong> Collapse Rate (CCR) improves by
-            &ge;20% relative to vanilla MAD on adversarial benchmarks.
+            &ge;20% relative to vanilla MAD on the injected-pressure benchmarks.
           </li>
           <li>
             <strong>H2 (outcome):</strong> Minority Preservation Rate (MPR)
@@ -410,8 +428,9 @@ export function ProposalPage() {
           </li>
           <li>
             <strong>H3 (calibration):</strong> Evidence Calibration Rate (ECR)
-            &gt; 0.80 on GPQA Diamond &mdash; i.e., trust scores track actual
-            correctness probability.
+            &gt; 0.80 on GPQA-Main &mdash; i.e., trust scores track actual
+            correctness probability. The exact calibration endpoint is frozen in
+            the pre-registration before the matrix runs.
           </li>
         </ul>
         <p>To answer the research question, the objectives are to:</p>
@@ -433,9 +452,11 @@ export function ProposalPage() {
             (paired bootstrap, 95% CIs, Cohen&apos;s <em>d</em>).
           </li>
           <li>
-            Empirically validate against nine baselines across five benchmarks,
-            establishing early (Month-1 pilot) that trust re-weighting causally
-            changes the output rather than sitting in context ignored.
+            Empirically validate the four executable arms (B3, B4-matched,
+            B8-no-trust, B8), with a six-arm target that adds B8-placebo and
+            B8-oracle, across three primary datasets. The pilot in Dec 2026 must
+            establish that trust re-weighting causally changes the output rather
+            than sitting in context ignored.
           </li>
           <li>
             Compare against the strongest published mitigation (ConsensAgent)
@@ -523,11 +544,12 @@ export function ProposalPage() {
           (Ph 0–2) the pipeline runs <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a></strong>,{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a></strong>, and{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a></strong>{" "}
-          on an RTX A6000 48GB (~$0.40–0.46/hr on Vast.ai), keeping iteration cost low.
-          For the final experiment matrix (Ph 3–5) we swap to{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a></strong>,{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a></strong>, and{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a></strong> on an RTX PRO 6000 Blackwell 96GB ($1.10-2.70/hr).
+          on an RTX A6000 48GB (spot ~$0.16–0.37/hr on Vast.ai), keeping iteration cost low.
+          For the final experiment matrix we swap to{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B-FP8</a></strong>,{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B-FP8</a></strong>, and{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral-24B-AWQ</a></strong> on an RTX PRO 6000 Blackwell 96GB (~$0.74–1.43/hr).
+          The pinned Final stack is 69.73 GB and fits one 96 GB card.
           All three families (Alibaba, Google, Mistral) are genuinely distinct
           for true heterogeneity. The pipeline code is model-agnostic — only
           the model config changes between phases. The <em>N</em> = 3 configuration is chosen as
@@ -566,25 +588,31 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
         <h3 style={h3Style}>5.6 Trust-update rule (core contribution)</h3>
         <p>
           For each agent <em>i</em> at round <em>t</em>, let{" "}
-          <em>V<sub>i</sub><sup>(t)</sup></em> be its normalised count of{" "}
-          <em>supported</em> claims and{" "}
-          <em>H<sub>i</sub><sup>(t)</sup></em> its normalised count of{" "}
-          <em>contradicted</em> claims in that round. The raw trust score updates
-          additively, rewarding verified evidence (rate &alpha;) and penalising
-          contradiction (rate &beta;):
+          <em>V<sub>i</sub><sup>(t)</sup></em> be its count of{" "}
+          <em>supported</em> claims,{" "}
+          <em>H<sub>i</sub><sup>(t)</sup></em> its count of{" "}
+          <em>contradicted</em> claims, and{" "}
+          <em>n<sub>i</sub><sup>(t)</sup></em> the number of claims checked.
+          The update accumulates evidence in logit space, claim-count
+          normalised so that verbosity cannot buy influence:
         </p>
         <Eqn num="1">
-          S<sub>i</sub>
-          <sup>(t+1)</sup> = S<sub>i</sub>
-          <sup>(t)</sup> + &alpha;&thinsp;V<sub>i</sub>
-          <sup>(t)</sup> &minus; &beta;&thinsp;H<sub>i</sub>
-          <sup>(t)</sup>
+          <em>S<sub>i</sub><sup>(t+1)</sup></em> = log(max(<em>S<sub>i</sub>
+          <sup>(t)</sup></em>, &epsilon;)) + &alpha;&thinsp;<em>V<sub>i</sub>
+          <sup>(t)</sup></em>/<em>n<sub>i</sub><sup>(t)</sup></em> &minus;
+          &beta;&thinsp;<em>H<sub>i</sub><sup>(t)</sup></em>/<em>n<sub>i</sub>
+          <sup>(t)</sup></em>
         </Eqn>
         <p>
-          The raw scores are then converted into bounded influence weights{" "}
-          <em>T<sub>i</sub></em> through a fixed operator order &mdash;{" "}
-          <strong>softmax &rarr; clamp &rarr; renormalise</strong> &mdash; that
-          guarantees the stability properties below:
+          The accumulated logits pass through <strong>one</strong> softmax,
+          followed by a floor/ceiling <strong>simplex projection</strong>. The
+          operator order is fixed and must match Proposition 1:
+          <strong>
+            {" "}logit accumulation &rarr; softmax &rarr; simplex projection
+          </strong>{" "}
+          &mdash; not softmax &rarr; clamp &rarr; renormalise. The old clamp order
+          is wrong because the final renormalisation can push a weight back below
+          the floor.
         </p>
         <Eqn num="2">
           <span style={{ fontSize: "9.5pt" }}>
@@ -595,23 +623,33 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           </span>
         </Eqn>
         <Eqn num="3">
-          <em>T<sub>i</sub><sup>(t+1)</sup></em> = clamp( <em>T&#771;
-          <sub>i</sub><sup>(t+1)</sup></em> , 0.1, 0.9) , then renormalise so
-          &Sigma;<sub>i</sub> <em>T<sub>i</sub><sup>(t+1)</sup></em> = 1
+          <em>T<sub>i</sub><sup>(t+1)</sup></em> = &Pi;<sub>&Delta;</sub>(
+          <em>T&#771;<sub>i</sub><sup>(t+1)</sup></em>), &nbsp; &Delta; = &#123;
+          <em>w</em> : floor &le; <em>w<sub>i</sub></em> &le; ceiling,
+          &Sigma;<sub>i</sub> <em>w<sub>i</sub></em> = 1 &#125;
         </Eqn>
         <p>
-          The clamp to <em>[0.1, 0.9]</em> enforces two design properties:{" "}
-          <strong>no-silencing</strong> (no agent&apos;s weight can fall to zero,
-          so a temporarily-contradicted agent can still recover) and{" "}
-          <strong>no-domination</strong> (no single agent can seize the entire
-          vote). Because trust is accumulated from independent evidence verdicts,
-          the update admits a probabilistic reading as approximate Bayesian
-          evidence accumulation. These are framed honestly as bounded{" "}
-          <em>design properties</em>, not global convergence theorems; their
-          empirical behaviour is verified through the logged trust trajectories.
-          A computational verification test will run thousands of synthetic score
-          sequences to confirm that <em>T<sub>i</sub></em> never leaves [0.1, 0.9]
-          under any valid input configuration.
+          With floor = 0.1 and ceiling = 0.9, the projection guarantees{" "}
+          <strong>min<sub>i</sub> T<sub>i</sub> &ge; floor</strong>,{" "}
+          <strong>&Sigma;<sub>i</sub> T<sub>i</sub> = 1</strong>, and{" "}
+          <strong>
+            max<sub>i</sub> T<sub>i</sub> &le; max(ceiling, 1/N)
+          </strong>
+          . The floor gives <strong>no-silencing</strong> (a contradicted agent
+          keeps a non-zero weight and can recover), and the effective ceiling
+          gives <strong>no-domination</strong>. Neutral evidence is an exact
+          identity: when support and contradiction counts are both zero, trust
+          does not drift toward uniform. Dividing by the claim count makes the
+          update invariant to verbosity &mdash; duplicating every claim leaves the
+          trust vector unchanged.
+        </p>
+        <p>
+          These are bounded <em>design properties</em>, not global convergence
+          theorems. The boundedness test covers 10,000 random draws for{" "}
+          <em>N</em> &isin; &#123;1, 3, 5&#125; and is part of the 478-test P0
+          suite; the empirical trajectory is logged for every debate. The
+          defaults in the current pipeline are &alpha; = 0.5 and &beta; = 0.3,
+          with floor/ceiling sensitivity checked before the matrix is frozen.
         </p>
 
         <h3 style={h3Style}>5.7 Trust-weighted aggregation</h3>
@@ -663,18 +701,18 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <tbody>
             <tr>
               <td style={tdStyle}>Agent 1</td>
-              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a> (Final)</td>
-              <td style={tdStyle}>Two-phase: fast dev on RTX A6000 48GB, flagship 27B for final experiments</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B-FP8</a> (Final)</td>
+              <td style={tdStyle}>Two-phase: fast dev on RTX A6000 48GB, 27B FP8 for final experiments; 69.73 GB pinned Final stack</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 2</td>
-              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a> (Final)</td>
-              <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, 256K context</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B-FP8</a> (Final)</td>
+              <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, FP8, 256K context</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 3</td>
-              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> (Final)</td>
-              <td style={tdStyle}>Dev: Mistral-family 14B, served as AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot run on Ampere). Final: third distinct family for heterogeneity</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral-24B-AWQ</a> (Final)</td>
+              <td style={tdStyle}>Dev: Mistral-family 14B, served as AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot run on Ampere). Final: third distinct family, AWQ 4-bit</td>
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
@@ -706,12 +744,14 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
 
         <h2 style={h2Style}>7. Dataset Plan</h2>
         <p>
-          We select five datasets spanning adversarial stress tests and stable
-          comparison baselines. The primary adversarial datasets (BrokenMath,
-          BrokenArXiv, HLE) are specifically constructed to induce false
-          consensus, enabling direct measurement of sycophantic collapse. The
-          stable baselines (GPQA, MMLU-Pro) ensure that anti-sycophancy gains
-          do not come at the cost of degraded general accuracy.
+          The P0 matrix uses three primary datasets. <strong>GPQA-Main</strong>{" "}
+          and <strong>MMLU-Pro STEM</strong> are the evidence-grounded
+          benchmarks; <strong>EG-SSS</strong> is the controlled gold-evidence
+          set for the mechanism test. <strong>HLE</strong> is an abstention
+          control, never pooled with the primary tests. The dataset audit found
+          that BrokenMath (451/451) and BrokenArXiv (87/87) are proof-only with
+          0% answer-type retention, so they are appendix-only and are not used
+          for CCR or evidence grounding.
         </p>
         <table style={tableStyle}>
           <thead>
@@ -724,50 +764,63 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           </thead>
           <tbody>
             <tr>
-              <td style={tdStyle}>BrokenMath</td>
-              <td style={tdStyle}>Primary adversarial stress test</td>
-              <td style={tdStyle}>INSAIT-Institute/BrokenMath (HuggingFace, official)</td>
-              <td style={tdStyle}>Math-focused; may not generalise to broader science</td>
+              <td style={tdStyle}>GPQA-Main</td>
+              <td style={tdStyle}>Primary evidence-grounded benchmark</td>
+              <td style={tdStyle}>Idavidrein/gpqa (HuggingFace, official; gated)</td>
+              <td style={tdStyle}>448 total, 400 cap in the matrix; options shuffled; not adversarial</td>
             </tr>
             <tr>
-              <td style={tdStyle}>BrokenArXiv</td>
-              <td style={tdStyle}>Adversarial, monthly-refreshed</td>
-              <td style={tdStyle}>MathArena/brokenarxiv (HuggingFace, official)</td>
-              <td style={tdStyle}>Monthly versioning; exact snapshot must be cited</td>
+              <td style={tdStyle}>MMLU-Pro STEM</td>
+              <td style={tdStyle}>Primary scale/robustness benchmark</td>
+              <td style={tdStyle}>TIGER-Lab/MMLU-Pro (HuggingFace, official)</td>
+              <td style={tdStyle}>STEM-stratified, 400 cap in the matrix; broad, non-adversarial</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>EG-SSS</td>
+              <td style={tdStyle}>Controlled gold-evidence mechanism test</td>
+              <td style={tdStyle}>Original release (planned; CC BY 4.0)</td>
+              <td style={tdStyle}>Annotation-intensive; 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
             <tr>
               <td style={tdStyle}>HLE</td>
-              <td style={tdStyle}>Hard scientific reasoning ceiling</td>
+              <td style={tdStyle}>Abstention / ceiling control</td>
               <td style={tdStyle}>cais/hle (HuggingFace, official; gated)</td>
-              <td style={tdStyle}>Access approval lead-time risk; GPQA-Diamond as fallback</td>
+              <td style={tdStyle}>Retrieval-resistant; 200 cap; never pooled with the primary tests</td>
             </tr>
             <tr>
-              <td style={tdStyle}>GPQA Diamond</td>
-              <td style={tdStyle}>Stable comparison baseline</td>
-              <td style={tdStyle}>Idavidrein/gpqa (HuggingFace, official; gated)</td>
-              <td style={tdStyle}>Well-known; not adversarial</td>
+              <td style={tdStyle}>BrokenMath</td>
+              <td style={tdStyle}>Appendix-only premise rejection</td>
+              <td style={tdStyle}>INSAIT-Institute/BrokenMath (HuggingFace, official)</td>
+              <td style={tdStyle}>451/451 proof-only; 0% answer-type retention — not usable for CCR</td>
             </tr>
             <tr>
-              <td style={tdStyle}>MMLU-Pro</td>
-              <td style={tdStyle}>Stable comparison baseline</td>
-              <td style={tdStyle}>TIGER-Lab/MMLU-Pro (HuggingFace, official)</td>
-              <td style={tdStyle}>Same role as GPQA; broad coverage</td>
+              <td style={tdStyle}>BrokenArXiv</td>
+              <td style={tdStyle}>Appendix-only qualitative</td>
+              <td style={tdStyle}>MathArena/brokenarxiv (HuggingFace, official)</td>
+              <td style={tdStyle}>87/87 proof-only; 0% answer-type retention; cite the exact monthly snapshot</td>
             </tr>
           </tbody>
         </table>
         <p>
-          All adversarial datasets undergo a pre-filtering step (Steps 1&ndash;2
-          of the injection protocol) that retains only questions where the three
-          agents produce divergent initial answers, ensuring that every evaluated
-          debate presents a genuine disagreement scenario. Results on adversarial
-          datasets are explicitly framed as worst-case performance, not average-case
-          deployment. If HLE access is delayed, the GPQA-Diamond subset
-          restructured with the same injection protocol serves as the fallback.
-          All datasets are official author releases from HuggingFace; none are
-          taken from Kaggle. GPQA and HLE require a free click-through agreement
-          before download. Dataset papers to cite: GPQA (COLM 2024), MMLU-Pro
-          (NeurIPS 2024 D&amp;B), HLE (Nature 2026), BrokenMath (arXiv 2025),
-          BrokenArXiv / MathArena (arXiv 2026).
+          The design is two seeds for the main matrix (three for the pilot), with
+          a 24-item calibration before the pilot. The executable matrix is 4 arms
+          &times; 3 datasets &times; 2 seeds = 24 rows at 400 items per dataset,
+          budgeted at 1,280 GPU-h. The six-arm target adds B8-placebo and
+          B8-oracle once WP-13 provides the RunConfig switches, and the
+          pre-registration records both the target and the executable subset.
+          The benchmark ladder is 180 items as the floor (Core-run supporting
+          artifact), 300 as the target, 600 as a stretch, and 800 as a no-go
+          unless 2&ndash;3 dedicated annotators are committed.
+        </p>
+        <p>
+          The injection protocol pre-filters questions where the three agents
+          produce divergent initial answers, so every evaluated debate presents a
+          genuine disagreement. Results on the injected sets are framed as
+          stress-test performance, not average-case deployment. All datasets are
+          official author releases from HuggingFace. GPQA and HLE require a free
+          click-through agreement before download. Dataset papers to cite: GPQA
+          (COLM 2024), MMLU-Pro (NeurIPS 2024 D&amp;B), HLE (Nature 2026),
+          BrokenMath (arXiv 2025), BrokenArXiv / MathArena (arXiv 2026).
         </p>
 
         <h2 style={h2Style}>8. Evaluation Strategy</h2>
@@ -825,37 +878,49 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           (<em>n</em> = 60, Likert-scale ratings with &kappa; validation), and
           compute Cohen&apos;s <em>d</em> effect sizes for all pairwise condition
           comparisons. Statistical significance is assessed via paired bootstrap
-          with 95% confidence intervals across three random seeds.
+          with 95% confidence intervals across two random seeds in the main
+          matrix (three seeds for the pilot). The unit of analysis is the
+          question; seed 2 is a pre-registered replication, not a second
+          independent study.
         </p>
 
-        <h3 style={h3Style}>8.3 Baselines</h3>
+        <h3 style={h3Style}>8.3 Baselines and executable arms</h3>
         <p>
-          We evaluate against nine baselines (B1&ndash;B9) plus a tenth
-          comparison:
+          The full comparison set is B1&ndash;B10. The pre-registered P0 matrix
+          runs four executable arms: <strong>B3</strong> (vanilla MAD),{" "}
+          <strong>B4-matched</strong> (retrieved evidence with the same
+          partition and prompts as B8, majority aggregation),{" "}
+          <strong>B8-no-trust</strong> (same evidence and prompts, majority
+          aggregation; primary control), and <strong>B8</strong>{" "}
+          (trust-weighted treatment). The six-arm target adds{" "}
+          <strong>B8-placebo</strong> (verdicts shuffled within debate) and{" "}
+          <strong>B8-oracle</strong> (gold evidence), pending WP-13.
         </p>
         <ul>
           <li><strong>B1</strong>: Single-Agent Chain-of-Thought</li>
           <li><strong>B2</strong>: Single-Agent + RAG</li>
           <li><strong>B3</strong>: Multi-Agent Debate (vanilla MAD, Du et al.)</li>
-          <li><strong>B4</strong>: MAD + RAG</li>
+          <li><strong>B4</strong>: MAD + RAG; <strong>B4-matched</strong> uses the B8 evidence partition and prompts</li>
           <li><strong>B5</strong>: Self-Consistency (Wang et al.)</li>
           <li><strong>B6</strong>: Mixture-of-Agents (MoA, Wang et al., ICLR 2025)</li>
           <li><strong>B7</strong>: Oracle (strongest available model)</li>
-          <li><strong>B8</strong>: Our proposed trust-calibrated system</li>
+          <li><strong>B8</strong>: Trust-calibrated system; <strong>B8-no-trust</strong> is the primary control</li>
+          <li><strong>B8-placebo / B8-oracle</strong>: six-arm target, pending WP-13</li>
           <li><strong>B9</strong>: iMAD (Fan et al., AAAI 2026) &mdash; reimplemented</li>
           <li><strong>B10</strong>: ConsensAgent (Pitre et al., ACL 2025) &mdash; reimplemented or mechanism-level comparison</li>
         </ul>
         <p>
-          This set directly preempts the most likely reviewer objections: B5
-          addresses &ldquo;why not self-consistency,&rdquo; B6 and B9 address
-          &ldquo;why not MoA or iMAD,&rdquo; and B10 addresses the newly published
+          B5, B6, and B9 preempt the &ldquo;why not self-consistency / MoA /
+          iMAD&rdquo; objections, and B10 covers the closest published
           mitigation. B9 (iMAD) carries the highest implementation difficulty and
-          is budgeted at approximately 10 working days.
+          is budgeted at approximately 10 working days. The appendix grid is a
+          thesis plan, not part of the pre-registered primary matrix; no claim is
+          made that B8 beats &ldquo;ten baselines.&rdquo;
         </p>
 
         <h3 style={h3Style}>8.4 Ablation studies</h3>
         <p>
-          Four ablation conditions isolate the contribution of each architectural
+          Four planned ablation conditions isolate the contribution of each architectural
           component: (A1) trust calibration disabled (fallback to majority vote);
           (A2) progressive retrieval disabled (single-shot retrieval only);
           (A3) source partitioning disabled (all agents retrieve from the same
@@ -881,7 +946,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Trust signal does not behaviourally change output</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Critical</td>
-              <td style={tdStyle}>Month-1 pilot on ~20&ndash;30 toy questions before full build; if negative, report as still-publishable finding</td>
+              <td style={tdStyle}>24-item calibration + pilot (Dec 2026) before the matrix; if negative, report as still-publishable finding</td>
             </tr>
             <tr>
               <td style={tdStyle}>Retrieval noise degrades evidence quality</td>
@@ -893,13 +958,19 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Novelty erosion from published mitigations</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>Sharpened differentiation: only evidence-grounded, numeric, formally bounded approach; B10 comparison</td>
+              <td style={tdStyle}>Sharpened differentiation: evidence-grounded, numeric, bounded trust; B10 comparison</td>
             </tr>
             <tr>
               <td style={tdStyle}>Single 96GB GPU compute ceiling</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>FP8 native on Blackwell; core replication budgeted at 250-500 GPU-hours</td>
+              <td style={tdStyle}>FP8 native on Blackwell; Core run matrix is 24 rows / 1,280 GPU-h; 6-arm Full run target is ~1,920 GPU-h</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Dataset mismatch (proof-only benchmarks)</td>
+              <td style={tdStyle}>High</td>
+              <td style={tdStyle}>Moderate</td>
+              <td style={tdStyle}>BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; EG-SSS controlled set</td>
             </tr>
             <tr>
               <td style={tdStyle}>iMAD reimplementation divergence</td>
@@ -911,7 +982,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>HLE access delayed</td>
               <td style={tdStyle}>Low&ndash;Medium</td>
               <td style={tdStyle}>Low&ndash;Moderate</td>
-              <td style={tdStyle}>GPQA-Diamond fallback pre-identified</td>
+              <td style={tdStyle}>HLE is an abstention control; GPQA-Main + MMLU-Pro STEM remain primary</td>
             </tr>
             <tr>
               <td style={tdStyle}>Retrieval API downtime</td>
@@ -923,19 +994,24 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
         </table>
         <p>
           The highest-risk assumption is that trust-weight changes causally alter
-          the final output rather than being ignored by the aggregation step. This
-          is validated in Month 1 through a small-scale behavioural-effectiveness
-          pilot, ensuring that if the core premise fails, it is discovered early
-          and cheaply. All risks are documented transparently with pre-specified
-          fallback plans rather than assumed away.
+          the final output rather than being ignored by the aggregation step. A
+          24-item calibration and pilot in Dec 2026 tests this before the matrix,
+          so a failed premise is discovered early and cheaply. All risks are
+          documented transparently with pre-specified fallback plans rather than
+          assumed away.
         </p>
 
         <h2 style={h2Style}>10. Timeline and Milestones</h2>
         <p>
-          The project spans ten months (July 2026 &ndash; April 2027), divided
-          into five phases with explicit gates. The Month-1 behavioural-effectiveness
-          pilot is the most critical scheduling addition, placed early to validate
-          the core assumption before full-system build-out.
+          P0 closes in Nov 2026. The Pilot run follows in Dec 2026, the Core run
+          (legacy "C+") in Jan 2027, and the Full run (legacy "TACL full") plus
+          the 300-item benchmark in Feb 2027. Core run is a prefix of the Full
+          run; completed cells are reused, so the costs are not additive for
+          those cells. Human evaluation and the SDT analysis follow in Mar,
+          results freeze in Apr, thesis chapters in May, thesis submission in
+          Jun, and the defence in Jun/Jul 2027. The paper is written and
+          submitted after the defence (Aug&ndash;Dec 2027). No conference
+          deadline drives the thesis clock.
         </p>
         <table style={tableStyle}>
           <thead>
@@ -948,65 +1024,81 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           </thead>
           <tbody>
             <tr>
-              <td style={tdStyle}>Jul 2026</td>
+              <td style={tdStyle}>Jul&ndash;Sep 2026</td>
               <td style={tdStyle}>Phase 0</td>
               <td style={tdStyle}>Literature freeze, environment setup, reproduce vanilla MAD</td>
               <td style={tdStyle}>Gate 0: base debate loop reproduces — achieved 16 Sep 2026 (10/10 debates, 3/3 rounds)</td>
             </tr>
             <tr>
-              <td style={tdStyle}>Aug 2026</td>
-              <td style={tdStyle}>Phase 1</td>
-              <td style={tdStyle}>Injection protocol, baselines B1&ndash;B4, Month-1 pilot</td>
-              <td style={tdStyle}>Gate 1: &kappa; &gt; 0.75; pilot confirms behavioural effect (harness built; pilot pending)</td>
-            </tr>
-            <tr>
-              <td style={tdStyle}>Sep&ndash;Oct 2026</td>
-              <td style={tdStyle}>Phase 2</td>
-              <td style={tdStyle}>Trust mechanism, B5/B6/B9, competitor replication</td>
-              <td style={tdStyle}>Gate 2: prototype + first CCR/MPR measurements</td>
-            </tr>
-            <tr>
-              <td style={tdStyle}>Nov 2026</td>
-              <td style={tdStyle}>Phase 2&rarr;3</td>
-              <td style={tdStyle}>Mid-project report, design freeze</td>
-              <td style={tdStyle}>FYDP-1 defence</td>
+              <td style={tdStyle}>Oct&ndash;Nov 2026</td>
+              <td style={tdStyle}>P0</td>
+              <td style={tdStyle}>Engineering hardening: options, parser/scorer, trust projection, verifier interface, claim-domain routing, endpoints, manifest/resume</td>
+              <td style={tdStyle}>478 tests; P0 gate 11/13 passed. Pending: WP-13 (B8-no-trust), WP-09 (B8+injection)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Dec 2026</td>
-              <td style={tdStyle}>Phase 3a</td>
-              <td style={tdStyle}>Main experiment matrix execution</td>
-              <td style={tdStyle}>Primary results table</td>
+              <td style={tdStyle}>Pilot run</td>
+              <td style={tdStyle}>24-item calibration, then behavioural pilot and κ check</td>
+              <td style={tdStyle}>Gate 1: κ &gt; 0.75 and measured behavioural effect; if not, reframe honestly</td>
             </tr>
             <tr>
               <td style={tdStyle}>Jan 2027</td>
-              <td style={tdStyle}>Phase 3b</td>
-              <td style={tdStyle}>Ablations, hyperparameter sweeps, N-scaling</td>
-              <td style={tdStyle}>Gate 3: results freeze with CIs + effect sizes</td>
+              <td style={tdStyle}>Core run</td>
+              <td style={tdStyle}>4 arms + oracle; 3 datasets × 400 items × 2 seeds = 24 rows, 1,280 GPU-h; 180-item EG-SSS</td>
+              <td style={tdStyle}>Core-run causal study, pre-registered analysis</td>
             </tr>
             <tr>
               <td style={tdStyle}>Feb 2027</td>
-              <td style={tdStyle}>Phase 4</td>
-              <td style={tdStyle}>Human evaluation, calibration analysis, error analysis</td>
-              <td style={tdStyle}>Complete ablation + human eval package</td>
+              <td style={tdStyle}>Full run + benchmark</td>
+              <td style={tdStyle}>Add B8-placebo/B8-oracle if WP-13 lands; extend to 6 arms × 3 datasets × 400 items × 2 seeds and 300-item EG-SSS</td>
+              <td style={tdStyle}>Full run + EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
             <tr>
-              <td style={tdStyle}>Mar&ndash;Apr 2027</td>
-              <td style={tdStyle}>Phase 5</td>
-              <td style={tdStyle}>Thesis writing, paper drafting, reproducibility package</td>
-              <td style={tdStyle}>Submitted paper + FYDP-2 final defence</td>
+              <td style={tdStyle}>Mar 2027</td>
+              <td style={tdStyle}>Human eval + SDT</td>
+              <td style={tdStyle}>Human evaluation / SDT, benchmark annotation, verifier audit</td>
+              <td style={tdStyle}>Human-eval + benchmark package</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Apr 2027</td>
+              <td style={tdStyle}>Results freeze</td>
+              <td style={tdStyle}>Freeze results, CIs, and effect sizes; no post-hoc arm changes</td>
+              <td style={tdStyle}>Frozen results</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>May 2027</td>
+              <td style={tdStyle}>Thesis chapters</td>
+              <td style={tdStyle}>Write thesis chapters against the frozen results</td>
+              <td style={tdStyle}>Thesis draft</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Jun 2027</td>
+              <td style={tdStyle}>Thesis submission</td>
+              <td style={tdStyle}>Submit the FYDP thesis</td>
+              <td style={tdStyle}>Submitted thesis</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Jun&ndash;Jul 2027</td>
+              <td style={tdStyle}>Defence</td>
+              <td style={tdStyle}>Defend the thesis</td>
+              <td style={tdStyle}>Defence slides</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Aug&ndash;Dec 2027</td>
+              <td style={tdStyle}>Paper</td>
+              <td style={tdStyle}>Write and submit the paper after the defence</td>
+              <td style={tdStyle}>TACL rolling submission; EMNLP 2028 fallback</td>
             </tr>
           </tbody>
         </table>
         <p>
-          Three critical Go/No-Go decision points are built into the timeline.
-          Gate 0 (end of Phase 0) validates that the basic debate loop functions —
-          achieved 16 Sep 2026 (10/10 debates ran all three rounds; mean 370.8 s/debate).
-          Gate 1 (end of Phase 1) requires the injection protocol to achieve
-          inter-rater reliability &kappa; &gt; 0.75 and the pilot to confirm that
-          trust weighting causally affects output. Gate 2 (end of Phase 2) requires
-          a working prototype producing measurable CCR/MPR improvements. If any
-          gate is not met, the subsequent phase is restructured to address the
-          failure before proceeding.
+          The Go/No-Go logic is unchanged in spirit: Gate 0 validated the base
+          loop (achieved 16 Sep 2026, 10/10 debates, mean 370.8 s/debate); Gate 1
+          requires the injection protocol to reach inter-rater reliability
+          &kappa; &gt; 0.75 and the pilot to show a behavioural effect; and the
+          Core run matrix is only interpreted against the pre-registered endpoints. If
+          a gate is not met, the next phase is restructured to address the failure
+          rather than letting the schedule dictate the claim.
         </p>
 
         <h2 style={h2Style}>11. Expected Contributions and Outcomes</h2>
@@ -1014,39 +1106,39 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           <strong>Primary contribution (C1):</strong> a trust-calibrated,
           evidence-grounded aggregation mechanism for multi-agent debate,
           formally specified with boundedness, no-silencing, and no-domination
-          properties, and empirically validated against nine baselines. Expected
-          technical improvements include a 20&ndash;30% CCR reduction versus
-          standard MAD, ECR &gt; 0.80 on primary evaluation datasets, and
-          competitive-or-better accuracy on GPQA and MMLU-Pro, demonstrating that
-          anti-sycophancy gains do not degrade baseline performance.
+          properties, and planned for evaluation against the four executable arms
+          and the six-arm target. The pre-registered targets are a 20&ndash;30%
+          CCR reduction versus standard MAD, an ECR above 0.80 on the primary
+          evaluation set, and non-inferior accuracy on GPQA-Main and MMLU-Pro
+          STEM. These are success criteria, not measured results; the P0 gate is
+          engineering readiness only.
         </p>
         <p>
           <strong>Co-primary contribution (C2):</strong> an open, reproducible
           sycophancy-stress evaluation harness comprising the controlled injection
           protocol, three standardised metrics (CCR, MPR, ECR), and a statistical
-          testing toolkit. This harness is independently reusable by other
-          researchers regardless of whether they adopt our mechanism, serving as
-          a community benchmark analogous to SciFact or GPQA.
+          testing toolkit. The harness is designed to be independently reusable by
+          other researchers regardless of whether they adopt our mechanism.
         </p>
         <p>
-          <strong>Publication target:</strong> EMNLP Findings or TMLR as the
-          realistic primary target, with ACL/EMNLP Main as a stretch conditional
-          on clear, statistically significant gains over published competitors.
-          ACL or NeurIPS workshops serve as the safe floor. The completed FYDP
-          thesis and a fully reproducible codebase will be released regardless of
-          publication outcome.
+          <strong>Publication target:</strong> TACL (rolling submission) is the
+          primary target, written after the thesis defence. EMNLP 2028 is the
+          fallback; a workshop is the safe floor. The completed FYDP thesis and a
+          fully reproducible codebase will be released regardless of publication
+          outcome.
         </p>
         <p>
-          <strong>Novelty statement:</strong> no existing published or preprint
-          work combines in-session, evidence-grounded, dynamically-updating trust
-          with formal boundedness guarantees. The closest published mitigation
-          (ConsensAgent) operates via textual prompt refinement; the closest
-          uncertainty-based method (DebUnc) relies on self-reported signals; and
-          the closest theoretical framework (Estornell &amp; Liu) does not produce
-          a deployable system. Our mechanism occupies the intersection of
-          <em>external evidence grounding</em>, <em>dynamic in-session updating</em>,
-          and <em>formal boundedness properties</em> &mdash; a combination absent
-          from the existing literature.
+          <strong>Novelty statement:</strong> to our knowledge, no existing
+          published or preprint work combines in-session, evidence-grounded,
+          dynamically-updating trust with boundedness properties of this form. The
+          closest published mitigation (ConsensAgent) operates via textual prompt
+          refinement; the closest uncertainty-based method (DebUnc) relies on
+          self-reported signals; and the closest theoretical framework (Estornell
+          &amp; Liu) does not produce a deployable system. Our mechanism occupies
+          the intersection of <em>external evidence grounding</em>,{" "}
+          <em>dynamic in-session updating</em>, and <em>bounded design
+          properties</em> &mdash; a combination we have not found in the existing
+          literature.
         </p>
 
         <h2 style={h2Style}>References</h2>
@@ -1055,8 +1147,9 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           evaluation through multi-agent debate. <em>ICLR 2024</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
-          Du, Y., et al. (2023). Improving factuality and reasoning in language
-          models through multiagent debate. <em>arXiv:2305.14325</em>.
+          Du, Y., et al. (2024). Improving factuality and reasoning in language
+          models through multiagent debate. <em>ICML 2024</em>.
+          arXiv:2305.14325.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
           Estornell, A., &amp; Liu, Y. (2024). Multi-LLM debate: Framework,
@@ -1067,9 +1160,9 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           efficient LLM reasoning. <em>AAAI 2026 (Oral)</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
-          He, J., et al. (2026). Inter-agent sycophancy: Quantifying and
-          analysing social-pressure collapse in multi-agent LLM debate.
-          <em>arXiv preprint</em>.
+          He, J., et al. (2026). Minority Sentinel: A post-hoc classifier for
+          minority-answer suppression in multi-agent debate.{" "}
+          <em>AgentSearch Workshop @ SIGIR 2026</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
           Pitre, H., Ramakrishnan, V., &amp; Wang, W. Y. (2025). ConsensAgent:
@@ -1081,8 +1174,9 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           for improved reasoning. <em>ICLR 2025 (Poster)</em>.
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
-          Yao, B., et al. (2025). Multi-agent sycophancy: Definition,
-          measurement, and analysis. <em>arXiv:2502.0xxxx</em>.
+          Yao, B., et al. (2025). Peacemaker or troublemaker: How sycophancy
+          shapes multi-agent debate. <em>arXiv:2509.23055</em> (preprint;
+          ICLR 2026 submission withdrawn).
         </p>
         <p style={{ fontSize: "9pt", lineHeight: 1.4, marginLeft: "18pt", textIndent: "-18pt" }}>
           Yoffe, L., Amayuelas, A., &amp; Wang, W. Y. (2025). DebUnc: Improving

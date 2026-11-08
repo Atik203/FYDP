@@ -25,25 +25,17 @@ import {
 import {
   ArrowLeftRight,
   BarChart3,
-  BookOpen,
-  Brain,
   Building2,
   Calendar,
   ClipboardList,
-  FileSearch,
-  Gavel,
   GraduationCap,
   Hammer,
-  HelpCircle,
   Lightbulb,
   Microscope,
-  RefreshCw,
   Ruler,
-  Scale,
   Search,
   Settings,
   Shield,
-  Sparkles,
   Target,
   Telescope,
   TriangleAlert,
@@ -81,6 +73,17 @@ export function Idea1Content() {
       {/* ───────────── 1. Core Idea ───────────── */}
       <Section id="core-idea" accent="blue" className="animate-fade-up">
         <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
+        <Callout variant="info" title="📌 P0 implementation status (Nov 2026)">
+          <p className="mb-2">
+            <strong>478 tests; P0 gate 11/13 passed.</strong> Pending items are
+            WP-13 (B8-no-trust) and WP-09 (B8+injection). The core is wired:
+            options in prompts, parser/scorer, trust simplex projection, verifier
+            interface, claim-domain routing, endpoints, and manifest/resume.
+            This is engineering readiness, <strong>not an efficacy result</strong>.
+            Everything below is planned work unless it is explicitly dated as
+            done.
+          </p>
+        </Callout>
         <p className="mb-3 text-sm sm:text-base">
           We propose a{" "}
           <strong>trust-calibrated multi-agent scientific deliberation</strong>{" "}
@@ -109,8 +112,9 @@ export function Idea1Content() {
               <strong>
                 C2 — Open Sycophancy-Stress Evaluation Harness (co-primary).
               </strong>{" "}
-              A pre-registered injection protocol + CCR / MPR / ECR metrics +
-              9-baseline suite.
+              A pre-registered injection protocol + CCR / MPR / ECR metrics, a
+              4-arm executable matrix with a 6-arm target, and a 300-item
+              benchmark target (180 floor).
             </li>
             <li>
               <strong>C3 — Supporting:</strong> Progressive, source-partitioned
@@ -209,7 +213,7 @@ export function Idea1Content() {
               text: "Trust weight changes actually alter final output, not just sit in context ignored.",
               risk: "critical",
               detail:
-                "The whole mechanism lives or dies on this — must be piloted Month 1.",
+                "The whole mechanism lives or dies on this — must be piloted in Dec 2026, before the matrix.",
             },
             {
               num: 4,
@@ -224,7 +228,7 @@ export function Idea1Content() {
               text: "Our method must measurably outperform ConsensAgent's prompt-refinement approach, not just iMAD/MoA.",
               risk: "moderate",
               detail:
-                "ConsensAgent (ACL Findings 2025) is the closest published mitigation — a written comparison paragraph is mandatory; full baseline reimplementation if Phase 2 capacity allows.",
+                "ConsensAgent (ACL Findings 2025) is the closest published mitigation — a written comparison paragraph is mandatory; full baseline reimplementation if Full-run capacity allows.",
             },
           ].map((a) => (
             <div
@@ -545,10 +549,11 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">4.4 Trust Update (Core)</h4>
             <p className="text-sm leading-relaxed mb-0">
-              <code>Sᵢ(t+1) = Sᵢ(t) + α·Vᵢ − β·Hᵢ</code> then softmax →
-              clamp[0.1, 0.9] → renormalize. Vᵢ = supported claims proportion,
-              Hᵢ = contradicted proportion. α=1.5, β=1.0 (validated on
-              held-out).
+              <code>Sᵢ ← log(max(Sᵢ, ε)) + α·Vᵢ/nᵢ − β·Hᵢ/nᵢ</code>, then one
+              softmax, then a floor/ceiling simplex projection. Vᵢ and Hᵢ are
+              supported/contradicted counts, normalised by claims checked (nᵢ).
+              Defaults α = 0.5, β = 0.3. Guarantees: min ≥ 0.1, Σ = 1,
+              max ≤ max(0.9, 1/N). Neutral evidence is an identity.
             </p>
           </ColBox>
           <ColBox>
@@ -829,9 +834,11 @@ export function Idea1Content() {
 
         <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
-          Two-phase strategy: develop on RTX A6000 48GB ($0.40-0.60/hr on
-          Vast.ai) with smaller models, then run final experiments on RTX PRO 6000 Blackwell 96GB ($1.10-2.70/hr) with
-          the full-scale stack. Use the sliders below to estimate your budget.
+          Two-phase strategy: develop on RTX A6000 48GB (spot $0.16–0.37/hr on
+          Vast.ai) with the smaller models, then run the matrix on RTX PRO 6000
+          Blackwell 96GB (~$0.74–1.43/hr). The pinned Final stack (Qwen3.6-27B-FP8
+          / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ) is 69.73 GB and fits one card.
+          Use the sliders below to estimate a budget.
         </p>
         <CostTable />
 
@@ -876,7 +883,7 @@ export function Idea1Content() {
                   4,
                   "Trust update + LangGraph state machine",
                   "Moderate–High",
-                  "Operator order must match proven Proposition 1 (softmax→clamp→renormalize)",
+                  "Operator order must match Proposition 1: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong (it can drop below the floor).",
                 ],
                 [
                   5,
@@ -910,11 +917,11 @@ export function Idea1Content() {
       <Section id="dataset-plan" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={BarChart3}>8. Dataset Plan</SectionTitle>
         <p className="text-sm mb-4">
-          Five datasets across adversarial and stable categories.
-          BrokenMath/BrokenArXiv are primary for sycophancy measurement.
-          All are official author releases (HuggingFace); none are taken from
-          Kaggle. GPQA and HLE need a free click-through agreement before
-          download.
+          Three primary datasets: GPQA-Main and MMLU-Pro STEM for
+          evidence-grounded accuracy, plus EG-SSS as the controlled
+          gold-evidence mechanism test. HLE is an abstention control.
+          BrokenMath and BrokenArXiv are appendix-only: both are proof-only with
+          0% answer-type retention, so they are not usable for CCR.
         </p>
         <div className="overflow-x-auto rounded-lg shadow-sm">
           <table className="w-full border-collapse text-xs sm:text-sm">
@@ -956,9 +963,14 @@ export function Idea1Content() {
           </table>
         </div>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3">
-          <strong>Fallback:</strong> If HLE access is delayed → GPQA-Diamond
-          with injection protocol. If BrokenArXiv snapshot discontinues → freeze
-          last snapshot. If Semantic Scholar API degrades → OpenAlex API.
+          <strong>Scale:</strong> 24-item calibration first; then 400 items per
+          dataset, 2 seeds (3 for the pilot) = 24 executable rows, 1,280 GPU-h.
+          Benchmark ladder: 180 floor, 300 target, 600 stretch, 800 no-go.
+          <br />
+          <strong>Fallback:</strong> If HLE access is delayed, it stays an
+          abstention control and is not replaced by a primary set. If the
+          BrokenArXiv snapshot discontinues, freeze the last snapshot. If
+          Semantic Scholar degrades, use OpenAlex.
         </p>
       </Section>
 
@@ -987,23 +999,23 @@ export function Idea1Content() {
                 [
                   "CCR (Collapse Rate)",
                   "% of correct agents who abandon under injected pressure",
-                  "H1: Trust-calibration reduces CCR by ≥20% vs MAD on BrokenMath/BrokenArXiv",
+                  "H1 (pre-registered target): trust calibration reduces CCR by ≥20% vs MAD on injected GPQA-Main / MMLU-Pro STEM",
                 ],
 
                 [
                   "MPR (Minority Preservation)",
                   "% debates where correct minority survives to final output",
-                  "H2: MPR improves by ≥15pp vs plain MAD across 3 adversarial datasets",
+                  "H2 (pre-registered target): MPR improves by ≥15pp vs plain MAD across the 3 primary datasets",
                 ],
                 [
                   "ECR (Evidence Calibration)",
                   "Correlation between trust weight and empirical correctness",
-                  "H3: ECR > 0.80 on GPQA, indicating trust tracks correctness",
+                  "H3 (pre-registered target): ECR > 0.80 on GPQA-Main; exact endpoint frozen before the matrix",
                 ],
                 [
                   "Task Accuracy",
                   "Standard answer accuracy per benchmark",
-                  "H4: No regression on stable splits; ≥ MAD + 10% on adversarial",
+                  "H4: no regression on stable splits; improvement under injected pressure is the primary test",
                 ],
               ].map(([metric, defn, hyp], i) => (
                 <tr
@@ -1019,7 +1031,7 @@ export function Idea1Content() {
           </table>
         </div>
 
-        <h4 className="text-sm font-bold mb-3">Baselines (B1–B9)</h4>
+        <h4 className="text-sm font-bold mb-3">Baselines (B1–B10) and Executable Arms</h4>
         <div className="overflow-x-auto rounded-lg shadow-sm mb-4">
           <table className="w-full border-collapse text-xs sm:text-sm">
             <thead>
@@ -1039,12 +1051,14 @@ export function Idea1Content() {
                 ["B1", "Single-Agent CoT", "Floor: no debate at all"],
                 ["B2", "Single-Agent + RAG", "Single-agent with evidence"],
                 ["B3", "MAD (majority vote)", "Standard multi-agent debate"],
-                ["B4", "MAD + RAG", "Debate with evidence"],
+                ["B4", "MAD + RAG", "Debate with evidence; B4-matched uses the B8 partition and prompts"],
                 ["B5", "Self-Consistency", "k samples, majority vote"],
                 ["B6", "MoA (equal-weight)", "Multi-model, static aggregation"],
                 ["B7", "Oracle (Gemini 3.1 Pro Preview)", "Upper-bound ceiling"],
                 ["B8", "Ours (trust-weighted)", "Primary system"],
-                ["B9", "iMAD", "Closest published competitor"],
+                ["B8-no-trust", "Same evidence/prompts, majority", "Primary control — isolates the trust mechanism"],
+                ["B8-placebo / B8-oracle", "Six-arm target", "Pending WP-13; verdicts shuffled / gold evidence"],
+                ["B9", "iMAD", "Closest published efficiency competitor"],
                 [
                   "B10",
                   "ConsensAgent (if feasible)",
@@ -1063,6 +1077,13 @@ export function Idea1Content() {
             </tbody>
           </table>
         </div>
+        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-4">
+          <strong>Executable now:</strong> B3, B4-matched, B8-no-trust, and B8
+          (4 arms × 3 datasets × 2 seeds = 24 rows, 1,280 GPU-h). The 6-arm
+          target adds B8-placebo and B8-oracle once WP-13 provides the RunConfig
+          switches; the pre-registration records both the target and the
+          executable subset.
+        </p>
 
         <Callout
           variant="warning"
@@ -1121,9 +1142,10 @@ export function Idea1Content() {
         </div>
 
         <Callout variant="info" title="📊 Statistical Validation">
-          3 random seeds + 95% confidence intervals + paired bootstrap + Cohen's
-          d across all comparisons. Preempts the common reviewer criticism of
-          single-run comparisons in MAD literature.
+          2 random seeds for the main matrix (3 for the pilot) + 95% confidence
+          intervals + paired bootstrap + Cohen's d across all comparisons.
+          Preempts the common reviewer criticism of single-run comparisons in
+          MAD literature.
         </Callout>
       </Section>
 
@@ -1176,17 +1198,18 @@ export function Idea1Content() {
       <Section id="risk-assessment" accent="amber" className="animate-fade-up animate-delay-4">
         <SectionTitle icon={TriangleAlert}>11. Risk Assessment</SectionTitle>
         <p className="text-sm mb-4">
-          Per blueprint §11. The highest-likelihood risk (timeline overload in
-          Phase 2) has a pre-planned mitigation: use iMAD's published numbers
-          for easy-question conditions. A new risk (novelty erosion) has emerged
-          with the publication of ConsensAgent (ACL Findings 2025) — see below.
+          Per blueprint §11. The highest-likelihood risk (timeline overload from
+          the matrix plus benchmark) has a pre-planned mitigation: Core run
+          first, then the Full run only after it lands. A new risk (novelty
+          erosion) has emerged with the publication of ConsensAgent (ACL
+          Findings 2025) — see below.
         </p>
         <RiskTable rows={risks} />
         <div className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3 space-y-2">
           <p className="mb-0">
             <strong>Critical risk:</strong> Trust signal doesn't behaviorally
-            change output (Challenge C) — mitigated by Month 1 pilot (~20–30 toy
-            questions) before full build-out. If pilot fails, the project
+            change output (Challenge C) — mitigated by the 24-item calibration
+            and Dec 2026 pilot before the matrix. If the pilot fails, the project
             reframes to report the negative result honestly as a finding about
             when evidence-grounded trust does/doesn't influence LLM aggregation
             behavior.
@@ -1206,15 +1229,18 @@ export function Idea1Content() {
       {/* ───────────── 12. Month-by-Month Roadmap ───────────── */}
       <Section id="roadmap" className="animate-fade-up animate-delay-5">
         <SectionTitle icon={Calendar}>
-          12. Month-by-Month Roadmap (Jul 2026 – Apr 2027)
+          12. Month-by-Month Roadmap (Nov 2026 – Dec 2027)
         </SectionTitle>
         <p className="text-sm mb-4">
-          Per blueprint §12. Five phases over 10 months. Gates 0–3 mark explicit
-          go/no-go decisions.
+          Per the execution plan: P0 Nov 2026; Pilot run Dec 2026; Core run
+          (legacy "C+") Jan 2027 with the 180-item benchmark; Full run (legacy
+          "TACL full") + 300-item benchmark Feb 2027; human eval/SDT Mar;
+          results freeze Apr; thesis chapters May; thesis submit Jun; defence
+          Jun/Jul; paper after defence Aug–Dec 2027. No fixed conference deadline
+          drives the schedule; the thesis clock comes first.
           <strong className="block mt-1">Note:</strong> If ConsensAgent is added
-          as B10, budget ~1 week in Phase 2 for a lightweight reimplementation
-          or use of published numbers where directly comparable (same mitigation
-          strategy already planned for iMAD's easy-question conditions).
+          as B10, budget ~1 week in the Full-run phase for a lightweight
+          reimplementation or use published numbers where directly comparable.
         </p>
         <GanttTable phases={ganttPhases} />
         <Timeline items={milestones} />
@@ -1244,32 +1270,32 @@ export function Idea1Content() {
             {
               step: 3,
               title: "Injection protocol (§5.4 Steps 1–6)",
-              desc: "Must exist before trust mechanism — trust calibration only evaluable against a working stress test. Coded and mock-verified; GPU pilot next.",
+              desc: "Must exist before trust mechanism — trust calibration is only evaluable against a working stress test. Protocol and B8 injection wiring are in progress; WP-09 is one of the two pending P0 items. GPU pilot next.",
             },
             {
               step: 4,
-              title: "Month-1 behavioral-effectiveness pilot",
-              desc: "Highest-risk assumption (Section 0). Tests on ~20–30 toy questions before full mechanism build.",
+              title: "Calibration + behavioural-effectiveness pilot (Dec 2026)",
+              desc: "Highest-risk assumption (Section 0). Run the 24-item calibration first, then the pilot, before the matrix.",
             },
             {
               step: 5,
               title: "Claim decomposition + source-partitioned retrieval",
-              desc: "Trust formula inputs (Vᵢ, Hᵢ) are outputs of retrieval. Build retrieval before trust math.",
+              desc: "Trust formula inputs (Vᵢ, Hᵢ, nᵢ) are outputs of retrieval. Built in P0: claim decomposition, claim-domain routing, verifier interface, and retrieval endpoints. GPU pilot next.",
             },
             {
               step: 6,
-              title: "Trust update function (softmax → clamp → renormalize)",
-              desc: "Unit-test operator order in isolation. Verify Tᵢ never leaves [0.1, 0.9] computationally.",
+              title: "Trust update function (logit accumulation → softmax → simplex projection)",
+              desc: "Built and unit-tested in P0: min ≥ floor, Σ = 1, max ≤ max(ceiling, 1/N) over 10k draws for N = 1, 3, 5. Clamp-then-renormalise is the wrong order.",
             },
             {
               step: 7,
               title: "Full debate loop (LangGraph state machine)",
-              desc: "Only after steps 1–6 each independently validated. Integration bugs easier to isolate.",
+              desc: "Core loop, endpoints, manifest, and resume are wired at P0. P0 gate is 11/13 with WP-13 (B8-no-trust) and WP-09 (B8+injection) pending.",
             },
             {
               step: 8,
               title: "Baselines B1–B4",
-              desc: "Reuses components from steps 1, 5. Establishes comparison floor.",
+              desc: "Built and mock-verified. B3 and B4-matched are part of the executable matrix.",
             },
             {
               step: 9,
@@ -1288,13 +1314,13 @@ export function Idea1Content() {
             },
             {
               step: 12,
-              title: "Full experiment matrix",
-              desc: "Only after step 11 passes. Dev models off, Final models on.",
+              title: "Core run (24 rows) then Full run",
+              desc: "Run 4 arms × 3 datasets × 400 items × 2 seeds = 24 rows at 1,280 GPU-h after the smoke test. Full run adds B8-placebo/B8-oracle only if WP-13 lands.",
             },
             {
               step: 13,
-              title: "Human evaluation + failure analysis",
-              desc: "Last — requires completed experimental results to annotate against.",
+              title: "Human evaluation + failure analysis (Mar 2027)",
+              desc: "Requires completed experimental results to annotate against.",
             },
           ].map(({ step, title, desc }) => (
             <div
@@ -1329,8 +1355,8 @@ export function Idea1Content() {
               (steps 1–7) — B9 reuses debate-loop infrastructure.
             </li>
             <li>
-              Never run full experiment matrix (step 12) <strong>before</strong>{" "}
-              Month-1 pilot (step 4) confirms the core assumption.
+              Never run the matrix (step 12) <strong>before</strong> the Dec 2026
+              calibration + pilot (step 4) confirms the core assumption.
             </li>
             <li>
               Never skip the model-swap smoke test (step 11) — a 2-hour/$3
@@ -1359,7 +1385,8 @@ export function Idea1Content() {
               Rigorous Evaluation
             </div>
             <p className="text-sm">
-              9-baseline suite, 5 benchmarks, 3 seeds, statistical testing with
+              4 executable arms with a 6-arm target, 3 primary datasets, 2 seeds,
+              and statistical testing with
               95% CIs and effect sizes (Cohen's d).
             </p>
           </div>
@@ -1580,40 +1607,41 @@ export function Idea1Content() {
         <SectionTitle icon={Trophy}>16. Expected Research Outcome</SectionTitle>
         <TwoCol>
           <ColBox>
-            <h4 className="text-sm font-bold mb-2">Expected Improvements</h4>
+            <h4 className="text-sm font-bold mb-2">Pre-Registered Targets</h4>
             <ul className="text-sm space-y-1 mb-0 pl-4">
               <li>
-                <strong>20–30% CCR reduction</strong> vs. standard MAD on
-                adversarial benchmarks
+                <strong>20–30% CCR reduction target</strong> vs. standard MAD on
+                injected-pressure benchmarks — a target, not a result.
               </li>
               <li>
                 <strong>
-                  Statistically significant improvement over ConsensAgent
+                  Comparison against ConsensAgent
                 </strong>{" "}
-                (closest published mitigation) on adversarial injection
-                benchmarks
+                (closest published mitigation) on the same injected sets, with
+                the mechanism difference stated explicitly.
               </li>
               <li>
-                <strong>ECR &gt; 0.80</strong> on HLE — trust scores track
-                actual correctness
+                <strong>ECR &gt; 0.80 target</strong> on GPQA-Main — trust scores
+                should track actual correctness, but the endpoint is frozen before
+                the matrix.
               </li>
               <li>
-                <strong>No accuracy regression</strong> on GPQA/MMLU-Pro —
-                anti-sycophancy gains don't cost baseline correctness
+                <strong>No accuracy regression</strong> on GPQA-Main / MMLU-Pro
+                STEM — anti-sycophancy gains must not cost baseline correctness.
               </li>
             </ul>
           </ColBox>
           <ColBox>
-            <h4 className="text-sm font-bold mb-2">Publication Potential</h4>
+            <h4 className="text-sm font-bold mb-2">Publication Plan</h4>
             <p className="text-sm mb-0">
               The field has moved faster than anticipated — ACL Findings 2025
               already has a published mitigation (ConsensAgent). This raises the
-              bar but sharpens our contribution: we are the <em>only</em>
+              bar but sharpens our contribution: to our knowledge, the only
               evidence-grounded, numeric, adversarially-tested approach.
-              Realistic: <strong>EMNLP Findings / TMLR</strong>. Stretch:{" "}
-              <strong>ACL/NeurIPS Main</strong> with significant gains over
-              ConsensAgent
-              <em>and</em> MoA/iMAD. Safe floor: workshop submission.
+              Primary target: <strong>TACL (rolling)</strong>, written after the
+              thesis defence. Fallback: <strong>EMNLP 2028</strong>; workshop as
+              the safe floor. No result exists yet, so no venue claim is a
+              promise.
             </p>
           </ColBox>
         </TwoCol>
@@ -1625,22 +1653,22 @@ export function Idea1Content() {
             {
               icon: "📊",
               label:
-                "Statistically significant CCR reduction over iMAD, MoA, and ConsensAgent on adversarial benchmarks, with 95% CIs not overlapping zero.",
+                "Pre-registered CCR reduction over B8-no-trust on the injected sets, with 95% CIs; B3/B4-matched are controls, not headline competitors.",
             },
             {
               icon: "📐",
               label:
-                "ECR > 0.80 achieved on at least the primary evaluation dataset.",
+                "ECR > 0.80 achieved on at least the primary evaluation dataset, or the calibration endpoint is reported as missed.",
             },
             {
               icon: "🧪",
               label:
-                "Month-1 pilot confirms trust weight causally affects aggregation output (necessary condition — reframes negative result if it fails).",
+                "Dec 2026 calibration + pilot confirms trust weight causally affects aggregation output (necessary condition — reframes the result if it fails).",
             },
             {
               icon: "📝",
               label:
-                "Completed FYDP thesis + submitted paper (minimum workshop, target Findings-tier), fully reproducible codebase released.",
+                "Completed FYDP thesis + submitted paper (minimum workshop, target TACL), fully reproducible codebase released.",
             },
           ].map((c) => (
             <div
@@ -1722,9 +1750,10 @@ export function Idea1Content() {
               "Your trust formula has two free hyperparameters (α, β) — how do I
               know you didn't just tune them until the result looked good?"
             </strong>{" "}
-            Mitigated by hyperparameter sensitivity analysis (grid search, CCR
-            varies &lt;4% across configs). This section must be prominent in the
-            paper, not buried in an appendix.
+            Planned mitigation: a hyperparameter sensitivity analysis (grid
+            search) before the matrix is frozen. No sensitivity result exists
+            yet. This section must be prominent in the paper, not buried in an
+            appendix.
           </p>
           <p className="mb-2">
             <strong>
@@ -1740,8 +1769,9 @@ export function Idea1Content() {
               "Is 20–30% CCR reduction actually a big number, or is it modest
               window-dressing?"
             </strong>{" "}
-            Needs contextualization against the baseline collapse rate (~45%) so
-            readers understand the relative magnitude.
+            Needs contextualization against the observed baseline collapse rate
+            in the pilot so readers understand the relative magnitude; no
+            baseline rate is assumed before the run.
           </p>
         </Callout>
         <h4 className="text-sm font-bold mt-4 mb-3">
@@ -1780,15 +1810,14 @@ export function Idea1Content() {
             </div>
           ))}
         </div>
-        <Callout variant="warning" title="📖 Pre-Phase 0 Reading Required">
-          Before the Phase 0 literature freeze, schedule one dedicated
-          reading/discussion session on <strong>ConsensAgent</strong> (Pitre et
-          al., ACL Findings 2025) and <strong>Estornell &amp; Liu</strong>{" "}
-          (NeurIPS 2024 Main Track). Both are now load-bearing, not optional
-          background — ConsensAgent is our closest published competitor, and
-          Estornell &amp; Liu provides the formal theoretical context for our
-          Propositions 1–3. This session must happen before the Phase 0 freeze
-          closes.
+        <Callout variant="warning" title="📖 Load-Bearing Reading">
+          Before the writing phase, schedule one dedicated reading/discussion
+          session on <strong>ConsensAgent</strong> (Pitre et al., ACL Findings
+          2025) and <strong>Estornell &amp; Liu</strong> (NeurIPS 2024 Main
+          Track). Both are load-bearing, not optional background — ConsensAgent
+          is our closest published competitor, and Estornell &amp; Liu provides
+          the formal context for Propositions 1–3. Re-verify both venues before
+          the thesis cites them.
         </Callout>
         <Callout
           variant="warning"

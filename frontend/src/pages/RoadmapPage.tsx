@@ -52,7 +52,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 6, topic: 'Hallucination in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your main failure mode', link: { label: 'Your literature review', href: '/papers' } },
       { num: 7, topic: 'Sycophancy in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Core research problem', link: { label: 'Sharma et al. 2023', href: 'https://arxiv.org/abs/2310.13548' } },
       { num: 8, topic: 'Model Calibration (ECE)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of trust calibration', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
-      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → Final (Qwen3.6-27B / Gemma 4 26B / Mistral 24B) models (Ph 0–1)', link: { label: 'Proposal §7', href: '/idea/1' } },
+      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev stack (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → pinned Final stack (Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, 69.73 GB)', link: { label: 'Proposal §7', href: '/idea/1' } },
       { num: 10, topic: 'Sycophancy Injection Protocol Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'CCR operationalization; κ > 0.75 pilot check (Phase 1–2)', link: { label: 'Proposal §5.4', href: '/idea/1' } },
       { num: 11, topic: 'LLM Uncertainty & Confidence Estimation', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Lightweight confidence gating (Phase 2)', link: { label: 'Your literature review', href: '/papers' } },
     ],
@@ -118,60 +118,71 @@ const monthPlan: MonthPlan[] = [
     phase: 'Ph 0 — complete',
     hours: '~15 hr/wk',
     learn: 'Only the Transformer / attention / quantization units from the ML/DL playlists (skip what you know); structured prompting for tagged output; vLLM + HF Hub basics.',
-    build: 'Repo skeleton per docs/project_structure.md; 3-model vLLM serving on the A6000; Gate 0 MAD reproduction passed 16 Sep 2026 (10/10 debates × 3 rounds, mean 370.8 s/debate).',
+    build: 'Repo skeleton; 3-model vLLM serving on the A6000; Gate 0 MAD reproduction passed 16 Sep 2026 (10/10 debates × 3 rounds, mean 370.8 s/debate).',
     links: [
       { label: '100 Days of DL (Transformer units only)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' },
       { label: 'vLLM docs', href: 'https://docs.vllm.ai/' },
     ],
   },
   {
-    month: 'Sep–Oct 2026',
-    phase: 'Ph 1 — in progress',
+    month: 'Oct–Nov 2026',
+    phase: 'P0 — in progress',
     hours: '~20 hr/wk',
-    learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX LangGraph playlist, videos 1–6 only); Du et al. 2023 read once, carefully.',
-    build: 'Injection protocol + B1/B3 baselines built and mock-verified; 50-question pilot + κ check and Month-1 behavioural pilot next (GPU runs).',
+    learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX playlist, videos 1–6 only); trust projection math from the P0 interfaces.',
+    build: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 478 tests; P0 gate 11/13, with WP-13 and WP-09 pending.',
     links: [
       { label: 'Agentic AI using LangGraph (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' },
-      { label: 'Du et al. 2023 — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
       { label: 'LangGraph docs', href: 'https://langchain-ai.github.io/langgraph/' },
     ],
   },
   {
-    month: 'Sep–Oct 2026',
-    phase: 'Ph 2',
-    hours: '~20 hr/wk',
-    learn: 'The 3 retrieval API docs (PubMed / ArXiv / Semantic Scholar) directly — no tutorials needed; cross-encoder reranking (sentence-transformers); calibration (ECE) + trust math from blueprint §5.6.',
-    build: 'Claim decomposition + source-partitioned RAG; trust update as pure functions + boundedness unit tests; baselines B5/B6; iMAD reimplementation (~10 days).',
-    links: [
-      { label: 'RAG playlist (first 3–4 videos, CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_Rmva0dRLWEHLznSHKbFD_RJfX' },
-      { label: 'sentence-transformers (cross-encoder)', href: 'https://www.sbert.net/' },
-      { label: 'Self-Consistency (Wang et al.)', href: 'https://arxiv.org/abs/2203.11171' },
-    ],
-  },
-  {
-    month: 'Nov 2026',
-    phase: 'Ph 2→3',
+    month: 'Dec 2026',
+    phase: 'Pilot run',
     hours: '~15 hr/wk',
     learn: 'Only the stats you will actually run: paired bootstrap, McNemar, Cohen\'s d, Cohen\'s κ — short scipy walkthroughs, no full stats course.',
-    build: 'Dry-run matrix on one dataset; results tables with CIs; mid-report; FYDP-1 defence.',
+    build: '24-item calibration first; then the behavioural-effectiveness pilot and κ check. Exit: Gate 1 decides whether the Core run proceeds.',
     links: [
-      { label: 'MoA paper (Wang et al.)', href: 'https://arxiv.org/abs/2406.04692' },
+      { label: 'Du et al. — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
     ],
   },
   {
-    month: 'Dec 2026 – Jan 2027',
-    phase: 'Ph 3',
+    month: 'Jan 2027',
+    phase: 'Core run',
     hours: '~20 hr/wk',
     learn: 'Nothing new — debugging discipline and log inspection only. If you need a concept, look it up on demand.',
-    build: 'Main experiment matrix; 4 ablations; α/β sweep; N∈{2,3,5}; V1–V3 validity checks. Exit: Gate 3 results freeze.',
+    build: '4 arms + oracle × 3 datasets × 2 seeds = 24 rows, 1,280 GPU-h. No efficacy claim until the pre-registered analysis.',
     links: [],
   },
   {
-    month: 'Feb–Apr 2027',
-    phase: 'Ph 4–5',
+    month: 'Feb 2027',
+    phase: 'Full run + benchmark',
+    hours: '~20 hr/wk',
+    learn: 'Benchmark annotation and verifier-audit protocol; no new ML theory.',
+    build: 'Add B8-placebo/B8-oracle if WP-13 lands; extend to the 6-arm Full run. EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go.',
+    links: [],
+  },
+  {
+    month: 'Mar–Apr 2027',
+    phase: 'Human eval + freeze',
     hours: '~15 hr/wk',
-    learn: 'Inter-annotator agreement (κ) for the human eval; venue writing guides.',
-    build: 'n=60 human evaluation; failure analysis; thesis + paper + reproducibility package; final defence.',
+    learn: 'Inter-annotator agreement (κ/ICC) for the human evaluation.',
+    build: 'Human evaluation / SDT, benchmark annotation, verifier audit, then results freeze with CIs and effect sizes. No post-hoc arm changes.',
+    links: [],
+  },
+  {
+    month: 'May–Jul 2027',
+    phase: 'Thesis + defence',
+    hours: '~15 hr/wk',
+    learn: 'Venue/thesis formatting only; no new technical material.',
+    build: 'Thesis chapters (May), submission (Jun), defence (Jun/Jul).',
+    links: [],
+  },
+  {
+    month: 'Aug–Dec 2027',
+    phase: 'Paper',
+    hours: '~10 hr/wk',
+    learn: 'TACL/EMNLP writing guides and reviewer-response practice.',
+    build: 'Write and submit the paper after the defence. TACL rolling; EMNLP 2028 fallback.',
     links: [],
   },
 ];
@@ -247,11 +258,11 @@ export function RoadmapPage() {
       <PageHeader
         docType="FYDP Learning & Execution Roadmap · Idea 1"
         title={<>Idea 1 Learning &amp; Execution Roadmap</>}
-        subtitle="Trust-Calibrated Multi-Agent Scientific Deliberation · Jul 2026 – Apr 2027"
+        subtitle="Trust-Calibrated Multi-Agent Scientific Deliberation · Nov 2026 – Dec 2027"
         coverItems={[
-          { label: 'Total Duration', value: '10 Months (5 Phases)' },
+          { label: 'Timeline', value: 'P0 → Paper (Nov 2026 – Dec 2027)' },
           { label: 'Weekly Time', value: '15–20 Hours' },
-          { label: 'Target Venue', value: 'ACL W. / EMNLP Findings / TMLR' },
+          { label: 'Target Venue', value: 'TACL (rolling) · EMNLP 2028 fallback' },
           { label: 'Research Focus', value: 'Agentic AI · Anti-Sycophancy · Trust Calibration' },
         ]}
       />
@@ -262,7 +273,14 @@ export function RoadmapPage() {
         <Section accent="blue" className="animate-fade-up">
           <SectionTitle icon={Calendar}>A. Execution Plan (Blueprint §12)</SectionTitle>
           <p className="text-sm mb-4">
-            Five phases over 10 months (Jul 2026 – Apr 2027) with explicit Gate checkpoints. Per blueprint §12.
+            P0 closes in Nov 2026; the Pilot run follows in Dec; the Core run
+            (legacy "C+") in Jan 2027 with the 180-item benchmark; the Full run
+            (legacy "TACL full") plus the 300-item benchmark in Feb; human
+            eval/SDT in Mar; results freeze in Apr; thesis chapters in May;
+            thesis submission in Jun; defence in Jun/Jul; paper after the
+            defence (Aug–Dec 2027). Gates mark explicit go/no-go decisions. Core
+            run is a prefix of the Full run; completed cells are reused, so costs
+            are not additive for those cells.
           </p>
           <GanttTable phases={ganttPhases} />
           <Timeline items={milestones} />
@@ -278,15 +296,15 @@ export function RoadmapPage() {
             {[
               { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this. Done — three-model serving verified 16 Sep 2026.' },
               { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions. Done — 10/10 debates, 3/3 rounds.' },
-              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Coded and mock-verified; GPU pilot next.' },
-              { step: 4, title: 'Month-1 behavioral-effectiveness pilot', desc: 'Highest-risk assumption — test on ~20–30 toy questions before full build.' },
-              { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Build retrieval before trust math.' },
-              { step: 6, title: 'Trust update function', desc: 'Unit-test operator order (softmax→clamp→renormalize) in isolation.' },
-              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Only after steps 1–6 are each independently validated.' },
-              { step: 8, title: 'Baselines B1–B4', desc: 'Reuses components from steps 1, 5. Establishes comparison floor.' },
+              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Protocol and B8 injection wiring are in progress; WP-09 remains pending. GPU pilot next.' },
+              { step: 4, title: 'Calibration + behavioural-effectiveness pilot (Dec 2026)', desc: '24-item calibration first; then the pilot on the highest-risk assumption.' },
+              { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Claim decomposition, domain routing, verifier interface, and endpoints are wired at P0.' },
+              { step: 6, title: 'Trust update function', desc: 'Unit-test the operator order in isolation: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong.' },
+              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 and WP-09 remain before the matrix.' },
+              { step: 8, title: 'Baselines B1–B4', desc: 'Built and mock-verified; B3 and B4-matched are in the executable matrix.' },
               { step: 9, title: 'Baselines B5–B6 (Self-Consistency, MoA)', desc: 'Independent of core mechanism. Can build in parallel with step 10.' },
               { step: 10, title: 'Baseline B9 (iMAD reimplementation)', desc: 'Highest difficulty (~10 days). Sequenced last.' },
-              { step: 11, title: 'Full experiment matrix', desc: 'Only after every component passes its validation gate.' },
+              { step: 11, title: 'Core run → Full run', desc: 'Core run: 24 rows at 1,280 GPU-h. Full run adds B8-placebo/B8-oracle only if WP-13 lands.' },
               { step: 12, title: 'Human evaluation + failure analysis', desc: 'Last — requires completed experimental results to annotate against.' },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3 sm:p-4 hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-colors">
@@ -300,11 +318,20 @@ export function RoadmapPage() {
               </div>
             ))}
           </div>
+          <Callout variant="info" title="🌿 Repository workflow" className="mt-4">
+            <p className="text-sm">
+              Two long-lived branches only: <code>main</code> (public mirror) and{" "}
+              <code>feat/full-pipeline</code> (canonical implementation).
+              Snapshots are git tags (P0, Pilot, Core, Full), not long-lived
+              phase branches. Feature work lands on short-lived slices and
+              merges back with <code>--no-ff</code>.
+            </p>
+          </Callout>
           <Callout variant="info" title="⚠ Critical Ordering Constraints" className="mt-4">
             <ul className="text-sm space-y-1">
               <li>Never build trust update <strong>before</strong> retrieval exists.</li>
               <li>Never build B9 (iMAD) <strong>before</strong> the core system (steps 1–7).</li>
-              <li>Never run full experiment matrix <strong>before</strong> Month-1 pilot confirms the core assumption.</li>
+              <li>Never run the Core run <strong>before</strong> the Dec 2026 calibration + pilot confirms the core assumption.</li>
             </ul>
           </Callout>
         </Section>
@@ -356,7 +383,7 @@ export function RoadmapPage() {
               <li><strong>Do not binge-watch playlists.</strong> Binge-watching is the #1 way to spend a month learning nothing you can reproduce. Watch the one video for the concept you are about to implement, then implement it.</li>
               <li><strong>Do not take a full stats or ML course.</strong> This project needs ~6 statistical tests and ~4 architecture concepts. Learn them on demand.</li>
               <li><strong>Skip if you already know it:</strong> Python (skip 100 Days of Python entirely), basic ML concepts, and any LangChain content — you need LangGraph only, and only its StateGraph core.</li>
-              <li><strong>If you fall behind:</strong> cut Week 3's reranker to a simple overlap score and catch up in Ph 1 — never skip the Gate 0 MAD reproduction or the Month-1 pilot.</li>
+              <li><strong>If you fall behind:</strong> cut the reranker to a simple overlap score and catch up in the Pilot run — never skip the Gate 0 MAD reproduction or the Dec 2026 calibration + pilot.</li>
             </ul>
           </Callout>
         </Section>
