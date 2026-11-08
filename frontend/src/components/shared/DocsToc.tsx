@@ -67,7 +67,8 @@ function TocList({ sections, active }: { sections: TocSection[]; active: string 
 
 /**
  * Docs-style table of contents for long pages.
- * Desktop: sticky left sidebar. Mobile/tablet: collapsible "On this page" panel.
+ * Desktop: sticky left sidebar. Mobile/tablet: static card above the content.
+ * The contents stay visible at every breakpoint so long pages remain navigable.
  */
 export function DocsToc({
   sections,
@@ -79,24 +80,13 @@ export function DocsToc({
   const active = useActiveSection(sections.map((s) => s.id));
 
   return (
-    <>
-      <details className="glass-card mb-6 rounded-[10px] p-4 lg:hidden">
-        <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-[#12172b] dark:text-[#c7d2fe]">
-          <List size={16} /> {title}
-        </summary>
-        <nav className="mt-3">
-          <TocList sections={sections} active={active} />
-        </nav>
-      </details>
-
-      <aside className="hidden w-60 flex-shrink-0 lg:block xl:w-64">
-        <nav className="glass-card sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-[10px] p-4 pr-2">
-          <p className="mb-2 flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-widest text-[#94a3b8]">
-            <List size={14} /> {title}
-          </p>
-          <TocList sections={sections} active={active} />
-        </nav>
-      </aside>
-    </>
+    <aside className="mb-6 w-full flex-shrink-0 lg:mb-0 lg:w-60 xl:w-64">
+      <nav className="glass-card max-h-[65vh] overflow-y-auto rounded-[10px] p-4 pr-2 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)]">
+        <p className="mb-2 flex items-center gap-2 text-[0.7rem] font-bold uppercase tracking-widest text-[#94a3b8]">
+          <List size={14} /> {title}
+        </p>
+        <TocList sections={sections} active={active} />
+      </nav>
+    </aside>
   );
 }
