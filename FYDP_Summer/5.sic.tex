@@ -24,7 +24,7 @@ Cross-encoders rerank passages returned by retrieval. The implementation uses a 
 
 Experiments are conducted on a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned final checkpoints are two FP8 models and one AWQ model, totalling 69.73GB, so they fit on one 96GB card with room for the KV cache.
 
-An initial alternative to consider was the a100 80gb. It has sufficient memory for development models and high-bandwidth HBM; however its FP8 path is less capable than what we have today, plus its architecture is two-generations old. Faster still is the h100 80gb; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 provides enough memory for the pinned stack, supports FP8, and can be rented within the student budget. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
+An initial alternative was the RTX A6000 80GB. It has enough memory for the development stack at 4-bit precision and rents at about \$0.263 per hour, but it is an Ampere card: it cannot run the FP8 final checkpoints and would require a fully 4-bit final stack. Faster still is the H100 80GB; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 provides enough memory for the pinned stack, supports FP8, and can be rented within the student budget. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
 
 \subsection{Communication Standards}
 
@@ -119,7 +119,7 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
 
 Storage and bandwidth are included in the scenario envelopes rather than billed separately. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are public; HLE and GPQA are gated and are not redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
 
-An alternative budget using the A100 80GB was also considered. At about \$1.78 per hour, the same 1,280 GPU-h matrix would cost about \$2,278 in GPU time alone, before storage and overhead. The A100 also offers less memory (80GB against 96GB) and a weaker FP8 path than the RTX PRO 6000. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids tighter quantization or sequential model loading.
+An alternative budget using the RTX A6000 80GB was also considered. At about \$0.263 per hour, the same 1,280 GPU-h matrix would cost about \$337 in GPU time, before storage and overhead. The A6000 is cheaper but has no FP8 path, so the final stack would have to be fully 4-bit and the final-stack replication would not exercise the pinned FP8 checkpoints. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids tighter quantization or sequential model loading.
 
 There is no revenue stream anticipated for this project. The project is an academic deliverable produced by a university team with funding provided through grants awarded to the university and team. The expected products are a written report and an open-source framework. The alternate A100 budget is shown in Table~\ref{tab:budget-alt}.
 
@@ -127,21 +127,21 @@ There is no revenue stream anticipated for this project. The project is an acade
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{Alternate budget using the A100 80GB.}
+        \caption{Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack).}
         \renewcommand{\arraystretch}{1.6}
         \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
             \hline
             Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
-            A100 80GB rental & 1,280 hours & 1.78 / hour & 2,278             \\
+            RTX A6000 80GB rental & 1,280 hours & 0.263 / hour & 337             \\
             \hline
             Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
             \hline
             Datasets         & ---       & 0 (public)        & 0                 \\
             \hline
-            Storage          & 200 GB    & 0.05 / GB         & 10                \\
+            Storage          & 200 GB    & 0.20 / GB-month   & 40                \\
             \hline
-            \textbf{Total}   &           &                   & \textbf{2,288}       \\
+            \textbf{Total}   &           &                   & \textbf{377}       \\
             \hline
         \end{tabular}
         \label{tab:budget-alt}
