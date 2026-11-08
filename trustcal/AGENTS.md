@@ -19,7 +19,7 @@ Canonical agent instructions for this directory: the Phase 0+ implementation (vL
 | `src/trustcal/inference/` | OpenAI-compatible client, one per port; retries transient failures only |
 | `src/trustcal/agents/` | prompts (`AGENT_SYSTEM`, initial/revision, injection) + claim parser (+ fallback) |
 | `src/trustcal/orchestrator/` | debate loop (`DebateRunner`) + injection plan (`injection.py`) + baseline strategies (`strategies.py`) |
-| `src/trustcal/trust/` | pure trust math (softmax → clamp → renormalize) + aggregation + `TrustState`/`TrustConfig` |
+| `src/trustcal/trust/` | pure trust math (logit accumulation → softmax → floor/ceiling simplex projection; claim-count normalized) + aggregation + `TrustState`/`TrustConfig` |
 | `src/trustcal/retrieval/` | PubMed/arXiv/S2 clients, progressive retriever, reranker/verdicts |
 | `src/trustcal/eval/` | datasets, answers, CCR/MPR/ECR, baselines, stats, failures, pilot, oracle, annotation/κ |
 | `src/trustcal/runner.py` | resumable experiment runner (JSONL per question, metrics, summary) |
