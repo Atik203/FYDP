@@ -12,89 +12,83 @@ Below.
 
 \subsection{Software Standards}
 
-Python 3.11 was chosen as the language to be used. This is because the LLM
-Since Ecosystem is focussed on python, we also have hugging face libraries, vllm, and others.
-Support for evaluation tools is in the form of python. While Java and c++ are faster
-Both do not have the equivalent amount of pre-existing
-Support to serve and load LLM models. Since the framework is a
-Use a research prototype and not a production service, which must be real-time.
-Ecosystem is better than raw speed. As such, surveys concerning LLM-based knowledge models are available.
-Multi-agent systems discuss this design space in terms of workflow, infrastructure,
-And open challenges~\cite{li2024survey} and therefore the decisions made
-Below follow this structure.
+Python was chosen because the LLM serving and evaluation ecosystem is concentrated in Python: Hugging Face libraries, vLLM, PyTorch, and the evaluation tools all expose Python interfaces. Java and C++ are faster, but neither has the same pre-existing support for loading and serving current LLM checkpoints. The framework is a research prototype rather than a real-time production service, so ecosystem fit matters more than raw speed. The Gate 0 environment used Python 3.12.3; the repository requires Python 3.10 or newer. Surveys of LLM-based multi-agent systems describe this design space in terms of workflow, infrastructure, and open challenges~\cite{li2024survey}; the decisions below follow that structure.
 
-vllm is built on top of the deep learning framework PyTorch 2.x. Pytorch is
-The de-facto standard for LLM inference and directly supports qwen, Gemma and more.
-Mistral families. While TensorFlow and JAX were evaluated alternatives;
-However, TensorFlow's LLM serving story isn't as strong and JAX will require the whole pipeline.
-On its own without any advantage.
+vLLM is built on PyTorch and directly supports the Qwen, Gemma, and Mistral families. TensorFlow and JAX were evaluated as alternatives; TensorFlow's LLM serving story is weaker, and JAX would require rewriting the pipeline without a clear advantage.
 
-Vllm serves the models via an OpenAI compatible api. This interface matters because
-The framework will need to interact with closed APIs and serve locally stored models
-With no modifications to the orchestration code. Given the requirements to handle
-High throughput under the three agent debate load, PagedAttention provides vllm with
-This capability. Additionally given FP8 support from PagedAttention matches that of
-The Blackwell GPU. Ollama is simpler to setup and is slower than PagedAttention when handling concurrent requests. In contrast, llama.cpp runs well on CPU but does not match the GPU throughput needed for the debate. Tgi is a very similar alternative and vllm provided better ecosystem fit and an OpenAI compatible surface.
+vLLM serves models through an OpenAI-compatible API. The orchestration code can therefore call closed APIs and locally served models without modification. PagedAttention manages KV-cache memory for concurrent requests, and the Blackwell FP8 path supplies the throughput needed for the three-agent load. Ollama is simpler to set up but slower under concurrent requests; llama.cpp runs well on CPU but does not match the GPU throughput; TGI is a close alternative, but vLLM fit the existing ecosystem and exposed the OpenAI-compatible surface.
 
-Cross-encoders can be used to re-rank passages returned by information retrieval algorithms. Sentence-transformers implements the cross-encoder that ranks the passages. In contrast, BM25 is an alternate ranking method however, like sentence-transformer, it only uses surface features to rank results. However, since both methods use the semantic features of a passage and a claim to score relevance between them, sentence transformers provide better overall relevance rankings. The web dashboard is served using FastAPI, and all result packages are created as JSON objects following rfc 8259, and are validated against a JSON schema. Codebase changes are tracked with git and latex (overleaf) generates this document.
+Cross-encoders rerank passages returned by retrieval. The implementation uses a sentence-transformers cross-encoder when the optional dependency is installed; the default verdict path is lexical and does not require it. BM25 is an alternative ranker, but it scores lexical overlap rather than semantic relevance. Since the verifier must judge whether a passage supports a claim, the cross-encoder is an optional reranker, not the verdict model. The web dashboard is planned with FastAPI, and result packages are JSON objects following RFC 8259 that are validated against a schema. Codebase changes are tracked with git, and LaTeX (Overleaf) generates this document.
 
 \subsection{Hardware Standards}
 
-Experiments are conducted on a single nvidia RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory. Memory capacity and architecture were key considerations in making this selection. The development models (qwen3.5-9b, Gemma 4 12B, ministral-3-14b) fit into bf16. The final models (qwen3.6-27b, Gemma 4 26B, mistral small 3.2 24b) combine about 77 billion parameters; no single card holds this many parameters in fp16 so they run in FP8. Blackwell has native FP8 support; this is exactly why we chose it.
+Experiments are conducted on a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned final checkpoints are two FP8 models and one AWQ model, totalling 69.73GB, so they fit on one 96GB card with room for the KV cache.
 
-An initial alternative to consider was the a100 80gb. It has sufficient memory for development models and high-bandwidth HBM; however its FP8 path is less capable than what we have today, plus its architecture is two-generations old. Faster still is the h100 80gb; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 sits in just the right place: there is enough memory to be useful; it has modern quantization; and it can be rented at a cost suitable for a student budget. To stage models prior to moving them to the GPU the host computer needs to have at least 64 GB of system RAM and nvme disk storage.
+An initial alternative to consider was the a100 80gb. It has sufficient memory for development models and high-bandwidth HBM; however its FP8 path is less capable than what we have today, plus its architecture is two-generations old. Faster still is the h100 80gb; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 provides enough memory for the pinned stack, supports FP8, and can be rented within the student budget. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
 
 \subsection{Communication Standards}
 
-All communication between the framework and its components occurs over http with tls. The model server presents an OpenAI-compatible chat completion api endpoint that is REST-based with JSON payloads. gRPC was another option for model serving; it has lower latencies in benchmark tests; but having an OpenAI-compatible surface allows us to make our framework portably usable across closed APIs and local vllm-served models without changing anything in our orchestration code.
+All remote communication between the framework and its components uses HTTPS. Local vLLM servers expose HTTP on the host. The model server presents an OpenAI-compatible chat-completion API endpoint that is REST-based with JSON payloads. gRPC was another option for model serving; it has lower latencies in benchmark tests, but an OpenAI-compatible surface lets the framework use closed APIs and local vLLM-served models without changing the orchestration code.
 
-Each source of evidence is accessed via its public REST interfaces: PubMed e-utilities, the arxiv api, the semantic scholar Graph API, and OpenAlex as a fallback. Each returns JSON or XML over HTTPS; our framework handles rate limits with retries capped according to those described in requirements. Web sockets are being saved for real-time updates in live trust charts in our dashboard.
+Each source of evidence is accessed through its public REST interface: PubMed E-utilities, the arXiv API, the Semantic Scholar Graph API, and OpenAlex as a fallback. Each returns JSON or XML over HTTPS; the framework handles rate limits with retries capped according to the requirements. Web sockets are not used in the P0 implementation; live dashboard updates are planned.
 
 \section{Design Constraints}
 
 \subsection{Economic Constraint}
 
+The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in and a Full run at USD 900--1,200 all-in. Retrieval APIs are free at their public tiers, GPQA and MMLU-Pro are public, and the code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
 
 \subsection{Environmental Constraint}
 
+The project avoids training and uses quantized inference, which keeps the compute footprint to the rented GPU hours above. Energy use was not metered during Gate~0, so the report makes no quantitative energy claim. The main environmental cost is GPU electricity and the storage of model weights and logs. The run plan reuses the model cache and copies result packages off the host before the instance is destroyed.
 
 \subsection{Ethical Constraint}
 
+The framework generates answers to scientific questions and can be wrong. It is a research prototype, not a source of clinical, legal, or safety-critical advice. The injection experiment fabricates a consensus, but only inside a controlled benchmark; no human subjects are involved. Dataset licences are recorded, gated datasets are not redistributed, and the result package keeps the evidence trail so a reader can inspect why an answer was selected.
 
 \subsection{Health and Safety Constraint}
 
+No physical system is controlled. The relevant safety risk is that a user treats a generated scientific answer as authoritative. The design mitigates this by returning the evidence trail and by evaluating abstention on retrieval-resistant items. It does not eliminate the risk, and the report does not claim deployment readiness.
 
 \subsection{Social Constraint}
 
+The work targets a social problem: confident but unsupported answers can mislead users. The framework is intended to make disagreement and evidence visible rather than to hide it behind a single vote. Access is a constraint: the code and configuration are intended for open release, while gated datasets are shared as identifiers and hashes only.
 
 \subsection{Political Constraint}
 
+The project has no direct political constituency. Scientific misinformation is a public issue, and the framework could be used to support or contest claims. The evaluation therefore reports failure cases and does not claim that the mechanism is neutral.
 
 \subsection{Sustainability}
+
+The main sustainability choice is inference-only operation on quantized checkpoints, which avoids training runs. The matrix is bounded by the pre-registration, and the runner resumes instead of repeating completed questions. Longer-term use would need a cost and energy audit; that audit is not part of this report.
 
 
 \section{Cost Analysis}
 
-The budget for this project consists of renting a GPU and for storing all data and for using the Research Services that do not require an additional charge to fine tune our results. Cost analysis is based almost entirely on the amount of time spent running our model on a rented GPU. The greatest expense (in terms of time) was inference time on the RTX PRO 6000 Blackwell which totaled approximately 300 hours during both development and testing. Hours were not distributed in proportion across each phase of the project. For example, Phase-0 and Phase-1 used about 30 total hours for setting up baseline models. Phase-2 also used about 60 total hours to develop the Claim Split and RAG models. Phase-3a and Phase-3b combined used about 140 hours for the Main Runs and Ablations. Phase-4 used about 40 total hours for conducting Human Study checks, while Phase-5 used about 30 hours for Final Runs and Packaging. These numbers show how Phase-3 had the most significant impact on costs. The hourly rate is the market average checked on Vast.ai in September 2026, namely \$1.10 to \$2.70 per hour with a median near \$1.60 per hour, and RunPod lists the same card at about \$1.70 to \$2.10 per hour. Table~\\ref{tab:budget} shows the major budget for the project and Table~\\ref{tab:budget-phase} details the number of GPU hours per phase.
+The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run, including pilot and sweep, at USD 420--580 all-in, and a Full run at USD 900--1,200 all-in. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
 
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{Primary budget for the project.}
+        \caption{Planning envelope for the project.}
         \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
+        \begin{tabular}{|p{0.36\textwidth}|p{0.24\textwidth}|p{0.24\textwidth}|}
             \hline
-            Item                                         & Quantity  & Unit Cost (USD)   & Total (USD)       \\
+            Item                                                & Basis                            & Cost (USD)          \\
             \hline
-            RTX PRO 6000 Blackwell 96GB rental           & 300 hours & 1.10--2.70 / hour & 330--810          \\
+            Executable matrix GPU time                         & 1,067--1,280 GPU-h               & within Core-run envelope  \\
             \hline
-            Retrieval APIs (PubMed, arXiv, S2, OpenAlex) & ---       & 0 (free tier)     & 0                 \\
+            Core run (matrix, pilot, sweep)                      & 1,160 GPU-h planning             & 420--580 all-in     \\
             \hline
-            Datasets (GPQA, MMLU-Pro)                    & ---       & 0 (public)        & 0                 \\
+            Full run (main, pilot, sweep, Final)          & 2,460--2,700 GPU-h planning      & 900--1,200 all-in   \\
             \hline
-            Storage (model weights, logs)                & 200 GB    & 0.05 / GB         & 10                \\
+            Retrieval APIs (PubMed, arXiv, S2, OpenAlex)        & public tiers                     & 0                   \\
             \hline
-            \textbf{Total}                               &           &                   & \textbf{340--820} \\
+            Datasets (GPQA, MMLU-Pro, HLE)                      & public or gated                  & 0                   \\
+            \hline
+            Storage and bandwidth                               & included in the envelopes        & included            \\
+            \hline
+            \textbf{Planning range}                             &                                  & \textbf{420--1,200} \\
             \hline
         \end{tabular}
         \label{tab:budget}
@@ -104,34 +98,30 @@ The budget for this project consists of renting a GPU and for storing all data a
 \begin{center}
     \begin{table}[ht]
         \centering
-        \caption{GPU hours and cost split by phase (RTX PRO 6000, USD 1.10--2.70 per hour).}
+        \caption{Compute plan and the one completed GPU run.}
         \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
+        \begin{tabular}{|p{0.36\textwidth}|p{0.22\textwidth}|p{0.26\textwidth}|}
             \hline
-            Phase                                  & Hours        & Cost (USD)        \\
+            Work item                              & GPU hours          & Evidence                          \\
             \hline
-            Phase-0 and Phase-1 (setup, baselines) & 30           & 33--81            \\
+            Gate~0 (completed)                     & $\approx 1.0$      & 3,708.1~s total; invoice USD 4.29 including ingress \\
             \hline
-            Phase-2 (trust build)                  & 60           & 66--162           \\
+            Executable P0 matrix                   & 1,067--1,280       & 24 runs; gate cap or per-dataset caps \\
             \hline
-            Phase-3a and Phase-3b (main runs)      & 140          & 154--378          \\
+            Core run (pilot and sweep included)     & 1,160 planning     & experiment-plan Core-run scenario        \\
             \hline
-            Phase-4 (human eval)                   & 40           & 44--108           \\
-            \hline
-            Phase-5 (writing, final checks)        & 30           & 33--81            \\
-            \hline
-            \textbf{Total}                         & \textbf{300} & \textbf{330--810} \\
+            Full run                         & 2,460--2,700 planning & experiment-plan Full-run scenario   \\
             \hline
         \end{tabular}
         \label{tab:budget-phase}
     \end{table}
 \end{center}
 
-Costs for storage are estimated as \$10.00 based upon an initial cost of \$0.05/GB and a total of 200 GB. Logs and result package models will be approximately 180 GB in size while the remaining space will be used for the workspace. The direct costs of the retrieval API services from PubMed, arXiv, Semantic Scholar and OpenAlex are free due to their use of free tier service levels; however, the limits imposed may increase the time required to retrieve the data. As both GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} datasets are publicly available, there were no additional costs associated with these datasets. Costs associated with printing (approximately \$15) and Internet connectivity were assumed to be fixed, therefore included in the overall estimate. Overleaf was provided to the team, thus eliminating any costs for this platform.
+Storage and bandwidth are included in the scenario envelopes rather than billed separately. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are public; HLE and GPQA are gated and are not redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
 
-Additionally, an alternative budget was developed. Rented usage of an A100 80GB is currently about \$1.78 per hour, or about \$534 over the course of 300 hours. The A100 is no longer the cheaper option, and it also offers less memory, namely 80 GB against 96 GB, and a weaker FP8 path than the RTX PRO 6000. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids the engineering risk of tighter quantization or sequential model loading.
+An alternative budget using the A100 80GB was also considered. At about \$1.78 per hour, the same 1,280 GPU-h matrix would cost about \$2,278 in GPU time alone, before storage and overhead. The A100 also offers less memory (80GB against 96GB) and a weaker FP8 path than the RTX PRO 6000. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids tighter quantization or sequential model loading.
 
-There is no revenue stream anticipated for this project. This project represents an academic deliverable produced by a university and a team with funding provided exclusively through grants awarded to the university and team. The only products expected from this effort include a written report and an open-source framework. An example of an alternate budget for comparison purposes is shown in Table~\\ref\{tab:budget-alt\}.
+There is no revenue stream anticipated for this project. The project is an academic deliverable produced by a university team with funding provided through grants awarded to the university and team. The expected products are a written report and an open-source framework. The alternate A100 budget is shown in Table~\ref{tab:budget-alt}.
 
 
 \begin{center}
@@ -143,7 +133,7 @@ There is no revenue stream anticipated for this project. This project represents
             \hline
             Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
             \hline
-            A100 80GB rental & 300 hours & 1.78 / hour & 534               \\
+            A100 80GB rental & 1,280 hours & 1.78 / hour & 2,278             \\
             \hline
             Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
             \hline
@@ -151,27 +141,28 @@ There is no revenue stream anticipated for this project. This project represents
             \hline
             Storage          & 200 GB    & 0.05 / GB         & 10                \\
             \hline
-            \textbf{Total}   &           &                   & \textbf{544}       \\
+            \textbf{Total}   &           &                   & \textbf{2,288}       \\
             \hline
         \end{tabular}
         \label{tab:budget-alt}
     \end{table}
 \end{center}
 
-A ten percent buffer (approximately \$34-\$82) is maintained to cover unexpected price increases and extended operating time in the event of a failed run. The buffer can be used to fund up to thirty additional hours of operation if either an ablation run fails or a maintenance call is required on a gate before the end of the plan period.
+A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run envelope about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
 
 
 \section{Complex Engineering Problem}
 
 \subsection{Complex Problem Solving}
 
-The project meets the definition of a complex engineering problem by meeting the seven attributes defined in the Washington Accord criteria. Each attribute is mapped to subsections in Table~\ref{tab:p_solve}, which follows.
+The project is assessed against the seven attributes defined in the Washington Accord criteria. Six are covered; P6 is not covered because the project has no external stakeholder. Each attribute is mapped to subsections in Table~\ref{tab:p_solve}, which follows.
 
 \begin{center}
     \begin{table}[ht]
         \centering
         \caption{Mapping with complex problem solving (Washington Accord P1--P7).}
-        \renewcommand{\arraystretch}{1.6}
+        \renewcommand{\arraystretch}{1.4}
+        \scriptsize
         \begin{tabular}{|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|p{0.11\textwidth}|}
             \hline
             P1                 & P2                                & P3                & P4                    & P5                         & P6                                & P7               \\
@@ -186,19 +177,19 @@ The project meets the definition of a complex engineering problem by meeting the
 
 \subsubsection{P1: Depth of Knowledge Required}
 
-This project required knowledge of multiple areas including machine learning, natural language processing, retrieval-augmentation generation, and distributed model serving. Therefore, solving the project required specialized knowledge in these areas, such as the trust update formula through the vLLM serving layer. The coverage for P1 is based on the Washington Accord K1-K8, as detailed in Table~\ref{tab:knowledge} after P7.
+This project required knowledge of multiple areas including machine learning, natural language processing, retrieval-augmented generation, and distributed model serving. Therefore, solving the project required specialized knowledge in these areas, such as the trust update formula through the vLLM serving layer. The coverage for P1 is based on the Washington Accord K1-K8, as detailed in Table~\ref{tab:knowledge} after P7.
 
 \subsubsection{P2: Range of Conflicting Requirements}
 
-P2 is covered. The project needed to meet multiple competing requirements. Accuracy competed with latency and cost. More rounds improved the signal but increased both the inference time and the GPU bill. Strong weighting would limit diversity due to trust calibration. The need to cover evidence competed with API rate limits. Therefore, the team needed to resolve these together. Round caps and clamping bounds were established, and verdicts are conservatively resolved. Thus, none of the competing needs dominate.
+P2 is covered. The project needed to meet multiple competing requirements. Accuracy competed with latency and cost. More rounds improved the signal but increased both the inference time and the GPU bill. Strong weighting would limit diversity due to trust calibration. The need to cover evidence competed with API rate limits. Therefore, the team needed to resolve these together. Round caps and simplex bounds were established, and verdicts are conservatively resolved. Thus, none of the competing needs dominate.
 
 \subsubsection{P3: Depth of Analysis}
 
-P3 is covered. There is no textbook solution to the problem. The team ran comparative experiments comparing several baseline systems: majority voting, MoA, iMAD, and DebUnc. Metrics were created to measure failure modes. Four types of metrics were developed: answer accuracy, consensus-collapse, minority-preservation, and evidence-calibration. An additional metric measuring the failure mode was the injection point for a fake wrong consensus; this allowed the team to measure collapse under controlled stress conditions. Therefore, the depth of test was sufficient to mark P3 as covered.
+P3 is covered. There is no textbook solution to the problem. The design defines comparative experiments against majority voting, MoA, iMAD, and DebUnc. It also defines metrics for the failure modes: final-answer accuracy, correct-minority retention, collapse under pressure, appropriate revision, and trust calibration. The injection point adds a controlled wrong-consensus condition. The matrix is pre-registered but has not been run, so the depth of the design is what supports P3 at mid-project, not completed comparative results.
 
 \subsubsection{P4: Familiarity of Issues}
 
-P4 is covered. Multi-Agent LLM Debate is a novel research area. The most similar research that has been performed appears between 2024-2026; there is currently no standard method available for resolving issues related to sycophantic consensus in multi-agent LLM debates. At the beginning of the project, the issues were unfamiliar to the team. A complete review of current literature was conducted prior to designing any elements of the framework, as described in chapter 2. Therefore, this lack of familiarity is what makes P4 "covered".
+P4 is covered. Multi-Agent LLM Debate is a recent research area. The most similar research appeared between 2024 and 2026, and we are not aware of a standard method for resolving sycophantic collapse in multi-agent LLM debates. At the beginning of the project, the issues were unfamiliar to the team. A review of current literature was conducted before designing the framework, as described in Chapter~2. That review is what supports the P4 assessment.
 
 \subsubsection{P5: Extent of Applicable Codes}
 
@@ -226,7 +217,7 @@ each K for this project and why it is covered or not.
             \hline
             K1: Natural sciences         & $\sqrt{}$ & Scientific questions; evidence from PubMed, arXiv, Semantic Scholar, OpenAlex \\
             \hline
-            K2: Mathematics              & $\sqrt{}$ & Softmax, clamping, renormalization, probability                               \\
+            K2: Mathematics              & $\sqrt{}$ & Logit accumulation, softmax, simplex projection, probability                    \\
             \hline
             K3: Engineering fundamentals & $\sqrt{}$ & System design, state machines, failure handling                               \\
             \hline
@@ -247,13 +238,13 @@ each K for this project and why it is covered or not.
 
 \paragraph{K1: Natural sciences} K1 has been addressed. The framework is designed to address scientific inquiries and verify each claim by comparing it to articles on PubMed, arXiv, Semantic Scholar, and OpenAlex. Natural science questions are included in evaluation data sets. The project itself is not an outcome of a new natural science theory. The problem domain and the evidence base are still sourced from the natural science fields. This is the reason for marking K1 as covered.
 
-\paragraph{K2: Mathematics} K2 has been addressed. We apply softmax, clamping, and renormalization in our trust update; and we also have probability and statistical measures when using our metrics. Both were applied to our trust formula, and both were applied to our evaluation.
+\paragraph{K2: Mathematics} K2 has been addressed. The trust operator uses logit accumulation, one softmax, and a simplex projection with a floor. Probability and statistical measures are used in the evaluation, including bootstrap intervals and paired tests. Both the operator and the evaluation use the same probability framework.
 
 \paragraph{K3: Engineering fundamentals} K3 is covered. State machines (the system's design and its failure handling) are at the heart of what we've done here. Basic engineering design is used by requirements and the confidence gate along with the orchestration logic.
 
-\paragraph{K4: Specialist knowledge} We've addressed K4. Our main focus of interest are LLMs (language models), multi-agent debate, RAG (Rebuttal Aggregation Graph), and sycophancy. This specialized way of thinking drives how we divide claims, how we retrieve information, and ultimately how we calculate trust.
+\paragraph{K4: Specialist knowledge} K4 is covered. The main areas are large language models, multi-agent debate, retrieval-augmented generation (RAG), and sycophancy. These areas drive how claims are divided, how evidence is retrieved, and how trust is computed.
 
-\paragraph{K5: Engineering methods} K5 is covered. An experimental approach is being used with variable controls. Results are presented with confidence intervals and baselines are compared. All these studies were conducted in the same setup where injection was being tested.
+\paragraph{K5: Engineering methods} K5 is covered. An experimental methodology is used with controlled variables. The analysis plan specifies confidence intervals and baseline comparisons. The comparative runs are not yet complete; the evidence at mid-project is the implementation, the test suite, and Gate~0.
 
 \paragraph{K6: Computational methods} K6 is covered. Our main application tools are Python, PyTorch, vLLM (to serve the model), and FastAPI (to serve the dashboard). Sentence-transformers (to re-rank passages) and Git (for version control) complete the suite of applications.
 
@@ -298,11 +289,11 @@ A2 is covered. The system makes heavy use of the outside world. Every round of d
 
 \subsubsection{A3: Innovation}
 
-A3 is not covered. The framework combines pre-existing concepts; multi-agent debate/RAG with trust-weighting/reranking. It creates no new device/new theory. The innovation is a bound trust-score that updates based upon evidence; useful, but still within an incremental level of innovation. No patent-able/break-through innovation exists. That is why A3 is labeled as "not covered", although it would represent a first time combination of concepts for this project.
+A3 is not covered. The framework combines existing concepts: multi-agent debate, retrieval, and trust weighting. It creates no new device and no new theory. The contribution is the combination of claim-level external evidence with a bounded in-debate trust state and a controlled wrong-majority protocol. That combination is useful and testable, but it is not a patentable or breakthrough innovation. A3 is therefore marked as not covered.
 
 \subsubsection{A4: Consequences for Society and Environment}
 
-A4 is covered. The work targets a real social problem - unreliable and sycophantic answers from AI systems in scientific question answering. Even though the framework is a lab prototype rather than a production-deployed product, the consequences of the problem and of the solution were both considered during design. The environmental-impact of the project was also assessed: the test uses approximately 300 GPU-hours on public-cloud using standard configurations/no-fine tuning, therefore energy usage remains very-low. These social and environmental consequences shaped the ethical constraints and the low-cost, no-fine-tuning design decisions documented in this chapter. That is why A4 is labeled as "covered".
+A4 is covered. The work targets a social problem: unreliable and sycophantic answers from AI systems in scientific question answering. Even though the framework is a lab prototype rather than a production-deployed product, the consequences of the problem and of the solution were both considered during design. The environmental impact was assessed qualitatively: the pre-registered matrix is 1,067--1,280 GPU-h on a single rented GPU, the project does no training, and the models run as quantized checkpoints. Energy use was not metered, so no quantitative energy claim is made. These social and environmental considerations shaped the ethical constraints and the inference-only design documented in this chapter.
 
 \subsubsection{A5: Familiarity}
 
@@ -316,11 +307,13 @@ Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
     \begin{table}[ht]
         \centering
         \caption{Mapping with program outcomes (PO1--PO12).}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|p{0.13\textwidth}|}
+        \renewcommand{\arraystretch}{1.4}
+        \scriptsize
+        \setlength{\tabcolsep}{3pt}
+        \begin{tabular}{|p{0.145\textwidth}|p{0.145\textwidth}|p{0.145\textwidth}|p{0.145\textwidth}|p{0.145\textwidth}|p{0.145\textwidth}|}
             \hline
             PO1                            & PO2              & PO3                             & PO4           & PO5                            & PO6                      \\
-            Engineering knowledge          & Problem analysis & Design/development of solutions & Investigation & Modern tool usage              & The engineer and society \\
+            Engineering knowledge          & Problem analysis & Design of solutions             & Investigation & Modern tool usage              & The engineer and society \\
             \hline
             $\sqrt{}$                      & $\sqrt{}$        & $\times$                        & $\sqrt{}$     & $\times$                       & $\times$                 \\
             \hline
@@ -334,7 +327,7 @@ Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
     \end{table}
 \end{center}
 
-The real-life problem in Chapter 1 addresses six program outcomes (PO), all of which are addressed in FYDP I. Literature review and Gap analysis (Chapter 2) will cover PO4. PO2 is covered by the requirements work in Chapter 3. PO10 is addressed in the interim report and in the oral presentation. The timeline is applicable to PO11 and the budget is applicable to PO11. The writing of the journal and the independent learning record are used to cover PO12. The other six program outcomes will be addressed in FYDP II and FYDP III.
+The real-life problem in Chapter~1 and the work in this report address six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12. Literature review and gap analysis (Chapter~2) cover PO4. PO2 is covered by the requirements work in Chapter~3. PO10 is addressed in the interim report and in the oral presentation. The timeline and budget cover PO11. The journal writing and the independent learning record cover PO12. The remaining six outcomes are scheduled for FYDP~II and FYDP~III and are marked as not covered in Table~\ref{tab:po_map}.
 
 \section{Summary}
-The chapter defined the requirements for the software-layer, hardware-layer, and communication-layers and documented the economic, environmental, ethics-social constraints that have impacted design decisions. Budget-analysis demonstrates that the project can fit within a students' budget utilizing a rented RTX PRO 6000 Blackwell GPU with a phased split of costs over the 300 hours plus a 10\% buffer. The complex engineering mapping demonstrates that six out of seven P attributes are covered with only P6 being non-covered due to little to no input from external stakeholders. For knowledge, K1-K8 are all covered. For activities, A1-A2, A4 and A5 are covered while A3 is not. For the program outcomes, FYDP I covers PO1, PO2, PO4, PO10, PO11 and PO12.
+The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run envelope of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, FYDP~I covers PO1, PO2, PO4, PO10, PO11, and PO12.
