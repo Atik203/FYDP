@@ -30,6 +30,7 @@ Integration branch: `feat/p0-hardening`. Slice branches: `p0/wp-A` … `p0/wp-F`
 | 00 | `631831b` | schema, signatures, leases |
 | 03 | `2d99110` | simplex trust projection, claim normalization |
 | 04 / 15 | `62fa3f7` | records + manifest modules, analyze guard |
+| 05 / 06 | `ef38fd9` | endpoints + 13-check gate (8 pass / 5 pending) |
 | 07 / 08 | `efd11ae` | verifier interface, audit harness |
 | 11 / 12 | `4b5f366` | dataset pins, domain routing |
 | 17 | `61af3b0` | Final stack <80GB, phase-aware setup |
