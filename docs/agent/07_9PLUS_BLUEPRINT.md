@@ -2,7 +2,9 @@
 
 **Date:** 8 November 2026  
 **Premise:** the user wants 9+ but explicitly says: *do not suggest things that will fail; suggest what will work.*  
-**Honest verdict:** **9+ is a stretch, not a plan.** The realistic ceiling for this 6-person FYDP in 7–8 months is **8.3–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
+**Honest verdict:** **9+ is a low-probability option, not a plan.** The rational target for this 6-person FYDP in 7–8 months is **8.4–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
+
+> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **C+ staged**: a 4-arm causal study + a 180-item EG-SSS, 17–22 weeks, expected score 8.4. The full 9+ stack is a call option, not the plan. See §9A.
 
 ---
 
@@ -19,7 +21,7 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 | Theory drafting and proof exploration | **2–3x** | Agents can propose models and proof sketches, but LLM math is often plausible-but-wrong; a human must verify every step |
 | Benchmark item drafting and claim decomposition | **3–4x** | Agents can draft items and claims; humans must adjudicate gold labels |
 | Human evaluation | **1–1.5x** | Agents can prepare sheets and analyze agreement; they cannot replace the two human annotators |
-| GPU experiments | **1x** | 1,200–1,500 GPU-hours is physics; agents cannot compress it |
+| GPU experiments | **1x** | C+ ~1,200 GPU-h; TACL ~2,520–3,320; full ~2,860; agents cannot compress it |
 | Peer review / venue cycle | **1x** | 3–6 months; not compressible |
 
 **What this means for the plan:**
@@ -32,15 +34,16 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 
 **Revised probability of success (with 5x agents):**
 
-| Outcome | Without agents | With agents |
-|---|---:|---:|
-| 8.0–8.3 | 70% | 85% |
-| 8.3–8.6 | 50% | **70–75%** |
-| 8.6–8.9 | 25% | **40–50%** |
-| 9.0–9.2 | 10–15% | **20–25%** |
-| 9.5+ | <3% | <5% |
+| Outcome | Probability (with agents) |
+|---|---:|
+| 9.0+ | **11–12%** |
+| 8.6–9.0 | ~10% |
+| 8.3–8.6 | **30–35%** |
+| 8.0–8.3 | ~22% |
+| 7.5–8.0 | ~10% |
+| No finish / <7.5 | ~15% |
 
-The 9+ layer is now more likely to be **attempted**, not more likely to be **accepted**. The bar at a top venue is unchanged.
+**Net leverage is 2–3x, not 5x.** Every agent artifact needs human review. The project speedup is ~1.8–2.5x, not 5x. The theory is verification-bound; annotation and GPU are not compressible. \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\); \(P(9+) \approx 11\text{–}12\%\) unconditional, **30–40% conditional on measured \(\rho > 0.4\)** and a strong behavioral pilot. If \(\rho < 0.3\), the thesis caps at 8.6.
 
 **Agent failure modes to guard against:**
 1. **Hallucinated citations/proofs.** Every reference and every proof step must be checked by a human against the primary source.
@@ -72,7 +75,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 
 ---
 
-## 2. The recommended 9+ stack
+## 2. The 9+ stack (only if you choose to attempt it)
 
 ### Title
 
@@ -183,31 +186,225 @@ The strongest 9+ result is not “trust helps.” It is **“evidence can hurt.�
 
 ---
 
-## 4. Method: value-of-information verification
+## 3A. The stronger theory result: the double-counting phase boundary
 
-### 4.1 Problem
+The simple threshold in §3 is the pedagogical special case. The actual 9+ result is **claim double-counting**.
 
-Verifying every claim is expensive. Which claims should be verified to maximize the chance that the correct minority wins?
+### 3A.1 Parameters
 
-### 4.2 Policy
+- \(q\): verifier accuracy; \(g = 2q-1\) (discrimination).
+- \(\tau^+\): probability a true claim is verified supported; \(\tau^-\): probability a false claim is verified supported.
+- \(d = \tau^+ - \tau^-\) (claim-truth separation); \(s = \tau^+ + \tau^-\) (claim mass).
+- \(v\): coverage (fraction of claims with evidence).
+- \(\rho\): claim overlap/dependence (the same proposition cited by multiple agents).
+- \(N\): number of agents; \(k\): minority size; \(\pi = P(\text{majority correct})\).
+- \(\delta\): confidence.
 
-- Start with a prior trust vector.
-- At each step, compute the expected reduction in the variance of the trust margin (or the probability that the vote flips) for each unverified claim.
-- Verify the claim with the highest value of information.
-- Stop when the budget is exhausted or the trust margin exceeds a confidence threshold.
+### 3A.2 The law
 
-### 4.3 Guarantee
+The number of **verified** claims needed is
 
-If the objective is submodular (diminishing returns), greedy achieves \(1-1/e\) of the optimal. This is a standard result; the novelty is the application to claim-level trust and the empirical cost-accuracy frontier.
+\[
+n^\star_{\text{verified}} = \Theta\!\left(\frac{s\log(N/\delta)}{g^2 d^2}\right),
+\]
 
-### 4.4 Experiments
+and the number of **emitted** claims is
 
-- Cost-accuracy frontier: random / all / claim-importance / value-of-information.
-- Budgets: 25%, 50%, 75%, 100% of claims.
-- Metrics: CMR, final accuracy, trust AUROC, cost per correct answer.
-- Prediction: value-of-information reaches the full-verification accuracy at 40–60% of the budget.
+\[
+n^\star_{\text{emitted}} = \frac{n^\star_{\text{verified}}}{v(1-\rho)}.
+\]
 
-**Why this is 9+:** it turns the trust mechanism into a decision-theoretic policy with a guarantee and a practical cost story. It is not preempted by R²-MAD/TERA-RAG, which verify evidence but do not allocate a verification budget by value of information.
+Inverted, the verifier-accuracy threshold is
+
+\[
+q^\star = \frac{1}{2} + \frac{1}{2}\sqrt{\frac{s\log(N/\delta)}{n\,v\,d^2\,(1-\rho)}}.
+\]
+
+### 3A.3 The exact ceiling
+
+Define the likelihood ratio
+
+\[
+D(q) = \frac{P(\text{favours minority}\mid H_1)}{P(\text{favours minority}\mid H_0)}.
+\]
+
+Trust weighting beats majority **iff**
+
+\[
+D(q) > \frac{\pi}{1-\pi}.
+\]
+
+Below the ceiling, the expected accuracy of trust weighting is
+
+\[
+E[\mathrm{Acc}_{TW}] = \pi - \kappa(2\pi-1) < \pi,
+\]
+
+where \(\kappa = P(\text{weights favour the minority})\). \(D(q)\) is monotone in \(q\) by coupling, so \(q^\star\) is a unique root.
+
+### 3A.4 The killer: double counting and \(\rho^\star\)
+
+Each shared proposition contributes
+
+\[
+(m_c - 1)\log \mathrm{LR}(V_c)
+\]
+
+of spurious log-odds, where \(m_c\) is the number of agents citing it. The critical overlap is
+
+\[
+\rho^\star = 1 - \frac{n^\star_{\text{verified}}}{n v}.
+\]
+
+**Above \(\rho^\star\), no verifier accuracy rescues the correct minority.** This is the 9+ result: the failure is not verifier noise; it is **evidence redundancy**. More agents citing the same proposition make the wrong majority look more supported.
+
+### 3A.5 Corollaries
+
+- **Adversarial budget:** \(\varepsilon^\star = (q-q^\star)/(2q-1) \to 0\) at the ceiling.
+- **Credulous bias:** a bias \(\beta\) shifts \(q^\star\) by exactly \(\beta/2\) and **reverses** the mechanism when \(\beta > 2q-1\).
+- **Headroom:** \(\le 1-\pi\).
+
+### 3A.6 Novelty ledger
+
+| Result | Status |
+|---|---|
+| Softmax trust ≡ log-linear pool with Nitzan–Paroush weights (R1) | Known; use as grounding, do not claim |
+| Identical claim sets ⇒ exactly majority (R2) | One-line degeneracy; useful sanity check |
+| Exact likelihood-ratio ceiling (R4) | New in this application |
+| Double counting and \(\rho^\star\) (R6) | **The killer result** |
+| Chernoff–Stein sample complexity, design-effect dependence, naive-Bayes double counting | Known ingredients; the combination and the \(\rho^\star\) boundary are new |
+
+**Minimum 9+ set:** R2 (degeneracy) + R4 (exact ceiling) + R6 (double counting/\(\rho^\star\)). R3/R5 are support, not the contribution.
+
+### 3A.7 The empirical prediction
+
+Measure \(\rho\) on real debates (fraction of claims shared across agents / evidence passages reused).
+
+- **If \(\rho > 0.4\):** the \(\rho^\star\) boundary is the 9+ headline. Show that real multi-agent debates are **redundancy-bound**, not verifier-bound.
+- **If \(\rho < 0.3\):** R6's punchline collapses; the thesis is a solid 8 (correct, well-verified, not surprising).
+- **If \(\rho \approx 0.4\):** the result is a boundary condition; report it honestly.
+
+**This is the single most important empirical measurement in the thesis. Start it in week 4, not week 12.**
+
+### 3B. The causal 9+ result: sign reversal and granularity moderator
+
+The 9+ claim is not “trust helps.” It is **“evidence can backfire, and the sign depends on attribution granularity.”**
+
+- **Below \(q^\star\):** calibrated trust **increases** wrong-majority conformity; accuracy falls below majority.
+- **Above \(q^\star\):** trust reduces collapse.
+- **Moderator:** document-level trust raises \(q^\star\); claim-level trust lowers it. This is the direct test of Verify, Then Argue: if claim-level attribution is epiphenomenal, document-level trust will match or beat it.
+- **Mediator:** trust margin; selection vs persuasion; silent dissent.
+- **Replication:** a second model family and a second domain.
+
+**The 6-arm design is 8+, not 9+.** The 9+ design needs:
+- 8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6).
+- ~2,860 GPU-h at 6 min/debate; 5–7 months with 4–6 GPUs.
+- Pre-register the four primary contrasts and the three-way interaction **before** the main runs.
+
+**Why this is 9+:** it predicts a **sign reversal** that no current paper reports. A paper that shows *when evidence makes debate worse* is more surprising and more useful than another “our trust score wins” paper.
+
+## 4. Method: SEA-Cert (Shared-Error-Aware Certification)
+
+**Do not use conformal trust calibration (CTC).** It is preempted by Wang et al., *Conformal Social Choice for Safe Multi-Agent Deliberation* (EMNLP 2026 SAC Highlight, arXiv 2604.07667), and its coverage guarantee is invariant to the trust weights — calibrating weights cannot improve validity, only set size. CTC is a 4.5–5.5 paper, not 9+.
+
+### 4.1 The problem
+
+The deployment question is not “does the answer have coverage?” It is: **what is the error rate among the claims we act on?** If agents share a wrong premise, no amount of calibration fixes it.
+
+Let \(S_c\in\{0,1\}\) be the **shared-error event**: all agents inherit the same wrong premise/evidence. Let \(\rho = P(S=1)\). Let the verifier accept/reject with \(a_1=P(V=\text{accept}\mid S=1)\), \(a_0=P(V=\text{accept}\mid S=0)\).
+
+### 4.2 Theorem 1 — flat risk–coverage curve
+
+If \(V\perp S\), then for every threshold \(t\),
+
+\[
+\mathrm{SR}(t) = P(Y=\text{wrong}\mid V=\text{accept}) = \rho.
+\]
+
+The selective risk is exactly \(\rho\) at every operating point. No threshold, calibration set size, number of agents, or conformal layer changes it.
+
+**Implication:** if real debates have \(\rho \approx 0.2\)–\(0.3\), no independent verifier can certify a 5% error rate. That is a policy-relevant negative result.
+
+### 4.3 Theorem 2 — phase transition
+
+Certifying \(\mathrm{SR}\le\beta\) at acceptance rate \(\ge s\) is possible with an \(S\)-independent verifier **iff \(\beta\ge\rho\)**. If \(\beta<\rho\), the verifier must be **negatively associated** with \(S\):
+
+\[
+\frac{a_1}{a_0}\le r^\star(\beta,\rho)=\frac{\beta(1-\rho)}{\rho(1-\beta)}.
+\]
+
+At \(\beta=\rho\), \(r^\star=1\). Independence is not enough; the verifier must actively detect the agents' shared failure.
+
+### 4.4 Theorem 3 — non-identification
+
+Marginal ROC does not identify \((a_1,a_0)\) or \(\mathrm{SR}\). Two verifiers with identical accuracy and acceptance rates can have different selective risk. **Verifier accuracy is the wrong statistic.** The right statistic is the \(S\)-conditional likelihood ratio.
+
+### 4.5 Theorem 4 — cluster design effect
+
+If claims cluster by shared premise/evidence with intra-cluster correlation \(\rho_{\text{ICC}}\) and mean cluster size \(\bar m\), the effective sample size is \(n/\mathrm{DE}\), \(\mathrm{DE}=1+(\bar m-1)\rho_{\text{ICC}}\). A claim-level audit is anti-conservative by \(\sqrt{\mathrm{DE}}\). To certify FDP \(\le\beta\),
+
+\[
+m=\Omega\!\left(\mathrm{DE}\cdot\frac{\beta(1-\beta)\log(T/\delta)}{\Delta^2}\right).
+\]
+
+**Optimal design: audit breadth, not depth** — maximize clusters, minimize claims per cluster.
+
+### 4.6 Algorithm: SEA-Cert
+
+```text
+INPUT: claim clusters g=1..G; debate transcripts; evidence pool;
+       verifier ensemble V; audit budget m; risk target beta; confidence delta
+
+1. Sample G_audit clusters; audit n_g claims per cluster (human gold).
+2. Estimate rho_hat  <- fraction of audited clusters with unanimous error.
+3. Estimate ICC_hat  <- intra-cluster correlation of error.
+4. Estimate DE_hat   <- 1 + (m_bar - 1) * ICC_hat.
+5. For each threshold t on a grid:
+     estimate a1_hat(t), a0_hat(t), acceptance_hat(t)
+     FDP_UCB(t) <- Clopper-Pearson upper(FDP_hat(t), m/DE_hat, delta/T)
+     accept_LCB(t) <- Clopper-Pearson lower(acceptance_hat(t), m, delta/T)
+6. Choose t* = argmax accept_LCB(t) s.t. FDP_UCB(t) <= beta.
+7. If no feasible t*: return CANNOT_CERTIFY.
+8. For each claim c: score_c <- f(V(c), agreement, evidence support)
+   if score_c >= t*: ACCEPT(c) else ABSTAIN(c)
+```
+
+**Guarantee:** with probability \(\ge 1-\delta\) over the audit draw, the realized false-discovery proportion on the accepted set is \(\le\beta\), cluster-robustly. This is a PAC-style bound on the action, not a marginal coverage statement.
+
+### 4.7 Why this is not CTC
+
+| | CTC | SEA-Cert |
+|---|---|---|
+| Object | Coverage of a set | Error rate of an action |
+| Guarantee | Marginal, exchangeability | PAC, cluster-robust |
+| Role of trust weights | The contribution | A feature in \(f\); not the guarantee |
+| Failure mode | Covered but unsafe | Refuses to certify |
+| New theorem | None | Flat curve, phase transition, non-identification, design effect |
+
+CTC becomes the estimator inside SEA-Cert; it is demoted from contribution to instantiation.
+
+### 4.8 Experiments
+
+| Experiment | Design | Metric | 9+ result |
+|---|---|---|---|
+| Flat-curve test | 5 verifier families × 6 thresholds | SR vs acceptance | Slope ≈ 0; SR ≈ \(\hat\rho\); \(R^2>0.9\) |
+| Matched-accuracy pairs | Equal marginal accuracy, vary evidence access | SR divergence | 2× SR at matched accuracy |
+| Phase transition | Vary \(\beta\) around \(\hat\rho\) | Certified acceptance | Sharp drop at \(\beta=\rho\) |
+| Verifier sweep | 55–95% accuracy × {no evidence, retrieved, oracle, adversarial} | Certified acceptance at \(\beta=0.05\) | Accuracy uncorrelated with certification; likelihood ratio predicts (\(R^2>0.8\)) |
+| Cluster effect | SciFact/ExpertQA grouped by paper/section | ICC, DE | DE = 2–5×; naive audit anti-conservative |
+| Frontier recovery | SEA-Cert vs CSC, Dai, TRAQ, Conformal-RAG, R2-MAD, TERA-RAG | Certified acceptance at \(\beta\); audit cost | 2–3× more certified claims |
+| Real-domain headline | \(\hat\rho\) on scientific claims | \(\hat\rho\) | If \(\hat\rho\approx0.15\)–\(0.35\), no independent verifier can certify 5% risk |
+
+### 4.9 Feasibility
+
+- 1,500–2,000 audited claims, cluster-randomized, 5–6 weeks with 2 annotators.
+- Agents can prepare packets and pre-label; humans adjudicate a stratified sample.
+- Expected score: **7.8–8.4**; 9+ tail **20–28%**.
+- This is the strongest method path because it changes the object from coverage to certified selective risk and has a sharp, testable theorem.
+
+### 4.10 Optional secondary method
+
+Value-of-information verification can be a secondary experiment: under a fixed audit budget, which claims should be verified to maximize certified acceptance? If the objective is submodular, greedy gives \(1-1/e\). Keep it as an extension, not the centerpiece.
 
 ---
 
@@ -282,11 +479,58 @@ If the objective is submodular (diminishing returns), greedy achieves \(1-1/e\) 
 
 ## 7. Human evaluation
 
-- 150–200 items, 2 blinded annotators.
-- Binary: unwarranted switch? citation supports the claim?
-- Ordinal: reasoning alignment.
-- κ ≥0.6, ICC ≥0.7.
-- Power: 150 items detects a 15 pp difference at 80% power.
+**Target: 150 paired items** (300 traces, both arms), **3 annotators**, ~28 h/person over 10 weeks. 200 is a stretch; 80 is the minimum credible floor.
+
+### 7.1 The revision taxonomy
+
+The current CCR conflates sycophancy with evidence-warranted error. The human study decomposes every answer change:
+
+| Prior | New | Justified? | Category |
+|---|---|---|---|
+| correct | wrong | no (social/drift) | **UWS** — unwarranted switch |
+| correct | wrong | yes (evidence/argument) | **EWE** — evidence-warranted error |
+| wrong | correct | yes | **ARR** — warranted correction |
+| wrong | correct | no | **Lucky correction** |
+| wrong | wrong | — | **Stubborn error** |
+| any | any | cannot determine | **Ambiguous** |
+
+Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The human study decomposes them. This is the measurement contribution.
+
+### 7.2 Tasks
+
+| Task | Sample | Judgment | Target |
+|---|---|---:|---|
+| **T1 — Revision justification** | 150 paired items (360 traces + 60 controls) | 3-level justification + driver | weighted κ ≥0.67 |
+| **T2 — Claim–passage support** | 300 citation pairs | entails / partial / does not entail + relevance + authenticity | weighted κ ≥0.67 |
+| **T3 — Reasoning alignment** | 80 traces | sound / minor gap / major gap / not aligned | ICC ≥0.67 |
+| **T4 — Abstention quality** | 80 items | sufficient/insufficient/contradictory × answer/abstain | κ ≥0.60 |
+| **T5 — Trust-trajectory faithfulness** | 50 items × 3 pairs | blind evidence ranking vs trust ranking | κ ≥0.60 |
+| **T6 — Expert upper bound** | 60 items, 3 experts | answer with/without evidence | descriptive |
+
+### 7.3 Power and analysis
+
+- 150 paired items gives **80% power for a 12.5–13.5 pp** difference, not 10 pp. 240 paired items are needed for 10 pp.
+- **Primary analysis:** corrected automatic rate on the full 350–500 items per arm, using the human sample to estimate sensitivity/specificity (Rogan–Gladen). The human subset is calibration/sensitivity, not the powered primary endpoint.
+- Secondary: paired McNemar on the 150 items; mixed-effects logistic with item/annotator random effects; cluster bootstrap by item.
+- Report the achieved MDE; do not claim a 10 pp human effect at n=150.
+
+### 7.4 Blinding and bias
+
+- Arm-blind, hypothesis-blind, random IDs; a key custodian holds the arm key; unblind after the analysis script is frozen.
+- **External annotators strongly preferred:** 2 external + 1 author, or 3 external; a 40-item external audit is the minimum credible check.
+- LLM pre-annotation is allowed for **triage/sampling** only; no visible pre-fill before the human commits. Run a 50-item anchoring audit.
+- 5% attention checks, 5% duplicates, weekly calibration, adjudication with a blind third labeler.
+
+### 7.5 Surprising results that would lift the paper
+
+1. **Sycophancy residual:** automatic CCR drops 18 pp, human UWS only 4 pp — trust changes evidence use, not social resistance.
+2. **Evidence-faithfulness gap:** trust AUROC vs gold .72, vs human evidence ranking .54 — trust tracks correctness, not evidence.
+3. **Resistance–revision tradeoff:** UWS down 10 pp but warranted corrections down 8 pp — calibrated trust can make agents stubborn.
+4. **Citation illusion:** automatic verifier precision .88, human strict .61 — the verification ceiling is closer than claimed.
+5. **Expert ceiling inversion:** experts 82% with evidence, models 58%; the gap is largest where evidence is sufficient — “bad evidence” is ruled out.
+6. **Abstention mismatch:** trust increases abstention on answerable items but not on unverifiable ones — a safety finding.
+
+**Score impact:** a rigorous human package adds **+0.5 to +0.8**; it cannot move 5.5 to 9 by itself. It can lift an 8.3 core to 8.8–9.1 if one of the surprising dissociations lands.
 
 ---
 
@@ -296,15 +540,18 @@ If the objective is submodular (diminishing returns), greedy achieves \(1-1/e\) 
 
 | Phase | Weeks | Work | Score secured |
 |---|---|---|---|
-| **P0** | 1–3 | Fix GPQA options, parser, final accuracy, injection/trust, metrics, trust math, verifier; cut matrix; pre-register | 6.25 |
-| **P1 core** | 4–12 | 6-arm causal study; GPQA-Main + MMLU-Pro STEM; 300–350 questions; 2 seeds; verify phase boundary | 7.6–8.0 |
-| **P1 benchmark** | 6–14 | EG-SSS-300 annotation; human eval 150 items | 8.1–8.3 |
-| **P1 theory** | 8–16 | Theorem 1–3 + finite-sample bound; noise sweep; dependence/adversarial validation | 8.3–8.6 |
+| **P0** | 1–4 | Fix GPQA options, parser, final accuracy, injection/trust, metrics, trust math, verifier; cut matrix; pre-register | 6.25 |
+| **Benchmark** | 3–11 | EG-SSS-300 annotation starts week 3; gold labels; freeze week 11 | 8.1–8.3 |
+| **Theory** | 1–11 | Model + R2/R4/R6; proof check weeks 9–11; measure \(\rho\) in week 4 | 8.3–8.6 |
+| **P1 core** | 5–19 | 6-arm causal study; GPQA-Main + MMLU-Pro STEM; 300–350 questions; 2 seeds; verify phase boundary | 7.6–8.0 |
+| **Human eval** | 15–22 | 150–200 binary judgments; 2 blinded annotators | 8.2–8.4 |
 | **9+ layer** | 12–22 | Value-of-information method; full theory validation; benchmark release | 8.6–9.0 |
-| **Writing** | 20–28 | Paper A + thesis; Paper B if time | 8.6–9.0 |
-| **Buffer** | 26–32 | Reproducibility, defence, submission | — |
+| **Writing** | 20–30 | Paper A + thesis; Paper B if time; submit W30 | 8.6–9.0 |
+| **Defence** | 30–32 | Reproducibility, mock defence, final defence W32 | — |
 
-**Agent-accelerated compression:** P0 drops from 6 weeks to 3; benchmark drafting drops from 8 weeks to 5; theory drafting drops from 8 weeks to 4. The GPU-bound main run and the human annotation do not compress. The schedule still leaves 4–6 weeks of buffer.
+**Critical path:** benchmark annotation (W3–11) → main GPU runs (W12–19) → human eval (W15–22) → writing (W20–30) → submission (W30) → defence (W32).
+
+**Agent-accelerated compression:** P0 drops from 6 weeks to 4; benchmark drafting drops from 10 weeks to 8; theory drafting drops from 14 weeks to 11. The GPU-bound main run and the human annotation do not compress. Net project speedup is ~1.8–2.5x, not 5x.
 
 **If the theory layer slips:** drop the value-of-information method and the lower bound; keep Theorem 1 + the benchmark; submit the 8.3–8.6 paper.
 **If the benchmark slips:** reduce to 180 items; keep the causal study; submit the 8.0–8.3 paper.
@@ -327,15 +574,67 @@ If the objective is submodular (diminishing returns), greedy achieves \(1-1/e\) 
 
 ---
 
+## 9A. Red-team verdict: C+ staged is the recommended path
+
+| Path | Time | P(finish) | P(9+) | Score if finishes | Verdict |
+|---|---:|---:|---:|---:|---|
+| A. Theorem | 5–8 wk | 72% | 9% | 7.8 | Viable section; trap as headline |
+| B. Conformal | 4–6 wk | 88% | 5% | 7.4 | Viable secondary; trap as headline |
+| C. Causal | 14–18 wk | 85% | 11% | 8.2 | Viable core |
+| D. 180 EG-SSS | 5–7 wk | 72% | 9% | 8.0 | Viable option |
+| D. 300 EG-SSS | 9–13 wk | 62% | 10% | 7.9 | Borderline |
+| E. 1,000 + leaderboard | 22–30 wk | 32% | 7% | 7.3 | **Trap** |
+| F. New mechanism | 9–14 wk | 65% | 8% | 7.6 | Viable ablation; trap as headline |
+| G. Full 9+ stack | 24–30 wk | 42% | 8% | 8.55 | **Strategically dominated** |
+| **C+ staged** | **17–22 wk** | **82%** | **11–12%** | **8.4** | **Recommended** |
+
+### C+ scope
+
+- **4 arms + oracle:** B3, B8-no-trust, B8, B8-placebo, B8-oracle (oracle subset only).
+- **~1,000 questions:** GPQA-Main 350, MMLU-Pro 500, EG-SSS 180.
+- **Seeds:** 1 primary; a second on a 150-question subset.
+- **GPU:** ~550–700 h main; ~1,000–1,200 h including pilot/sweep.
+- **Annotation:** 500–900 human judgments; 180 benchmark items (1,620–3,240 claim-evidence pairs), 2 annotators.
+- **Endpoints:** final accuracy primary; CMR secondary; trust AUROC, ARR, placebo, oracle, coverage.
+- **Analysis:** paired by question; cluster bootstrap over questions; mixed-effects with dataset fixed effect.
+- **Target:** 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
+
+**Budget (Vast.ai spot, 8 Nov 2026):** A6000 $0.382/hr median; RTX PRO 6000 S $1.432/hr; WS $1.245/hr; bandwidth $0.004–0.011/GB typical; storage $0.20–0.40/GB/month. **C+ ~$550–850 all-in; TACL ~$1,300–1,800; full ~$1,300–2,050.** See `08_COMPUTE_COST.md`.
+
+**Venue:** **TACL, 1 February 2027.** Fallback: **EMNLP 2027, 28 May 2027.** **Do not submit ACL 2027** — the 4 January deadline is too early, and an ARR rejection blocks TACL for nine months.
+
+### When the full 9+ stack becomes worth attempting
+
+Only if **all four** are true by week 10:
+
+1. An independent probabilist has verified a corrected theorem, not an agent.
+2. Two dedicated annotators have 300 items at κ ≥0.70.
+3. The causal study shows a positive or harmful effect with a CI excluding 5 pp.
+4. GPU is dedicated 24/7 and writing is already ahead.
+
+If any one fails, G is a trap. The 5x leverage makes G **attemptable**, not **advisable**.
+
+### New failure modes from 5x
+
+- **False completion:** agents produce a polished paper, passing tests, and 300 draft items before humans verify 100. P(finish) rises, P(9+) falls to 3–5%.
+- **Agent-certified science:** no agent-certified proof, test, or gold label. Every scientific claim needs a human owner and a command/output trail.
+- **Benchmark debt:** 180 items core; 300 only with two dedicated annotators; 500+ is a trap.
+- **Theorem headline:** the theorem is the highest-risk, lowest-expected-value use of the leverage.
+- **VoI/CTC headline:** preempted or incremental; keep as a section.
+
+---
+
 ## 10. Realistic score projection
 
 | Outcome | Probability (with agents) | Core | Weighted |
 |---|---:|---:|---:|
 | P0 only | 99% | 6.25 | 6.21 |
-| P1 core + benchmark | 70–75% | 8.3–8.5 | 8.2–8.4 |
-| P1 + theory (Theorem 1–3) | 45–55% | 8.6–8.8 | 8.5–8.7 |
-| 9+ layer (VoI + full validation + release) | 20–25% | 9.0–9.2 | 8.9–9.1 |
-| 9.5+ | <5% | — | — |
+| C+ core (4-arm + 180-item benchmark) | **82%** | 8.3–8.6 | 8.2–8.4 |
+| C+ + theory section (R2/R4/R6) | 50–60% | 8.5–8.8 | 8.4–8.7 |
+| Full 9+ stack (theory + SEA-Cert + full benchmark) | **11–12%** | 9.0–9.2 | 8.9–9.1 |
+| 9.5+ | <3% | — | — |
+
+**Summary:** \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\); \(P(9+) \approx 11\text{–}12\%\) unconditional, **30–40% conditional on measured \(\rho > 0.4\)** and a strong behavioral pilot. If \(\rho < 0.3\), R6's punchline collapses and the thesis caps at **8.6**.
 
 These are judgments, not guarantees. The expected-value-maximizing plan is the risk-managed sequence: **secure 8.3–8.6 first, then attempt the 9+ layer.**
 
@@ -365,6 +664,8 @@ These are different bars.
 | **Paper B** | Benchmark + system + human eval | **7.8–8.4** | A solid Q1 journal paper; benchmark adoption is the uncertainty |
 
 **This is the key strategic insight:** a 9+ **thesis** is more achievable than a 9+ **paper**. Build the full thesis package; let the paper be the sharpest slice. If the killer result lands, the paper is 9+ too. If not, the thesis is still 9-ish and the paper is 8.5.
+
+**With agents, the thesis 9+ probability is 11–12% unconditional, and 30–40% conditional on measured \(\rho > 0.4\) and a real behavioral effect in the pilot. The floor of 8+ is ~75%.** The agents buy you the ability to find out in time, not the ability to make the law true.
 
 ---
 

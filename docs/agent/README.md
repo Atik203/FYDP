@@ -16,6 +16,9 @@ These docs are for LLM coding agents and human teammates. They are deliberately 
 | 05 | [`05_WRITING_AND_VENUE.md`](05_WRITING_AND_VENUE.md) | Before editing the paper/thesis. Claim audit, rewrite rules, venue strategy. |
 | 06 | [`06_AGENT_CHECKLIST.md`](06_AGENT_CHECKLIST.md) | The execution checklist for DeepSeek V4.1 Flash Max. Use it as the task board. |
 | 07 | [`07_9PLUS_BLUEPRINT.md`](07_9PLUS_BLUEPRINT.md) | The risk-managed 9+ plan: theory, math, method, benchmark, causal study, agent leverage, and what will fail. |
+| 08 | [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md) | Vast.ai spot cost: GPU, bandwidth up/down, storage, overhead, and scenario budgets. |
+
+**Team-facing one-pager:** [`../../UPDATE-CHECKLIST.md`](../../UPDATE-CHECKLIST.md) — share this with the whole team.
 
 ## Current status (8 November 2026)
 

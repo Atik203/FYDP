@@ -104,7 +104,9 @@ E:\FYDP\
 ├── FYDP_Summer\              # FYDP thesis/report (chapters 4 and 6 are placeholders)
 ├── Papev_Summer26_6\         # journal preprint draft (results are placeholders)
 ├── literature_review\        # 15 papers; 5 still unread
-└── roadmap.md                # plan; behind actual code
+├── UPDATE-CHECKLIST.md       # team-facing one-pager (start here if you are new)
+├── roadmap.md                # plan; behind actual code
+└── docs\agent\08_COMPUTE_COST.md  # Vast.ai spot cost model
 ```
 
 ---
@@ -152,6 +154,9 @@ git branch -vv
 5. `04_LITERATURE_AND_GAPS.md` — the claims you may and may not make.
 6. `05_WRITING_AND_VENUE.md` — only if editing the paper/thesis.
 7. `06_AGENT_CHECKLIST.md` — execute in order.
+8. `08_COMPUTE_COST.md` — Vast.ai spot cost, bandwidth, storage, and budgets.
+
+**Team one-pager:** `..\..\UPDATE-CHECKLIST.md` — share this with the whole team.
 
 ---
 

@@ -204,7 +204,29 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 | **Core 6-arm (lean)** | 6 | same | 2 | 250 | 6,900 | 920 | 38 |
 | Core + additions | 10 | same | 1–2 | 150–250 | ~10,900 | ~1,450 | 60 |
 
-**Budget:** Dev at $0.46/h: 1,200–1,680 GPU-h ≈ $550–$770. Final at $1.60/h: a 120-question, 2-arm replication ≈ $250–$400. This fits ~$1,000–$1,200 if the Final replication is small. The current 225,000-debate plan is $10k–$37k.
+### Vast.ai spot cost (8 Nov 2026 CLI)
+
+| Item | Rate | Source |
+|---|---:|---|
+| RTX A6000 48 GB spot | **$0.382/hr** median at 100 GiB | `vastai search offers ... -i --storage 100` |
+| RTX PRO 6000 S 96 GB spot | **$1.432/hr** median | same |
+| RTX PRO 6000 WS 96 GB spot | $1.245/hr median | same |
+| Bandwidth | $0.004–0.011/GB typical; avoid $0.026–0.049/GB | `inet_up_cost` / `inet_down_cost` |
+| Storage | $0.20–0.40/GB/month on instance disk | `storage_cost` |
+
+| Scenario | GPU-h | GPU $ | Bandwidth + storage | Overhead 20% | **Total** |
+|---|---:|---:|---:|---:|---:|
+| P0 smoke | 15 | $6 | $1–3 | $2 | **~$9** |
+| Pilot 100–150 Q | 225 | $86 | $1–3 | $18 | **~$105** |
+| **C+ core** (Dev 1,100 + Final 100) | 1,200 | $563 | $10–20 | $115 | **~$690** |
+| **TACL main** (6 arms × 3 datasets × 400 × 2 seeds = 14,400 debates; + pilot/sweep, 8–10 min/debate) | 2,520–3,320 | $1,090–1,400 | $30–60 | $220–290 | **~$1,340–1,750** |
+| Full law-testing (Dev 2,860 + Final 120) | 2,980 | $1,264 | $45–90 | $253 | **~$1,560** |
+
+**Budget:** **C+ ~$550–850 all-in; TACL main ~$1,300–1,800 all-in; full law-testing ~$1,300–2,050 all-in.** GPU hours dominate; bandwidth/storage add 10–25%. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $11,000+, not runnable.
+
+**TACL feasibility:** 14,400 debates × 8 min = 1,920 GPU-h main; 4×24 GB GPUs = 480 GPU-h each = 20 days; 4 weeks with buffer. Annotation 500 items × 5 claims × 2 annotators = 5,000 labels ≈ 167 h; 6 people × 7 h/week × 4 weeks = 168 h. The theorem check is the real bottleneck.
+
+Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
 ---
 

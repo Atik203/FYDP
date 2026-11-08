@@ -233,8 +233,8 @@ Empirically, the debate pipeline behaves identically regardless of which models 
 
 | Phase | Agent 1 | Agent 2 | Agent 3 | GPU | Est. Cost |
 |-------|---------|---------|---------|-----|-----------|
-| **Dev** (Ph 0–2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB ($0.40–0.60/hr) | ~$160–320 |
-| **Final** (Ph 3–5) | [Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B) | [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B) | [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | RTX PRO 6000 Blackwell 96GB (~$1.10–2.70/hr) | ~$400–800 |
+| **Dev** (Ph 0-2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB (spot **$0.28-0.42/hr**, median **$0.382**) | C+ $420-460; TACL $1,090-1,400 |
+| **Final** (Ph 3-5) | [Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B) | [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B) | [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | RTX PRO 6000 Blackwell 96GB (spot S **$0.87-1.68/hr**, median **$1.43**; WS **$1.25**; Max-Q **$1.02**) | $143-172 |
 
 During development, all pipeline code (claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol) is written and debugged using the smaller Dev models (at 4-bit quantisation, ~28GB total) on a cheap RTX A6000 48GB. The final experiment matrix is then run once on the full-scale models (FP8, native on Blackwell) using an RTX PRO 6000 Blackwell 96GB — no code changes needed, only a model-name swap in the config.
 
@@ -332,12 +332,16 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 | Item | Dev (Ph 0–2) | Final (Ph 3–5) | Notes |
 |------|-------------|----------------|-------|
 | **GPU** | RTX A6000 48GB | RTX PRO 6000 Blackwell 96GB | Ampere workstation vs Blackwell datacenter-class |
-| **Provider** | Vast.ai / RunPod | Vast.ai / RunPod | Vast median ~$1.60/hr for the 96GB card (checked 2026-09); RunPod ~$1.70–2.10/hr |
-| **Rate** | $0.40–0.60/hr | $1.10–2.70/hr (median ~$1.60) | |
-| **Est. GPU hours** | 300–600 | 250–500 | See §13 for build-order milestones |
-| **Subtotal** | **$120–360** | **$400–800** | Final subtotal at the median rate |
+| **Provider** | Vast.ai spot | Vast.ai spot | CLI `vastai 1.7.0`, 8 Nov 2026; prices volatile |
+| **Rate** | **$0.28–0.42/hr** (median **$0.382**) | **$0.87–1.68/hr** (S median **$1.432**; WS **$1.245**; Max-Q **$1.017**) | On-demand S ~$1.79/hr; spot is 20–35% cheaper |
+| **Est. GPU hours** | C+ 1,100-1,200; TACL 2,520-3,320; full 2,860 | 100-120 | See `docs/agent/08_COMPUTE_COST.md` |
+| **Subtotal** | **C+ $420-460; TACL $1,090-1,400; full $1,090** | **$143-172** | GPU only, before bandwidth/storage/overhead |
+| **Bandwidth** | $0.004–0.011/GB typical; avoid $0.026–0.049/GB | same | 22 GB Dev cache; 100–160 GB Final cache |
+| **Storage** | $0.20–0.40/GB/month on instance disk | same | 100 GiB Dev; 200 GiB Final; persist cache on a volume |
 | **Oracle API (B7)** | — | $5–7 | Gemini 3.1 Pro Preview, ~1,000 questions × 1,000 tokens |
-| **Total budget** | | | **~$500–1,200** |
+| **Total budget** | | | **C+ ~$550-850; TACL ~$1,300-1,800; full ~$1,300-2,050** |
+
+> **Cost update (8 Nov 2026):** this table supersedes the old `$500–1,200` estimate. It includes bandwidth and storage, not just GPU. The full source table, formulas, and scenario ranges are in [`docs/agent/08_COMPUTE_COST.md`](agent/08_COMPUTE_COST.md).
 
 **Why this works:** The Dev models (9B–14B) run at 4-bit quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B, ~77B parameters combined) run in FP8 on an RTX PRO 6000 Blackwell 96GB, which has native FP8 support; the code is identical, only the model checkpoints change. See §13 for the exact build sequence.
 
@@ -453,7 +457,7 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 | **Timeline**       | Phase 2 (Sep–Oct) overloaded — new mechanism + 3 baselines + replication                                                    | **High**                                     | High                                 | Previously flagged; mitigation: use iMAD's own published numbers for easy-question conditions where directly comparable, reserve full reimplementation effort for adversarial conditions where it matters most                                                          |
 | **Publication**    | Two of four core related-work citations are preprint/workshop-tier, not main-conference                                     | Medium (perception risk, not technical risk) | Moderate                             | Disclose proactively and precisely (see prior meeting-prep guidance) — actually strengthens credibility if handled this way                                                                                                                                             |
 | **Implementation** | iMAD reimplementation fidelity to original paper                                                                            | Medium                                       | Moderate                             | ~10-day dedicated estimate already budgeted; explicit divergence documentation required                                                                                                                                                                                 |
-| **Implementation** | Single 96GB GPU compute ceiling under full 9-baseline × multi-dataset × 3-seed matrix                                 | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX A6000 48GB ($0.40–0.60/hr), Final on RTX PRO 6000 Blackwell 96GB ($1.10–2.70/hr, median ~$1.60). Core replication ~250–500 Final-GPU-hrs; total GPU budget ~$500–1,200             |
+| **Implementation** | Single 96GB GPU compute ceiling under full 9-baseline × multi-dataset × 3-seed matrix                                 | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX A6000 48GB (spot $0.28-0.42/hr, median $0.382), Final on RTX PRO 6000 Blackwell 96GB (spot S $0.87-1.68/hr, median $1.43; WS $1.25; Max-Q $1.02). Core replication ~100-120 Final-GPU-hrs; C+ ~$550-850; TACL ~$1,300-1,800; full ~$1,300-2,050 including bandwidth/storage             |
 
 ---
 
@@ -464,7 +468,7 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 > [!IMPORTANT]
 > **Aug 2026 — the Month-1 behavioral-effectiveness pilot is the one must-hold deliverable.** Gate 1 does not pass until the pilot confirms that trust weights measurably shift the aggregation output on ~20–30 toy questions.
 
-**GPU economics:** Development (Ph 0–2) runs on a rented RTX A6000 48GB (~$0.40–0.60/hr on Vast.ai) using the Dev model stack ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) at 4-bit quantisation (~28GB total). The final experiment matrix (Ph 3) runs on an RTX PRO 6000 Blackwell 96GB (~$1.10–2.70/hr, median ~$1.60; RunPod ~$1.70–2.10/hr) using the Final model stack ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)) in FP8. Total GPU budget: ~$500–1,200.
+**GPU economics:** Development (Ph 0-2) runs on a rented RTX A6000 48GB (Vast.ai spot **$0.28-0.42/hr**, median **$0.382**) using the Dev model stack ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) at 4-bit quantisation (~28GB total). The final experiment matrix (Ph 3) runs on an RTX PRO 6000 Blackwell 96GB (Vast.ai spot S **$0.87-1.68/hr**, median **$1.43**; WS **$1.25**; Max-Q **$1.02**; on-demand ~$1.79/hr) using the Final model stack ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)) in FP8. **Total budget: C+ ~$550-850; TACL ~$1,300-1,800; full ~$1,300-2,050**, including bandwidth ($0.004-0.011/GB typical) and storage ($0.20-0.40/GB/month). See `docs/agent/08_COMPUTE_COST.md`.
 
 | Month                   | Objectives                                               | Development                                                           | Experiments                                                    | Deliverables                                                                                                                                                                       |
 | ----------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
