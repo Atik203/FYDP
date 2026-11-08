@@ -1,135 +1,166 @@
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const PROVIDERS = [
-  { name: "Vast.ai (spot)", devRate: 0.40, finalRate: 1.13 },
-  { name: "Vast.ai (on-demand)", devRate: 0.60, finalRate: 1.60 },
-  { name: "RunPod", devRate: 0.53, finalRate: 1.79 },
-  { name: "JarvisLabs", devRate: 0.55, finalRate: 1.89 },
+/**
+ * Publication-stage budget table (docs/agent/08_COMPUTE_COST.md).
+ *
+ * The old hour sliders assumed a 1,000-hour dev ceiling and an 800-hour final
+ * ceiling. Those numbers no longer describe the project: the pre-registered
+ * matrix is 24 rows / 1,280 GPU-h, and the publication stages are costed
+ * all-in (GPU + bandwidth + storage + 20% spot overhead).
+ */
+
+const STAGES = [
+  {
+    name: "Core",
+    scope: "4 arms + oracle · ~400/dataset × 2 seeds · 180-item benchmark",
+    when: "Jan 2027",
+    hours: "~1,160",
+    cost: "$420–580",
+    color: "#7c3aed",
+    bg: "rgba(124,58,237,0.08)",
+  },
+  {
+    name: "Full",
+    scope: "6 arms × 3 datasets × 400 × 2 seeds · 300-item benchmark · human eval",
+    when: "Feb 2027",
+    hours: "2,460–2,700 total",
+    cost: "$900–1,200 top-up",
+    color: "#0ca678",
+    bg: "rgba(12,166,120,0.08)",
+  },
+  {
+    name: "Law-testing",
+    scope: "8 min/debate · 3,813 GPU-h matrix + Final replication",
+    when: "Apr 2027",
+    hours: "3,900+",
+    cost: "$1,400–1,900",
+    color: "#e03131",
+    bg: "rgba(224,49,49,0.06)",
+  },
 ] as const;
 
+const FINAL_WEIGHTS = [
+  { model: "Qwen3.6-27B FP8", gb: 26.0 },
+  { model: "Gemma 4 26B A4B FP8", gb: 28.67 },
+  { model: "Mistral Small 3.2 24B AWQ", gb: 15.06 },
+] as const;
+
+const FINAL_TOTAL = 69.73;
+const FINAL_LIMIT = 80;
+
 export function CostTable() {
-  const [devHours, setDevHours] = useState(400);
-  const [finalHours, setFinalHours] = useState(350);
-  const [providerIdx, setProviderIdx] = useState(0);
-
-  const p = PROVIDERS[providerIdx];
-  const devCost = devHours * p.devRate;
-  const finalCost = finalHours * p.finalRate;
-  const total = devCost + finalCost;
-
   return (
     <div className="rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] bg-white dark:bg-[rgba(255,255,255,0.03)] p-4 sm:p-5 space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h4 className="text-sm font-bold">GPU Budget Calculator</h4>
-        <select
-          value={providerIdx}
-          onChange={(e) => setProviderIdx(Number(e.target.value))}
-          className="text-xs rounded border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.12)] bg-white dark:bg-[#1e293b] px-2 py-1"
-        >
-          {PROVIDERS.map((p, i) => (
-            <option key={i} value={i}>{p.name}</option>
-          ))}
-        </select>
+        <h4 className="text-sm font-bold">Publication-Stage GPU Budget</h4>
+        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#64748b] dark:text-[#94a3b8]">
+          Vast.ai spot · all-in estimate
+        </span>
       </div>
 
-      {/* Slider: Dev hours */}
-      <div>
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-semibold text-[#1e2d3d] dark:text-[#e2e8f0]">
-            Dev GPU hours <span className="font-normal text-[#64748b]">(RTX A6000 48GB @ ${p.devRate.toFixed(2)}/hr)</span>
-          </span>
-          <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded text-[#7c3aed] bg-[rgba(124,58,237,0.12)]">
-            {devHours}h
-          </span>
-        </div>
-        <input
-          type="range"
-          min={100}
-          max={1000}
-          step={50}
-          value={devHours}
-          onChange={(e) => setDevHours(parseInt(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, #7c3aed 0%, #7c3aed ${((devHours - 100) / 900) * 100}%, #e2e8f0 ${((devHours - 100) / 900) * 100}%, #e2e8f0 100%)`,
-          }}
-        />
-        <div className="flex justify-between text-[10px] text-[#94a3b8] mt-0.5">
-          <span>100 hrs (min)</span>
-          <span>1,000 hrs (max)</span>
-        </div>
-      </div>
-
-      {/* Slider: Final hours */}
-      <div>
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-semibold text-[#1e2d3d] dark:text-[#e2e8f0]">
-            Final GPU hours <span className="font-normal text-[#64748b]">(RTX PRO 6000 @ ${p.finalRate.toFixed(2)}/hr)</span>
-          </span>
-          <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded text-[#0ca678] bg-[rgba(12,166,120,0.12)]">
-            {finalHours}h
-          </span>
-        </div>
-        <input
-          type="range"
-          min={100}
-          max={800}
-          step={50}
-          value={finalHours}
-          onChange={(e) => setFinalHours(parseInt(e.target.value))}
-          className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, #0ca678 0%, #0ca678 ${((finalHours - 100) / 700) * 100}%, #e2e8f0 ${((finalHours - 100) / 700) * 100}%, #e2e8f0 100%)`,
-          }}
-        />
-        <div className="flex justify-between text-[10px] text-[#94a3b8] mt-0.5">
-          <span>100 hrs (min)</span>
-          <span>800 hrs (max)</span>
-        </div>
-      </div>
-
-      {/* Summary table */}
+      {/* Stage table */}
       <div className="overflow-x-auto rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
         <table className="w-full border-collapse text-xs sm:text-sm">
           <thead>
             <tr>
-              {["Phase", "GPU", "Rate", "Hours", "Cost"].map((h) => (
-                <th key={h} className="p-2.5 text-left font-bold bg-[#f1f5f9] dark:bg-[rgba(255,255,255,0.06)] border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)]">{h}</th>
+              {["Stage", "Scope", "When", "GPU hours", "All-in cost"].map((h) => (
+                <th
+                  key={h}
+                  className="p-2.5 text-left font-bold bg-[#f1f5f9] dark:bg-[rgba(255,255,255,0.06)] border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.15)]"
+                >
+                  {h}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
-              <td className="p-2.5 font-medium">Dev (Ph 0–2)</td>
-              <td className="p-2.5">RTX A6000 48GB</td>
-              <td className="p-2.5 font-mono">${p.devRate.toFixed(2)}/hr</td>
-              <td className="p-2.5 font-mono">{devHours}</td>
-              <td className="p-2.5 font-mono font-bold text-[#7c3aed]">${devCost.toFixed(0)}</td>
-            </tr>
-            <tr className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)]">
-              <td className="p-2.5 font-medium">Final (Ph 3–5)</td>
-              <td className="p-2.5">RTX PRO 6000 96GB</td>
-              <td className="p-2.5 font-mono">${p.finalRate.toFixed(2)}/hr</td>
-              <td className="p-2.5 font-mono">{finalHours}</td>
-              <td className="p-2.5 font-mono font-bold text-[#0ca678]">${finalCost.toFixed(0)}</td>
-            </tr>
-            <tr className="bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.04)]">
-              <td className="p-2.5 font-bold" colSpan={4}>Total GPU Budget</td>
-              <td className="p-2.5 font-mono font-bold text-base">${total.toFixed(0)}</td>
-            </tr>
+            {STAGES.map((s) => (
+              <tr
+                key={s.name}
+                className="border-b border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] last:border-b-0"
+              >
+                <td className="p-2.5 font-bold whitespace-nowrap" style={{ color: s.color }}>
+                  {s.name}
+                </td>
+                <td className="p-2.5 text-[#475569] dark:text-[#cbd5e1]">{s.scope}</td>
+                <td className="p-2.5 font-semibold whitespace-nowrap">{s.when}</td>
+                <td className="p-2.5 font-mono whitespace-nowrap">{s.hours}</td>
+                <td
+                  className={cn("p-2.5 font-mono font-bold whitespace-nowrap")}
+                  style={{ color: s.color, background: s.bg }}
+                >
+                  {s.cost}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
+      <p className="text-[10px] text-[#64748b] dark:text-[#94a3b8] leading-relaxed">
+        <strong>Core</strong> = Core run (legacy “C+”); <strong>Full</strong> =
+        Full run (legacy “TACL full”). The Full run resumes from the Core run,
+        so its cost is a top-up, not additive. “TACL” is the venue
+        (Transactions of the Association for Computational Linguistics), not a
+        stage.
+      </p>
+
+      {/* Final stack weight budget */}
+      <div className="rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] p-3 space-y-2">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <span className="text-xs font-bold text-[#1e2d3d] dark:text-[#e2e8f0]">
+            Final stack — pinned weights
+          </span>
+          <span className="text-xs font-mono font-bold text-[#0ca678]">
+            {FINAL_TOTAL.toFixed(2)} GB / {FINAL_LIMIT} GB
+          </span>
+        </div>
+        <div className="h-2.5 rounded-full bg-[#e2e8f0] dark:bg-[rgba(255,255,255,0.08)] overflow-hidden">
+          <div
+            className="h-full rounded-full bg-[#0ca678]"
+            style={{ width: `${(FINAL_TOTAL / FINAL_LIMIT) * 100}%` }}
+          />
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-[#64748b] dark:text-[#94a3b8]">
+          {FINAL_WEIGHTS.map((w) => (
+            <span key={w.model}>
+              {w.model} <strong className="font-mono">{w.gb.toFixed(2)} GB</strong>
+            </span>
+          ))}
+          <span className="font-semibold">0.90 utilization · 8k context</span>
+        </div>
+      </div>
+
+      {/* Benchmark ladder */}
+      <div className="rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.02)] p-3">
+        <div className="text-[10px] font-bold uppercase tracking-wide text-[#64748b] dark:text-[#94a3b8] mb-1.5">
+          Benchmark ladder
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-[11px]">
+          {[
+            { label: "180", tag: "floor", color: "#0ca678" },
+            { label: "300", tag: "target", color: "#3b5bdb" },
+            { label: "600", tag: "stretch", color: "#f08c00" },
+            { label: "800", tag: "no-go", color: "#e03131" },
+          ].map((b) => (
+            <span
+              key={b.tag}
+              className="rounded-full px-2 py-0.5 font-bold"
+              style={{ color: b.color, background: `${b.color}14` }}
+            >
+              {b.label} <span className="font-medium">{b.tag}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
       <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-        Oracle API (Gemini 3.1 Pro Preview, ~1,000 questions) adds ~$5–7 — negligible. The Dev phase uses{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> /{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> /{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> on an RTX A6000 48GB. The Final phase uses{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a> /{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a> /{" "}
-        <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> on an RTX PRO 6000 Blackwell 96GB. Pipeline code is identical between phases — only the model config changes.
+        All-in = GPU + bandwidth + storage + 20% spot overhead. Core is the
+        first executable stage; Full and Law-testing are conditional. Prices are
+        volatile — re-run the market query before renting. The pre-registered
+        executable Core matrix is 24 rows at 1,280 GPU-h. Final stack uses
+        Qwen3.6-27B FP8, Gemma 4 26B A4B FP8 and Mistral Small 3.2 24B AWQ on
+        one RTX PRO 6000 96 GB card.
       </p>
     </div>
   );

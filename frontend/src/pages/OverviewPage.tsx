@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/layout/PageHeader";
 import { KpiRow } from "@/components/shared/KpiRow";
+import type { KpiCard } from "@/data/overview";
 import {
   ColBox,
   Section,
@@ -18,6 +19,14 @@ import {
 import { Link } from "react-router-dom";
 
 const idea = ideaMetadata[0];
+
+const p0Kpis: KpiCard[] = [
+  { value: "465+", label: "Tests passing", variant: "green" },
+  { value: "11/13", label: "P0 gate checks", variant: "amber" },
+  { value: "24", label: "Core run rows · 1,280 GPU-h", variant: "default" },
+  { value: "300", label: "Benchmark target · 180 floor", variant: "sky" },
+  { value: "69.73 GB", label: "Final stack · 80 GB budget", variant: "rose" },
+];
 
 export function OverviewPage() {
   return (
@@ -39,7 +48,7 @@ export function OverviewPage() {
             value: "atik203",
             href: "https://github.com/atik203",
           },
-          { label: "Timeline", value: "Jul 2026 – Apr 2027" },
+          { label: "Timeline", value: "Jul 2026 – Jun 2027" },
         ]}
       />
 
@@ -65,7 +74,8 @@ export function OverviewPage() {
                 re-weights each agent's influence dynamically based on the
                 verifiability of its claims against retrieved scientific
                 literature. The core contribution is a formally specified trust
-                update rule with proven boundedness properties.
+                update: log-prior evidence accumulation, one softmax, and a
+                floor/ceiling simplex projection with proven bounds.
               </p>
             </div>
             <div>
@@ -77,13 +87,26 @@ export function OverviewPage() {
               <p className="text-sm sm:text-base leading-relaxed">
                 We target <strong>≥20% sycophancy reduction</strong> (CCR
                 metric) vs. vanilla MAD on adversarial benchmarks (BrokenMath,
-                BrokenArXiv, HLE) within a 10-month, single-GPU inference-only
-                FYDP project.
+                BrokenArXiv, HLE) within a single-GPU, inference-only FYDP
+                project. The Core run (24 rows) is pre-registered; no efficacy
+                claim is made yet.
               </p>
             </div>
           </div>
 
           <KpiRow kpis={idea.kpis} />
+
+          <div className="rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.02)] p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#64748b] dark:text-[#94a3b8]">
+                <Cog size={14} /> P0 build status
+              </div>
+              <span className="text-[10px] font-semibold text-[#94a3b8]">
+                Implementation evidence, not efficacy results
+              </span>
+            </div>
+            <KpiRow kpis={p0Kpis} />
+          </div>
         </Section>
 
         {/* Quick understanding cards — 3 key points in 10 seconds */}
@@ -102,7 +125,7 @@ export function OverviewPage() {
             {
               icon: CheckCircle,
               title: "The Goal",
-              desc: "≥20% sycophancy reduction on adversarial benchmarks, validated against 9 baselines.",
+              desc: "Target ≥20% sycophancy reduction on adversarial benchmarks against 9 baselines; efficacy is not yet measured.",
             },
           ].map(({ icon: Icon, title, desc }) => (
             <div

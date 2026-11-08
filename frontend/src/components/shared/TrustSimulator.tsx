@@ -5,11 +5,15 @@ import { cn } from "@/lib/utils";
 /**
  * Interactive trust-score simulator for Blueprint §4.4.
  *
- * Implements the exact operator order from the proposal:
- *   1. raw_i = S_i + α·V_i − β·H_i        (evidence update)
- *   2. softmax over raw                    (normalize to a distribution)
- *   3. clamp each to [0.1, 0.9]            (no agent silenced or dominant)
- *   4. renormalize so Σ T_i = 1            (valid weights again)
+ * Implements the P0 operator order:
+ *   1. logit_i = log S_i + α·V_i − β·H_i   (log-prior + normalized evidence)
+ *   2. trust   = softmax(logit)            (one softmax, applied once)
+ *   3. trust   = Π_[0.1, 0.9](trust)      (floor/ceiling simplex projection,
+ *                                          solved by water-filling)
+ *
+ * V_i and H_i are per-claim rates, so dividing by each agent's claim count is
+ * already folded in: verbosity does not buy influence. The projection guarantees
+ * min >= 0.1, sum = 1 and max <= max(0.9, 1/N); neutral evidence is an identity.
  *
  * The point it teaches: a correct MINORITY agent (Agent C here) whose claims
  * are evidence-supported can out-weigh two unsupported MAJORITY agents — the
@@ -36,8 +40,8 @@ const INITIAL_AGENTS: AgentState[] = [
     name: "Agent A",
     model: "Qwen3.6-27B",
     position: "X",
-    supported: 0.2,
-    contradicted: 0.6,
+    supported: 0.05,
+    contradicted: 0.95,
     color: "#7c3aed",
     softBg: "rgba(124,58,237,0.12)",
   },
@@ -46,8 +50,8 @@ const INITIAL_AGENTS: AgentState[] = [
     name: "Agent B",
     model: "Gemma 4 26B",
     position: "X",
-    supported: 0.3,
-    contradicted: 0.5,
+    supported: 0.0,
+    contradicted: 1.0,
     color: "#1c7ed6",
     softBg: "rgba(28,126,214,0.12)",
   },
@@ -56,8 +60,8 @@ const INITIAL_AGENTS: AgentState[] = [
     name: "Agent C",
     model: "Mistral Small 3.2",
     position: "Y",
-    supported: 0.9,
-    contradicted: 0.05,
+    supported: 1.0,
+    contradicted: 0.0,
     color: "#0ca678",
     softBg: "rgba(12,166,120,0.12)",
   },
@@ -71,6 +75,77 @@ function softmax(xs: number[]): number[] {
   const exps = xs.map((x) => Math.exp(x - max));
   const sum = exps.reduce((a, b) => a + b, 0);
   return exps.map((e) => e / sum);
+}
+
+/**
+ * Euclidean projection onto {w : floor <= w_i <= ceiling, Σ w_i = 1}.
+ *
+ * Solves w_i = clip(x_i − θ, floor, effectiveCeiling) for the θ that makes the
+ * vector sum to one. The scalar is found by bisection on the monotone piecewise
+ * linear sum — the water-filling solution. If the input is already feasible the
+ * projection is the identity, so neutral evidence does not drift.
+ */
+function projectSimplexWithFloor(
+  xs: number[],
+  floor: number,
+  ceiling: number,
+): { weights: number[]; floorFlags: boolean[]; ceilingFlags: boolean[] } {
+  const n = xs.length;
+  const effectiveCeiling = Math.max(ceiling, 1 / n);
+  const sum = xs.reduce((a, b) => a + b, 0);
+  const feasible =
+    xs.every((v) => v >= floor - 1e-12 && v <= effectiveCeiling + 1e-12) &&
+    Math.abs(sum - 1) <= 1e-12;
+
+  if (feasible) {
+    return {
+      weights: xs.slice(),
+      floorFlags: xs.map((v) => v <= floor + 1e-9),
+      ceilingFlags: xs.map((v) => v >= effectiveCeiling - 1e-9),
+    };
+  }
+
+  // θ is monotone: larger θ shrinks every coordinate. Bracket the root, then
+  // bisect. 100 iterations is far below double-precision resolution.
+  let lo = Math.min(...xs) - effectiveCeiling;
+  let hi = Math.max(...xs) - floor;
+  for (let i = 0; i < 100; i += 1) {
+    const mid = (lo + hi) / 2;
+    const total = xs.reduce(
+      (acc, v) => acc + Math.min(effectiveCeiling, Math.max(floor, v - mid)),
+      0,
+    );
+    if (total > 1) lo = mid;
+    else hi = mid;
+  }
+
+  const theta = (lo + hi) / 2;
+  let weights = xs.map((v) =>
+    Math.min(effectiveCeiling, Math.max(floor, v - theta)),
+  );
+
+  // Spread residual round-off over the free coordinates, preserving bounds.
+  const residual = 1 - weights.reduce((a, b) => a + b, 0);
+  if (Math.abs(residual) > 1e-12) {
+    const free = weights
+      .map((v, i) => (v > floor + 1e-12 && v < effectiveCeiling - 1e-12 ? i : -1))
+      .filter((i) => i >= 0);
+    if (free.length > 0) {
+      const share = residual / free.length;
+      free.forEach((i) => {
+        weights[i] += share;
+      });
+      weights = weights.map((v) =>
+        Math.min(effectiveCeiling, Math.max(floor, v)),
+      );
+    }
+  }
+
+  return {
+    weights,
+    floorFlags: weights.map((v) => v <= floor + 1e-9),
+    ceilingFlags: weights.map((v) => v >= effectiveCeiling - 1e-9),
+  };
 }
 
 function Slider({
@@ -129,8 +204,8 @@ function Slider({
 
 export function TrustSimulator() {
   const [agents, setAgents] = useState<AgentState[]>(INITIAL_AGENTS);
-  const [alpha, setAlpha] = useState(1.5);
-  const [beta, setBeta] = useState(1.0);
+  const [alpha, setAlpha] = useState(0.5);
+  const [beta, setBeta] = useState(0.3);
 
   const update = (id: string, patch: Partial<AgentState>) =>
     setAgents((prev) =>
@@ -139,24 +214,37 @@ export function TrustSimulator() {
 
   const reset = () => {
     setAgents(INITIAL_AGENTS);
-    setAlpha(1.5);
-    setBeta(1.0);
+    setAlpha(0.5);
+    setBeta(0.3);
   };
 
   const computed = useMemo(() => {
     // All agents start from a uniform trust score S = 1/N.
     const N = agents.length;
     const S0 = 1 / N;
-    // Step 1 — evidence update
-    const raw = agents.map((a) => S0 + alpha * a.supported - beta * a.contradicted);
-    // Step 2 — softmax
-    const sm = softmax(raw);
-    // Step 3 — clamp
-    const clamped = sm.map((v) => Math.min(T_MAX, Math.max(T_MIN, v)));
-    // Step 4 — renormalize
-    const sum = clamped.reduce((a, b) => a + b, 0);
-    const trust = clamped.map((v) => v / sum);
-    return { raw, sm, clamped, trust };
+    // Step 1 — log-prior plus claim-normalized evidence
+    const logits = agents.map(
+      (a) => Math.log(S0) + alpha * a.supported - beta * a.contradicted,
+    );
+    // Step 2 — one softmax
+    const sm = softmax(logits);
+    // Step 3 — floor/ceiling simplex projection (water-filling)
+    const projected = projectSimplexWithFloor(sm, T_MIN, T_MAX);
+    const trust = projected.weights;
+    const floorCount = projected.floorFlags.filter(Boolean).length;
+    const ceilingCount = projected.ceilingFlags.filter(Boolean).length;
+    const changed = sm.some((v, i) => Math.abs(v - trust[i]) > 1e-9);
+    return {
+      sm,
+      trust,
+      floorFlags: projected.floorFlags,
+      ceilingFlags: projected.ceilingFlags,
+      floorActive: floorCount > 0,
+      ceilingActive: ceilingCount > 0,
+      floorCount,
+      ceilingCount,
+      changed,
+    };
   }, [agents, alpha, beta]);
 
   // Trust-weighted vote per answer
@@ -193,7 +281,8 @@ export function TrustSimulator() {
               Trust-Update Simulator
             </div>
             <div className="text-[10px] text-[#64748b] dark:text-[#94a3b8]">
-              Blueprint §4.4 · softmax → clamp[0.1, 0.9] → renormalize
+              Blueprint §4.4 · log-prior → one softmax → floor/ceiling simplex
+              projection
             </div>
           </div>
         </div>
@@ -222,29 +311,69 @@ export function TrustSimulator() {
             value={alpha}
             onChange={setAlpha}
             min={0}
-            max={3}
-            step={0.1}
+            max={1.5}
+            step={0.05}
             accent="#0ca678"
-            hint="How much SUPPORTED claims raise trust"
+            hint="How much SUPPORTED claims raise trust (default 0.5)"
           />
           <Slider
             label="β — penalty weight"
             value={beta}
             onChange={setBeta}
             min={0}
-            max={3}
-            step={0.1}
+            max={1.5}
+            step={0.05}
             accent="#e03131"
-            hint="How much CONTRADICTED claims lower trust"
+            hint="How much CONTRADICTED claims lower trust (default 0.3)"
           />
+        </div>
+
+        {/* Operator + projection status */}
+        <div className="rounded-lg border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.08)] bg-[#f8fafc] dark:bg-[rgba(255,255,255,0.02)] px-3 py-2.5 space-y-1.5">
+          <div className="text-[10px] font-mono text-[#475569] dark:text-[#cbd5e1] leading-relaxed">
+            logitᵢ = log Sᵢ + α·Vᵢ − β·Hᵢ → softmax → Π<sub>[0.1, 0.9]</sub>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px]">
+            <span className="font-bold uppercase tracking-wide text-[#64748b] dark:text-[#94a3b8]">
+              Projection
+            </span>
+            <span
+              className="font-semibold"
+              style={{ color: computed.floorActive ? "#f08c00" : "#94a3b8" }}
+            >
+              floor 0.10{" "}
+              {computed.floorActive
+                ? `active on ${computed.floorCount} agent${computed.floorCount === 1 ? "" : "s"}`
+                : "inactive"}
+            </span>
+            <span
+              className="font-semibold"
+              style={{ color: computed.ceilingActive ? "#e03131" : "#94a3b8" }}
+            >
+              ceiling 0.90{" "}
+              {computed.ceilingActive
+                ? `active on ${computed.ceilingCount} agent${computed.ceilingCount === 1 ? "" : "s"}`
+                : "inactive"}
+            </span>
+            <span className="ml-auto text-[#94a3b8]">
+              {computed.changed
+                ? "water-filling applied"
+                : "bounds already satisfied — identity"}
+            </span>
+          </div>
+          <div className="text-[10px] text-[#94a3b8]">
+            Vᵢ and Hᵢ are per-claim rates; dividing by claim count keeps verbose
+            agents from buying influence.
+          </div>
         </div>
 
         {/* Per-agent controls + computed trust */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {agents.map((a, i) => {
             const trustPct = computed.trust[i] * 100;
-            const clampedHit =
-              computed.sm[i] < T_MIN + 1e-9 || computed.sm[i] > T_MAX - 1e-9;
+            const smPct = computed.sm[i] * 100;
+            const atFloor = computed.floorFlags[i];
+            const atCeiling = computed.ceilingFlags[i];
             return (
               <div
                 key={a.id}
@@ -314,11 +443,21 @@ export function TrustSimulator() {
                       style={{ width: `${trustPct}%`, background: a.color }}
                     />
                   </div>
-                  {clampedHit && (
-                    <span className="text-[9px] text-[#f08c00] font-semibold mt-1 block">
-                      ⚠ clamp boundary hit — held inside [0.1, 0.9]
+                  <div className="flex items-center justify-between gap-1 mt-1">
+                    <span className="text-[9px] text-[#94a3b8] font-mono">
+                      softmax {smPct.toFixed(1)}% → simplex {trustPct.toFixed(1)}%
                     </span>
-                  )}
+                    {atFloor && (
+                      <span className="text-[9px] text-[#f08c00] font-semibold whitespace-nowrap">
+                        floor active
+                      </span>
+                    )}
+                    {atCeiling && (
+                      <span className="text-[9px] text-[#e03131] font-semibold whitespace-nowrap">
+                        ceiling active
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -400,10 +539,10 @@ export function TrustSimulator() {
             </>
           ) : (
             <>
-              <strong>Both methods agree right now.</strong> Lower Agent C's
-              contradicted slider and raise its supported slider (or drop A/B's
-              support) until the evidence clearly favours the minority — then the
-              trust-weighted vote diverges from the headcount.
+              <strong>Both methods agree right now.</strong> Raise Agent C's
+              supported rate (or lower A/B's support) until the evidence clearly
+              favours the minority — then the trust-weighted vote diverges from
+              the headcount.
             </>
           )}
         </div>
