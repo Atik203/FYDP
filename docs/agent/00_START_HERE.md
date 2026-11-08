@@ -24,18 +24,22 @@ Three heterogeneous LLM agents answer a hard scientific question, debate for up 
 
 Round-8 eight-factor rubric. **Compute is excluded at the user's request**; 7-factor weights are renormalized. Scores are working estimates, not acceptance probabilities.
 
-| Factor | 8F weight | 7F weight | Current | After P0 | After P1 reframe | Stretch |
-|---|---:|---:|---:|---:|---:|---:|
-| Novelty | 25% | 26.3% | 4.5 | 4.5 | 7.0 | 8.0 |
-| Method | 20% | 21.1% | 7.0 | 7.5 | 8.0 | 8.5 |
-| Math | 15% | 15.8% | 5.0 | 6.5 | 7.5 | 8.0 |
-| Experiments | 10% | 10.5% | 5.5 | 6.5 | 8.0 | 8.5 |
-| Dataset | 10% | 10.5% | 4.5 | 7.0 | 7.5 | 8.0 |
-| Q1 fit | 10% | 10.5% | 5.5 | 5.5 | 7.5 | 8.5 |
-| Feasibility | 5% | 5.3% | 6.5 | 8.0 | 7.5 | 7.5 |
-| Compute | 5% | — | N/A | N/A | N/A | N/A |
-| **Core** | | | **5.50** | **6.25** | **7.63** | **8.25** |
-| **Weighted** | | | **5.42** | **6.21** | **7.53** | **8.18** |
+| Factor | 8F weight | 7F weight | Current | After P0 | C+ (P1 reframe) | TACL full | 9+ tail |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Novelty | 25% | 26.3% | 4.5 | 4.5 | 7.0 | 7.5 | 8.5 |
+| Method | 20% | 21.1% | 7.0 | 7.5 | 8.0 | 8.5 | 8.5 |
+| Math | 15% | 15.8% | 5.0 | 6.5 | 7.5 | 7.5 | 8.0 |
+| Experiments | 10% | 10.5% | 5.5 | 6.5 | 8.0 | 8.5 | 8.5 |
+| Dataset | 10% | 10.5% | 4.5 | 7.0 | 7.5 | 8.0 | 9.0 |
+| Q1 fit | 10% | 10.5% | 5.5 | 5.5 | 7.5 | 8.0 | 8.5 |
+| Feasibility | 5% | 5.3% | 6.5 | 8.0 | 7.5 | 7.0 | 6.5 |
+| Compute | 5% | — | N/A | N/A | N/A | N/A | N/A |
+| **Core** | | | **5.50** | **6.25** | **7.63** | **8.00** | **8.38** |
+| **Weighted** | | | **5.42** | **6.21** | **7.53** | **7.89** | **8.37** |
+
+**Stages:** C+ = causal study + 180-item benchmark + 150-item human eval. TACL full = 6 arms × 3 datasets × 400 × 2 seeds + 300–500-item benchmark + human eval. 9+ tail = 800-item benchmark + SDT model + private split + full law-testing.
+
+**Eight-factor vs holistic:** the 9+ tail’s eight-factor score is **8.38/8.37** because Feasibility drops to 6.5 (1,824 annotation hours). The audits’ **9.0–9.3** is a holistic reviewer judgment of the final paper, not the eight-factor arithmetic. A true 9.0 eight-factor score would require near-9 on every factor, which is not realistic for a 6-person FYDP.
 
 **Separate judgment:** the current manuscript is **2.5/10 as a paper** and **6/10 as an FYDP mid-project report**. It has no results, invalid metrics, approximate baselines, and overclaims.
 
