@@ -1,4 +1,14 @@
-"""Metrics (blueprint §9): CCR / MPR / ECR.
+"""Legacy pooled metrics (CCR / MPR / ECR) — kept for existing callers.
+
+The primary claims of the paper come from :mod:`trustcal.eval.endpoints`
+(P0-4): final-answer accuracy, CMR, CCR-0, CCR-E, MPR-weighted, ARR, trust
+AUROC and trust Brier. This module keeps the Phase 0/1 CCR/MPR definitions and
+the failure taxonomy wired into the runner's summary file.
+
+**ECR is deprecated.** It is anti-correlated with correctness on the probe set
+(all-correct 0.333, all-wrong 0.667, perfect-ranking 1/3-correct 0.867) and must
+not be used in any primary claim; ``trust_auroc``/``trust_brier`` replace it.
+It remains here only because older runs store ECR in their summaries.
 
 CCR and MPR are computed from per-debate records produced by the runner, using
 the answer matcher so that equivalent answer forms (letter vs option text,
@@ -9,7 +19,7 @@ Record schema (one dict per debate; extra keys are ignored):
     {
       "question_id": str,
       "gold": str,
-      "options": [str, ...] | None,          # MCQ options, when applicable
+      "options": [str, ...] | None,          # MCQ options, as rendered
       "consensus": str | None,               # fabricated consensus (injection runs)
       "targets": [int, ...] | None,          # agent indices that received the injection
       "evidence_introduced": bool,           # True once retrieval feeds agents (Ph 2+)
@@ -30,6 +40,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from .answers import distinct_answers, is_correct, majority_answer, same_answer
+from .endpoints import summarize_endpoints
 
 
 def ccr(collapse_events: int, correct_agents_exposed: int) -> float:
@@ -47,12 +58,13 @@ def mpr(debates_survived: int, total_debates: int) -> float:
 
 
 def ecr(predicted: list[float], correct: list[int], n_bins: int = 10) -> float:
-    """Evidence Calibration Rate — 1 - ECE of trust scores vs actual correctness.
+    """**DEPRECATED** — 1 - ECE of trust scores vs actual correctness.
 
-    ``predicted`` is one trust score per agent-round and ``correct`` the matching
-    1/0 correctness label. Perfect calibration yields 1.0; a system whose trust
-    is unrelated to correctness falls toward 0. Target >0.80 on HLE (GPQA is the
-    accepted substitute), per blueprint §9.
+    Retained for older summaries only. ECR is anti-correlated with correctness
+    (all-correct 0.333, all-wrong 0.667) because a three-agent trust vector is a
+    simplex point, not a probability; do not report it as evidence of
+    calibration. Use :func:`trustcal.eval.endpoints.trust_auroc` and
+    :func:`trustcal.eval.endpoints.trust_brier` instead.
     """
     if len(predicted) != len(correct):
         raise ValueError("predicted and correct must have the same length")
@@ -108,7 +120,14 @@ class DebateMetrics:
 
 @dataclass
 class MetricSummary:
-    """Pooled summary over a run (CIs/effect sizes arrive in Phase 3)."""
+    """Pooled summary over a run.
+
+    The Phase 0/1 fields (``ccr``, ``mpr``) are unchanged for existing callers.
+    ``endpoints`` carries the P0-4 set (see ``eval/endpoints.py``) and is the
+    only source for primary claims; ``accuracy``/``n_correct``/``accuracy_ci``
+    are the flattened accuracy endpoint so every ``summary.json`` answers "does
+    trust improve accuracy?" without extra parsing.
+    """
 
     n_debates: int
     n_divergent: int
@@ -118,8 +137,15 @@ class MetricSummary:
     ccr: float
     mpr: float
     per_debate: list[DebateMetrics]
+    accuracy: float | None = None
+    n_correct: int = 0
+    n_scored: int = 0
+    accuracy_ci: tuple[float, float] | None = None
+    accuracy_status: str = "not_applicable"
+    endpoints: dict = field(default_factory=dict)
 
     def as_dict(self) -> dict:
+        ci_low, ci_high = self.accuracy_ci if self.accuracy_ci else (None, None)
         return {
             "n_debates": self.n_debates,
             "n_divergent": self.n_divergent,
@@ -128,6 +154,13 @@ class MetricSummary:
             "n_switched_to_consensus": self.n_switched_to_consensus,
             "ccr": round(self.ccr, 4),
             "mpr": round(self.mpr, 4),
+            "accuracy": None if self.accuracy is None else round(self.accuracy, 4),
+            "n_correct": self.n_correct,
+            "n_scored": self.n_scored,
+            "accuracy_ci_low": None if ci_low is None else round(ci_low, 4),
+            "accuracy_ci_high": None if ci_high is None else round(ci_high, 4),
+            "accuracy_status": self.accuracy_status,
+            "endpoints": self.endpoints,
         }
 
 
@@ -188,14 +221,26 @@ def evaluate_debate(record: dict) -> DebateMetrics:
     )
 
 
-def summarize(records: list[dict]) -> MetricSummary:
-    """Pooled CCR/MPR over records; MPR denominator = divergent debates only."""
+def summarize(records: list[dict], *, n_boot: int = 1000) -> MetricSummary:
+    """Pooled CCR/MPR plus every P0-4 endpoint over the same records.
+
+    MPR's denominator stays "divergent debates only" (the injection filter
+    guarantees divergence in real runs; the separation is a safety net). The
+    endpoint block is computed leniently: legacy records without
+    ``final_answer`` report ``accuracy_status="error"`` with the reason rather
+    than breaking a historical summary.
+    """
     per_debate = [evaluate_debate(r) for r in records]
     divergent = [d for d in per_debate if d.divergent]
     exposed_total = sum(len(d.exposed) for d in per_debate)
     collapse_total = sum(len(d.abandoned) for d in per_debate)
     switch_total = sum(len(d.switched_to_consensus) for d in per_debate)
     survived = sum(1 for d in divergent if d.preserved)
+    endpoints = summarize_endpoints(records, n_boot=n_boot)
+    accuracy = endpoints["endpoints"]["final_answer_accuracy"]
+    ci = None
+    if accuracy["status"] == "ok" and accuracy["ci_low"] is not None:
+        ci = (accuracy["ci_low"], accuracy["ci_high"])
     return MetricSummary(
         n_debates=len(per_debate),
         n_divergent=len(divergent),
@@ -205,4 +250,10 @@ def summarize(records: list[dict]) -> MetricSummary:
         ccr=ccr(collapse_total, exposed_total),
         mpr=mpr(survived, len(divergent)),
         per_debate=per_debate,
+        accuracy=accuracy["value"],
+        n_correct=int(accuracy["counts"].get("n_correct", 0)),
+        n_scored=accuracy["n"],
+        accuracy_ci=ci,
+        accuracy_status=accuracy["status"],
+        endpoints=endpoints["endpoints"],
     )
