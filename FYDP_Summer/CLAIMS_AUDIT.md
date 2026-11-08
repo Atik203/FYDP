@@ -141,9 +141,18 @@ The report uses three figures: `fig-pipeline.png` (Introduction), `fig-context.p
 
 ## 6. Compile and verification
 
-**Command:** `latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=<temp> fydp.tex` from `FYDP_Summer/`, TeX Live 2026.
+**Command:** explicit pdfLaTeX sequence from `FYDP_Summer/`, matching Overleaf:
 
-**Result:** compiled successfully. **58 pages.** 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
+```
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+bibtex fydp
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+```
+
+**Engine:** pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). No XeLaTeX, LuaLaTeX, `fontspec`, `unicode-math`, shell-escape, or engine-specific package was added.
+
+**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. **58 pages.** 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
 
 **Warnings:** 7 overfull `\hbox` warnings and 82 underfull `\hbox` warnings. Six overfull boxes are pre-existing title/acknowledgement lines at 3.2pt and 2.7pt. One overfull box is a 6.6pt line in the implementation summary. The underfull boxes are mostly narrow table cells; none prevents compilation.
 

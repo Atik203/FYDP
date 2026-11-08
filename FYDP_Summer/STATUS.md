@@ -29,7 +29,16 @@ The PNG files were **not edited or regenerated** here. The figure agent is produ
 
 ## Compile
 
-`latexmk -pdf -interaction=nonstopmode -halt-on-error` with TeX Live 2026: **58 pages, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 7 overfull boxes (six pre-existing title/acknowledgement lines at 2.7--3.2pt, one 6.6pt line in the implementation summary) and 82 underfull boxes, mostly narrow table cells.
+Explicit pdfLaTeX sequence from `FYDP_Summer/`, matching Overleaf:
+
+```
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+bibtex fydp
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
+```
+
+Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **58 pages, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 7 overfull boxes (six pre-existing title/acknowledgement lines at 2.7--3.2pt, one 6.6pt line in the implementation summary) and 82 underfull boxes, mostly narrow table cells.
 
 ## Remaining placeholders / actions
 
