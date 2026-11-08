@@ -1,165 +1,111 @@
 # Team Update Checklist — FYDP
 
-**Date:** 8 November 2026  
-**Purpose:** one page the whole team can read. It shows the score, what is broken, what to fix, in what order, and what it costs.
+**Date:** 9 November 2026
+**Purpose:** one page the whole team can read: where we are, what changed, what happens next, what it costs, and what not to do.
 
-**Full details:** `docs/agent/` — start at `README.md`.
-
-> **Current P0 status (9 November 2026):** P0 hardening is on the temporary `feat/p0-hardening` branch. The gate is **11/13 passed**, with WP-13 (B8-no-trust) and WP-09 (B8+injection) pending; `pytest` is **478**. The executable matrix is **24 rows / 1,280 GPU-h** with `PRE_REGISTRATION.md` v1.0. The long-lived branches are `dev` (development/integration) and `main` (release trunk; the web frontend deploys from it). The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`; `feat/p0-hardening` is deleted after the merge. The 8 November audit below is the diagnosis; the unchecked boxes in §3 are the original plan, not current status.
->
-> **Stage names:** `docs/GLOSSARY.md` — **Core run** (legacy “C+”) and **Full run** (legacy “TACL full”); **TACL** is a venue only.
+**Full execution plan:** `roadmap.md`. **Current code status:** `trustcal/IMPLEMENTATION_STATUS.md`. **Stage names:** `docs/GLOSSARY.md`.
 
 ---
 
-## 1. Current score
+## 1. Where we are
 
-| Stage | Core | Weighted | What it means |
+| Item | Value |
+|---|---|
+| Branches | `main` = release/deployed frontend; `dev` = development |
+| Release commit | `7f2c11f` on both `main` and `dev` |
+| Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
+| P0 gate | **13/13 passed, 0 failed, 0 pending** |
+| Tests | **514 passed** |
+| Report | `FYDP_Summer/out/fydp.pdf` — 58 pages, explicit pdfLaTeX, 0 errors/undefined refs |
+| Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 18 pages, explicit pdfLaTeX, 0 errors/undefined refs |
+| Figures | six journal + two report-only figures at 6000 × 3375 (600+ DPI) |
+| Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 |
+| Final stack | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **69.73 GB** pinned |
+
+**P0 is engineering readiness, not efficacy evidence.** No accuracy, CCR, or sign-reversal claim exists yet.
+
+---
+
+## 2. Score outlook
+
+| Stage | Core | Weighted | Meaning |
 |---|---:|---:|---|
-| **Current idea/plan** | **5.50** | **5.42** | Plausible, but high risk. Not top-Q1 yet. |
-| After the P0 fixes | 6.25 | 6.21 | The instrument is fixed. Still not novel enough. |
-| Core run (causal study + 180-item benchmark) | 8.3–8.6 | 8.2–8.4 | Strong Q1 paper. This is the realistic target. |
-| Full run (6 arms × 3 datasets × 400 questions) | 8.5–8.8 | 8.4–8.7 | Strong Q1 journal paper. |
-| 9+ (tail outcome) | 9.0–9.2 | 8.9–9.1 | 11–12% unconditional; 30–35% only if the “evidence backfires” effect is real. |
+| Current idea/plan | 5.50 | 5.42 | Plausible; not top-Q1 yet |
+| After P0 | 6.25 | 6.21 | Instrument fixed; still not novel enough alone |
+| Core run | 7.63 | 7.53 | Strong Q1 paper if the causal effect holds |
+| Full run | 8.00 | 7.89 | Strong Q1 journal paper |
+| Full thesis + 300–600 benchmark + SDT + theory | 8.38 | 8.37 | 9+ tail becomes possible |
 
-**The current manuscript is 2.5/10 as a paper.** Do not submit it. It has no results, broken metrics, and claims results it does not have.
+Working estimates, not promises. 9+ probability: **20–30% unconditional; 35–45% conditional** on measured ρ > 0.4 and a real sign reversal.
 
-**Simple reading:** we have a good project, but the measuring instrument is broken. Fix the instrument first. Then run a smaller, better experiment. 9+ is a bonus, not the plan.
-
----
-
-## 2. What is broken — in plain language
-
-| # | Problem | What it means | Fix |
-|---:|---|---|---|
-| 1 | **The answer choices are not in the prompt** | On GPQA/MMLU-Pro, the model sees the question but not the A/B/C/D choices. The correct answer is always option A in the data. | Put shuffled choices into every prompt. Store the shuffle. |
-| 2 | **The answer matcher is wrong** | It takes the first number in the text. `10^-4 eV` becomes 10.0. `The answer is B` is marked wrong. | Parse the answer line. Handle scientific notation. Test 50 real outputs. |
-| 3 | **There is no final-answer accuracy** | The summary reports CCR/MPR only. We cannot answer “does trust improve accuracy?” | Add final answer + accuracy to every record, summary, and matrix. |
-| 4 | **The injection arm has no trust** | The arm that tests pressure runs without retrieval and without trust. The treatment arm runs without injection. | Wire B8 + injection + trust together. |
-| 5 | **ECR is invalid** | ECR treats a trust weight (sums to 1) as a probability of being correct. All-correct panels score 0.333; all-wrong panels score 0.667. | Replace ECR with trust AUROC + Brier + vote-level calibration. |
-| 6 | **The trust floor is broken** | The code clamps to [0.1, 0.9], then renormalizes. The final weight can be 0.098. | Project onto the simplex with a floor. Test N=1,3,5. |
-| 7 | **Final trust lags final positions** | Trust is updated from the previous round. The final answer uses old trust. | Update trust on the final positions before aggregation. |
-| 8 | **The verifier is word overlap** | It marks a claim “supported” if the words overlap. It is not entailment. 4 of 6 hand cases were wrong. | Wire an NLI/LLM judge. Validate on 150–200 human pairs. |
-| 9 | **B8 vs B4 is confounded** | B4 uses all sources; B8 uses one source per agent. The comparison changes two things. | Use **B8-no-trust** as the main control. Match prompts and retrieval. |
-| 10 | **The baselines are approximations** | B9 iMAD is a heuristic. B10 ConsensAgent has no prompt optimizer. B6 MoA is simplified. | Make them faithful, or label them as approximations. Do not claim “+X% over iMAD.” |
-| 11 | **The datasets do not fit the method** | BrokenMath is 451/451 proof-only. BrokenArXiv is 87/87 proof-only. HLE is designed to be un-googleable. | Drop BrokenMath/BrokenArXiv from the main matrix. Use GPQA-Main + MMLU-Pro STEM + EG-SSS. HLE = abstention control. |
-| 12 | **The matrix is too big** | 15 conditions × 5 datasets × 3 seeds × 1,000 questions ≈ 30,000 GPU-hours. | Core run = 4 arms + oracle, ~1,000 questions. Full run = 6 arms × 3 datasets × 400 × 2 seeds ≈ 1,920 GPU-hours. |
-| 13 | **The cost ignored bandwidth and storage** | The old plan used GPU $/hr only. Downloads, storage, and stopped instances add 10–25%. | Use the Vast.ai spot model in `08_COMPUTE_COST.md`. Persist the cache. |
-| 14 | **The paper overclaims** | The abstract says “produced fewer hallucinated answers” but there are no results. It says “no mechanism exists” — false. | Rewrite the claims. See `05_WRITING_AND_VENUE.md`. |
+The manuscript is now honest and internally consistent, but it is **not a results paper**. Do not submit it before the Core/Full results.
 
 ---
 
-## 3. Step-by-step fix — P0 (3–4 weeks)
+## 3. What changed in P0
 
-### Week 1 — Make the answers real
-
-- [ ] Put shuffled A/B/C/D choices into every MCQ prompt.
-- [ ] Store the shuffle. Never put the correct answer first.
-- [ ] Fix the answer parser and matcher.
-- [ ] Add final-answer accuracy to the record and summary.
-
-**Done when:** 50 real Gate 0 outputs parse at ≥95%; every MCQ prompt contains all choices; `summary.json` has `accuracy`.
-
-### Week 2 — Make the treatment real
-
-- [ ] Wire **B8 + injection + trust** together.
-- [ ] Fix the trust floor, final-round update, and claim-count bias.
-- [ ] Replace ECR with trust AUROC + Brier + vote calibration.
-- [ ] Add CCR-0, CCR-E, CMR, MPR-weighted, ARR.
-
-**Done when:** a mock B8+injection run has `consensus`, `exposed`, `trust_trajectory`, `evidence`, and `final_answer`; trust sums to 1 and respects the floor; the new metrics are in `summary.json`.
-
-### Week 3 — Make the evidence real
-
-- [ ] Wire an NLI/LLM judge into the debate loop.
-- [ ] Validate it on 150–200 human-labeled claim–passage pairs.
-- [ ] Make **B8-no-trust** the main control.
-- [ ] Drop BrokenMath/BrokenArXiv from the main matrix.
-- [ ] Use GPQA-Main + MMLU-Pro STEM + EG-SSS.
-- [ ] Pin all dataset revisions.
-
-**Done when:** verifier balanced accuracy ≥0.75; B8 vs B8-no-trust differs only in trust; all revisions are commit hashes.
-
-### Week 4 — Make the plan real
-
-- [ ] Cut the matrix.
-- [ ] Write `PRE_REGISTRATION.md`.
-- [ ] Run a 100-question pilot.
-- [ ] Update the docs.
-- [ ] Keep P0 work on `feat/p0-hardening`; push the slice branches. Do **not** merge into `dev` or `main` until the gate.
-
-**Done when:** Core run matrix ≤1,500 GPU-h or Full run ≤3,400 GPU-h; pre-registration exists; pilot passes the gates.
+| # | Problem | Status |
+|---:|---|---|
+| 1 | Answer choices missing from prompts | ✅ options rendered in every MCQ prompt; seeded shuffle; permutation stored |
+| 2 | Answer matcher wrong | ✅ explicit-span parser, scientific notation, units, MCQ mapping; 50-case corpus at 100% |
+| 3 | No final-answer accuracy | ✅ accuracy + counts + question-clustered CI in records and summary |
+| 4 | Injection arm had no trust | ✅ B8+injection wired; check 8 PASS |
+| 5 | ECR invalid | 🟡 deprecated; accuracy/CMR primary, trust AUROC/Brier secondary |
+| 6 | Trust floor broken | ✅ logit accumulation → softmax → simplex projection; 10k bounds draws |
+| 7 | Final trust lagged positions | ✅ trust computed from final positions; `trust_for_positions` recorded |
+| 8 | Verifier was word overlap | 🟡 verifier interface implemented; lexical default; human audit pending |
+| 9 | B8 vs B4 confounded | ✅ B8-no-trust is the primary matched control; B4-matched uses same partition |
+| 10 | Baselines approximate | 🟡 B9/B10 still labeled approximations; do not claim “+X% over iMAD” |
+| 11 | Datasets did not fit the method | ✅ BrokenMath/BrokenArXiv appendix-only; GPQA + MMLU-Pro + EG-SSS primary |
+| 12 | Matrix too big | ✅ Core matrix 24 rows / 1,280 GPU-h; pre-registration v1.0 |
+| 13 | Cost ignored bandwidth/storage | ✅ Vast.ai spot model with bandwidth/storage/spot interruptions |
+| 14 | Paper overclaimed | ✅ claims audit and report chapters updated; no efficacy claims |
 
 ---
 
-## 4. What to run — Core run first
+## 4. Next 90 days
 
-| Step | What | Size | Why |
-|---|---|---:|---|
-| 1 | Pilot | 100–150 questions | Check the wiring and the effect. |
-| 2 | Core run | 4 arms + oracle, ~400/dataset × 2 seeds, 180-item benchmark | Real causal result; $420–580. |
-| 3 | Full-run benchmark | 300 items (180 Core-run benchmark) | Gold-evidence stress test for the Full run. |
-| 4 | Human evaluation | 150 paired items | Validate the automatic metrics. |
-| 5 | Decide | If **ρ > 0.4** and the pilot shows the effect → run the Full run. If not → stop at 8.3–8.6. | Do not gamble the thesis. |
+| When | Work | Gate / output |
+|---|---|---|
+| **Nov 2026** | Final-stack 96 GB smoke; WP-13 placebo/oracle; 24-item calibration; verifier audit start | smoke PASS; 6-arm support; calibration report |
+| **Dec 2026** | Pilot run 100–150 questions; 180-item benchmark v1; injection κ | **G2** |
+| **Jan 2027** | Core run: 4 arms + oracle, 400/dataset × 2 seeds; 180 benchmark freeze | **G3** |
+| **Feb 2027** | Full run: 6 arms; 300 benchmark; human eval start | **G4/G5** |
+| **Mar 2027** | Human eval 150–200; SDT; expert ceiling | analysis freeze |
+| **Apr 2027** | q/ρ sweeps, granularity, shared-error floor, ablations | results freeze |
+| **May–Jun 2027** | Thesis chapters, internal review, submission | thesis submit June |
+| **Jun–Jul 2027** | Defence | defence |
+| **Aug–Dec 2027** | Paper | TACL / EMNLP 2028 / Q1 journal |
 
-**P0 matrix (current executable subset):** 4 conditions × 3 datasets × 2 seeds, caps 400/400/200 = 8,000 debates ≈ **1,067 GPU-hours**; the gate uses the conservative 9,600-debate figure = **1,280 GPU-hours**. See `PRE_REGISTRATION.md` §5.
-
-**Full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours** main, **2,460–2,700 GPU-hours** with pilot/sweep and Final replication. Four 24 GB GPUs = 480 GPU-hours each = **20 days** main; 4 weeks with buffer. Core run is a prefix: completed cells are not re-run, and the costs are not additive.
-
-**Human annotation:** 500 items × 5 claims × 2 annotators = **5,000 labels** ≈ 167 hours. Six people × 7 hours/week × 4 weeks = 168 hours.
-
-### Benchmark decision (EG-SSS)
-
-| Size | What it is | Annotation | Earlier score estimate | Decision |
-|---:|---|---:|---:|---|
-| **180** | Core-run benchmark | ~410 h | 8.0–8.3 | Core run |
-| **300** | Full-run benchmark | ~684 h | 8.5 | Full run |
-| **600** | Stretch | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
-| **800 + SDT model** | No-go | ~1,824 h | 9.0–9.3 | Do not build |
-
-- **Core run uses 180 items; the Full run uses 300.** 600 is the stretch; 800 is a no-go.
-- **Do not build 800 unless 2–3 people can annotate for five months.** A 300-item set with 3% bad gold is the target; a larger set with bad gold is not an improvement.
-- **The 9+ benchmark needs the SDT model** (sycophancy = social weight / evidence weight; verifier trust; abstention criterion; competence). Without it, 800 items is a dataset paper.
-- If annotation capacity is uncertain, build 180–300 and do the theory/causal paper.
+**Order:** Final smoke → WP-13 → pilot → Core → Full. Do not run the matrix before the pilot.
 
 ---
 
-## 5. Cost — Vast.ai spot (8 Nov 2026)
+## 5. Benchmark decision
 
-| Item | Real price |
+| Size | Role | Annotation | Decision |
+|---:|---|---:|---|
+| **24** | Calibration batch | ~1 week | Start now; if `H_attempt > 2.0` or defect >15%, cut to 120 |
+| **180** | Core-run benchmark | ~410 h | Freeze January 2027 |
+| **300** | Full-run benchmark | ~684 h | Target February 2027 |
+| **600** | Stretch | ~1,368 h | Only with 2–3 dedicated annotators |
+| **800** | No-go | ~1,824 h | Do not build |
+
+A 300-item set with clean gold is better than a 600-item set with bad gold.
+
+---
+
+## 6. Cost
+
+| Path | Cost |
 |---|---:|
-| RTX A6000 48 GB spot | **$0.263/hr** median at **80 GiB** |
-| RTX 4090 24 GB spot | $0.409/hr median |
-| RTX PRO 6000 Max-Q 96 GB spot | **$0.74–1.02/hr** median |
-| RTX PRO 6000 S 96 GB spot | **$1.432/hr** median |
-| RTX PRO 6000 WS 96 GB spot | $1.245/hr median |
-| Bandwidth | $0.004–0.033/GB |
-| Storage | **$0.20/GB-month** median on a Vast volume |
-
-| Path | All-in cost |
-|---|---:|
+| Final-stack smoke | $80–120 |
+| Pilot | $50–100 |
 | Core run | **$420–580** |
-| Full run (all-in, not additive with Core) | **$900–1,200** |
-| Full law-testing | **$1,100 (6 min) / $1,400–1,900 (8 min)** |
+| Full-run top-up | **$900–1,200** |
+| Law-testing | $1,400–1,900 (only if effect) |
 
-**What blows the budget:**
-1. Re-downloading the model cache every session.
-2. Leaving a stopped instance/volume for months ($0.20/GB-month; 160 GB × 6 months = $192).
-3. Running the 15×5×3×1,000 matrix (~$8,000–11,000+).
-4. Using on-demand for everything.
-5. Idle GPUs while debugging.
-6. High-bandwidth hosts ($0.026/GB).
-7. Forgetting to copy results before destroying the instance.
-
-**Rules:** persist the cache, batch sessions, copy results, destroy the instance, choose `inet_down_cost ≤ $0.005/GB`.
-
----
-
-## 6. Venue
-
-- **Current calendar (9 November 2026):** Pilot Dec 2026; Core run Jan 2027; Full run Feb 2027; Final replication after the Full run; Law-testing Apr 2027; thesis June 2027; defence June/July 2027; paper after defence, August–December 2027.
-- **Historical venue plan:** the earlier submission target was TACL, 1 February 2027, with EMNLP 2027 main, 28 May 2027, as fallback. TACL is a venue, not an experiment stage. The current paper submission is after the defence, August–December 2027; do not treat the old deadlines as current.
-- **TMLR is Q2, not Q1.** If Q1 is mandatory, use TACL/IP&M/KBS.
-- **Do not split into two papers.** Thesis + one TACL paper.
+**Hard stop: $1,350 before law-testing.** A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Persist the cache; batch sessions; copy results; destroy instances.
 
 ---
 
@@ -167,35 +113,48 @@
 
 | Person | Job | Main files |
 |---|---|---|
-| **P1** | Theory, claim, thesis lead | `07_9PLUS_BLUEPRINT.md`, theory chapter |
-| **P2** | GPU runs, reproducibility | `runner.py`, `scripts/`, `08_COMPUTE_COST.md` |
-| **P3** | Benchmark + annotation | `EG-SSS`, `datasets.py` |
-| **P4** | Statistics + causal analysis | `eval/stats.py`, `metrics.py` |
+| **P1** | Theory, paper/thesis lead | `docs/agent/07_9PLUS_BLUEPRINT.md`, theory chapters |
+| **P2** | GPU runs, runner, reproducibility | `runner.py`, `scripts/`, `08_COMPUTE_COST.md` |
+| **P3** | Benchmark + annotation | EG-SSS, `eval/datasets.py` |
+| **P4** | Statistics + causal analysis | `eval/stats.py`, `eval/endpoints.py` |
 | **P5** | Human evaluation | `scripts/human_eval.py`, rubric |
-| **P6** | Retrieval + verifier | `retrieval/`, `verdicts.py` |
+| **P6** | Retrieval + verifier | `retrieval/`, `verifier.py` |
 
-**One owner per file.** Do not edit the same file in parallel.
+One owner per file. Do not edit the same file in parallel.
 
 ---
 
-## 8. What not to do
+## 8. Branch rules
 
-- Do not run the 15×5×3×1,000 matrix.
-- Do not submit the current paper.
+```text
+main    release trunk; the web frontend deploys from here
+dev     development/integration branch
+next/*  short-lived slice branches; deleted after merge
+```
+
+- Slice: `next/<slice>` from `dev` → worktree → push → merge into `dev` → delete.
+- Release: `dev` → `main` only after a gate, a clean `npm run build`, and the PDF/figure checks.
+- No direct `main` pushes. No long-lived feature branches.
+- Tags: `p0-gate`, `p0-release` exist; future gates use `g2`, `g3`, `g4`, `results-freeze`, `thesis`, `paper`.
+
+---
+
+## 9. What not to do
+
+- Do not run the main matrix before the pilot.
+- Do not claim efficacy from P0 or from mock/integration tests.
 - Do not use BrokenMath/BrokenArXiv for evidence grounding or CCR.
 - Do not use ECR as a primary metric.
-- Do not compare B8 to B4 without matching the retrieval and prompt.
-- Do not claim “formally bounded” before the simplex fix is proved and tested.
-- Do not treat 3 seeds as independent samples.
-- Do not let agents certify proofs, tests, or gold labels.
-- Do not cite R²-MAD/TERA-RAG/“To Trust or Not” without reading them.
-- Do not merge `dev` or `main` until the P0 gate; integrate P0 slices on `feat/p0-hardening`, then merge to `dev` and release `main`.
+- Do not compare B8 to B4 without matching retrieval and prompts.
+- Do not claim R6 is a theorem before the proof check.
+- Do not build 800 benchmark items.
+- Do not put a colon in the paper title; use the approved no-colon wording.
+- Do not commit secrets, `results/`, or `out/` artifacts.
+- Do not submit the paper before the defence unless the supervisor explicitly reopens that decision.
 
 ---
 
-## 9. How to report
-
-Use this format for every task:
+## 10. How to report
 
 ```markdown
 ## Task
@@ -223,16 +182,16 @@ No “done” without a command and its output.
 
 ---
 
-## 10. Links
+## 11. Links
 
-| Doc | What it is |
+| Doc | Purpose |
 |---|---|
-| `docs/agent/00_START_HERE.md` | Orientation, score, warnings |
-| `docs/agent/01_CURRENT_STATE.md` | What is real vs broken |
-| `docs/agent/02_P0_FIXES.md` | The 12 fixes with acceptance tests |
-| `docs/agent/03_EXPERIMENT_PLAN.md` | Core run and Full run design, power, cost |
-| `docs/agent/04_LITERATURE_AND_GAPS.md` | Prior art and missing references |
-| `docs/agent/05_WRITING_AND_VENUE.md` | Claims, writing, venue |
-| `docs/agent/06_AGENT_CHECKLIST.md` | DeepSeek V4.1 Flash Max checklist |
-| `docs/agent/07_9PLUS_BLUEPRINT.md` | The 9+ option and red-team verdict |
-| `docs/agent/08_COMPUTE_COST.md` | Vast.ai spot cost, bandwidth, storage |
+| `roadmap.md` | Phase-by-phase execution plan |
+| `docs/GLOSSARY.md` | Core run / Full run / TACL naming |
+| `PRE_REGISTRATION.md` | Frozen endpoints, arms, analysis |
+| `docs/agent/03_EXPERIMENT_PLAN.md` | Design, power, benchmark |
+| `docs/agent/08_COMPUTE_COST.md` | Real Vast.ai costs |
+| `experiments/p0/WAVE2.md` | P0 landing record |
+| `trustcal/IMPLEMENTATION_STATUS.md` | What is wired vs approximate |
+| `Papev_Summer26_6/CLAIMS_AUDIT.md` | Journal claims |
+| `FYDP_Summer/CLAIMS_AUDIT.md` | Report claims |
