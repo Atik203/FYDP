@@ -23,4 +23,15 @@ Integration branch: `feat/p0-hardening`. Slice branches: `p0/wp-A` … `p0/wp-F`
 | 16 | P0-12 | integrator | Docs/status reconciliation; branch promotion | 4 |
 | 17 | — | integrator | Final-stack readiness: pin FP8 repos, <80 GB, `setup.sh`/`serve.sh`, smoke | 3 |
 
+## Landed on `feat/p0-hardening`
+
+| WP | Commit | State |
+|---|---|---|
+| 00 | `631831b` | schema, signatures, leases |
+| 03 | `2d99110` | simplex trust projection, claim normalization |
+| 04 / 15 | `62fa3f7` | records + manifest modules, analyze guard |
+| 07 / 08 | `efd11ae` | verifier interface, audit harness |
+| 11 / 12 | `4b5f366` | dataset pins, domain routing |
+| 17 | `61af3b0` | Final stack <80GB, phase-aware setup |
+
 Rules: one lease holder per file (see 09); slice branches push after every green checkpoint; integrator merges `--no-ff` to `feat/p0-hardening` daily; no commit mixes docs with code; no force-push.
