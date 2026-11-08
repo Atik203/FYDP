@@ -12,7 +12,7 @@
 |---|---|---|---|
 | Existing prose (abstract, introduction, method, experiment, conclusion) | Mode 1 — edit/polish | B — author wrote, agent edits | Meaning and claim strength preserved except where a claim was false; every change is listed below. |
 | New implementation-status text (Related Work, Answer Rendering, Boundary Conditions, Section 5, Declarations) | Mode 2 — project-grounded drafting | C — agent drafts from project evidence | The authors must verify and revise this text and confirm the venue's AI-use disclosure policy before submission. |
-| This audit | Mode 4 — audit | — | Severity-tagged findings and a claim-evidence map. |
+| This audit | Mode 4 — audit | — | Old-to-new findings and a claim-evidence map. |
 
 The skill's disclosure reminder applies at rung C: the authors should check their institution's and target venue's AI-use policy and put the drafted text in their own words where possible.
 
