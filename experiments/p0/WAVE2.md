@@ -1,8 +1,8 @@
 # Wave 2 — integration and wiring
 
-Landed on `feat/p0-hardening`: WP-01/02 (`115513b`), WP-03 (`2d99110`), WP-03b (`31e8d35`), WP-04/15 (`62fa3f7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-14 (`9b57b9d`), WP-17 (`61af3b0`). In progress: WP-04b runner wiring (B), WP-09/10/13 debate wiring (D/A).
+Landed on `feat/p0-hardening`: WP-01/02 (`115513b`), WP-03 (`2d99110`), WP-03b (`31e8d35`), WP-04/15 (`62fa3f7`), WP-04b (`e1ce1a7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-14 (`9b57b9d`), WP-17 (`61af3b0`). In progress: WP-09/10/13 debate wiring (D/A).
 
-Gate now: **11 passed / 2 pending** (`pytest` 478). Pending: B8-no-trust prompts (WP-13), B8+injection wiring (WP-09). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0.
+Gate now: **12 passed / 1 pending** (`pytest` 497). Pending: B8-no-trust prompts + one-shot injection (WP-13/WP-09, debate slice). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0.
 
 ## Merge order
 

@@ -32,6 +32,7 @@ Integration branch: `feat/p0-hardening`. Slice branches: `p0/wp-A` … `p0/wp-F`
 | 03 | `2d99110` | simplex trust projection, claim normalization |
 | 03b | `31e8d35` | trust from final positions, real claim counts, telemetry |
 | 04 / 15 | `62fa3f7` | records + manifest modules, analyze guard |
+| 04b | `e1ce1a7` | runner wiring: manifest, accuracy, eligible_n, routes, inject flags |
 | 05 / 06 | `ef38fd9` | endpoints + 13-check gate (11 pass / 2 pending) |
 | 07 / 08 | `efd11ae` | verifier interface, audit harness |
 | 11 / 12 | `4b5f366` | dataset pins, domain routing |
