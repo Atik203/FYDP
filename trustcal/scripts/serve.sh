@@ -29,7 +29,7 @@ fi
 
 CMD_FILE=$(mktemp)
 trap 'rm -f "$CMD_FILE"' EXIT
-PHASE="${PHASE:-dev}"
+PHASE="${PHASE:-final}"
 if [ "$PHASE" != "dev" ] && [ "$PHASE" != "final" ]; then
   echo "PHASE must be 'dev' or 'final' (got '$PHASE')" >&2
   exit 2
