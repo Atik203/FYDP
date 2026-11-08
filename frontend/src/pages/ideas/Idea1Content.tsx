@@ -882,7 +882,7 @@ export function Idea1Content() {
                   4,
                   "Trust update + LangGraph state machine",
                   "Moderate–High",
-                  "Operator order must match Proposition 1: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong (it can drop below the floor).",
+                  "Operator order: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong (it can drop below the floor).",
                 ],
                 [
                   5,

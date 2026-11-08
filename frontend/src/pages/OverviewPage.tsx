@@ -21,8 +21,8 @@ import { Link } from "react-router-dom";
 const idea = ideaMetadata[0];
 
 const p0Kpis: KpiCard[] = [
-  { value: "465+", label: "Tests passing", variant: "green" },
-  { value: "11/13", label: "P0 gate checks", variant: "amber" },
+  { value: "514", label: "Tests passing", variant: "green" },
+  { value: "13/13", label: "P0 gate checks", variant: "green" },
   { value: "24", label: "Core run rows · 1,280 GPU-h", variant: "default" },
   { value: "300", label: "Benchmark target · 180 floor", variant: "sky" },
   { value: "69.73 GB", label: "Final stack · 80 GB budget", variant: "rose" },

@@ -605,7 +605,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
         <p>
           The accumulated logits pass through <strong>one</strong> softmax,
           followed by a floor/ceiling <strong>simplex projection</strong>. The
-          operator order is fixed and must match Proposition 1:
+          operator order is fixed:
           <strong>
             {" "}logit accumulation &rarr; softmax &rarr; simplex projection
           </strong>{" "}

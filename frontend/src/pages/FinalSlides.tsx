@@ -691,7 +691,7 @@ function FinalResultsSlide() {
               ],
               [
                 "Test suite",
-                "465+",
+                "514",
                 "tests passing across trust, runner and evaluation",
               ],
               [
