@@ -1,6 +1,6 @@
 # P0 work packages
 
-Integration branch: `feat/p0-hardening`. Slice branches: `p0/wp-A` … `p0/wp-F`; one worktree per letter (`E:\FYDP-p0-A` …). Contract: `docs/agent/09_P0_INTERFACES.md`. Gate: `scripts/p0_gate.py` (13 checks) before any pilot or matrix run.
+Integration branch: temporary `feat/p0-hardening`; it merges into `dev` after the 13/13 gate, then `dev` releases to `main` (tags `p0-gate`, `p0-release`). Slice branches: `p0/wp-A` … `p0/wp-F`; one worktree per letter (`E:\FYDP-p0-A` …), deleted after merge. Contract: `docs/agent/09_P0_INTERFACES.md`. Gate: `scripts/p0_gate.py` (13 checks) before any pilot or matrix run.
 
 | WP | P0 | Owner | Deliverable | Wave |
 |---|---|---|---|---|

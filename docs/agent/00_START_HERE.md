@@ -2,7 +2,7 @@
 
 **Read this first. Do not edit code until you finish `06_AGENT_CHECKLIST.md` Phase 0 (Recon).**
 
-> **Status note (2026-11-08):** this file records the pre-P0 audit and its scores. P0-5 (trust floor) is fixed on `feat/p0-hardening`; P0-0/P0-1/P0-2 are in the Wave-1 build. Treat the findings below as the diagnosis, not as the current code state.
+> **Status note (2026-11-08):** this file records the pre-P0 audit and its scores. P0-5 (trust floor) is fixed on `feat/p0-hardening`; P0-0/P0-1/P0-2 are in the Wave-1 build. Treat the findings below as the diagnosis, not as the current code state. **Stage names (2026-11-09):** use `docs/GLOSSARY.md` — **Core run** (legacy “C+”) and **Full run** (legacy “TACL full”); **TACL** is a venue only.
 
 > **TL;DR for an agent**
 > - Do **not** run the main matrix. It is ~30,000 GPU-hours.

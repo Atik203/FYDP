@@ -1,5 +1,7 @@
 # 02 — P0 Fixes (Do These Before Any GPU Run)
 
+> **Status note (2026-11-09):** this is the historical P0 fix list from 8 November 2026. Current state: **11/13** gate checks on temporary `feat/p0-hardening` (WP-13/WP-09 pending), **478** tests, matrix **24 rows / 1,280 GPU-h**. Branch names below are historical: `feat/full-pipeline` is now `dev`; the landing sequence is `feat/p0-hardening` → `dev` → `main`.
+
 **Rule:** no main experiment until every P0 is checked. Each item has a problem, evidence, change, and an acceptance test. If an acceptance test cannot be run, the item is not done.
 
 **Order matters.** P0-0 → P0-1 → P0-2 are prerequisites for every number the paper will report.

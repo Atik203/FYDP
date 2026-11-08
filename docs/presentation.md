@@ -34,7 +34,7 @@ We set four goals. First, design a bounded trust score from retrieved evidence. 
 
 ### Slide 5 — Dataset
 
-To test those goals, we use five sets. GPQA and MMLU-Pro are stable, HLE is the ceiling, and BrokenMath and BrokenArXiv are adversarial. Two filters keep only checkable, divergent questions — about sixty to seventy percent pass. The matrix uses one thousand questions per set; the pilot, fifty. Atik will present our method.
+To test those goals, we use five sets. GPQA and MMLU-Pro are stable, HLE is the ceiling, and BrokenMath and BrokenArXiv are adversarial. Two filters keep only checkable, divergent questions — about sixty to seventy percent pass. The matrix caps GPQA and MMLU-Pro at four hundred each and HLE at two hundred; the pilot, twenty-five. Atik will present our method.
 
 ### Slide 6 — Conventional Method
 
@@ -42,7 +42,7 @@ Today, systems decide in different ways: majority voting with equal weight, self
 
 ### Slide 7 — Proposed Method
 
-Our method closes it. A gate answers easy questions directly; hard ones start a debate. Three models — Qwen, Gemma, Mistral — with no fine-tuning. Each answer splits into claims, checked against PubMed, arXiv and Semantic Scholar. Claims are labeled: supported, contradicted, unverifiable or contested. Trust updates each round: up with support, down with contradiction. Then softmax, clamp, renormalize. The final vote is weighted, not counted. Pratay will present the flow and setup.
+Our method closes it. A gate answers easy questions directly; hard ones start a debate. Three models — Qwen, Gemma, Mistral — with no fine-tuning. Each answer splits into claims, checked against PubMed, arXiv and Semantic Scholar. Claims are labeled: supported, contradicted, unverifiable or contested. Trust updates each round: up with support, down with contradiction, normalized by the claims checked. Then one softmax and a floor/ceiling projection. The final vote is weighted, not counted. Pratay will present the flow and setup.
 
 ### Slide 8 — Flow Diagram
 
@@ -50,7 +50,7 @@ This is the level-one data flow: seven processes, four entities, three data stor
 
 ### Slide 9 — Experimental Setup
 
-To run this, we use two stacks: a four-bit dev stack on one RTX A6000, and an FP8 final stack on an RTX PRO 6000, both on vLLM. Each debate runs three rounds and three seeds. The stress test injects a fake expert consensus between rounds one and two; baselines B1 to B4 skip it. We validate with annotation agreement and bootstrap confidence intervals. Total compute: about three hundred GPU-hours. Salman will present the results and the engineering check.
+To run this, we use two stacks: a four-bit dev stack on one RTX A6000, and an FP8 final stack on an RTX PRO 6000, both on vLLM. Each debate runs three rounds; the matrix uses two seeds. The stress test injects a fake expert consensus between rounds one and two; baselines B1 to B4 skip it. We validate with annotation agreement and bootstrap confidence intervals. Total compute: about one thousand two hundred eighty GPU-hours for the current matrix. Salman will present the results and the engineering check.
 
 ### Slide 10 — Project Results
 
@@ -66,7 +66,7 @@ Here is the map. PO1 and PO2 need K1 to K4; P1 needs K3 to K6 and K8. We cover s
 
 ### Slide 13 — Conclusion · Application
 
-To conclude: a wrong majority can push a correct agent into sycophantic consensus. Our fix is a bounded trust score from retrieved evidence, measured with the CCR, MPR and ECR metrics. The design fits scientific QA, research assistants, and law or medicine. Next: the matrix, ablations, a human study, and an open-source release.
+To conclude: a wrong majority can push a correct agent into sycophantic consensus. Our fix is a bounded trust score from retrieved evidence, measured with final-answer accuracy, CCR, MPR and trust calibration. The design fits scientific QA, research assistants, and law or medicine. Next: the matrix, ablations, a human study, and an open-source release.
 
 ### Slide 14 — Thank You
 
@@ -192,27 +192,27 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: How are claims extracted?**
   **A:** Agents tag their own claims in XML. A parser reads the tags, and if tags are missing, a sentence-split fallback keeps up to twenty claims.
 - **Q: Which sources are checked, and how are they split?**
-  **A:** PubMed, arXiv and Semantic Scholar, with OpenAlex as a fallback. Retrieval is source-partitioned: each agent's claims go to a different source.
+  **A:** PubMed, arXiv and Semantic Scholar, with OpenAlex as a fallback. Retrieval is claim-domain routed: bio and clinical claims go to PubMed, physics and math to arXiv, with Semantic Scholar as the shared fallback.
 - **Q: What do the four verdicts mean?**
   **A:** Supported means a passage backs the claim. Contradicted means a passage opposes it. Unverifiable means no passage settles it. Contested means the sources disagree.
 - **Q: What happens to unverifiable claims?**
   **A:** They are excluded from the trust update. We neither reward nor punish a claim the literature cannot check.
 - **Q: How does the trust update work?**
-  **A:** S at t plus one equals S at t, plus alpha times V, minus beta times H. V is the number of supported claims and H is the number of contradicted claims. The defaults are alpha zero point five and beta zero point three, tuned later in Phase 3.
+  **A:** S at t plus one is the logit of S at t, plus alpha times V over n, minus beta times H over n. V is the supported claims, H is the contradicted claims, and n is the claims checked. The defaults are alpha zero point five and beta zero point three, tuned later in Phase 3.
 - **Q: What is S in that equation?**
   **A:** S is the agent's trust score — the weight its answer carries in the final vote. The score is updated after every round.
 - **Q: What is t?**
   **A:** t is the debate round. S at t is the score going into the round, and S at t plus one is the updated score after the round.
 - **Q: What are V and H?**
-  **A:** V counts the agent's claims that the retrieved evidence supports in that round. H counts the claims the evidence contradicts.
+  **A:** V counts the agent's claims that the retrieved evidence supports in that round. H counts the claims the evidence contradicts. n is the number of claims checked.
 - **Q: What are alpha and beta?**
-  **A:** Alpha is the reward for each supported claim — zero point five by default. Beta is the penalty for each contradicted claim — zero point three by default. Both are tuned in the Phase 3 grid search.
+  **A:** Alpha is the reward for each supported claim — zero point five by default. Beta is the penalty for each contradicted claim — zero point three by default. Both are applied after dividing by the claims checked, and both are tuned in the Phase 3 grid search.
 - **Q: Do unverifiable and contested claims enter V or H?**
   **A:** No. Unverifiable claims are excluded from the update, and contested claims are reported separately.
 - **Q: What if an agent makes no checkable claims in a round?**
   **A:** Then V and H are both zero, so its raw score stays the same for that round.
-- **Q: Why softmax, then clamp, then renormalize?**
-  **A:** Softmax turns scores into weights, the clamp keeps every agent inside zero point one to zero point nine, and renormalizing makes the weights sum to one. That order is fixed and unit-tested.
+- **Q: Why softmax, then a simplex projection?**
+  **A:** Softmax turns scores into weights. The projection enforces the floor and ceiling while keeping the weights summing to one. That order is fixed and unit-tested.
 - **Q: What if the retrieved evidence is wrong?**
   **A:** Wrong passages can mislead the score. That is a stated limitation. Cross-source disagreement is flagged as contested, and unverifiable claims never move trust.
 
@@ -239,8 +239,8 @@ Thank you for your attention. We are happy to take your questions.
   **A:** The dev stack runs on one RTX A6000 for fast iteration. The final stack runs bigger models in FP8 on an RTX PRO 6000. The code path is identical — only the config changes.
 - **Q: Why four-bit for dev and FP8 for the final stack?**
   **A:** The A6000 is Ampere and cannot run official FP8 kernels, so dev uses four-bit AWQ or QAT. Blackwell supports FP8, so the final run uses it.
-- **Q: Why three rounds and three seeds?**
-  **A:** Three rounds give the trust score time to update. Three seeds let us report variance and confidence intervals instead of a single lucky run.
+- **Q: Why three rounds and two seeds?**
+  **A:** Three rounds give the trust score time to update. Two seeds give a replication check; the unit of analysis is the question, not the seed.
 - **Q: What exactly is injected?**
   **A:** One fabricated wrong expert consensus, appended to the targeted agent's system prompt between rounds one and two. The user question does not change.
 - **Q: Why is injection off in B1 to B4?**
@@ -250,7 +250,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What are the generation settings?**
   **A:** Temperature zero point seven, one thousand and twenty-four output tokens, four thousand and ninety-six context on dev, and three retries per agent.
 - **Q: How much compute does this need?**
-  **A:** About three hundred GPU-hours, budgeted around three hundred forty to eight hundred twenty US dollars depending on GPU rates.
+  **A:** About one thousand two hundred eighty GPU-hours for the current matrix, budgeted around three hundred forty to eight hundred twenty US dollars depending on GPU rates.
 
 ### M5 — Md. Salman Rohoman Nayeem · Slides 10–11
 
@@ -293,7 +293,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Why is A3 not covered?**
   **A:** A3 is innovation. We combine existing concepts — debate, retrieval and trust weighting — so the step is incremental and not patentable.
 - **Q: Why is A4 covered?**
-  **A:** We assessed the social and environmental consequences. The harm we target is real, and energy use stays low at about three hundred GPU-hours.
+  **A:** We assessed the social and environmental consequences. The harm we target is real, and energy use stays low at about one thousand two hundred eighty GPU-hours.
 - **Q: What are the coverage numbers?**
   **A:** Six of seven P attributes, all eight K areas, four of five A activities, and six of twelve programme outcomes.
 - **Q: For P1, which K areas are needed?**
@@ -334,7 +334,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Why not just use a frontier commercial model?**
   **A:** The mechanism must be model-agnostic and reproducible on open models. The commercial model appears only as the B7 ceiling reference.
 - **Q: How do you know the effect is not noise?**
-  **A:** Three seeds, paired bootstrap with ten thousand resamples, ninety-five percent intervals, and Cohen's d. We require the interval of the difference to stay off zero.
+  **A:** Two seeds, paired bootstrap with ten thousand resamples, ninety-five percent intervals, and Cohen's d. We require the interval of the difference to stay off zero.
 - **Q: Are you correcting for multiple comparisons?**
   **A:** The primary comparison is our system versus vanilla debate. Secondary comparisons are reported with intervals and effect sizes, and labelled exploratory.
 - **Q: What if the trust signal does not change decisions?**
@@ -346,7 +346,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What about ethics and bias?**
   **A:** Answers carry citations a reader can check. The adversarial sets test manipulation, and the human study will follow consent rules.
 - **Q: How much does the full study cost?**
-  **A:** About three hundred GPU-hours. The deck estimate is three hundred forty to eight hundred twenty US dollars depending on GPU rates.
+  **A:** About one thousand two hundred eighty GPU-hours for the current matrix. The deck estimate is three hundred forty to eight hundred twenty US dollars depending on GPU rates.
 - **Q: What is the most important measured result so far?**
   **A:** Gate 0: the three-model debate loop runs end to end — ten of ten debates, ninety of ninety positions, about three hundred seventy seconds per debate.
 

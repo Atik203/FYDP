@@ -2,6 +2,8 @@
 
 Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on the rented GPU instance (RTX A6000 48GB, Dev phase — RunPod or Thunder Compute) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU.
 
+> **Status note (2026-11-09):** this is the reference layout, not a status report. The current implementation uses a plain-Python debate runner, claim-domain retrieval routing, and the P0 trust operator (logit accumulation → one softmax → floor/ceiling simplex projection). `trustcal/IMPLEMENTATION_STATUS.md` is the status source.
+
 The rule of thumb: **vLLM owns the GPU, this repo owns everything else.** The only GPU-touching file is `scripts/serve.sh`. Everything else is plain Python talking to the three vLLM servers over their OpenAI-compatible APIs.
 
 ---
@@ -22,7 +24,7 @@ trustcal/
 │   ├── agents/                   # per-agent prompt templates + response parsing
 │   ├── retrieval/                # PubMed / ArXiv / Semantic Scholar + reranker
 │   ├── trust/                    # trust math + weighted aggregation (pure functions)
-│   ├── orchestrator/             # LangGraph state machine (rounds, injection, K=3)
+│   ├── orchestrator/             # debate state machine (rounds, injection, K=3)
 │   └── eval/                     # harness: metrics, baselines B1–B9, dataset loaders
 ├── scripts/
 │   ├── serve.sh                  # starts 3 vLLM instances (ports 8000–8002)
@@ -52,11 +54,11 @@ Quantized variants of the roadmap's model trio: the official Ministral FP8 check
 
 **`src/trustcal/agents/`** — the *personas*. Each agent is the same inference client with a different prompt template (structured CoT + `<claim id="cX">` tagging per blueprint §5.5). Includes the response parser with the fallback regex/LLM extraction for unparseable output. Agent 0 (confidence gate) lives here too — it's a prompt, not a separate service.
 
-**`src/trustcal/retrieval/`** — source-partitioned RAG: three API clients (PubMed, ArXiv, Semantic Scholar), the cross-encoder reranker (`ms-marco-MiniLM`), and the per-claim verdict logic (supported / contradicted / unverifiable). Unverifiable ⇒ abstain, per blueprint. Results cached on disk so re-runs don't hit rate limits.
+**`src/trustcal/retrieval/`** — claim-domain routed RAG: three API clients (PubMed, ArXiv, Semantic Scholar), an optional cross-encoder reranker (`ms-marco-MiniLM`), and the per-claim verdict interface (supported / contradicted / unverifiable / contested). Unverifiable ⇒ abstain, per blueprint. Results cached on disk so re-runs don't hit rate limits. The default scorer is lexical; the NLI/LLM-judge interface exists, but the human audit is pending.
 
-**`src/trustcal/trust/`** — the core contribution, kept as pure functions with no I/O: the update rule (softmax → clamp → renormalize, in that exact operator order), the boundedness unit test (thousands of synthetic sequences, Tᵢ never leaves [0.1, 0.9]), and the final aggregation (argmax over Σ Tᵢ·positionᵢ). Unit-testable without any models running.
+**`src/trustcal/trust/`** — the core contribution, kept as pure functions with no I/O: the update rule (logit accumulation → one softmax → floor/ceiling simplex projection, in that exact operator order), the boundedness unit test (30,000 synthetic draws for N=1,3,5; min ≥ floor, sum = 1, max ≤ max(ceiling, 1/N)), and the final aggregation (argmax over Σ Tᵢ·positionᵢ). Unit-testable without any models running.
 
-**`src/trustcal/orchestrator/`** — LangGraph state machine: round sequencing, the t=1→2 injection point, the K=3 round cap, per-agent retry cap. The only module that glues retrieval + trust + agents together; it writes the full trust trajectory to `results/` after every debate (load-bearing for Propositions 2–3 and ECR calibration, not optional logging).
+**`src/trustcal/orchestrator/`** — plain-Python debate state machine (the planned LangGraph port is not implemented): round sequencing, the t=1→2 injection point, the K=3 round cap, per-agent retry cap. The only module that glues retrieval + trust + agents together; it writes the full trust trajectory to `results/` after every debate (load-bearing for Propositions 2–3 and trust calibration, not optional logging).
 
 **`src/trustcal/eval/`** — the harness: dataset loaders (GPQA slice, etc. per §8), the CCR/MPR/ECR metrics, and the baselines (B1–B4 trivial reuses, B5 self-consistency, B6 MoA, B7 Gemini oracle, B9 iMAD reimplementation). Each baseline is a runnable config, not a fork of the pipeline.
 
@@ -88,7 +90,7 @@ Quantized variants of the roadmap's model trio: the official Ministral FP8 check
 | --- | --- |
 | §5.2 confidence gate | `src/trustcal/agents/gate` |
 | §5.3 agents + claim tagging | `src/trustcal/agents/` |
-| §5.5 source-partitioned retrieval | `src/trustcal/retrieval/` |
+| §5.5 claim-domain routed retrieval | `src/trustcal/retrieval/` |
 | §5.6 trust update (Eq. 1–3) | `src/trustcal/trust/` |
 | §5.7 aggregation (Eq. 4) | `src/trustcal/trust/aggregation.py` |
 | §5.8 deliberation protocol | `src/trustcal/orchestrator/` |

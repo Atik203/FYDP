@@ -6,7 +6,7 @@ This note explains each part of the title and why that word was chosen. It answe
 
 ## Trust-Calibrated
 
-**Meaning.** Every agent's influence is set by a score that is adjusted against external evidence. The raw score rises with supported claims and falls with contradicted claims. The raw scores then pass through a softmax, a clamp to the interval [0.1, 0.9], and a renormalization each round.
+**Meaning.** Every agent's influence is set by a score that is adjusted against external evidence. The raw score rises with supported claims and falls with contradicted claims. The score is accumulated in log space, then passed through one softmax and a floor/ceiling simplex projection each round. The projection keeps every weight inside [0.1, 0.9] and keeps the weights summing to one.
 
 **Why this word.** It names both the mechanism and its property. "Calibrated" means the score tracks correctness, which is exactly what the Evidence-Calibration Rate (ECR) measures. The word also separates this work from majority voting, where every agent carries equal weight, and from confidence weighting, where the signal is self-reported.
 

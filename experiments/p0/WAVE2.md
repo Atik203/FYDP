@@ -2,9 +2,9 @@
 
 Landed on `feat/p0-hardening`: WP-01/02 (`115513b`), WP-03 (`2d99110`), WP-03b (`31e8d35`), WP-04/15 (`62fa3f7`), WP-04b (`e1ce1a7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-14 (`9b57b9d`), WP-17 (`61af3b0`). In progress: WP-09/10/13 debate wiring (D/A).
 
-Gate now: **12 passed / 1 pending** (`pytest` 497). Pending: B8-no-trust prompts + one-shot injection (WP-13/WP-09, debate slice). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0.
+Gate now: **12 passed / 1 pending** (`pytest` 497). Pending: B8-no-trust prompts + one-shot injection (WP-13/WP-09, debate slice). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0. Landing after the gate: `feat/p0-hardening` → `dev` → `main`, tags `p0-gate` and `p0-release`.
 
-## Merge order
+## Merge order (completed)
 
 1. Merge A (`p0/wp-A`) and E (`p0/wp-E`); run the full suite.
 2. B applies the runner patch: manifest + resume refusal, `manifest_hash`, `final_answer` + `final_answer_correct`, `validate_record` before append, `eligible_n.json`, persisted `Retriever.routes`.
@@ -21,6 +21,13 @@ Gate now: **12 passed / 1 pending** (`pytest` 497). Pending: B8-no-trust prompts
 - **E (gate):** assert all `revision_audit()` entries are `pinned`, and that every `experiments.yaml` primary dataset is not `appendix_only`.
 - **A:** free-form/HLE gets `Answer format: free text`; no fabricated options. The parser corpus uses real Gate 0 positions plus curated probes, with provenance per case.
 - **All:** no commit mixes `docs/**` with `trustcal/**`; slice branches push after every green checkpoint; integrator merges `--no-ff`.
+
+## Remaining
+
+1. Merge `p0/wp-debate`; run `p0_gate.py` without `--allow-pending` to reach **13/13**.
+2. Merge the frontend branches, the journal branch, and the figure branch; recompile both manuscripts with explicit `pdflatex` and check the 600 DPI figures.
+3. Formatting/QA: `npm run build`, `npm run lint`, pdflatex for journal/report, no undefined references or missing figures.
+4. Merge `feat/p0-hardening` into `dev`, then `dev` into `main`; tag `p0-gate` and `p0-release`; remove temporary branches and worktrees.
 
 ## Current matrix
 

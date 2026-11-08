@@ -1,9 +1,11 @@
 # 06 — Agent Checklist (DeepSeek V4.1 Flash Max)
 
+> **Status note (2026-11-09):** this checklist records the pre-P0 plan from 8 November 2026. P0 is now **11/13** passed on temporary `feat/p0-hardening` (WP-13 and WP-09 pending) with **478** tests. The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`. The unchecked boxes and the 206-test expectation below are the historical baseline, not current status. Current state: `trustcal/IMPLEMENTATION_STATUS.md` and `experiments/p0/`.
+
 **How to use:** this is the task board. Work top to bottom. Do not skip a gate. For every item, record the command and the exact output. If an item cannot pass, stop and report — do not improvise around a gate.
 
 **Repo:** `E:\FYDP`  
-**Work branch:** `feat/full-pipeline`  
+**Work branch (historical):** `feat/full-pipeline` (now `dev`)
 **Do not edit `main` directly.** Merge at the end, after P0.
 
 ---
@@ -227,7 +229,7 @@
 
 ### P1.12 — Branch + docs (P0-12)
 
-- [ ] **1.12.1 Merge `feat/full-pipeline` into `main`**
+- [ ] **1.12.1 Merge `feat/full-pipeline` into `main`** (historical; `feat/full-pipeline` is now `dev`, and the P0 landing is `feat/p0-hardening` → `dev` → `main`)
   - **Done when:** public `main` has the full pipeline.
 - [ ] **1.12.2 Update stale docs**
   - `IMPLEMENTATION_STATUS.md`, `docs/FYDP1_defence_Q&A.md`, `roadmap.md`.
@@ -370,7 +372,7 @@ Stop immediately and report if:
 - Never cite a 2027 OpenReview submission as accepted.
 - Never submit the current draft.
 - Never commit secrets, raw data, model weights, or credentials.
-- Never edit `main` directly; work on `feat/full-pipeline`.
+- Never edit `main` directly; work on `feat/full-pipeline` (historical; now `dev`).
 - Never add a condition after seeing the primary result.
 
 ---

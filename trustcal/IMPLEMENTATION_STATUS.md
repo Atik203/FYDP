@@ -31,9 +31,12 @@ Honest status map for the Python pipeline in `trustcal/`. `roadmap.md` remains t
 
 ## Branches
 
-- `feat/full-pipeline` — canonical implementation; `configs/phase.yaml` defaults to `dev`.
-- `Phase-1-dev` — same code, Dev stack selected by default (`configs/phase.yaml`, `serve.sh`).
-- `Phase-1-main` — same code, Final stack selected by default. Both are snapshots; fix bugs on `feat/full-pipeline` and cherry-pick, do not let the two diverge.
+- `dev` — long-lived development/integration branch; `configs/phase.yaml` defaults to `dev`. The P0 branch merges here after the 13/13 gate.
+- `main` — release trunk; the web frontend is deployed from `main`.
+- `feat/p0-hardening` — temporary P0 integration branch; slice branches `p0/wp-A` … `p0/wp-F` merge here. It merges into `dev` after the gate, then is deleted.
+- `Phase-1-dev` / `Phase-1-main` — retired to tags `phase-1-dev` and `phase-1-main-untested`; not branches.
+- Slice branches (`p0/wp-*`, `docs/*`, `feat/frontend-*`) — temporary; deleted after merge.
+- Final landing sequence: `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`.
 
 ## Verification
 

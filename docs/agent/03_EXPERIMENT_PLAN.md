@@ -2,6 +2,8 @@
 
 **Status:** proposed; replaces the 15×5×3×1,000 matrix. **Compute cash is excluded from the score, but wall-clock is not.** The plan below fits 7–8 months.
 
+> **Stage names (2026-11-09):** use `docs/GLOSSARY.md`: **Core run** (legacy “C+”) = 4 arms + oracle, ~400/dataset × 2 seeds, 180-item benchmark; **Full run** (legacy “TACL full”) = 6 arms × 3 datasets × 400 × 2 seeds, 300-item benchmark. TACL is a venue only. The 6-arm tables below describe the Full-run target.
+
 ---
 
 ## 1. The reframed claim
@@ -62,9 +64,9 @@ Pre-register both; Holm-adjust across the two and across 3 datasets. If only one
 | **Evidence** | none / retrieved / oracle | Separates no evidence, noisy evidence, gold evidence |
 | **Trust** | majority / trust / placebo | Separates aggregation from evidence-calibrated aggregation |
 
-A full 3×3×3 is too large. Use a **core 6-arm factorial** plus targeted additions.
+A full 3×3×3 is too large. Use the **Full-run 6-arm factorial** plus targeted additions.
 
-### 3.2 Core arms (run on all primary datasets)
+### 3.2 Full-run arms (run on all primary datasets)
 
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
@@ -118,15 +120,15 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 
 ### 4.1b Benchmark scale decision (EG-SSS)
 
-**180 items is a C+ supporting artifact, not a 9+ benchmark.** The benchmark audit’s scale ladder:
+**180 items is the Core-run supporting artifact, not a 9+ benchmark.** The benchmark audit’s scale ladder:
 
 | Scale | What it is | Annotation | Score | Decision |
 |---:|---|---:|---:|---|
-| **180** | C+ supporting artifact | ~410 h | 8.0–8.3 | **Default** |
-| 300 | Stronger benchmark | ~684 h | 8.5 | Stretch |
-| 600 | 9+ benchmark floor | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
-| **800** | **9+ benchmark + SDT model + private split** | **~1,824 h** | **9.0–9.3** | Only with 2–3 dedicated annotators + 2 external adopters |
-| 1,000 | 9+ on paper, execution risk | ~2,280 h | 9.0–9.3, ~50% risk | **No** |
+| **180** | Core-run benchmark | ~410 h | 8.0–8.3 | Core run |
+| 300 | Full-run benchmark | ~684 h | 8.5 | Full run |
+| 600 | Stretch | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
+| **800** | **No-go: 9+ benchmark + SDT model + private split** | **~1,824 h** | **9.0–9.3** | Do not build |
+| 1,000 | No-go: execution risk | ~2,280 h | 9.0–9.3, ~50% risk | **No** |
 
 **What makes 800 a 9+ benchmark, not a dataset dump:**
 - **4 domains × 200 items:** physics, chemistry/materials, biology/medicine, CS/ML.
@@ -221,9 +223,9 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Current blueprint | 15 | 5 | 3 | 1,000 | 225,000 | 30,000 | 1,250 |
 | Current at 200 Q | 15 | 5 | 3 | 200 | 45,000 | 6,000 | 250 |
-| **Core 6-arm** | 6 | GPQA-Main + MMLU-Pro STEM + EG-SSS | 2 | 350 | 9,300 | 1,240 | 52 |
-| **Core 6-arm (lean)** | 6 | same | 2 | 250 | 6,900 | 920 | 38 |
-| Core + additions | 10 | same | 1–2 | 150–250 | ~10,900 | ~1,450 | 60 |
+| **Full run 6-arm** | 6 | GPQA-Main + MMLU-Pro STEM + EG-SSS | 2 | 350 | 9,300 | 1,240 | 52 |
+| **Full run 6-arm (lean)** | 6 | same | 2 | 250 | 6,900 | 920 | 38 |
+| Full run + additions | 10 | same | 1–2 | 150–250 | ~10,900 | ~1,450 | 60 |
 
 ### Vast.ai spot cost (8 Nov 2026 CLI)
 
@@ -240,15 +242,15 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 |---|---:|---:|---:|---:|---:|
 | P0 smoke | 15 | $4 | $1–3 | $1 | **~$6** |
 | Pilot 100–150 Q | 225 | $59 | $1–3 | $12 | **~$72** |
-| **C+ core** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** |
-| **TACL main** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** |
+| **Core run** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** |
+| **Full run** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min; all-in, not additive with Core) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** |
 | Full law-testing — 6 min (optimistic) | 2,860 + 100 | $854 | $60–120 | $170 | **~$1,100** |
 | Full law-testing — 8 min (realistic) | 3,813 + 100 | $1,105 | $60–120 | $220 | **~$1,390** |
 | Full / high (8 min, high rate, 6-month storage) | 3,813 + 100 | $1,457 | $150–250 | $320 | **~$1,930** |
 
-**Budget:** **C+ ~$420–580 all-in; TACL main ~$900–1,200 all-in; full law-testing ~$1,100 (6 min) to ~$1,400–1,900 (8 min); high ~$2,450.** GPU hours dominate; bandwidth/storage add 10–25%. The 2,860 GPU-h figure is a **6-min** number; at 8 min it is **3,813**. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026–0.033/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $8,000–11,000+, not runnable.
+**Budget:** **Core run ~$420–580 all-in; Full run ~$900–1,200 all-in (Core is a prefix, so the incremental top-up is lower and the costs are not additive); full law-testing ~$1,100 (6 min) to ~$1,400–1,900 (8 min); high ~$2,450.** GPU hours dominate; bandwidth/storage add 10–25%. The 2,860 GPU-h figure is a **6-min** number; at 8 min it is **3,813**. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026–0.033/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $8,000–11,000+, not runnable.
 
-**TACL feasibility:** 14,400 debates × 8 min = 1,920 GPU-h main; 4×24 GB GPUs = 480 GPU-h each = 20 days; 4 weeks with buffer. Annotation 500 items × 5 claims × 2 annotators = 5,000 labels ≈ 167 h; 6 people × 7 h/week × 4 weeks = 168 h. The theorem check is the real bottleneck.
+**Full-run feasibility:** 14,400 debates × 8 min = 1,920 GPU-h main; 4×24 GB GPUs = 480 GPU-h each = 20 days; 4 weeks with buffer. Annotation 500 items × 5 claims × 2 annotators = 5,000 labels ≈ 167 h; 6 people × 7 h/week × 4 weeks = 168 h. The theorem check is the real bottleneck.
 
 Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
