@@ -53,7 +53,7 @@ Result now carries `trust_for_positions` and `trust_status`, in addition to
 
 | Field | Value |
 |---|---|
-| `trust_trajectory` | uniform start + one row per **updated** scored round; rows are simplex vectors with the 0.1 floor |
+| `trust_trajectory` | uniform start + one row per **scored round** (an abstention appends the unchanged vector), so `trajectory[k+1]` aligns with `trust_status[k]`; rows are simplex vectors with the 0.1 floor. Exposed only once a real update has happened (`null` otherwise) |
 | `trust_for_positions` | `trust.scores` handed to `aggregate`, exactly the last trajectory row; `null` when no update happened |
 | `trust_status` | one entry per scored round, `updated` / `abstained_unanimous` / `abstained_no_evidence`; `null` for `use_trust=False` |
 | `verdicts[]` | now also logs `n_claims` next to `support`/`harm` |
@@ -73,13 +73,13 @@ cd E:\FYDP-p0-C\trustcal
 
 ```
 ........................................................................ [ 76%]
-........................................................................ [ 92%]
-.....................................                                    [100%]
-469 passed in 39.76s
+........................................................................ [ 91%]
+......................................                                   [100%]
+470 passed in 40.62s
 ```
 
-Baseline on the merged base: **457 passed**. Net **+12 tests, 0 weakened**
-(8 in `test_debate_trust.py`, 4 new in `test_b8_trust.py`).
+Baseline on the merged base: **457 passed**. Net **+13 tests, 0 weakened**
+(9 in `test_debate_trust.py`, 4 new in `test_b8_trust.py`).
 
 Targeted:
 
@@ -88,8 +88,8 @@ Targeted:
 ```
 
 ```
-................                                                         [100%]
-16 passed in 1.79s
+.................                                                        [100%]
+17 passed in 1.98s
 ```
 
 ### New tests
@@ -103,7 +103,8 @@ Targeted:
 | `test_no_trust_arm_has_no_trust_telemetry` | all three trust fields are `null` for `use_trust=False` |
 | `test_duplicate_claims_do_not_change_trust` | 8 duplicate claims give `n_claims == [1,1,1]` and an identical trajectory |
 | `test_neutral_evidence_is_an_identity_not_a_reuniformization` | round-1 evidence moves trust; the round-3 neutral pass leaves it bit-identical (≤1e-12) |
-| `test_trajectory_rows_are_simplex_vectors` | sum 1 ± 1e-9, min ≥ 0.1 − 1e-9, max ≤ 0.9 + 1e-9 |
+| `test_abstention_appends_a_per_round_row` | one update then a unanimous round: `["updated", "abstained_unanimous"]` with a flat trajectory row, aligned with the status |
+| `test_trajectory_rows_are_simplex_vectors` | `1 + rounds` rows; sum 1 ± 1e-9, min ≥ 0.1 − 1e-9, max ≤ 0.9 + 1e-9 |
 | `test_mock_b8_result_is_record_ready` | mock B8 through `_make_runner`: status non-null, `trust_for_positions == trajectory[-1]`, valid rows |
 | `test_debate_record_keeps_the_final_trust_vector` | `debate_record` trajectory last row = final vector; assembled schema-v2 record validates |
 | `test_b8_no_trust_has_no_trust_telemetry` | B8-no-trust carries no trust fields |
@@ -135,18 +136,18 @@ the bottom row (0.4083 for agents 1 and 3).
 ```
 
 ```
-PASS     1  pytest                              39.85s
-          exit 0: 469 passed in 38.77s
-PASS     2  record schema                       0.06s  [WP-04 (eval/records.py)]
-FAIL     3  options in prompts                  0.00s  [WP-01 (eval/options.py + prompts)]
+PASS     1  pytest                              41.55s
+          exit 0: 470 passed in 40.36s
+PASS     2  record schema                       0.07s  [WP-04 (eval/records.py)]
+FAIL     3  options in prompts                   0.00s  [WP-01 (eval/options.py + prompts)]
           AGENT_REVISION_EVIDENCE seed 0: option 'alpha' appears 2 times (expected 1)
 PENDING  4  parser corpus                       0.01s  [WP-02 (parser corpus)]
-PASS     5  trust bound                         4.23s  [WP-03 (trust projection)]
+PASS     5  trust bound                         5.64s  [WP-03 (trust projection)]
           30,000 draws N=1,3,5; min>=0.1, sum==1 within 1e-9
-PASS     6  trust neutral/verbosity             0.08s  [WP-03 (trust projection)]
+PASS     6  trust neutral/verbosity             0.10s  [WP-03 (trust projection)]
           neutral identity 600 draws (max dev 0), verbosity 200 draws (max dev 0); N=1 output [1.0]
 PENDING  7  B8 vs B8-no-trust                  0.00s  [WP-13 (B8-no-trust prompts)]
-PENDING  8  B8+injection mock                  1.46s  [WP-09 (B8 x injection wiring)]
+PENDING  8  B8+injection mock                  1.59s  [WP-09 (B8 x injection wiring)]
 PASS     9  endpoint summary                    0.03s
 PASS    10 datasets pinned                      0.01s  [WP-11 (dataset loaders)]
 PASS    11 claim routing                        0.00s  [WP-12 (claim -> domain routing)]
@@ -200,4 +201,6 @@ checks 5 and 6 pass; check 1 (the whole 469-test suite) passes.
 | SHA | Message |
 |---|---|
 | `339753b` | `fix(p0-5): update trust from final positions with real claim counts` |
-| _(this file)_ | `docs(p0-5): add WP-03b evidence` |
+| `9a0d49d` | `fix(p0-5): record one trust trajectory row per scored round` |
+| `6ac65e0` | `docs(p0-5): add WP-03b evidence` |
+| _(this update)_ | `docs(p0-5): update WP-03b evidence` |
