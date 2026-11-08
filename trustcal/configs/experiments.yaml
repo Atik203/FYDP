@@ -14,11 +14,12 @@
 # `run_experiment.py --arm pilot --questions-file ...` and `pilot_report.py`.
 
 datasets:
-  - brokermath      # adversarial, worst-case by construction
-  - brokenarxiv     # adversarial, monthly-refreshed
-  - hle             # hard scientific reasoning ceiling (gated: HF_TOKEN)
-  - gpqa            # stable comparison baseline
-  - mmlu_pro        # stable comparison baseline
+  # P0-8: the primary matrix is GPQA-Main + MMLU-Pro STEM, with HLE as the
+  # ceiling/abstention control. BrokenMath and BrokenArXiv are proof-only
+  # (0% answer-type retention) and live in the appendix only — never here.
+  - gpqa_main       # primary evidence-grounded set (448; Diamond stays pilot-only)
+  - mmlu_pro        # primary scale set (1,000 stratified from 6,696 STEM)
+  - hle             # ceiling/abstention control (gated: HF_TOKEN; not positive evidence)
 
 seeds: [1, 2, 3]
 
