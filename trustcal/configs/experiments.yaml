@@ -2,16 +2,32 @@
 # run_matrix.py builds one RunConfig per row and calls trustcal.runner.run().
 # CLI filters (--datasets/--arms/--seed/--limit) override the values here.
 #
+# P0-10 matrix cut (WP-14, 9 Nov 2026): this file is the executable pre-registered
+# matrix, not the thesis appendix grid. Four conditions run now:
+#   B3            unweighted MAD (no retrieval)
+#   B4-matched    arm B4 with the same source partition as B8 (evidence control)
+#   B8-no-trust   arm B8 with use_trust=false (primary control)
+#   B8            ours (evidence-grounded trust)
+# 4 conditions x 3 datasets x 2 seeds = 24 runs. The six-arm target in
+# PRE_REGISTRATION.md adds B8-placebo and B8-oracle; those need RunConfig flags
+# from WP-13, so they are deliberately not executable yet. The full 15-condition
+# grid lives in the commented appendix_conditions block below; re-add it there
+# for the thesis appendix, never to this matrix.
+#
+# Compute check (P0 gate check 13): the gate deliberately uses sample_caps.main
+# for every row, so 4 x 3 x 2 x 400 = 9,600 debates x 8 min / 60 = 1,280 GPU-h
+# <= 1,500. Per-dataset caps below plan 4 x 2 x (400 + 400 + 200) = 8,000
+# debates = 1,067 GPU-h; --limit overrides both maps.
+#
 # Order discipline (AGENTS.md): Gate 0 -> injection protocol -> Month-1 pilot
 # -> trust mechanism -> baselines -> matrix. Do not run the full matrix before
 # the pilot gate passes.
 #
 # `phase` selects the Dev or Final stack from configs/models.yaml; `--phase`
-# overrides it. B7 is an external oracle and needs GEMINI_API_KEY. B9 iMAD and
-# B10 ConsensAgent are documented approximations (see IMPLEMENTATION_STATUS.md).
-# The Month-1 `pilot` arm is deliberately NOT a matrix condition: it needs the
-# frozen questions file and must pass Gate 1 before this matrix runs. Use
-# `run_experiment.py --arm pilot --questions-file ...` and `pilot_report.py`.
+# overrides it. The Month-1 `pilot` arm is deliberately NOT a matrix condition:
+# it needs the frozen questions file and must pass Gate 1 before this matrix
+# runs. Use `run_experiment.py --arm pilot --questions-file ...` and
+# `pilot_report.py`.
 
 datasets:
   # P0-8: the primary matrix is GPQA-Main + MMLU-Pro STEM, with HLE as the
@@ -21,61 +37,82 @@ datasets:
   - mmlu_pro        # primary scale set (1,000 stratified from 6,696 STEM)
   - hle             # ceiling/abstention control (gated: HF_TOKEN; not positive evidence)
 
-seeds: [1, 2, 3]
+seeds: [1, 2]
 
 # Questions per run when --limit is not given: `pilot` for the pilot arm,
-# `main` for every other arm.
+# `main` for every other arm. `main` is also the conservative cap the P0 gate
+# multiplies over every dataset, so keep it at the pre-registered 400.
 sample_caps:
   pilot: 50
-  main: 1000
+  main: 400
+
+# Per-dataset caps for the matrix plan. A dataset without an entry falls back
+# to sample_caps.main. --limit overrides sample_caps and every entry here.
+dataset_caps:
+  gpqa_main: 400
+  mmlu_pro: 400
+  hle: 200
 
 conditions:
-  B1:
-    arm: B1
-    description: "Single-Agent CoT — one call, no debate."
-  B2:
-    arm: B2
-    description: "Single-Agent + RAG — one call with retrieved evidence."
   B3:
     arm: B3
     description: "MAD (Du et al. 2023) — unweighted multi-agent debate."
-  B4:
+  B4-matched:
     arm: B4
-    description: "MAD + RAG — debate where every agent sees retrieved evidence."
-  B5:
-    arm: B5
-    description: "Self-Consistency (Wang et al. 2022) — sampled single-agent vote."
-  B6:
-    arm: B6
-    description: "Mixture-of-Agents (Wang et al. 2024) — layered aggregation."
-  B7:
-    arm: B7
-    description: "Oracle (Gemini 3.1 Pro Preview) — needs GEMINI_API_KEY; not a competitor."
-  B8:
-    arm: B8
-    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."
-  B9:
-    arm: B9
-    description: "iMAD (Fan et al. 2026) — heuristic confidence/hesitation gate, not FocusCal."
-  B10:
-    arm: B10
-    description: "ConsensAgent (Pitre et al. 2025) — trigger + aggregation, no prompt optimizer."
+    source_partitioning: true
+    description: "MAD + RAG, same source partition as B8 — evidence-information control."
   B8-no-trust:
     arm: B8
     use_trust: false
-    description: "Ablation: evidence retrieval without trust re-weighting (majority aggregation)."
-  B8-no-progressive:
+    description: "Primary control: same retriever/prompts/partition as B8 without trust re-weighting (majority aggregation)."
+  B8:
     arm: B8
-    progressive_retrieval: false
-    description: "Ablation: full retrieval depth from round 1."
-  B8-no-partition:
-    arm: B8
-    source_partitioning: false
-    description: "Ablation: every agent sees every source."
-  B8-no-adaptive:
-    arm: B8
-    adaptive_triggering: false
-    description: "Ablation: update trust every round, even on unanimous panels."
-  injection:
-    arm: injection
-    description: "Injected-confidence stress test — consensus pressure on minority agents."
+    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."
+
+# Thesis appendix only. These conditions are NOT part of the pre-registered
+# matrix; they stay out until a new pre-registration version re-admits them.
+# B8-placebo and B8-oracle join the six-arm target after WP-13 adds the
+# RunConfig switches (verdict shuffling and gold-evidence injection).
+# appendix_conditions:
+#   B1:
+#     arm: B1
+#     description: "Single-Agent CoT — one call, no debate."
+#   B2:
+#     arm: B2
+#     description: "Single-Agent + RAG — one call with retrieved evidence."
+#   B5:
+#     arm: B5
+#     description: "Self-Consistency (Wang et al. 2022) — sampled single-agent vote."
+#   B6:
+#     arm: B6
+#     description: "Mixture-of-Agents (Wang et al. 2024) — layered aggregation."
+#   B7:
+#     arm: B7
+#     description: "Oracle (Gemini 3.1 Pro Preview) — needs GEMINI_API_KEY; not a competitor."
+#   B9:
+#     arm: B9
+#     description: "iMAD (Fan et al. 2026) — heuristic confidence/hesitation gate, not FocusCal."
+#   B10:
+#     arm: B10
+#     description: "ConsensAgent (Pitre et al. 2025) — trigger + aggregation, no prompt optimizer."
+#   B8-no-progressive:
+#     arm: B8
+#     progressive_retrieval: false
+#     description: "Ablation: full retrieval depth from round 1."
+#   B8-no-partition:
+#     arm: B8
+#     source_partitioning: false
+#     description: "Ablation: every agent sees every source."
+#   B8-no-adaptive:
+#     arm: B8
+#     adaptive_triggering: false
+#     description: "Ablation: update trust every round, even on unanimous panels."
+#   B8-placebo:
+#     arm: B8
+#     description: "Six-arm target (pending WP-13): verdicts shuffled within debate; trust-weighted."
+#   B8-oracle:
+#     arm: B8
+#     description: "Six-arm target (pending WP-13): gold evidence; trust-weighted; verifier upper bound."
+#   injection:
+#     arm: injection
+#     description: "Injected-confidence stress test — consensus pressure on minority agents."

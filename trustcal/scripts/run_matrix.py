@@ -9,6 +9,10 @@ The matrix is read from ``configs/experiments.yaml``. Each row is one
 ``summary.json`` and ``table.md`` under ``--out``. A failed row is reported but
 does not stop the remaining rows; the process exits nonzero if any row failed.
 
+P0-10: ``sample_caps.main`` is the per-condition cap the P0 gate multiplies over
+every dataset, while ``dataset_caps`` sets the cap actually planned for a
+dataset (HLE runs leaner). ``--limit`` overrides both.
+
 The ``pilot`` arm needs a frozen questions file, which this matrix CLI does not
 take — run it standalone with ``scripts/run_experiment.py --questions-file``.
 """
@@ -18,7 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import yaml
@@ -38,9 +42,15 @@ class Matrix:
     phase: str
     pilot_limit: int
     main_limit: int
+    dataset_caps: dict[str, int] = field(default_factory=dict)
+    limit_override: int | None = None
 
-    def limit_for(self, arm: str) -> int:
-        return self.pilot_limit if arm == "pilot" else self.main_limit
+    def limit_for(self, arm: str, dataset: str) -> int:
+        if arm == "pilot":
+            return self.pilot_limit
+        if self.limit_override is not None:
+            return self.limit_override
+        return self.dataset_caps.get(dataset, self.main_limit)
 
 
 def _csv(value: str) -> list[str]:
@@ -130,6 +140,23 @@ def _select_datasets(configured: object, override: str | None) -> list[str]:
     return names
 
 
+def _parse_dataset_caps(configured: object, datasets: list[str]) -> dict[str, int]:
+    if configured is None:
+        return {}
+    if not isinstance(configured, dict):
+        raise ValueError("dataset_caps must be a mapping of dataset -> positive integer")
+    caps: dict[str, int] = {}
+    for name, value in configured.items():
+        if name not in datasets:
+            raise ValueError(
+                f"dataset_caps names unknown dataset {name!r}; expected one of {', '.join(datasets)}"
+            )
+        if type(value) is not int or value <= 0:
+            raise ValueError(f"dataset_caps.{name} must be a positive integer")
+        caps[str(name)] = value
+    return caps
+
+
 def _select_seeds(configured: object, override: int | None) -> list[int]:
     if override is not None:
         return [override]
@@ -160,6 +187,7 @@ def _load_matrix(path: Path, args: argparse.Namespace) -> Matrix:
         if type(value) is not int or value <= 0:
             raise ValueError(f"sample_caps.{name} must be a positive integer")
 
+    all_datasets = _select_datasets(raw.get("datasets"), None)
     return Matrix(
         conditions=_select_conditions(_parse_conditions(raw), args.arms),
         datasets=_select_datasets(raw.get("datasets"), args.datasets),
@@ -167,6 +195,8 @@ def _load_matrix(path: Path, args: argparse.Namespace) -> Matrix:
         phase=phase,
         pilot_limit=pilot_limit,
         main_limit=main_limit,
+        dataset_caps=_parse_dataset_caps(raw.get("dataset_caps"), all_datasets),
+        limit_override=args.limit,
     )
 
 
@@ -180,7 +210,7 @@ def _build_plan(matrix: Matrix, out_root: Path) -> list[tuple[dict, RunConfig]]:
                 cfg = RunConfig(
                     arm=condition["arm"],
                     dataset=dataset,
-                    limit=matrix.limit_for(condition["arm"]),
+                    limit=matrix.limit_for(condition["arm"], dataset),
                     seed=seed,
                     out_root=condition_root,
                     phase=matrix.phase,
@@ -280,9 +310,12 @@ def main() -> int:
 
     if args.dry_run:
         print(f"dry run: {len(plan)} planned runs (phase={matrix.phase}, out={out_root})")
-        print(f"{'arm':<10} {'dataset':<12} {'seed':>4} {'limit':>6}  run dir")
-        for _, cfg in plan:
-            print(f"{cfg.arm:<10} {cfg.dataset:<12} {cfg.seed:>4} {cfg.limit:>6}  {_run_dir(cfg)}")
+        print(f"{'condition':<12} {'arm':<10} {'dataset':<12} {'seed':>4} {'limit':>6}  run dir")
+        for condition, cfg in plan:
+            print(
+                f"{condition['key']:<12} {cfg.arm:<10} {cfg.dataset:<12} "
+                f"{cfg.seed:>4} {cfg.limit:>6}  {_run_dir(cfg)}"
+            )
         print("nothing written")
         return 0
 
