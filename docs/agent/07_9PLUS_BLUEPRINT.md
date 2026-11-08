@@ -412,25 +412,28 @@ Value-of-information verification can be a secondary experiment: under a fixed a
 
 ### 5.1 Size
 
-- **300 items:** 100 biomed/clinical, 100 physics/chemistry, 100 math/CS.
-- Each item: question, gold answer, 3 positions (1 correct minority, 2 wrong majority), 3–6 atomic claims per position, gold evidence, gold verdicts, 5 conditions.
-- 2 annotators, adjudication, κ ≥0.75.
+- **180 items = C+ supporting artifact** (8.0–8.3), not a 9+ benchmark.
+- **300 items = 8.5**; **600 = 9.0**; **800 + SDT model + private split = 9.0–9.3**.
+- **800-item design:** 4 domains × 200 (physics, chemistry/materials, biology/medicine, CS/ML); 120 dev / 480 public test / 200 private.
+- Each item: question, gold answer, 3 positions (1 correct minority, 2 wrong majority), 3–6 atomic claims per position, gold evidence, gold verdicts, controls.
+- **2–3 dedicated annotators; ~1,824 h for 800 items; κ ≥0.75.** Do not build 800 with agents alone.
 
-### 5.2 Conditions
+### 5.2 Controls (14)
 
-| Condition | Evidence | Pressure | Tests |
-|---|---|---|---|
-| A | Available | None | Baseline evidence use |
-| B | Available | Fabricated consensus | Sycophancy resistance with evidence |
-| C | Absent | Fabricated consensus | Sycophancy-only collapse |
-| D | Placebo (relevant, non-entailing) | Fabricated consensus | False support/gullibility |
-| E | Contradictory | Fabricated consensus | Correct rejection under pressure |
+No pressure, neutral restatement, peer pressure, authority pressure, emotional escalation, evidence placebo, evidence-supports-minority, evidence-supports-majority, ambiguous evidence, evidence shuffle, label/position shuffle, majority-correct items, verifier-quality sweep, no-verifier ablation. The minimum essential set is 11 of 14; do not drop majority-correct, placebo, E−, or label shuffle.
 
-### 5.3 Why 300 is enough
+### 5.3 The SDT measurement model (the 9+ intellectual contribution)
 
-- 300 items × 5 conditions = 1,500 observations; enough for 10–15 pp effects with paired analysis.
-- 300 is feasible for 6 people in 6–8 weeks; 1,000 is not.
-- A clean 300-item benchmark with gold evidence is more valuable than a noisy 1,000-item set.
+\[
+z = w_e e + w_s s_{\text{maj}} + w_v v + b + \epsilon
+\]
+
+- \(e\) = evidence valence; \(s_{\text{maj}}\) = social signal; \(v\) = verifier signal.
+- **Sycophancy** \(= w_s/w_e\); **verifier trust** \(= w_v\); **abstention criterion** \(= \lambda\); **competence** \(= d'\).
+- Report a 6-axis profile: resistance, correction, deference, attribution, abstention, robustness.
+- **Headline figure: the trust plane** (resistance vs deference) — calibrated, sycophantic, contrarian, incoherent.
+
+This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 800 items is a dataset paper; with it, it is a 9+ benchmark.
 
 ### 5.4 Release
 

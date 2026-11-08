@@ -101,6 +101,20 @@
 
 **Human annotation:** 500 items × 5 claims × 2 annotators = **5,000 labels** ≈ 167 hours. Six people × 7 hours/week × 4 weeks = 168 hours.
 
+### Benchmark decision (EG-SSS)
+
+| Size | What it is | Annotation | Score |
+|---:|---|---:|---:|
+| **180** | C+ supporting artifact | ~410 h | 8.0–8.3 |
+| 300 | Stronger benchmark | ~684 h | 8.5 |
+| 600 | 9+ benchmark floor | ~1,368 h | 9.0 |
+| **800 + SDT model** | **9+ benchmark** | **~1,824 h** | **9.0–9.3** |
+
+- **Default: 180 items.** It fits the C+ path.
+- **Do not build 800 unless 2–3 people can annotate for five months.** A 800-item set with 12% bad gold is worse than a 300-item set with 3% bad gold.
+- **The 9+ benchmark needs the SDT model** (sycophancy = social weight / evidence weight; verifier trust; abstention criterion; competence). Without it, 800 items is a dataset paper.
+- If annotation capacity is uncertain, build 180–300 and do the theory/causal paper.
+
 ---
 
 ## 5. Cost — Vast.ai spot (8 Nov 2026)

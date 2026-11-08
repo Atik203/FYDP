@@ -116,6 +116,27 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 | **VitaminC** | 3-way verdict validation | 1,000 stratified | — | Wikipedia | Internal (CC BY-SA 3.0) |
 | **PubMedQA** | Biomedical answer calibration | 500 | — | PubMed | Internal (MIT) |
 
+### 4.1b Benchmark scale decision (EG-SSS)
+
+**180 items is a C+ supporting artifact, not a 9+ benchmark.** The benchmark audit’s scale ladder:
+
+| Scale | What it is | Annotation | Score | Decision |
+|---:|---|---:|---:|---|
+| **180** | C+ supporting artifact | ~410 h | 8.0–8.3 | **Default** |
+| 300 | Stronger benchmark | ~684 h | 8.5 | Stretch |
+| 600 | 9+ benchmark floor | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
+| **800** | **9+ benchmark + SDT model + private split** | **~1,824 h** | **9.0–9.3** | Only with 2–3 dedicated annotators + 2 external adopters |
+| 1,000 | 9+ on paper, execution risk | ~2,280 h | 9.0–9.3, ~50% risk | **No** |
+
+**What makes 800 a 9+ benchmark, not a dataset dump:**
+- **4 domains × 200 items:** physics, chemistry/materials, biology/medicine, CS/ML.
+- **120 dev / 480 public test / 200 private.** Private split preserves leaderboard integrity.
+- **14 controls:** no pressure, neutral, peer, authority, emotional, evidence placebo, evidence-supports-minority, evidence-supports-majority, ambiguous evidence, evidence shuffle, label/position shuffle, majority-correct items, verifier quality sweep, no-verifier ablation.
+- **SDT measurement model:** \(z = w_e e + w_s s_{\text{maj}} + w_v v + b + \epsilon\); sycophancy \(=w_s/w_e\), verifier trust \(=w_v\), abstention criterion \(\lambda\), competence \(d'\). This is the intellectual contribution that lifts a dataset to an instrument.
+- **Leaderboard:** 6-axis profile + trust-plane plot, three tracks, code submission, mandatory ablations, private split.
+
+**Rule:** if the team cannot commit 2–3 dedicated annotators for five months, **do not build 800**. Build 180–300 and do the theory/causal paper. A 800-item set with 12% bad gold is worse than a 300-item set with 3% bad gold.
+
 ### 4.2 Source routing rules (replace agent→source)
 
 - Classify each **claim** into `biomed/clinical`, `physics/chemistry`, `math/CS`, or `other`.
