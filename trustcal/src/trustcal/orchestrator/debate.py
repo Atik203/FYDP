@@ -9,6 +9,14 @@ Trust timing (P0-5): evidence is scored after every round's positions exist, and
 a closing pass scores the final positions before aggregation. The weighted vote
 therefore uses `trust_for_positions`, which is exactly the last trajectory row —
 never trust computed from the previous round.
+
+Verifier (P0-6): every distinct claim is judged by an injected `Verifier`
+(default `LexicalVerifier`), over the same capped/deduplicated passages the
+revision prompt shows.
+
+Injection (P0-9): the plan is computed once from round-1 answers and delivered
+as a one-shot user turn in round 2; no injection text reaches the system prompt
+or round 3.
 """
 
 from __future__ import annotations
@@ -23,15 +31,21 @@ from ..agents import (
     AGENT_REVISION,
     AGENT_REVISION_EVIDENCE,
     AGENT_SYSTEM,
-    INJECTION_SYSTEM,
     claim_texts,
     parse_position,
 )
+from ..agents.prompts import trust_line as trust_prompt_line
 from ..eval.answers import distinct_answers
 from ..eval.options import RenderedOptions, build_options
 from ..inference import VLLMClient
-from ..retrieval.pipeline import Retriever, StaticRetriever, evidence_block
-from ..retrieval.verdicts import classify_claim, count_verdicts
+from ..retrieval.pipeline import (
+    Retriever,
+    StaticRetriever,
+    evidence_block,
+    select_evidence,
+)
+from ..retrieval.verdicts import count_verdicts
+from ..retrieval.verifier import LexicalVerifier, Verifier
 from ..trust import TrustConfig, TrustState, aggregate
 from .injection import build_injection
 
@@ -50,8 +64,15 @@ class DebateRunner:
     # normalization; use TrustConfig and the default path for P0-5 semantics.
     trust_update: Callable | None = None
     injection_scope: str | None = None  # None = plain debate; "minority" | "all"
+    injection_arm: str = "authority"  # authority | peer | neutral | none
+    # None resolves to external for authority pressure, panel otherwise.
+    injection_source: str | None = None
+    injection_template: int = 0
     retriever: Retriever | StaticRetriever | None = None
     trust_config: TrustConfig = field(default_factory=TrustConfig)
+    # P0-6: every claim is judged by this verifier. The lexical baseline is
+    # explicit so a sentence-transformers install cannot silently swap it.
+    verifier: Verifier | None = None
     aggregate_final: bool = True
     # P0-0: seeded option rendering. Direct callers may omit these; the runner
     # always passes the run seed and question id so a resumed run re-renders
@@ -59,6 +80,27 @@ class DebateRunner:
     seed: int = 0
     question_id: str | None = None
     gold: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.verifier is None:
+            self.verifier = LexicalVerifier()
+
+    def _prompt_passages(self) -> int:
+        """Passages the revision prompt can show (P0-6 alignment)."""
+        config = getattr(self.retriever, "config", None)
+        value = getattr(config, "prompt_passages", 3)
+        return max(1, int(value or 3))
+
+    def _max_passage_chars(self) -> int:
+        config = getattr(self.retriever, "config", None)
+        return max(1, int(getattr(config, "max_chars", 1200) or 1200))
+
+    def _select_passages(self, passages: list[str]) -> list[str]:
+        """Dedupe/cap exactly as ``evidence_block`` will render the prompt."""
+        max_chars = self._max_passage_chars()
+        return select_evidence(
+            [passage[:max_chars] for passage in passages], self._prompt_passages()
+        )
 
     def run(self, question: str, options: list[str] | None = None) -> dict:
         """Run one debate; returns positions, transcript, verdicts, trust, aggregation."""
@@ -78,29 +120,49 @@ class DebateRunner:
 
     def _evidence_for(
         self, positions: list[str], round_number: int
-    ) -> tuple[list[list[str]], list[list[str]]]:
-        """Per-agent passages + per-claim verdicts for one revision round."""
+    ) -> tuple[list[list[str]], list[list[str]], list[dict]]:
+        """Shown passages, per-agent labels, and per-claim records for one round.
+
+        P0-6: retrieval happens per claim, but the passages are deduplicated and
+        capped *before* the verifier sees them, at exactly the volume
+        ``evidence_block`` renders. The judged evidence is therefore the shown
+        evidence, not whatever the search backend happened to return.
+        P0-5: repeated claims are dropped before classification, so verbosity
+        cannot inflate support or harm.
+        """
         evidence: list[list[str]] = []
         verdicts: list[list[str]] = []
+        verdict_records: list[dict] = []
         for i, position in enumerate(positions):
-            # P0-5: deduplicate repeated claims before classification. The
-            # verdict list therefore has one entry per *distinct* claim, so
-            # n_claims counts what was actually checked and repeating a claim
-            # cannot inflate support or harm.
             claims = list(
                 dict.fromkeys(
                     claim_texts(position, max_claims=self.trust_config.max_claims)
                 )
             )
-            agent_passages: list[str] = []
+            candidates: list[str] = []
+            for claim in claims:
+                candidates.extend(self._passages(i, claim, round_number))
+            shown = self._select_passages(candidates)
             agent_verdicts: list[str] = []
             for claim in claims:
-                passages = self._passages(i, claim, round_number)
-                agent_verdicts.append(classify_claim(claim, passages))
-                agent_passages.extend(passages)
-            evidence.append(list(dict.fromkeys(agent_passages)))
+                verdict = self.verifier.verdict(claim, shown)  # type: ignore[union-attr]
+                agent_verdicts.append(verdict.label)
+                if shown:
+                    verdict_records.append(
+                        {
+                            "agent": i,
+                            "round": round_number,
+                            "claim": claim,
+                            "passages": list(shown),
+                            "scores": list(verdict.scores),
+                            "evidence_ids": list(verdict.evidence_ids),
+                            "verdict": verdict.label,
+                            "verifier": verdict.verifier,
+                        }
+                    )
+            evidence.append(shown)
             verdicts.append(agent_verdicts)
-        return evidence, verdicts
+        return evidence, verdicts, verdict_records
 
     def _trust_round(
         self,
@@ -147,44 +209,55 @@ class DebateRunner:
         transcript: list[dict] = []
         trust = TrustState(len(self.clients), self.trust_config)
         verdict_log: list[dict] = []
+        trust_round_log: list[dict] = []
         evidence_log: list[dict] = []
-        trust_used = False
         rendered_options = rendered.options or None
 
+        # The trust switch is a prompt slot (P0-13). The initial round has no
+        # score yet, so it carries only the policy line when trust is enabled.
+        initial_trust = trust_prompt_line(None, enabled=self.trust_config.use_trust)
         positions = [
             client.complete(
                 system,
                 AGENT_INITIAL.format(
-                    agent_id=i, question=question, options_block=rendered.block
+                    agent_id=i,
+                    question=question,
+                    options_block=rendered.block,
+                    trust_line=initial_trust,
                 ),
             )
             for i, (client, system) in enumerate(zip(self.clients, systems), start=1)
         ]
         transcript.append({"round": 1, "positions": positions})
 
+        # P0-9: decide the injection once from round-1 answers. It is delivered
+        # as a one-shot user turn in round 2 only; the system prompt and the
+        # round-3 prompt are untouched.
         injection = None
+        plan = None
+        delivered = False
         if self.injection_scope and self.rounds >= 2:
             plan = build_injection(
                 [parse_position(p) for p in positions],
                 rendered_options,
                 scope=self.injection_scope,
+                source=self.injection_source,
+                arm=self.injection_arm,
+                template=self.injection_template,
             )
             injection = plan.as_dict() | {"round": 2, "scope": self.injection_scope}
-            if plan.eligible:
-                injected_system = AGENT_SYSTEM + "\n\n" + INJECTION_SYSTEM.format(consensus=plan.consensus)
-                for i in plan.targets:
-                    systems[i] = injected_system
-            else:
+            if not plan.eligible:
                 injection["scope"] = None  # nothing delivered
 
         trust_status: list[str] = []
         trust_used = False
 
         for r in range(2, self.rounds + 1):
-            evidence, verdicts = self._evidence_for(positions, r)
+            evidence, verdicts, verdict_records = self._evidence_for(positions, r)
             has_evidence = any(evidence)
             if has_evidence:
                 evidence_log.append({"round": r, "passages": evidence, "verdicts": verdicts})
+                verdict_log.extend(verdict_records)
 
             if self.trust_config.use_trust:
                 status, support, harm, n_claims = self._trust_round(
@@ -193,7 +266,7 @@ class DebateRunner:
                 trust_status.append(status)
                 trust_used = trust_used or status == TRUST_UPDATED
                 if has_evidence:
-                    verdict_log.append(
+                    trust_round_log.append(
                         {
                             "round": r,
                             "support": support,
@@ -205,6 +278,8 @@ class DebateRunner:
             peers = "\n\n".join(f"Agent {i}: {p[:1500]}" for i, p in enumerate(positions, start=1))
             new_positions = []
             for i, client in enumerate(self.clients, start=1):
+                score = float(trust.scores[i - 1])
+                line = trust_prompt_line(score, enabled=self.trust_config.use_trust)
                 if has_evidence:
                     prompt = AGENT_REVISION_EVIDENCE.format(
                         agent_id=i,
@@ -213,9 +288,13 @@ class DebateRunner:
                         question=question,
                         options_block=rendered.block,
                         own_position=positions[i - 1],
-                        trust=float(trust.scores[i - 1]),
-                        evidence=evidence_block(evidence[i - 1]),
+                        evidence=evidence_block(
+                            evidence[i - 1],
+                            max_items=self._prompt_passages(),
+                            max_chars=self._max_passage_chars(),
+                        ),
                         peer_positions=peers,
+                        trust_line=line,
                     )
                 else:
                     prompt = AGENT_REVISION.format(
@@ -225,9 +304,18 @@ class DebateRunner:
                         question=question,
                         options_block=rendered.block,
                         own_position=positions[i - 1],
-                        trust=float(trust.scores[i - 1]),
                         peer_positions=peers,
+                        trust_line=line,
                     )
+                # P0-9: round 2 only. Round 3 and later never see the injection.
+                if (
+                    r == 2
+                    and plan is not None
+                    and plan.eligible
+                    and (i - 1) in plan.targets
+                ):
+                    prompt = prompt + "\n\n" + plan.message
+                    delivered = True
                 new_positions.append(client.complete(systems[i - 1], prompt))
             positions = new_positions
             transcript.append(
@@ -238,11 +326,16 @@ class DebateRunner:
                 }
             )
 
+        if injection is not None:
+            injection["delivered"] = delivered
+            if plan is not None:
+                plan.delivered = delivered
+
         # P0-5: the loop above scores the positions that inform the *next*
         # round, so its last update is one round stale. Score the final
         # positions once more; this is the vector the weighted vote uses.
         if self.trust_config.use_trust:
-            final_evidence, final_verdicts = self._evidence_for(
+            final_evidence, final_verdicts, final_verdict_records = self._evidence_for(
                 positions, self.rounds + 1
             )
             has_final_evidence = any(final_evidence)
@@ -254,13 +347,14 @@ class DebateRunner:
                         "verdicts": final_verdicts,
                     }
                 )
+                verdict_log.extend(final_verdict_records)
             status, support, harm, n_claims = self._trust_round(
                 trust, final_verdicts, positions, has_final_evidence, rendered_options
             )
             trust_status.append(status)
             trust_used = trust_used or status == TRUST_UPDATED
             if has_final_evidence:
-                verdict_log.append(
+                trust_round_log.append(
                     {
                         "round": self.rounds + 1,
                         "support": support,
@@ -282,6 +376,7 @@ class DebateRunner:
             "trust_for_positions": trust_for_positions,
             "trust_status": trust_status or None,
             "verdicts": verdict_log,
+            "trust_rounds": trust_round_log,
             "evidence": evidence_log,
             "options_raw": list(options) if options else None,
             "options": rendered.options or None,
