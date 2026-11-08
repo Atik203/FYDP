@@ -35,10 +35,12 @@ def test_unknown_phase_raises() -> None:
 
 
 def test_phase_env_selects_stack(monkeypatch) -> None:
+    monkeypatch.delenv("TRUSTCAL_PHASE", raising=False)
+    configured = default_phase()  # dev on the canonical branch, final on Phase-1-main
     monkeypatch.setenv("TRUSTCAL_PHASE", "final")
     assert default_phase() == "final"
     monkeypatch.setenv("TRUSTCAL_PHASE", "nonsense")
-    assert default_phase() == "dev"
+    assert default_phase() == configured
 
 
 def test_rounds_follow_phase_override() -> None:
