@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .agents import AGENT_INITIAL, AGENT_REVISION, AGENT_SYSTEM
-from .config import AgentConfig, ModelConfig, load_models
+from .config import AgentConfig, ModelConfig, agents_for_phase, default_phase, load_models
 
 MIN_FREE_GB = 10.0
 CHARS_PER_TOKEN = 4
@@ -116,16 +116,26 @@ def run_preflight(
     hf_home: Path | None = None,
     offline: bool = False,
     max_tokens: int = 1024,
+    phase: str | None = None,
 ) -> list[CheckResult]:
     """All checks, in fail-fast order for a human reading the output."""
     cfg: ModelConfig = load_models(model_config)
+    selected = phase or default_phase()
+    agents = agents_for_phase(cfg, selected)
     home = Path(hf_home) if hf_home else Path(os.getenv("HF_HOME") or (Path.home() / ".cache" / "huggingface"))
 
     results: list[CheckResult] = []
-    results += check_servers(cfg.agents)
-    results += check_cache(cfg.agents, home)
+    results += check_servers(agents)
+    results += check_cache(agents, home)
     results.append(check_disk(home))
-    results.append(check_context_budget(cfg.max_model_len, max_tokens))
+    results.append(
+        check_context_budget(
+            cfg.final_max_model_len
+            if selected == "final" and cfg.final_max_model_len
+            else cfg.max_model_len,
+            max_tokens,
+        )
+    )
     results.append(check_hf_token())
     results.append(check_offline(home, offline))
     return results

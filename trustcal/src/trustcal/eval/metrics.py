@@ -46,12 +46,41 @@ def mpr(debates_survived: int, total_debates: int) -> float:
     return debates_survived / total_debates if total_debates else 0.0
 
 
-def ecr(predicted: list[float], correct: list[int]) -> float:
-    """Evidence Calibration Rate — how well trust scores track actual correctness.
+def ecr(predicted: list[float], correct: list[int], n_bins: int = 10) -> float:
+    """Evidence Calibration Rate — 1 - ECE of trust scores vs actual correctness.
 
-    Phase 3: full ECE-style implementation vs ground truth.
+    ``predicted`` is one trust score per agent-round and ``correct`` the matching
+    1/0 correctness label. Perfect calibration yields 1.0; a system whose trust
+    is unrelated to correctness falls toward 0. Target >0.80 on HLE (GPQA is the
+    accepted substitute), per blueprint §9.
     """
-    raise NotImplementedError("Phase 3: ECR calibration vs ground truth")
+    if len(predicted) != len(correct):
+        raise ValueError("predicted and correct must have the same length")
+    if not predicted:
+        return 0.0
+    bins: list[list[tuple[float, int]]] = [[] for _ in range(n_bins)]
+    for probability, label in zip(predicted, correct):
+        value = min(max(float(probability), 0.0), 1.0)
+        bucket = min(int(value * n_bins), n_bins - 1)
+        bins[bucket].append((value, int(label)))
+    total = len(predicted)
+    ece = 0.0
+    for bucket in bins:
+        if not bucket:
+            continue
+        mean_confidence = sum(p for p, _ in bucket) / len(bucket)
+        mean_accuracy = sum(y for _, y in bucket) / len(bucket)
+        ece += (len(bucket) / total) * abs(mean_confidence - mean_accuracy)
+    return 1.0 - ece
+
+
+def brier_score(predicted: list[float], correct: list[int]) -> float:
+    """Mean squared error of trust vs correctness (lower is better)."""
+    if len(predicted) != len(correct):
+        raise ValueError("predicted and correct must have the same length")
+    if not predicted:
+        return 0.0
+    return sum((float(p) - int(y)) ** 2 for p, y in zip(predicted, correct)) / len(predicted)
 
 
 def _flags(round_entry: dict) -> list[bool]:

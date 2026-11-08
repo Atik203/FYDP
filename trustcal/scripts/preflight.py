@@ -21,6 +21,7 @@ def main() -> None:
     parser.add_argument("--hf-home", default=None)
     parser.add_argument("--offline", action="store_true", help="require HF_HUB_OFFLINE=1 (cache must be complete)")
     parser.add_argument("--max-tokens", type=int, default=1024)
+    parser.add_argument("--phase", choices=["dev", "final"], default=None, help="default: configs/phase.yaml")
     args = parser.parse_args()
 
     results = run_preflight(
@@ -28,6 +29,7 @@ def main() -> None:
         hf_home=Path(args.hf_home) if args.hf_home else None,
         offline=args.offline,
         max_tokens=args.max_tokens,
+        phase=args.phase,
     )
     print(format_report(results))
     sys.exit(0 if all(r.ok for r in results) else 1)

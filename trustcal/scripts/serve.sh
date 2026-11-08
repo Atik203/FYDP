@@ -29,7 +29,12 @@ fi
 
 CMD_FILE=$(mktemp)
 trap 'rm -f "$CMD_FILE"' EXIT
-"$PY_CMD" scripts/gen_serve_cmds.py --config configs/models.yaml --phase dev > "$CMD_FILE"
+PHASE="${PHASE:-dev}"
+if [ "$PHASE" != "dev" ] && [ "$PHASE" != "final" ]; then
+  echo "PHASE must be 'dev' or 'final' (got '$PHASE')" >&2
+  exit 2
+fi
+"$PY_CMD" scripts/gen_serve_cmds.py --config configs/models.yaml --phase "$PHASE" > "$CMD_FILE"
 
 echo "── vLLM commands ──────────────────────────────────────────────"
 cat "$CMD_FILE"

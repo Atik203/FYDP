@@ -87,6 +87,29 @@ def test_claim_tags_parsed_from_mock(tmp_path, mock_trio) -> None:
     assert claims == [("c1", "This follows from the base rate.")]
 
 
+@pytest.mark.parametrize("arm", ["B9", "B10"])
+def test_new_baselines_against_mock_servers(tmp_path, mock_trio, arm) -> None:
+    cfg = RunConfig(arm=arm, limit=1, seed=3, out_root=tmp_path, rounds=2)
+    summary = run(cfg, clients=_clients(mock_trio), questions=QUESTIONS)
+    assert summary.n_debates == 1
+    assert read_records(records_path(cfg))[0]["rounds"]
+
+
+def test_b8_trust_loop_with_static_retrieval(tmp_path, mock_trio, monkeypatch) -> None:
+    from .retrieval.pipeline import StaticRetriever
+
+    monkeypatch.setattr(
+        "trustcal.runner._retriever",
+        lambda cfg: StaticRetriever(fallback=["This follows from the base rate."]),
+    )
+    cfg = RunConfig(arm="B8", limit=1, seed=3, out_root=tmp_path, rounds=3)
+    summary = run(cfg, clients=_clients(mock_trio), questions=QUESTIONS)
+    record = read_records(records_path(cfg))[0]
+    assert summary.n_debates == 1
+    assert record["trust_trajectory"] is not None
+    assert len(record["trust_trajectory"]) >= 2
+
+
 def test_health_endpoint_matches_verify_env(mock_trio) -> None:
     import json
     import urllib.request

@@ -72,7 +72,7 @@ def test_b3_debate_records_three_rounds(tmp_path) -> None:
 
 def test_unknown_arm_rejected(tmp_path) -> None:
     try:
-        RunConfig(arm="B9", out_root=tmp_path)
+        RunConfig(arm="B99", out_root=tmp_path)
         raise AssertionError("expected ValueError")
     except ValueError:
         pass
