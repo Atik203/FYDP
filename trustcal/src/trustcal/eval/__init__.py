@@ -1,12 +1,14 @@
 """Evaluation harness: datasets, metrics (CCR/MPR/ECR), baselines B1–B10."""
 
 from .answers import (
+    Score,
     canonical,
     distinct_answers,
     is_correct,
     majority_answer,
     normalize,
     same_answer,
+    score_answer,
 )
 from .baselines import APPROXIMATIONS, BASELINES, DEFERRED, IMPLEMENTED, RUNNER_ARMS, arm_for
 from .datasets import load_dataset
@@ -51,6 +53,8 @@ __all__ = [
     "normalize",
     "same_answer",
     "is_correct",
+    "score_answer",
+    "Score",
     "RenderedOptions",
     "build_options",
     "canonical",

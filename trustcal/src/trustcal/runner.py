@@ -22,6 +22,7 @@ import numpy as np
 from .agents import AGENT_INITIAL, AGENT_SYSTEM, parse_position
 from .config import PHASES, default_phase, load_models, rounds_for_phase
 from .eval import load_dataset, summarize
+from .eval.answers import score_answer
 from .eval.baselines import RUNNER_ARMS
 from .eval.failures import failure_counts
 from .eval.metrics import MetricSummary
@@ -161,7 +162,7 @@ def _rendered_from_record_result(
 def _parsed(text: str, question: dict, rendered: RenderedOptions) -> str:
     if not text:
         return ""
-    return parse_position(text)
+    return score_answer(text, question.get("answer") or "", rendered).parsed
 
 
 def single_agent_record(qid: str, question: dict, client: VLLMClient, arm: str, seed: int) -> dict:

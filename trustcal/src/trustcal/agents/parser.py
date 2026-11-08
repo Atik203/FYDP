@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import re
 
+from ..eval.answers import explicit_answer_span, is_header_line
+
 CLAIM_RE = re.compile(r'<claim id="(c\d+)">(.*?)</claim>', re.DOTALL)
 
 # "Answer: 42", "**Final answer:** 42", "Conclusion: ..." (content may sit on the
@@ -74,12 +76,22 @@ def claims_or_fallback(text: str) -> list[tuple[str, str]]:
 def parse_position(text: str) -> str:
     """Extract the agent's answer/position.
 
-    Order: explicit ``Answer:``-style label (content on the same or next line),
-    then the first line that is not blank and not a bare formatting label.
+    Order (P0-1): ``\\boxed{...}``, an explicit ``Answer:``/``Final answer:``/
+    ``Conclusion:`` label (content on the same or next line), a line that is
+    only a letter or ``(B)``, then the first line that is not blank and not a
+    formatting/header label. The signature is unchanged: the injection filter
+    calls this on every position.
     """
-    m = ANSWER_RE.search(text)
-    if m:
-        answer = m.group(1).strip().strip("*").strip()
+    explicit = explicit_answer_span(text)
+    if explicit is not None:
+        answer = explicit[0].strip().strip("*").strip()
         if answer and not FORMATTING_RE.match(answer):
             return answer
-    return next((s for s in (ln.strip() for ln in text.splitlines()) if s and not FORMATTING_RE.match(s)), "")
+    return next(
+        (
+            s
+            for s in (ln.strip() for ln in text.splitlines())
+            if s and not FORMATTING_RE.match(s) and not is_header_line(s)
+        ),
+        "",
+    )
