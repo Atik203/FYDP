@@ -4,12 +4,19 @@ The plain-Python state machine is the target shape; Phase 2's LangGraph port
 wraps the same round functions rather than reimplementing them. With no
 retriever and no trust config this is still the vanilla MAD loop of Gate 0, so
 existing Phase 0/1 runs and tests are unchanged.
+
+Trust timing (P0-5): evidence is scored after every round's positions exist, and
+a closing pass scores the final positions before aggregation. The weighted vote
+therefore uses `trust_for_positions`, which is exactly the last trajectory row —
+never trust computed from the previous round.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Callable
+
+import numpy as np
 
 from ..agents import (
     AGENT_INITIAL,
@@ -28,13 +35,20 @@ from ..retrieval.verdicts import classify_claim, count_verdicts
 from ..trust import TrustConfig, TrustState, aggregate
 from .injection import build_injection
 
+#: Per-round trust telemetry values (docs/agent/09_P0_INTERFACES.md §1).
+TRUST_UPDATED = "updated"
+TRUST_ABSTAINED_UNANIMOUS = "abstained_unanimous"
+TRUST_ABSTAINED_NO_EVIDENCE = "abstained_no_evidence"
+
 
 @dataclass
 class DebateRunner:
     clients: list[VLLMClient]
     rounds: int = 3
     retrieve: Callable | None = None  # legacy hook: retrieve(agent_index, claim) -> passages
-    trust_update: Callable | None = None  # optional override: (trust, support, harm) -> trust
+    # Optional override: (trust, support, harm) -> trust. Bypasses claim-count
+    # normalization; use TrustConfig and the default path for P0-5 semantics.
+    trust_update: Callable | None = None
     injection_scope: str | None = None  # None = plain debate; "minority" | "all"
     retriever: Retriever | StaticRetriever | None = None
     trust_config: TrustConfig = field(default_factory=TrustConfig)
@@ -69,7 +83,15 @@ class DebateRunner:
         evidence: list[list[str]] = []
         verdicts: list[list[str]] = []
         for i, position in enumerate(positions):
-            claims = claim_texts(position, max_claims=self.trust_config.max_claims)
+            # P0-5: deduplicate repeated claims before classification. The
+            # verdict list therefore has one entry per *distinct* claim, so
+            # n_claims counts what was actually checked and repeating a claim
+            # cannot inflate support or harm.
+            claims = list(
+                dict.fromkeys(
+                    claim_texts(position, max_claims=self.trust_config.max_claims)
+                )
+            )
             agent_passages: list[str] = []
             agent_verdicts: list[str] = []
             for claim in claims:
@@ -79,6 +101,44 @@ class DebateRunner:
             evidence.append(list(dict.fromkeys(agent_passages)))
             verdicts.append(agent_verdicts)
         return evidence, verdicts
+
+    def _trust_round(
+        self,
+        trust: TrustState,
+        verdicts: list[list[str]],
+        positions: list[str],
+        has_evidence: bool,
+        options: list[str] | None,
+    ) -> tuple[str, list[int], list[int], list[int]]:
+        """Score one round's positions; returns ``(status, support, harm, n_claims)``.
+
+        Status matches the branch actually taken (09 §1): no evidence at all,
+        unanimous panel under adaptive triggering, or a real update. The update
+        carries the per-agent deduplicated claim count so verbosity cancels
+        (P0-5); neutral evidence stays an identity. An abstention appends the
+        unchanged vector, so trajectory row ``k+1`` always aligns with
+        ``trust_status[k]`` when the trajectory is exposed.
+        """
+        counts = [count_verdicts(labels) for labels in verdicts]
+        support = [entry[0] for entry in counts]
+        harm = [entry[1] for entry in counts]
+        n_claims = [len(labels) for labels in verdicts]
+        if not has_evidence:
+            trust.trajectory.append(trust.scores.tolist())
+            return TRUST_ABSTAINED_NO_EVIDENCE, support, harm, n_claims
+        if self.trust_config.adaptive_triggering and distinct_answers(
+            [parse_position(p) for p in positions], options
+        ) <= 1:
+            trust.trajectory.append(trust.scores.tolist())
+            return TRUST_ABSTAINED_UNANIMOUS, support, harm, n_claims
+        if self.trust_update is not None:
+            trust.scores = np.asarray(
+                self.trust_update(trust.scores, support, harm), dtype=float
+            )
+            trust.trajectory.append(trust.scores.tolist())
+        else:
+            trust.update(support, harm, n_claims=n_claims)
+        return TRUST_UPDATED, support, harm, n_claims
 
     def _run_debate(
         self, question: str, options: list[str] | None, rendered: RenderedOptions
@@ -117,26 +177,30 @@ class DebateRunner:
             else:
                 injection["scope"] = None  # nothing delivered
 
+        trust_status: list[str] = []
+        trust_used = False
+
         for r in range(2, self.rounds + 1):
             evidence, verdicts = self._evidence_for(positions, r)
             has_evidence = any(evidence)
             if has_evidence:
                 evidence_log.append({"round": r, "passages": evidence, "verdicts": verdicts})
 
-            if has_evidence and self.trust_config.use_trust:
-                support = [count_verdicts(v)[0] for v in verdicts]
-                harm = [count_verdicts(v)[1] for v in verdicts]
-                should_update = not self.trust_config.adaptive_triggering or distinct_answers(
-                    [parse_position(p) for p in positions], rendered_options
-                ) > 1
-                if should_update:
-                    if self.trust_update is not None:
-                        trust.scores = self.trust_update(trust.scores, support, harm)
-                        trust.trajectory.append(list(trust.scores))
-                    else:
-                        trust.update(support, harm)
-                    trust_used = True
-                verdict_log.append({"round": r, "support": support, "harm": harm})
+            if self.trust_config.use_trust:
+                status, support, harm, n_claims = self._trust_round(
+                    trust, verdicts, positions, has_evidence, rendered_options
+                )
+                trust_status.append(status)
+                trust_used = trust_used or status == TRUST_UPDATED
+                if has_evidence:
+                    verdict_log.append(
+                        {
+                            "round": r,
+                            "support": support,
+                            "harm": harm,
+                            "n_claims": n_claims,
+                        }
+                    )
 
             peers = "\n\n".join(f"Agent {i}: {p[:1500]}" for i, p in enumerate(positions, start=1))
             new_positions = []
@@ -174,6 +238,40 @@ class DebateRunner:
                 }
             )
 
+        # P0-5: the loop above scores the positions that inform the *next*
+        # round, so its last update is one round stale. Score the final
+        # positions once more; this is the vector the weighted vote uses.
+        if self.trust_config.use_trust:
+            final_evidence, final_verdicts = self._evidence_for(
+                positions, self.rounds + 1
+            )
+            has_final_evidence = any(final_evidence)
+            if has_final_evidence:
+                evidence_log.append(
+                    {
+                        "round": self.rounds + 1,
+                        "passages": final_evidence,
+                        "verdicts": final_verdicts,
+                    }
+                )
+            status, support, harm, n_claims = self._trust_round(
+                trust, final_verdicts, positions, has_final_evidence, rendered_options
+            )
+            trust_status.append(status)
+            trust_used = trust_used or status == TRUST_UPDATED
+            if has_final_evidence:
+                verdict_log.append(
+                    {
+                        "round": self.rounds + 1,
+                        "support": support,
+                        "harm": harm,
+                        "n_claims": n_claims,
+                    }
+                )
+
+        # The exact vector handed to `aggregate`; equals the last trajectory row.
+        trust_for_positions = trust.scores.tolist() if trust_used else None
+
         result = {
             "question": question,
             "final_positions": positions,
@@ -181,6 +279,8 @@ class DebateRunner:
             "transcript": transcript,
             "injection": injection,
             "trust_trajectory": trust.trajectory if trust_used else None,
+            "trust_for_positions": trust_for_positions,
+            "trust_status": trust_status or None,
             "verdicts": verdict_log,
             "evidence": evidence_log,
             "options_raw": list(options) if options else None,
