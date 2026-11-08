@@ -29,6 +29,14 @@ def test_support_raises_trust_harm_lowers_it() -> None:
     assert state.scores[0] > state.scores[1]
 
 
+def test_claim_counts_normalize_verbosity() -> None:
+    verbose = TrustState(3)
+    terse = TrustState(3)
+    verbose.update([8, 0, 0], [0, 0, 0], n_claims=[8, 1, 1])
+    terse.update([1, 0, 0], [0, 0, 0], n_claims=[1, 1, 1])
+    assert np.allclose(verbose.scores, terse.scores, atol=1e-12, rtol=0)
+
+
 def test_wrong_lengths_raise() -> None:
     state = TrustState(3)
     try:
