@@ -37,6 +37,17 @@ def main() -> None:
     parser.add_argument("--no-partition", action="store_true", help="ablation: every agent sees every source")
     parser.add_argument("--no-progressive", action="store_true", help="ablation: full retrieval depth from round 1")
     parser.add_argument("--no-adaptive", action="store_true", help="ablation: update trust every round, even on unanimous panels")
+    parser.add_argument(
+        "--inject",
+        action="store_true",
+        help="deliver fabricated-consensus pressure (B8+injection; B3+injection is the no-retrieval baseline)",
+    )
+    parser.add_argument(
+        "--injection-scope",
+        choices=["minority", "all"],
+        default="minority",
+        help="who receives the injected consensus (default: minority)",
+    )
     args = parser.parse_args()
 
     stack = " / ".join(a.model for a in agents_for_phase(load_models(args.config), args.phase))
@@ -61,6 +72,8 @@ def main() -> None:
         source_partitioning=not args.no_partition,
         progressive_retrieval=not args.no_progressive,
         adaptive_triggering=not args.no_adaptive,
+        inject=args.inject,
+        injection_scope=args.injection_scope,
     )
     summary = run(cfg)
     print(summary.as_dict())
