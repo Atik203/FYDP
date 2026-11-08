@@ -115,17 +115,21 @@ class DebateRunner:
         Status matches the branch actually taken (09 §1): no evidence at all,
         unanimous panel under adaptive triggering, or a real update. The update
         carries the per-agent deduplicated claim count so verbosity cancels
-        (P0-5); neutral evidence stays an identity.
+        (P0-5); neutral evidence stays an identity. An abstention appends the
+        unchanged vector, so trajectory row ``k+1`` always aligns with
+        ``trust_status[k]`` when the trajectory is exposed.
         """
         counts = [count_verdicts(labels) for labels in verdicts]
         support = [entry[0] for entry in counts]
         harm = [entry[1] for entry in counts]
         n_claims = [len(labels) for labels in verdicts]
         if not has_evidence:
+            trust.trajectory.append(trust.scores.tolist())
             return TRUST_ABSTAINED_NO_EVIDENCE, support, harm, n_claims
         if self.trust_config.adaptive_triggering and distinct_answers(
             [parse_position(p) for p in positions], options
         ) <= 1:
+            trust.trajectory.append(trust.scores.tolist())
             return TRUST_ABSTAINED_UNANIMOUS, support, harm, n_claims
         if self.trust_update is not None:
             trust.scores = np.asarray(

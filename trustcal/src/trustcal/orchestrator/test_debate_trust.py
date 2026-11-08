@@ -271,8 +271,26 @@ def test_neutral_evidence_is_an_identity_not_a_reuniformization() -> None:
     assert result["trust_for_positions"] == pytest.approx(trajectory[-1], abs=1e-12)
 
 
+def test_abstention_appends_a_per_round_row() -> None:
+    # Round 1 diverges (alpha, beta, beta); round 2 is unanimous beta.
+    clients = [
+        ScriptedClient([ALPHA, BETA]),
+        ScriptedClient([BETA, BETA]),
+        ScriptedClient([BETA, BETA]),
+    ]
+    result = DebateRunner(clients=clients, rounds=2, retriever=_claim_retriever()).run(
+        "Which option?", ["alpha", "beta", "gamma"]
+    )
+    assert result["trust_status"] == ["updated", "abstained_unanimous"]
+    trajectory = result["trust_trajectory"]
+    assert len(trajectory) == 3, trajectory  # uniform + update + abstention row
+    assert trajectory[-1] == pytest.approx(trajectory[-2], abs=1e-12)
+    assert result["trust_for_positions"] == pytest.approx(trajectory[-1])
+
+
 def test_trajectory_rows_are_simplex_vectors() -> None:
     result = _timing_run()
+    assert len(result["trust_trajectory"]) == 1 + 2  # uniform + one row per round
     for row in result["trust_trajectory"]:
         assert len(row) == 3
         assert abs(sum(row) - 1.0) <= 1e-9, row
