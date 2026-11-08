@@ -47,27 +47,46 @@ agents:
     max_model_len: 4096
     extra_args: []                    # standard HF-format repo; no mistral-format flags
 
-# Final phase (Ph 3-5) runs on an RTX PRO 6000 Blackwell 96GB — swap here, nothing else. `quant`
-# stays "auto" until the exact quantized checkpoints are pinned at design freeze
-# (a placeholder like "q4" is not a valid vLLM flag and would fail on launch).
+# Final phase (Ph 3-5) runs on an RTX PRO 6000 Blackwell 96GB. Checkpoints and
+# revisions pinned 2026-11-08 from the HF API. weights_gb are repo totals, so the
+# Qwen figure is the language model only: --language-model-only drops the 6.0GB
+# vision tower. scripts/check_stack.py and test_final_stack.py enforce <=80GB and
+# a utilization sum <=0.90; the real proof is `smoke_test.py --phase final`.
 final_phase:
+  max_model_len: 8192
   gpu_memory_utilization: 0.90
   agents:
     - role: "agent1"
-      model: "Qwen/Qwen3.6-27B"
+      model: "Qwen/Qwen3.6-27B-FP8"
+      revision: "a56219b8202864dc6d3e565be5ff1eea01f54cb4"
       port: 8000
-      quant: "auto"
+      quant: "fp8"
+      weights_gb: 26.0
       gpu_memory_utilization: 0.30
       max_model_len: 8192
+      extra_args:
+        - "--language-model-only"
+        - "--reasoning-parser"
+        - "qwen3"
+        - "--default-chat-template-kwargs"
+        - '{"enable_thinking": false}'
     - role: "agent2"
-      model: "google/gemma-4-26B-A4B"
+      model: "RedHatAI/gemma-4-26B-A4B-it-FP8-dynamic"
+      revision: "ed35d7abe5d940da41b4ff06eb482feb0be8cb44"
       port: 8001
-      quant: "auto"
-      gpu_memory_utilization: 0.30
+      quant: "compressed-tensors"
+      weights_gb: 28.67
+      gpu_memory_utilization: 0.34
       max_model_len: 8192
+      extra_args:
+        - "--limit-mm-per-prompt"
+        - '{"image": 0, "audio": 0}'
     - role: "agent3"
-      model: "mistralai/Mistral-Small-3.2-24B-Instruct-2506"
+      model: "jeffcookio/Mistral-Small-3.2-24B-Instruct-2506-awq-sym"
+      revision: "49ec31ec0975e46a1aeef24186a45f11be3042b8"
       port: 8002
       quant: "auto"
-      gpu_memory_utilization: 0.30
+      weights_gb: 15.06
+      gpu_memory_utilization: 0.26
       max_model_len: 8192
+      extra_args: []

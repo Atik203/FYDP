@@ -46,6 +46,8 @@ class AgentConfig:
     gpu_memory_utilization: float | None = None
     max_model_len: int | None = None
     extra_args: list[str] = field(default_factory=list)
+    revision: str | None = None
+    weights_gb: float | None = None
 
     @property
     def base_url(self) -> str:

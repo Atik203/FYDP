@@ -1,28 +1,38 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# ONE-COMMAND POD SETUP — Phase 0 (Dev stack, RTX A6000 48GB)
+# ONE-COMMAND POD SETUP — Dev (RTX A6000 48GB) or Final (RTX PRO 6000 96GB)
 #
 #   git clone https://github.com/Atik203/FYDP.git /workspace/fydp
 #   cd /workspace/fydp/trustcal
-#   HF_TOKEN=hf_... bash setup.sh        # token needed for the gated GPQA dataset
-#   HF_TOKEN=hf_... VENV=1 bash setup.sh # recommended when the image blocks system
-#                                        # pip (PEP 668): Thunder Compute, Vast PyTorch images
+#   HF_TOKEN=hf_... bash setup.sh                    # Dev stack (~31GB)
+#   HF_TOKEN=hf_... PHASE=final bash setup.sh        # Final stack (~70GB)
+#   HF_TOKEN=hf_... VENV=1 bash setup.sh             # recommended when the image
+#                                                    # blocks system pip (PEP 668)
 #
 # Does, in order: checks Python + GPU → installs pinned deps → installs nightly
-# vLLM (gemma4_unified needs it) → installs trustcal editable → downloads the 3
-# quantized Dev checkpoints (~31GB) → starts vLLM on :8000-8002 → verifies
-# imports, versions and server health. Done = ready for Gate 0.
+# vLLM (gemma4_unified needs it) → installs trustcal editable → downloads the
+# checkpoints for PHASE (pinned revisions from configs/models.yaml) → starts vLLM
+# on :8000-8002 → verifies imports, versions and server health.
 #
-# Options:  VENV=1         create .venv and install everything into it (recommended
-#                         on Thunder Compute; on RunPod the system env is fine)
-#           SKIP_SERVE=1  install + download only (no servers)
-#           SKIP_MODELS=1 install only (skip model downloads)
+# Options:  PHASE=dev|final  model stack (default dev)
+#           VENV=1          create .venv and install everything into it (recommended
+#                           on Thunder Compute; on RunPod the system env is fine)
+#           SKIP_SERVE=1   install + download only (no servers)
+#           SKIP_MODELS=1  install only (skip model downloads)
 #           CUDA_TAG=cu130|cu129  override the auto-detected vLLM wheel index
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 cd "$(dirname "$0")"
 
-echo "== trustcal Phase 0 setup (Dev: A6000 48GB) =="
+PHASE="${PHASE:-dev}"
+case "$PHASE" in
+  dev|final) ;;
+  *) echo "ERROR: PHASE must be 'dev' or 'final' (got '$PHASE')" >&2; exit 1 ;;
+esac
+export PHASE
+export TRUSTCAL_PHASE="$PHASE"
+
+echo "== trustcal setup (phase=$PHASE) =="
 
 # ── 0) Python ≥ 3.10 ────────────────────────────────────────────────────────
 PY_CMD=python3
@@ -84,26 +94,33 @@ bash scripts/install_vllm.sh
 "$PY_CMD" -m pip install -e . --no-deps
 echo "Deps installed."
 
-# ── 4) Download the three quantized Dev checkpoints (~31GB) ─────────────────
+# ── 4) Download the checkpoints for PHASE (pinned revisions) ─────────────────
 hf_download() {
+  local model="$1" revision="${2:-}"
+  local args=(download "$model")
+  [ -n "$revision" ] && args+=(--revision "$revision")
   if command -v hf >/dev/null 2>&1; then
-    hf download "$1"
+    hf "${args[@]}"
   elif command -v huggingface-cli >/dev/null 2>&1; then
-    huggingface-cli download "$1"
+    huggingface-cli "${args[@]}"
   else
-    "$PY_CMD" -m huggingface_hub.commands.huggingface_cli download "$1"
+    "$PY_CMD" -m huggingface_hub.commands.huggingface_cli "${args[@]}"
   fi
 }
 
 if [ "${SKIP_MODELS:-0}" != "1" ]; then
-  for MODEL in \
-    "QuantTrio/Qwen3.5-9B-AWQ" \
-    "google/gemma-4-12B-it-qat-w4a16-ct" \
-    "cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit"; do
-    echo "Downloading $MODEL ..."
-    hf_download "$MODEL"
-  done
-  echo "Models downloaded."
+  MODEL_LIST=$("$PY_CMD" - <<'PY'
+from trustcal.config import agents_for_phase, load_models
+for agent in agents_for_phase(load_models("configs/models.yaml")):
+    print(f"{agent.model}\t{agent.revision or ''}")
+PY
+)
+  while IFS=$'\t' read -r MODEL REV; do
+    [ -n "$MODEL" ] || continue
+    echo "Downloading $MODEL ${REV:+@$REV} ..."
+    hf_download "$MODEL" "$REV"
+  done <<< "$MODEL_LIST"
+  echo "Models downloaded ($PHASE)."
 fi
 
 # ── 5) Start vLLM (3 instances, ports 8000-8002) + verify ───────────────────

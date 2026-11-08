@@ -23,7 +23,7 @@ def test_dev_and_final_stacks_are_distinct() -> None:
     dev = agents_for_phase(cfg, "dev")
     final = agents_for_phase(cfg, "final")
     assert dev[0].model.startswith("QuantTrio/Qwen3.5")
-    assert final[0].model == "Qwen/Qwen3.6-27B"
+    assert final[0].model.startswith("Qwen/Qwen3.6-27B")
     assert [a.port for a in dev] == [8000, 8001, 8002]
     assert [a.port for a in final] == [8000, 8001, 8002]
 

@@ -1,0 +1,2 @@
+# Shell scripts are executed on Linux pods; keep the working tree LF even on Windows.
+*.sh text eol=lf

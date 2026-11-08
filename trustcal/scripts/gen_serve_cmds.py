@@ -36,6 +36,8 @@ def main() -> None:
         ]
         if agent.quant and agent.quant.lower() not in {"auto", "none", ""}:
             cmd += ["--quantization", agent.quant]
+        if agent.revision:
+            cmd += ["--revision", agent.revision]
         cmd += agent.extra_args
         print(shlex.join(cmd))
 
