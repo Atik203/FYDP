@@ -1,8 +1,8 @@
 # Wave 2 — integration and wiring
 
-Landed on `feat/p0-hardening`: WP-03 (`2d99110`), WP-04/15 (`62fa3f7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-17 (`61af3b0`). Pending: WP-01/02 (A).
+Landed on `feat/p0-hardening`: WP-01/02 (`115513b`), WP-03 (`2d99110`), WP-04/15 (`62fa3f7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-17 (`61af3b0`). In progress: WP-04b runner wiring (B), WP-03b trust timing (C), WP-14 matrix/prereg (F).
 
-Gate now: **8 passed / 5 pending** (`pytest` 432, schema, trust bound, trust neutral/verbosity, endpoints, dataset pins, routing, manifest resume). Pending: options, parser, B8-no-trust, B8+injection, matrix cut.
+Gate now: **10 passed / 3 pending** (`pytest` 459). Pending: B8-no-trust prompts (WP-13), B8+injection wiring (WP-09), matrix cut + prereg (WP-14).
 
 ## Merge order
 
