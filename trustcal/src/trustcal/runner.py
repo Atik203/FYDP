@@ -25,6 +25,7 @@ from .eval import load_dataset, summarize
 from .eval.baselines import RUNNER_ARMS
 from .eval.failures import failure_counts
 from .eval.metrics import MetricSummary
+from .eval.options import RenderedOptions, build_options
 from .eval.pilot import score_pilot
 from .inference import VLLMClient, vllm_clients
 from .orchestrator import DebateRunner
@@ -125,31 +126,68 @@ def _append_record(path: Path, record: dict) -> None:
         fh.flush()
 
 
-def _base_record(qid: str, question: dict, arm: str, seed: int) -> dict:
+def _base_record(
+    qid: str, question: dict, arm: str, seed: int, rendered: RenderedOptions | None = None
+) -> dict:
+    """Record schema v2 option fields (P0-0): raw order, rendered order, permutation."""
+    rendered = rendered or build_options(question, seed, qid)
     return {
         "question_id": qid,
         "arm": arm,
         "seed": seed,
         "question": question["question"],
         "gold": question.get("answer"),
-        "options": question.get("options"),
+        "options_raw": question.get("options"),
+        "options": rendered.options or None,
+        "option_permutation": rendered.permutation or None,
+        "gold_letter_rendered": rendered.gold_letter,
     }
+
+
+def _rendered_from_record_result(
+    result: dict, question: dict, qid: str, seed: int
+) -> RenderedOptions:
+    """Rebuild the rendered options a debate arm used (identical by construction)."""
+    if result.get("options"):
+        return RenderedOptions(
+            options=list(result["options"]),
+            permutation=list(result.get("option_permutation") or []),
+            gold_letter=result.get("gold_letter_rendered"),
+            block="",
+        )
+    return build_options(question, seed, qid)
+
+
+def _parsed(text: str, question: dict, rendered: RenderedOptions) -> str:
+    if not text:
+        return ""
+    return parse_position(text)
 
 
 def single_agent_record(qid: str, question: dict, client: VLLMClient, arm: str, seed: int) -> dict:
     """B1 — one agent, one call, no debate."""
-    record = _base_record(qid, question, arm, seed)
+    rendered = build_options(question, seed, qid)
+    record = _base_record(qid, question, arm, seed, rendered=rendered)
     t0 = time.perf_counter()
-    text = client.complete(AGENT_SYSTEM, AGENT_INITIAL.format(agent_id=1, question=question["question"]))
+    text = client.complete(
+        AGENT_SYSTEM,
+        AGENT_INITIAL.format(
+            agent_id=1, question=question["question"], options_block=rendered.block
+        ),
+    )
     record["elapsed_s"] = round(time.perf_counter() - t0, 2)
     record["transcript"] = [{"round": 1, "positions": [text]}]
     record["rounds"] = [{"answers": [parse_position(text)]}]
+    record["raw_answer"] = text
+    record["parsed_answer"] = _parsed(text, question, rendered)
+    record["parser_version"] = "p0-1"
     return record
 
 
 def debate_record(qid: str, question: dict, result: dict, arm: str, seed: int, elapsed_s: float) -> dict:
     """Debate arms — parsed answers per round, raw transcript, trust/evidence audit."""
-    record = _base_record(qid, question, arm, seed)
+    rendered = _rendered_from_record_result(result, question, qid, seed)
+    record = _base_record(qid, question, arm, seed, rendered=rendered)
     record["elapsed_s"] = round(elapsed_s, 2)
     record["rounds_completed"] = result.get("rounds_completed")
     record["transcript"] = result["transcript"]
@@ -170,18 +208,36 @@ def debate_record(qid: str, question: dict, result: dict, arm: str, seed: int, e
     for key in ("imad", "consensagent"):
         if key in result:
             record[key] = result[key]
+
+    aggregation = result.get("aggregation") or {}
+    final_text = aggregation.get("weighted") or aggregation.get("majority")
+    raw_final = next(
+        (
+            position
+            for position in reversed(result.get("final_positions") or [])
+            if parse_position(position) == final_text
+        ),
+        (result.get("final_positions") or [""])[-1],
+    )
+    record["raw_answer"] = raw_final
+    record["parsed_answer"] = _parsed(final_text or raw_final, question, rendered)
+    record["parser_version"] = "p0-1"
     return record
 
 
 def oracle_record(qid: str, question: dict, oracle, arm: str, seed: int) -> dict:
     """B7 — external oracle answer, no panel."""
-    record = _base_record(qid, question, arm, seed)
+    rendered = build_options(question, seed, qid)
+    record = _base_record(qid, question, arm, seed, rendered=rendered)
     t0 = time.perf_counter()
-    text = oracle.answer(question["question"])
+    text = oracle.answer(question["question"] + "\n\n" + rendered.block)
     record["elapsed_s"] = round(time.perf_counter() - t0, 2)
     record["transcript"] = [{"round": 1, "positions": [text]}]
     record["rounds"] = [{"answers": [parse_position(text)]}]
     record["oracle"] = {"model": getattr(oracle, "model", None)}
+    record["raw_answer"] = text
+    record["parsed_answer"] = _parsed(text, question, rendered)
+    record["parser_version"] = "p0-1"
     return record
 
 
@@ -227,6 +283,7 @@ def _pilot_block(
     question: dict,
     positions: list[str],
     cfg: RunConfig,
+    rendered: RenderedOptions | None = None,
 ) -> dict:
     """Trust-weighted vs majority aggregation for one pilot question."""
     n = len(positions)
@@ -239,9 +296,10 @@ def _pilot_block(
         alpha=cfg.alpha,
         beta=cfg.beta,
     )
-    result = aggregate(trust, positions, question.get("options"))
-    majority_correct = bool(result["majority"]) and _is_gold(result["majority"], question)
-    weighted_correct = bool(result["weighted"]) and _is_gold(result["weighted"], question)
+    options = (rendered.options or None) if rendered is not None else question.get("options")
+    result = aggregate(trust, positions, options)
+    majority_correct = bool(result["majority"]) and _is_gold(result["majority"], question, options)
+    weighted_correct = bool(result["weighted"]) and _is_gold(result["weighted"], question, options)
     return {
         "majority": result["majority"],
         "weighted": result["weighted"],
@@ -254,10 +312,10 @@ def _pilot_block(
     }
 
 
-def _is_gold(answer: str, question: dict) -> bool:
+def _is_gold(answer: str, question: dict, options: list[str] | None = None) -> bool:
     from .eval.answers import is_correct
 
-    return is_correct(answer, question.get("answer", ""), question.get("options"))
+    return is_correct(answer, question.get("answer", ""), options if options is not None else question.get("options"))
 
 
 def _retriever(cfg: RunConfig, partition: bool | None = None) -> Retriever:
@@ -274,13 +332,24 @@ def _retriever(cfg: RunConfig, partition: bool | None = None) -> Retriever:
     return Retriever(config=config)
 
 
-def _make_runner(cfg: RunConfig, clients: list, rounds: int, retriever: Retriever | None = None, injection: bool = False) -> DebateRunner:
+def _make_runner(
+    cfg: RunConfig,
+    clients: list,
+    rounds: int,
+    retriever: Retriever | None = None,
+    injection: bool = False,
+    question: dict | None = None,
+    qid: str = "",
+) -> DebateRunner:
     return DebateRunner(
         clients=clients,
         rounds=rounds,
         retriever=retriever,
         injection_scope="minority" if injection else None,
         trust_config=cfg.trust_config(),
+        seed=cfg.seed,
+        question_id=qid or None,
+        gold=(question or {}).get("answer"),
     )
 
 
@@ -375,15 +444,25 @@ def run(
         if cfg.arm == "B1":
             record = single_agent_record(qid, question, clients[0], cfg.arm, cfg.seed)
         elif cfg.arm == "B2":
-            polled = run_single_rag(question, clients[0], retriever)
+            polled = run_single_rag(
+                question, clients[0], retriever, seed=cfg.seed, question_id=qid
+            )
         elif cfg.arm == "B3":
-            polled = _make_runner(cfg, clients, rounds).run(question["question"], question.get("options"))
+            polled = _make_runner(cfg, clients, rounds, question=question, qid=qid).run(
+                question["question"], question.get("options")
+            )
         elif cfg.arm == "B4":
-            polled = run_b4_rag_mad(question, clients, rounds, retriever)
+            polled = run_b4_rag_mad(
+                question, clients, rounds, retriever, seed=cfg.seed, question_id=qid
+            )
         elif cfg.arm == "B5":
-            polled = run_self_consistency(question, clients[0], samples=cfg.samples)
+            polled = run_self_consistency(
+                question, clients[0], samples=cfg.samples, seed=cfg.seed, question_id=qid
+            )
         elif cfg.arm == "B6":
-            polled = run_moa(question, clients, layers=cfg.layers)
+            polled = run_moa(
+                question, clients, layers=cfg.layers, seed=cfg.seed, question_id=qid
+            )
         elif cfg.arm == "B7":
             if oracle is None:
                 from .eval.oracle import GeminiOracle
@@ -391,29 +470,39 @@ def run(
                 oracle = GeminiOracle()
             record = oracle_record(qid, question, oracle, cfg.arm, cfg.seed)
         elif cfg.arm == "B8":
-            polled = _make_runner(cfg, clients, rounds, retriever=retriever).run(
-                question["question"], question.get("options")
-            )
+            polled = _make_runner(
+                cfg, clients, rounds, retriever=retriever, question=question, qid=qid
+            ).run(question["question"], question.get("options"))
         elif cfg.arm == "B9":
-            polled = run_imad(question, clients, rounds=rounds)
+            polled = run_imad(
+                question, clients, rounds=rounds, seed=cfg.seed, question_id=qid
+            )
         elif cfg.arm == "B10":
-            polled = run_consensagent(question, clients, rounds=rounds, rewriter=rewriter)
+            polled = run_consensagent(
+                question,
+                clients,
+                rounds=rounds,
+                rewriter=rewriter,
+                seed=cfg.seed,
+                question_id=qid,
+            )
         elif cfg.arm == "pilot":
             # Phase 1 criterion: debate positions unweighted, then compare the
             # same positions under trust-weighted aggregation.
-            polled = _make_runner(cfg, clients, rounds).run(
+            polled = _make_runner(cfg, clients, rounds, question=question, qid=qid).run(
                 question["question"], question.get("options")
             )
         else:  # injection
-            polled = _make_runner(cfg, clients, rounds, injection=True).run(
-                question["question"], question.get("options")
-            )
+            polled = _make_runner(
+                cfg, clients, rounds, injection=True, question=question, qid=qid
+            ).run(question["question"], question.get("options"))
 
         if polled is not None:
             record = debate_record(qid, question, polled, cfg.arm, cfg.seed, time.perf_counter() - t0)
             if cfg.arm == "pilot":
                 positions = [parse_position(p) for p in polled["final_positions"]]
-                block = _pilot_block(question, positions, cfg)
+                rendered = build_options(question, cfg.seed, qid)
+                block = _pilot_block(question, positions, cfg, rendered)
                 record["pilot"] = block
                 record["trust_trajectory"] = [[1.0 / len(positions)] * len(positions), block["trust"]]
                 record["final_trust"] = block["trust"]

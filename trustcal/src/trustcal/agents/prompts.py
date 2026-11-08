@@ -4,6 +4,10 @@ Agent 0 (confidence gate) is a prompt, not a separate service.
 Agents never see raw peer prompts — only peer outputs (positions + reasoning).
 Structured CoT with explicit `<claim id="cX">` tagging so retrieval can address
 individual propositions rather than the whole response.
+
+Every template that receives a question also receives ``{options_block}`` from
+``eval.options.build_options`` (P0-0). Multiple-choice questions render their
+seeded option list there; free-form questions render "Answer format: free text."
 """
 
 AGENT_SYSTEM = """You are an expert scientific reviewer in a three-agent deliberation panel. Answer the question directly, then reason step by step. Mark every factual claim you make as <claim id="c1">...</claim>, <claim id="c2">...</claim>, etc. Be precise: separate the effect, the magnitude, and any subgroup qualifier into distinct claims. Keep the answer self-contained."""
@@ -11,6 +15,8 @@ AGENT_SYSTEM = """You are an expert scientific reviewer in a three-agent deliber
 GATE_PROMPT = """You are a confidence gate. Decide whether this scientific question needs a multi-agent debate or can be answered directly.
 
 Question: {question}
+
+{options_block}
 
 Answer it briefly, then on the final line output exactly: DEBATE=YES or DEBATE=NO
 DEBATE=YES if you are not fully confident and the question is genuinely hard/ambiguous.
@@ -24,9 +30,15 @@ Rules:
 - Be precise: separate the effect, the magnitude, and any subgroup qualifier into distinct claims.
 
 Question: {question}
+
+{options_block}
 """
 
 AGENT_REVISION = """You are expert reviewer (Agent {agent_id}) in round {round} of {rounds}.
+
+Question: {question}
+
+{options_block}
 
 Your previous answer:
 {own_position}
@@ -40,6 +52,10 @@ You may revise or defend your position. Follow the same rules as before: answer,
 """
 
 AGENT_REVISION_EVIDENCE = """You are expert reviewer (Agent {agent_id}) in round {round} of {rounds}.
+
+Question: {question}
+
+{options_block}
 
 Your previous answer:
 {own_position}
@@ -67,6 +83,8 @@ IMAD_SELF_CRITIQUE = """Answer the question, then critique your own answer.
 
 Question: {question}
 
+{options_block}
+
 Format exactly:
 ANSWER: <your answer>
 REASONING: <brief justification>
@@ -80,6 +98,8 @@ CONFIDENCE_INITIAL = """You are expert reviewer (Agent {agent_id}) answering ind
 
 Question: {question}
 
+{options_block}
+
 Give your answer and a short explanation, then end with:
 CONFIDENCE: <a number between 0 and 1>
 """
@@ -87,6 +107,8 @@ CONFIDENCE: <a number between 0 and 1>
 MOA_AGGREGATE = """You are an aggregator in a Mixture-of-Agents panel. Several proposers answered the question.
 
 Question: {question}
+
+{options_block}
 
 Proposer answers:
 {proposals}
@@ -98,6 +120,8 @@ Answer: <your final answer>
 CONSENSAGENT_REVISION = """You are expert reviewer (Agent {agent_id}) in round {round} of {rounds}.
 
 Question: {question}
+
+{options_block}
 
 Your previous answer:
 {own_position}
