@@ -3,6 +3,24 @@
 from .answers import canonical, distinct_answers, is_correct, majority_answer, normalize, same_answer
 from .baselines import APPROXIMATIONS, BASELINES, DEFERRED, IMPLEMENTED, RUNNER_ARMS, arm_for
 from .datasets import load_dataset
+from .endpoints import (
+    REQUIRED_ENDPOINTS,
+    EndpointError,
+    EndpointResult,
+    agent_evidence_condition,
+    arr,
+    ccr0,
+    ccr_e,
+    clustered_accuracy_ci,
+    cmr,
+    final_answer_accuracy,
+    mpr_weighted,
+    position_is_gold,
+    summarize_endpoints,
+    trust_auroc,
+    trust_brier,
+    wilson_interval,
+)
 from .failures import TAXONOMY, classify_failure, failure_counts, failure_examples
 from .metrics import (
     DebateMetrics,
@@ -60,4 +78,20 @@ __all__ = [
     "mcnemar",
     "holm_bonferroni",
     "summarize_values",
+    "REQUIRED_ENDPOINTS",
+    "EndpointError",
+    "EndpointResult",
+    "final_answer_accuracy",
+    "clustered_accuracy_ci",
+    "wilson_interval",
+    "position_is_gold",
+    "cmr",
+    "ccr0",
+    "ccr_e",
+    "mpr_weighted",
+    "arr",
+    "trust_auroc",
+    "trust_brier",
+    "agent_evidence_condition",
+    "summarize_endpoints",
 ]
