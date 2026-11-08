@@ -1,0 +1,3 @@
+# Default model stack for scripts that do not pass --phase.
+# `Phase-1-dev` and `Phase-1-main` differ only in this value; the code is shared.
+default_phase: dev

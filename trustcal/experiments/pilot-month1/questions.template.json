@@ -1,0 +1,26 @@
+[
+  {
+    "_template": true,
+    "_note": "Copy this object once per question and delete _template/_note. `verdicts` has one row per debating agent, labelled from the evidence side (support/harm claim counts), never from agent self-reported confidence.",
+    "question": "TEMPLATE - replace with a toy question whose evidence contradicts the initial majority.",
+    "answer": "A",
+    "options": ["A", "B", "C", "D"],
+    "verdicts": [
+      {"support": 0, "harm": 3},
+      {"support": 0, "harm": 2},
+      {"support": 2, "harm": 0}
+    ]
+  },
+  {
+    "_template": true,
+    "_note": "Alternative form: `evidence` supplies passages per agent (string agent indices) and the pipeline classifies claims itself. Use `verdicts` OR `evidence`, not both.",
+    "question": "TEMPLATE - replace with a free-form toy question (no options).",
+    "answer": "TEMPLATE gold answer",
+    "options": null,
+    "evidence": {
+      "0": ["TEMPLATE passage that contradicts agent 0"],
+      "1": ["TEMPLATE passage that contradicts agent 1"],
+      "2": ["TEMPLATE passage that supports agent 2"]
+    }
+  }
+]

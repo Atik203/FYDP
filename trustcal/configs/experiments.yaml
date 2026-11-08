@@ -1,0 +1,82 @@
+# Experiment matrix — conditions x datasets x seeds.
+# run_matrix.py builds one RunConfig per row and calls trustcal.runner.run().
+# CLI filters (--datasets/--arms/--seed/--limit) override the values here.
+#
+# Order discipline (AGENTS.md): Gate 0 -> injection protocol -> Month-1 pilot
+# -> trust mechanism -> baselines -> matrix. Do not run the full matrix before
+# the pilot gate passes.
+#
+# `phase` selects the Dev or Final stack from configs/models.yaml; `--phase`
+# overrides it. B7 is an external oracle and needs GEMINI_API_KEY. B9 iMAD and
+# B10 ConsensAgent are documented approximations (see IMPLEMENTATION_STATUS.md).
+# The Month-1 `pilot` arm is deliberately NOT a matrix condition: it needs the
+# frozen questions file and must pass Gate 1 before this matrix runs. Use
+# `run_experiment.py --arm pilot --questions-file ...` and `pilot_report.py`.
+
+phase: dev
+
+datasets:
+  - brokermath      # adversarial, worst-case by construction
+  - brokenarxiv     # adversarial, monthly-refreshed
+  - hle             # hard scientific reasoning ceiling (gated: HF_TOKEN)
+  - gpqa            # stable comparison baseline
+  - mmlu_pro        # stable comparison baseline
+
+seeds: [1, 2, 3]
+
+# Questions per run when --limit is not given: `pilot` for the pilot arm,
+# `main` for every other arm.
+sample_caps:
+  pilot: 50
+  main: 1000
+
+conditions:
+  B1:
+    arm: B1
+    description: "Single-Agent CoT — one call, no debate."
+  B2:
+    arm: B2
+    description: "Single-Agent + RAG — one call with retrieved evidence."
+  B3:
+    arm: B3
+    description: "MAD (Du et al. 2023) — unweighted multi-agent debate."
+  B4:
+    arm: B4
+    description: "MAD + RAG — debate where every agent sees retrieved evidence."
+  B5:
+    arm: B5
+    description: "Self-Consistency (Wang et al. 2022) — sampled single-agent vote."
+  B6:
+    arm: B6
+    description: "Mixture-of-Agents (Wang et al. 2024) — layered aggregation."
+  B7:
+    arm: B7
+    description: "Oracle (Gemini 3.1 Pro Preview) — needs GEMINI_API_KEY; not a competitor."
+  B8:
+    arm: B8
+    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."
+  B9:
+    arm: B9
+    description: "iMAD (Fan et al. 2026) — heuristic confidence/hesitation gate, not FocusCal."
+  B10:
+    arm: B10
+    description: "ConsensAgent (Pitre et al. 2025) — trigger + aggregation, no prompt optimizer."
+  B8-no-trust:
+    arm: B8
+    use_trust: false
+    description: "Ablation: evidence retrieval without trust re-weighting (majority aggregation)."
+  B8-no-progressive:
+    arm: B8
+    progressive_retrieval: false
+    description: "Ablation: full retrieval depth from round 1."
+  B8-no-partition:
+    arm: B8
+    source_partitioning: false
+    description: "Ablation: every agent sees every source."
+  B8-no-adaptive:
+    arm: B8
+    adaptive_triggering: false
+    description: "Ablation: update trust every round, even on unanimous panels."
+  injection:
+    arm: injection
+    description: "Injected-confidence stress test — consensus pressure on minority agents."
