@@ -8,6 +8,8 @@ The core idea: in multi-agent LLM debate, a confidently wrong majority can press
 
 The implementation of the proposed system lives in [`trustcal/`](trustcal/) (Python + vLLM). Phase-by-phase plan: [`roadmap.md`](roadmap.md) · design: [`docs/blueprint.md`](docs/blueprint.md) · injection protocol spec: [`trustcal/INJECTION_PROTOCOL.md`](trustcal/INJECTION_PROTOCOL.md) · experiment reports and artifacts: [`experiments/`](experiments/). Agent/operator instructions for the GPU box: [`trustcal/AGENTS.md`](trustcal/AGENTS.md).
 
+> **LLM agents: start at [`docs/agent/README.md`](docs/agent/README.md).** It contains the current-state audit, the P0 fix list with acceptance tests, the reframed experiment plan, the verified prior-art/gap analysis, the writing/venue rules, and the DeepSeek V4.1 Flash Max checklist.
+
 ## Tech stack
 
 - **React 19** + **TypeScript** + **Vite 8**
