@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /**
- * Build the six manuscript figures: canonical SVG -> 600 DPI PNG.
+ * Build the manuscript figures: canonical SVG -> 600 DPI PNG.
  *
  * Source of truth: docs/figures-src/<name>.svg
  *   width="6000" height="3375" viewBox="0 0 1600 900"
  *   6000 px / 10 in = 600 DPI at 10 in wide; 6.5 in gives 923 DPI.
  *
- * Output: docs/figures/<name>.png plus identical copies under
- * frontend/public/figures/ (served by the site), Papev_Summer26_6/, and
- * FYDP_Summer/. The PNG IHDR is verified before any file is written.
+ * Journal set: docs/figures/, frontend/public/figures/, Papev_Summer26_6/.
+ * Report set: FYDP_Summer/ uses report-context and report-dataflow for
+ * fig-context.png and fig-dataflow.png; the other four report figures come
+ * from the journal set. The report-only PNGs are not written anywhere else.
+ * The PNG IHDR is verified before any file is written.
  *
  * Run from frontend/:  node scripts/build_figures.mjs
  */
@@ -22,13 +24,13 @@ const frontendDir = join(__dirname, '..');
 const repoRoot = join(frontendDir, '..');
 const srcDir = join(repoRoot, 'docs', 'figures-src');
 const outDir = join(repoRoot, 'docs', 'figures');
-const copies = [
+const journalCopies = [
   join(frontendDir, 'public', 'figures'),
   join(repoRoot, 'Papev_Summer26_6'),
-  join(repoRoot, 'FYDP_Summer'),
 ];
+const reportDir = join(repoRoot, 'FYDP_Summer');
 
-const NAMES = [
+const JOURNAL_NAMES = [
   'fig-pipeline',
   'fig-context',
   'fig-claim-example',
@@ -36,6 +38,11 @@ const NAMES = [
   'fig-round-loop',
   'fig-dataflow',
 ];
+const REPORT_ONLY = [
+  { source: 'report-context', target: 'fig-context' },
+  { source: 'report-dataflow', target: 'fig-dataflow' },
+];
+const NAMES = [...JOURNAL_NAMES, ...REPORT_ONLY.map((r) => r.source)];
 
 // Journal geometry: cas-sc text width = 192 mm - 2 x 13.7 mm = 164.6 mm.
 // Report geometry: A4 with 3 cm margins = 150 mm text width.
@@ -175,37 +182,78 @@ for (const name of NAMES) {
   console.log(`${actual.width}x${actual.height} ok`);
 }
 
+const byName = new Map(results.map((r) => [r.name, r]));
+
 mkdirSync(outDir, { recursive: true });
-for (const { name, png } of results) {
+for (const name of JOURNAL_NAMES) {
+  const png = byName.get(name).png;
   const target = join(outDir, `${name}.png`);
   writeFileSync(target, png);
-  for (const dir of copies) {
+  for (const dir of journalCopies) {
     mkdirSync(dir, { recursive: true });
     copyFileSync(target, join(dir, `${name}.png`));
   }
 }
 
+// The report keeps the journal pipeline/claim/trust/round figures, but uses
+// the report-specific context and DFD drawings under the same file names.
+mkdirSync(reportDir, { recursive: true });
+for (const name of JOURNAL_NAMES) {
+  if (name === 'fig-context' || name === 'fig-dataflow') continue;
+  copyFileSync(join(outDir, `${name}.png`), join(reportDir, `${name}.png`));
+}
+for (const { source, target } of REPORT_ONLY) {
+  writeFileSync(join(reportDir, `${target}.png`), byName.get(source).png);
+}
+
+function printTable(header, rows) {
+  const widths = header.map((h, i) => Math.max(h.length, ...rows.map((r) => r[i].length)));
+  const fmt = (r) => r.map((c, i) => (i === 0 ? c.padEnd(widths[i]) : c.padStart(widths[i]))).join('  ');
+  console.log(fmt(header));
+  console.log(fmt(widths.map((w) => '-'.repeat(w))));
+  for (const r of rows) console.log(fmt(r));
+}
+
 console.log('Figure build — canonical SVG -> PNG');
-console.log('source: docs/figures-src  output: docs/figures + public/figures + journal + report');
+console.log('journal set: docs/figures + public/figures + Papev_Summer26_6 + FYDP_Summer (4 files)');
+console.log('report overrides: report-context/report-dataflow -> FYDP_Summer only');
 console.log('');
-const header = ['figure', 'pixels', 'journal width', 'journal DPI', 'report width', 'report DPI'];
-const rows = results.map(({ name, actual }) => {
-  const jw = JOURNAL_TEXT_IN * JOURNAL_SCALE[name];
-  const rw = REPORT_TEXT_IN * REPORT_SCALE[name];
-  return [
-    name + '.png',
-    `${actual.width}x${actual.height}`,
-    `${jw.toFixed(2)} in`,
-    String(dpi(jw)),
-    `${rw.toFixed(2)} in`,
-    String(dpi(rw)),
-  ];
-});
-const widths = header.map((h, i) => Math.max(h.length, ...rows.map((r) => r[i].length)));
-const fmt = (r) => r.map((c, i) => (i === 0 ? c.padEnd(widths[i]) : c.padStart(widths[i]))).join('  ');
-console.log(fmt(header));
-console.log(fmt(widths.map((w) => '-'.repeat(w))));
-for (const r of rows) console.log(fmt(r));
+
+console.log('Journal set');
+printTable(
+  ['figure', 'pixels', 'journal width', 'journal DPI', 'report width', 'report DPI'],
+  JOURNAL_NAMES.map((name) => {
+    const actual = byName.get(name).actual;
+    const jw = JOURNAL_TEXT_IN * JOURNAL_SCALE[name];
+    const rw = REPORT_TEXT_IN * REPORT_SCALE[name];
+    return [
+      name + '.png',
+      `${actual.width}x${actual.height}`,
+      `${jw.toFixed(2)} in`,
+      String(dpi(jw)),
+      `${rw.toFixed(2)} in`,
+      String(dpi(rw)),
+    ];
+  }),
+);
+
+console.log('');
+console.log('Report-only overrides (not written to docs/figures, public/figures, or Papev_Summer26_6)');
+printTable(
+  ['source', 'pixels', 'report width', 'report DPI', 'output'],
+  REPORT_ONLY.map(({ source, target }) => {
+    const actual = byName.get(source).actual;
+    const rw = REPORT_TEXT_IN * REPORT_SCALE[source];
+    return [
+      source + '.svg',
+      `${actual.width}x${actual.height}`,
+      `${rw.toFixed(2)} in`,
+      String(dpi(rw)),
+      `FYDP_Summer/${target}.png`,
+    ];
+  }),
+);
+
 console.log('');
 console.log(`verified: ${results.length}/${NAMES.length} PNGs are exactly ${WIDTH}x${HEIGHT} px`);
 console.log(`effective DPI at 10 in wide: ${round(WIDTH / 10)}; at 6.5 in: ${round(WIDTH / 6.5)}`);
