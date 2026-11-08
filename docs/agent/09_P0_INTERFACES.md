@@ -130,11 +130,13 @@ Only the lease holder edits the file. Everyone else files a 3-line request in th
 
 ## 5. Push and merge rules
 
-- Slice branch: `p0/wp-<id>`; worktree: `E:\FYDP-p0-<letter>`.
+- Slice branch: `p0/wp-<id>`; worktree: `E:\FYDP-p0-<letter>`. Slice branches are temporary and deleted after merge.
 - Push the slice branch after every green checkpoint.
-- Integrator merges to `feat/p0-hardening` in a fixed daily window (`--no-ff`).
-- `feat/full-pipeline` and `main` are read-only until the P0 gate.
-- No force-push except the documented `Phase-1-main` rebuild.
+- Integrator merges to `feat/p0-hardening` in a fixed daily window (`--no-ff`). `feat/p0-hardening` is temporary; after the 13/13 gate it merges into `dev` and is deleted.
+- Long-lived branches: `dev` (development/integration) and `main` (release trunk; the web frontend deploys from `main`). Neither takes P0 work directly.
+- Final landing sequence: `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`.
+- `Phase-1-dev` and `Phase-1-main` are retired tags (`phase-1-dev`, `phase-1-main-untested`), not branches. Do not recreate them.
+- No force-push.
 - No commit mixes `docs/**` with `trustcal/**` or `frontend/**`.
 
 ---

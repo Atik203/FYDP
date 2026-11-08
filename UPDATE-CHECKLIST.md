@@ -5,6 +5,8 @@
 
 **Full details:** `docs/agent/` — start at `README.md`.
 
+> **Current P0 status (9 November 2026):** P0 hardening is on the temporary `feat/p0-hardening` branch. The gate is **11/13 passed**, with WP-13 (B8-no-trust) and WP-09 (B8+injection) pending; `pytest` is **478**. The executable matrix is **24 rows / 1,280 GPU-h** with `PRE_REGISTRATION.md` v1.0. The long-lived branches are `dev` (development/integration) and `main` (release trunk; the web frontend deploys from it). The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`; `feat/p0-hardening` is deleted after the merge. The 8 November audit below is the diagnosis; the unchecked boxes in §3 are the original plan, not current status.
+
 ---
 
 ## 1. Current score
@@ -81,7 +83,7 @@
 - [ ] Write `PRE_REGISTRATION.md`.
 - [ ] Run a 100-question pilot.
 - [ ] Update the docs.
-- [ ] Do **not** merge branches; push `feat/full-pipeline`.
+- [ ] Keep P0 work on `feat/p0-hardening`; push the slice branches. Do **not** merge into `dev` or `main` until the gate.
 
 **Done when:** C+ matrix ≤1,500 GPU-h or TACL ≤3,400 GPU-h; pre-registration exists; pilot passes the gates.
 
@@ -92,10 +94,12 @@
 | Step | What | Size | Why |
 |---|---|---:|---|
 | 1 | Pilot | 100–150 questions | Check the wiring and the effect. |
-| 2 | C+ core | 4 arms + oracle, ~1,000 questions | Real causal result. |
-| 3 | EG-SSS benchmark | 180 items | Gold-evidence stress test. |
+| 2 | P0 causal matrix | 4 conditions × 3 datasets × 2 seeds (24 rows) | Real causal result; 1,280 GPU-h. |
+| 3 | EG-SSS benchmark | 300 items (180 floor) | Gold-evidence stress test. |
 | 4 | Human evaluation | 150 paired items | Validate the automatic metrics. |
 | 5 | Decide | If **ρ > 0.4** and the pilot shows the effect → run TACL. If not → stop at 8.3–8.6. | Do not gamble the thesis. |
+
+**P0 matrix (current):** 4 conditions × 3 datasets × 2 seeds, caps 400/400/200 = 8,000 debates ≈ **1,067 GPU-hours**; the gate uses the conservative 9,600-debate figure = **1,280 GPU-hours**. See `PRE_REGISTRATION.md` §5.
 
 **TACL full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours** main, **2,460–2,700 GPU-hours** with pilot/sweep and Final replication. Four 24 GB GPUs = 480 GPU-hours each = **20 days** main; 4 weeks with buffer.
 
@@ -103,15 +107,15 @@
 
 ### Benchmark decision (EG-SSS)
 
-| Size | What it is | Annotation | Score |
-|---:|---|---:|---:|
-| **180** | C+ supporting artifact | ~410 h | 8.0–8.3 |
-| 300 | Stronger benchmark | ~684 h | 8.5 |
-| 600 | 9+ benchmark floor | ~1,368 h | 9.0 |
-| **800 + SDT model** | **9+ benchmark** | **~1,824 h** | **9.0–9.3** |
+| Size | What it is | Annotation | Earlier score estimate | Decision |
+|---:|---|---:|---:|---|
+| **180** | Floor / C+ supporting artifact | ~410 h | 8.0–8.3 | Minimum |
+| **300** | Target | ~684 h | 8.5 | Default |
+| **600** | Stretch | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
+| **800 + SDT model** | No-go | ~1,824 h | 9.0–9.3 | Do not build |
 
-- **Default: 180 items.** It fits the C+ path.
-- **Do not build 800 unless 2–3 people can annotate for five months.** A 800-item set with 12% bad gold is worse than a 300-item set with 3% bad gold.
+- **Target: 300 items.** 180 is the floor; 600 is the stretch; 800 is a no-go.
+- **Do not build 800 unless 2–3 people can annotate for five months.** A 300-item set with 3% bad gold is the target; a larger set with bad gold is not an improvement.
 - **The 9+ benchmark needs the SDT model** (sycophancy = social weight / evidence weight; verifier trust; abstention criterion; competence). Without it, 800 items is a dataset paper.
 - If annotation capacity is uncertain, build 180–300 and do the theory/causal paper.
 
@@ -150,9 +154,8 @@
 
 ## 6. Venue
 
-- **Target: TACL, 1 February 2027.** Q1, ~7-week first decision, 9+ capable.
-- **Fallback: EMNLP 2027 main, 28 May 2027.**
-- **Do not submit ACL 2027.** The 4 January deadline is too early, and an ARR rejection blocks TACL for nine months.
+- **Current calendar (9 November 2026):** thesis submission **June/July 2027**; paper submission **after the defence, August–December 2027**.
+- **Historical venue plan:** the earlier target was TACL, 1 February 2027, with EMNLP 2027 main, 28 May 2027, as fallback. Those dates were set before the P0 matrix cut and no longer match the thesis calendar. Do not treat them as current deadlines.
 - **TMLR is Q2, not Q1.** If Q1 is mandatory, use TACL/IP&M/KBS.
 - **Do not split into two papers.** Thesis + one TACL paper.
 
@@ -184,7 +187,7 @@
 - Do not treat 3 seeds as independent samples.
 - Do not let agents certify proofs, tests, or gold labels.
 - Do not cite R²-MAD/TERA-RAG/“To Trust or Not” without reading them.
-- Do not merge `main` and `feat/full-pipeline` unless the team decides.
+- Do not merge `dev` or `main` until the P0 gate; integrate P0 slices on `feat/p0-hardening`, then merge to `dev` and release `main`.
 
 ---
 

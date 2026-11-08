@@ -1,7 +1,9 @@
 # FYDP Agent Docs — Index
 
-**Status date:** 8 November 2026  
-**Canonical branch:** `feat/full-pipeline` (10 commits ahead of `main`)  
+**Status date:** 8 November 2026 (audit snapshot); P0 note added 9 November 2026.
+
+**P0 integration branch:** temporary `feat/p0-hardening`; it merges into `dev` after the 13/13 gate, then `dev` releases to `main`. Long-lived branches: `dev` (development/integration) and `main` (release trunk; the web frontend deploys from it).
+
 **Project:** *Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning*
 
 These docs are for LLM coding agents and human teammates. They are deliberately short, explicit, and test-driven. Read them in order.
@@ -22,10 +24,12 @@ These docs are for LLM coding agents and human teammates. They are deliberately 
 
 ## Current status (8 November 2026)
 
+> **P0 status (9 November 2026):** P0 hardening is on temporary `feat/p0-hardening`; gate **11/13** (WP-13, WP-09 pending), **478** tests, matrix **24 rows / 1,280 GPU-h**. The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`. The 8 November audit below is the diagnosis, not the current code state.
+
 - **Idea/plan score:** Core 5.50 / Weighted 5.42 (compute excluded).
 - **Current manuscript:** 2.5/10 as a paper; 6/10 as an FYDP mid-project report.
 - **After P0 fixes:** Core 6.25 / Weighted 6.21. **After the P1 reframe:** Core 7.63 / Weighted 7.53.
-- **Canonical branch:** `feat/full-pipeline`; `main` is 10 commits behind.
+- **Branches:** `dev` is the long-lived development/integration branch; `main` is the release trunk and deploys the web frontend. The P0 branch merges into `dev` after the gate.
 - **Five blockers:** options not in prompts; first-number answer matcher; no final accuracy; injection arm has no retrieval/trust; ECR is invalid.
 - **Do not run the matrix or submit the draft.** Start with `00_START_HERE.md`, then `02_P0_FIXES.md` and `06_AGENT_CHECKLIST.md`.
 
@@ -55,8 +59,8 @@ These docs are for LLM coding agents and human teammates. They are deliberately 
 
 ## What still needs updating
 
-- `main` must be merged with `feat/full-pipeline`.
-- `docs/FYDP1_defence_Q&A.md` is stale (says trust/retrieval are not wired).
-- `IMPLEMENTATION_STATUS.md` must reflect the P0 fixes after they land.
+- `feat/p0-hardening` must merge into `dev` after the 13/13 gate, then `dev` releases to `main`.
+- `docs/FYDP1_defence_Q&A.md` has a P0 status note; check the remaining sections against the current code before the defence.
+- `IMPLEMENTATION_STATUS.md` now reflects the P0 trust/retrieval state; keep it current.
 - `Papev_Summer26_6/cas-sc-template.tex` and `FYDP_Summer/4.implementation.tex`/`6.conclusion.tex` are placeholders; rewrite after results.
 - `literature_review/index.md` has 5 unread papers; add the 2026 trust-aware frontier from `04_LITERATURE_AND_GAPS.md`.

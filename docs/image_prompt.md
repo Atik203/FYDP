@@ -122,7 +122,7 @@ Create a flat vector infographic of a circular process loop for an academic pape
 Arrange six nodes clockwise around a large circle, each node is a rounded card with a numbered dark-navy circle:
 1. "Round t positions", inside the card show only three small chips labeled "A", "B", "C"
 2. "Claim decomposition", second line "atomic factual claims"
-3. "Source-partitioned retrieval", show three small chips labeled "PubMed", "arXiv", "Semantic Scholar"
+3. "Claim-domain retrieval", show three small chips labeled "PubMed", "arXiv", "Semantic Scholar"
 4. "Evidence verdicts", show four small pills labeled "Supported" in green, "Contradicted" in red, "Unverifiable" in gray, "Contested" in amber
 5. "Trust update", second line "bounded 0.1 to 0.9"
 6. "Revision", second line "peers + own trust"
@@ -136,7 +136,7 @@ Place one dashed amber rectangle labeled "Injection point" with the second line 
 Keep labels short and correctly spelled. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
 ```
 
-If the "Trust update" card needs the formula, add this line inside the card: `S(t+1) = S(t) + alpha V - beta H`. Expect the formula to be garbled; if so, use the version above without the formula and I will overlay it in LaTeX.
+If the "Trust update" card needs the formula, add this line inside the card: `S(t+1) = log S(t) + alpha V/n - beta H/n`. Expect the formula to be garbled; if so, use the version above without the formula and I will overlay it in LaTeX.
 
 ---
 
@@ -192,7 +192,7 @@ Top row:
 Bottom row:
 5. "Evidence Retrieval", second line "PubMed · arXiv · Semantic Scholar", and a third small line "OpenAlex fallback"
 6. "Evidence Verdict", show four small pills labeled "Supported" in green, "Contradicted" in red, "Unverifiable" in gray, "Contested" in amber
-7. "Trust Update", second line "bounded 0.1 to 0.9", third line "renormalized each round"
+7. "Trust Update", second line "bounded 0.1 to 0.9", third line "simplex projection each round"
 8. "Trust-Weighted Aggregation", second line "Final Answer + Citations + Trust Trajectory"
 
 Below stage 3, place one dashed amber rounded rectangle labeled "Injection point" with the second line "fabricated wrong consensus (sycophancy stress test)". Draw one thin dashed amber arrow from the top of the box to the bottom edge of stage 3. This is the only arrow that touches the Injection point box.
@@ -208,7 +208,7 @@ Keep labels short and correctly spelled. Do not add any other strip, bar, or ban
 
 ## 5. Trust Update Detail prompt (optional)
 
-Purpose: one small figure that explains the bounded trust update step by step. Useful if a reviewer asks how the weights are computed.
+Purpose: one small figure that explains the bounded trust update step by step. Useful if a reviewer asks how the weights are computed. This chain reflects the P0 operator: logit accumulation, one softmax, then a floor/ceiling simplex projection. There is no clamp-then-renormalize step.
 
 Aspect ratio and size: `4:3 landscape, 1600x1200 pixels`, pure white background.
 
@@ -219,8 +219,8 @@ Draw the chain left to right as five rounded cards, each with a numbered dark-na
 1. "Verdict counts", second line "supported V, contradicted H"
 2. "Raw score", second line "S(t+1) = S(t) + aV - bH"
 3. "Softmax", second line "positive values"
-4. "Clamp", second line "0.1 to 0.9"
-5. "Renormalize", second line "sum equals 1"
+4. "Simplex projection", second line "floor and ceiling"
+5. "Trust weights", second line "sum equals 1"
 
 Below the chain, place one row of three small agent chips labeled "Agent A", "Agent B", "Agent C". Under each chip draw a small bar chart with three vertical bars of different heights in navy blue, teal, and amber, and one caption under the bars "trust weights".
 

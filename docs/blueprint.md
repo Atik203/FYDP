@@ -11,6 +11,9 @@
 > [!IMPORTANT]
 > **Canonical source of truth.** Every research decision in this repository traces back to this file. If a decision changes, change it here first — the report, the journal, and the roadmap follow this blueprint.
 
+> [!NOTE]
+> **P0 state note (2026-11-09).** Two parts of the original design below are superseded. The trust operator is now logit accumulation → one softmax → floor/ceiling simplex projection (`trust/update.py`), not clamp-then-renormalize. Retrieval routes by claim domain, not by agent identity; the source-per-agent diagram in §5 is the original design and was replaced to remove the source-by-agent confound. Current state: `trustcal/IMPLEMENTATION_STATUS.md`.
+
 > [!TIP]
 > **Reading guide:** first day on the project → **§1** and **§15** · supervisor or defence prep → **§14** and **§18** · building the pipeline → **§5**, **§7**, **§13** · running experiments → **§9–§12** · writing the paper → **§2**, **§16**, **§18**.
 
@@ -200,10 +203,10 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 - **Revision rounds:** agents see each other's arguments and their own evolving trust standing, simulating real deliberation rather than one-shot voting.
 - **Trust-weighted aggregation:** the actual mechanism that should prevent sycophantic collapse — a correct, evidence-backed minority agent can outweigh two unsupported majority agents if its trust score is sufficiently higher.
 
-**P0 correction (2026-11):** the original logit accumulation→softmax→simplex projection order was found to violate the [0.1, 0.9] floor after renormalization (`trust/update.py`); P0-5 replaces it with a floor/ceiling simplex projection. K=3, N=3, source-partitioned retrieval, and the Month-1 pilot placement are unchanged. The confidence-estimator gate (§4.1) is also unchanged.
+**P0 correction (2026-11):** the original softmax→clamp→renormalize order was found to violate the [0.1, 0.9] floor after renormalization (`trust/update.py`); P0-5 replaces it with logit accumulation → one softmax → floor/ceiling simplex projection. K=3, N=3, claim-domain routed retrieval, and the Month-1 pilot placement are unchanged. The confidence-estimator gate (§4.1) is also unchanged.
 
 > [!IMPORTANT]
-> **Frozen design invariants — do not drift:** logit accumulation → softmax → floor/ceiling simplex projection (P0-5) · K = 3 rounds · N = 3 heterogeneous agents · source-partitioned retrieval · inference only, no fine-tuning.
+> **Frozen design invariants — do not drift:** logit accumulation → one softmax → floor/ceiling simplex projection (P0-5) · K = 3 rounds · N = 3 heterogeneous agents · claim-domain routed retrieval (P0-12) · inference only, no fine-tuning.
 
 ---
 

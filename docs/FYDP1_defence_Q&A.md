@@ -2,7 +2,7 @@
 
 **Group 6 · Team Phantom Devs · CSE 4000A (B) · Final Defence**
 
-> **P0 status note (2026-11-09):** the trust and retrieval sections below are updated to the P0 branch. Older "stub / not wired" lines elsewhere are historical and are being reconciled in the claims audit. Current gate: 10/13 passed; pending are WP-13 (B8-no-trust), WP-09 (B8+injection), WP-14 (matrix/prereg).
+> **P0 status note (2026-11-09):** the trust and retrieval sections below are updated to the P0 branch. Older "stub / not wired" lines elsewhere are historical and are being reconciled in the claims audit. Current gate: 11/13 passed; pending are WP-13 (B8-no-trust) and WP-09 (B8+injection). WP-14 (matrix/prereg) landed; the matrix is 24 rows / 1,280 GPU-h. `pytest` is 478.
 >
 > Deep-dive rehearsal file: system mechanics, code pointers, what-if behavior, and honest status.
 > The slide-by-slide speech and quick judge questions live in `docs/presentation.md` — do not duplicate them here.
@@ -67,7 +67,7 @@
 **Scope today (be exact):**
 
 - ✅ Gate 0: full three-model debate loop runs end to end on 10 GPQA questions — 10/10 debates, 90/90 positions (`experiments/gate0/README.md:29-35`).
-- ✅ Trust math, parser, endpoints, injection, runner, verifier interface, κ tooling — tested (459 tests on the P0 branch).
+- ✅ Trust math, parser, endpoints, injection, runner, verifier interface, κ tooling — tested (478 tests on the P0 branch).
 - ✅ Trust update is wired into the debate loop; revisions use the evolving trust and the final vote uses `trust_for_positions`.
 - 🟡 Retrieval/verifier quality and the human audit remain the bottleneck; ECR is deprecated and not a primary endpoint.
 
@@ -91,9 +91,9 @@ If asked "explain your project in two minutes," say this:
 | CCR / MPR / accuracy | ✅ implemented | `eval/metrics.py`, `eval/endpoints.py` |
 | ECR | 🟡 deprecated | `eval/metrics.py`; not a primary endpoint |
 | Statistics (bootstrap, McNemar, Holm) | ✅ implemented | `eval/stats.py`, `scripts/run_matrix.py` |
-| Tests | ✅ 103 functions | colocated `test_*.py` |
+| Tests | ✅ 478 tests | colocated `test_*.py` |
 
-**The one sentence to repeat:** "The loop is real, the math is real and tested, and the evidence layer is the Phase 2 wiring — the gates exist to make that boundary honest."
+**The one sentence to repeat:** "The loop is real, the math is real and tested, and the evidence layer is implemented; the human verifier audit is the remaining gate."
 
 ## 2. System Walkthrough — One Question, End to End
 
@@ -153,14 +153,14 @@ Every "why did you choose X" question, in one table.
 | Operator | Logit accumulation → softmax → simplex projection | The projection enforces the bound; the old clamp→renormalize order could drop below the floor | `trust/update.py`; blueprint `:266-272` |
 | Aggregation | argmax Σ trust × position | Influence from evidence, not head count | `trust/aggregation.py:15`; blueprint `:304-305` |
 | Confidence gate | Binary prompt, pre-filtered eval sets | Avoids ~9 passes/question on easy items; misclassification only hurts throughput, not correctness | blueprint `:216-228` |
-| Source partitioning | A→PubMed, B→arXiv, C→Semantic Scholar | No agent can win by searching one easier slice of literature | blueprint `:198,256` |
+| Source routing | Claims route by domain; sources are partitioned by claim type, not agent identity | No agent can win by searching one easier slice of literature | `retrieval/sources.py`; WP-12 |
 | Retrieval depth | top-k 10, rerank to 3 | Recall then precision; cross-encoder keeps prompts small | `retrieval/verdicts.py:6-8` (planned) |
 | Verdicts | supported / contradicted / unverifiable / contested | Unverifiable must not move trust; contested is reported separately | `Papev:201`; blueprint `:260` |
 | Injection point | between rounds 1 and 2, once | Pressure with no new evidence; upper-bound stress test | blueprint `:182,299` |
 | Injection target | the correct-minority agents by default | Tests exactly the collapse thesis | `orchestrator/injection.py:64-67` |
 | Datasets | 5 sets: 2 stable, 2 adversarial, 1 ceiling | Accuracy comparability plus collapse stress | [Section 13](#13-datasets--sources) |
-| Sample size | pilot 50; main 400 per dataset | Stable paired statistics vs iteration speed | `configs/experiments.yaml` |
-| Seeds | 2 for the main matrix; 3 for the pilot | Variance and confidence intervals without doubling the C+ budget | `configs/experiments.yaml` |
+| Sample size | pilot 25; main caps 400/400/200 | Stable paired statistics vs iteration speed | `configs/experiments.yaml`; `PILOT_CRITERION.md` |
+| Seeds | 2 for the main matrix; the pilot is a single frozen set | Replication without doubling the C+ budget; the unit of analysis is the question | `PRE_REGISTRATION.md` |
 | Metrics | Final accuracy + CMR primary; ARR, trust AUROC/Brier; ECR deprecated | Correction, minority survival, ranking, no regression | `eval/endpoints.py` |
 | κ gate | ≥ 0.75 | Human annotation quality before any measurement counts | `trustcal/INJECTION_PROTOCOL.md:59-64` |
 | CCR threshold | baseline CCR ≥ 0.30 | Gate 1: the injection must induce real collapse before trust is tested | `FYDP_Summer/3.design.tex:121` |
@@ -173,7 +173,7 @@ Every "why did you choose X" question, in one table.
 - **Q: Why is the floor 0.1 and not 0?** Zero would permanently mute an agent after one bad round; the floor keeps the process reversible. The simplex projection enforces it after every update — the old clamp-then-renormalize could drop below the floor, so P0-5 replaced it.
 - **Q: Why softmax then projection?** Softmax turns the scores into a distribution; the projection enforces the floor and ceiling without breaking the sum-to-one constraint.
 - **Q: Why these three model families?** They do not share training pipelines, so their errors are less correlated; certificates of "who searched better" are avoided by partitioning sources.
-- **Q: Why 1000 questions per set?** Paired statistics need stable denominators, especially for minority survival where the event rate is low; 50 is only the pilot for speed.
+- **Q: Why 400 questions on GPQA and MMLU-Pro?** Paired statistics need stable denominators, especially for minority survival where the event rate is low. The caps are 400 for GPQA, 400 for MMLU-Pro and 200 for HLE; 25 is the pilot for speed.
 
 ### 3.1 Extended Why-Q&A
 
@@ -337,7 +337,7 @@ Multi-step "if we do this, what happens" chains — trace them step by step.
 - **Chain 8 — κ comes back at 0.68.** The Go/No-Go fails, the annotate CLI exits 2, the rubric is revised and the 40 items are relabeled before any measurement counts (`annotate.py:55-58`).
 - **Chain 9 — baseline CCR < 0.30.** The injection did not induce collapse on the pilot → strengthen consensus wording/targeting before trust experiments; otherwise the premise is untestable (Gate 1).
 - **Chain 10 — a correct agent hits the floor.** The simplex projection keeps it at the floor (0.1); it still has nonzero weight and can recover next round (`update.py`).
-- **Chain 11 — a wrong agent hits the ceiling.** Clamp caps it at 0.9; its peers still count, so one capped agent cannot nullify the vote.
+- **Chain 11 — a wrong agent hits the ceiling.** The ceiling caps it at 0.9; its peers still count, so one capped agent cannot nullify the vote.
 - **Chain 12 — final weighted vote ties.** Argmax picks the first option index today (`aggregation.py:15`); a margin-based tie-break is future work.
 - **Chain 13 — `--rounds 2` on real clients.** Ignored — rounds come from `models.yaml` (3); edit the config to change rounds (`runner.py:161-166`).
 - **Chain 14 — crash mid-matrix.** The runner resumes by `{dataset}-{index:04d}` and skips completed records; no duplicates (`runner.py:171,179`).
@@ -649,7 +649,7 @@ Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has 
 - Models: dev = Qwen3.5-9B (4-bit AWQ), Gemma 4 12B (QAT w4a16), Ministral-3-14B (AWQ), ports 8000/8001/8002, ctx 4096 (`configs/models.yaml:16-48`).
 - Final = Qwen3.6-27B, Gemma 4 26B-A4B, Mistral-Small-3.2-24B, ctx 8192 (`:53-73`).
 - Generation: temperature 0.7, 1024 output tokens, 3 retries (`inference/client.py:30-46`).
-- Data: 5 datasets, seeds [1,2,3], rounds 3, caps 50 pilot / 1000 main (`configs/datasets.yaml:10-54`).
+- Data: 5 datasets, seeds [1,2], rounds 3, caps 25 pilot / 400 GPQA / 400 MMLU-Pro / 200 HLE (`configs/datasets.yaml`; `PRE_REGISTRATION.md` §3).
 
 **Commands:**
 
@@ -712,11 +712,11 @@ If a judge asks "run it live": prefer the mock-server path — it proves orchest
 | Trust update math + aggregation | ✅ wired | `trust/update.py`, `trust/aggregation.py`, `debate.py` |
 | Confidence gate | 🟡 prompt defined, not invoked | `agents/prompts.py:11-17` |
 | CCR / MPR | ✅ | `eval/metrics.py:35-46` |
-| ECR | 🔴 Phase 3 | `eval/metrics.py:49-54` |
+| ECR | 🟡 deprecated; not a primary endpoint | `eval/metrics.py`; `PRE_REGISTRATION.md` §4.3 |
 | Retrieval sources / rerank / verdicts | ✅ implemented; human audit pending | `retrieval/sources.py`, `verifier.py` |
-| Baselines B2, B4–B10 | 🔴 deferred | `eval/baselines.py:28-37` |
-| Bootstrap CIs / Cohen's d | 🔴 planned | blueprint `:419` |
-| Non-GPQA dataset loaders | 🔴 | `eval/datasets.py:22` |
+| Baselines B1–B10 | ✅ implemented; B6/B9/B10 labeled approximations | `eval/baselines.py`; `IMPLEMENTATION_STATUS.md` |
+| Bootstrap CIs / Cohen's d | ✅ implemented | `eval/stats.py`; `scripts/run_matrix.py` |
+| Non-GPQA dataset loaders | 🟡 all five normalized; only GPQA live-tested | `eval/datasets.py`; WP-11 |
 | Human study | 🔴 Phase 4 | `roadmap.md:130` |
 
 ### 12.1 Status Q&A
@@ -812,7 +812,7 @@ Config: `trustcal/configs/datasets.yaml:10-54`; blueprint table `docs/blueprint.
 
 ## 15. Compute, Cost & Feasibility
 
-- Total ≈ 300 GPU-hours (`FYDP_Summer/3.design.tex:168`; `5.sic.tex:305`).
+- Current P0 matrix ≈ 1,280 GPU-hours (`PRE_REGISTRATION.md` §5). The earlier report figure was ≈300 GPU-hours (`FYDP_Summer/3.design.tex:168`; `5.sic.tex:305`).
 - Deck budget: USD 340–820. Blueprint: dev $120–360 + final $400–800 = $500–1,200 (`blueprint.md:334-340`). Roadmap: $500–1,000.
 - **Doc mismatch — handle honestly:** "The deck quotes the core GPU estimate; the report keeps a contingency ceiling. We will align the two numbers in the final version."
 - Feasibility: dev stack on one RTX A6000; final on one RTX PRO 6000; inference-only, no training.
@@ -976,14 +976,14 @@ The uncomfortable questions, with answers that hold up.
 ## 20. Emergency Answers
 
 - **If you don't know:** "I will come back to that." Pass it to the slide owner from Section 0.
-- **If asked "is it real or planned?":** use Section 12 verbatim. Trust math ✅ tested; retrieval/verdicts/ECR 🔴 planned; gate and trust wiring 🟡.
+- **If asked "is it real or planned?":** use Section 12 verbatim. Trust math ✅ wired; retrieval routing ✅ implemented; verifier interface ✅ with human audit pending; ECR 🟡 deprecated; the confidence gate remains 🟡 prompt-only.
 - **If asked "show me the code":** open the file named in the question's **Code:** line; the full map is in Section 11.
 - **If asked "what happens if we do X?":** find the scenario in Section 4 and give the behavior plus the file:line.
 - **If asked "why not GPT-4 for everything?":** the mechanism must stay model-agnostic and reproducible on open models; the commercial model is only B7, the ceiling reference.
 - **If asked "what did you personally do?":** answer from Section 19.
-- **If asked "what are you most confident about?":** the debate loop runs end to end (Gate 0: 10/10, 90/90) and the trust math is bounded and tested — the remaining work is wiring evidence into it.
+- **If asked "what are you most confident about?":** the debate loop runs end to end (Gate 0: 10/10, 90/90) and the trust math is bounded and tested; the remaining work is the paid matrix and the human verifier audit.
 - **If asked "what is the weakest part?":** retrieval coverage; unverifiable claims are excluded, so sparse fields weaken the signal. Say it before they do.
-- **If asked a budget question:** "About 300 GPU-hours; the deck estimate is 340–820 dollars, the report keeps a contingency ceiling, and we will reconcile the figures."
+- **If asked a budget question:** "About 1,280 GPU-hours for the current matrix; the deck estimate is 340–820 dollars, the report keeps a contingency ceiling, and we will reconcile the figures."
 - **If asked "why should this project continue?"** Three reasons: the failure is documented in the literature (over 20% ignored-correct cases; 41–86.7% MAS failure rates), the fix is bounded and testable, and the harness is reusable across evidence domains.
 - **If a judge requests a specific file:** open `E:\FYDP` and show — `trustcal/src/trustcal/trust/update.py` (math), `orchestrator/injection.py` (stress test), `eval/metrics.py` (CCR/MPR), `experiments/gate0/` (evidence).
 - **If the demo laptop fails:** switch to the deck; the code map in Section 11 is on every member's copy, and the mock-server path can run anywhere.

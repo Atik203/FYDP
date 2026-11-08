@@ -2,7 +2,7 @@
 
 Landed on `feat/p0-hardening`: WP-01/02 (`115513b`), WP-03 (`2d99110`), WP-04/15 (`62fa3f7`), WP-05/06 (`ef38fd9`), WP-07/08 (`efd11ae`), WP-11/12 (`4b5f366`), WP-14 (`9b57b9d`), WP-17 (`61af3b0`). In progress: WP-04b runner wiring (B), WP-03b trust timing (C).
 
-Gate now: **11 passed / 2 pending** (`pytest` 465). Pending: B8-no-trust prompts (WP-13), B8+injection wiring (WP-09). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0.
+Gate now: **11 passed / 2 pending** (`pytest` 465 at the Wave-2 snapshot; current suite **478**). Pending: B8-no-trust prompts (WP-13), B8+injection wiring (WP-09). Matrix: 24 rows, 1,280 GPU-h, `PRE_REGISTRATION.md` v1.0. Landing after the gate: `feat/p0-hardening` → `dev` → `main`, tags `p0-gate` and `p0-release`.
 
 ## Merge order
 

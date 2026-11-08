@@ -2,7 +2,9 @@
 
 **Project:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
 
-**Last updated:** 2026-09-12
+**Last updated:** 2026-11-09
+
+> **Status note (2026-11-09):** the matrix and gap map below record the September 2026 review state. Papers #11–#15 remain unread. The 2025–26 trust/debate frontier in `docs/agent/04_LITERATURE_AND_GAPS.md` is tracked there but has no detailed review file here; no rows are added until that review exists.
 
 ---
 
@@ -77,6 +79,8 @@
 
 ## Gap Map
 
+> **Status note (2026-11-09):** the first row below ("Evidence-grounded in-session trust re-weighting — None — Novel") predates the 2026 prior-art audit. `docs/agent/04_LITERATURE_AND_GAPS.md` finds that R²-MAD, TERA-RAG and "To Trust or Not" preempt parts of the mechanism; the defensible gap is the controlled benchmark plus the verification-ceiling analysis, not "None". The row is retained as the September 2026 record.
+
 | What our idea does                              | Who else does it                                                                                              | Gap remaining                                                                                                                                                     |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Evidence-grounded in-session trust re-weighting | **None** (claimed gap)                                                                                        | Novel                                                                                                                                                             |
@@ -128,3 +132,4 @@
 | 2026-09-12 | Estornell & Liu (NeurIPS 2024)                | **Restored to `fydp.bib`** (`estornell2024multillm`, 35 → 36) — paper #6 was tracked and read but had been dropped from the updated bib; cross-checked against the 6-member assignments                                                                                                                                                                     | Member list + `papers/06-estornell-liu-2024.md` BibTeX           |
 | 2026-09-16 | Multiagent Finetuning (Subramaniam et al.)    | **Read by team** — `(not read)` mark removed from #10; bib entry `subramaniam2025multiagent` added to `FYDP_Summer/fydp.bib` (41 → 42), `trustcal/references.bib` synced (41 → 42)                                                                                                                                                                          | Team read + `papers/10-multiagent-finetuning-subramaniam-2025.md` BibTeX |
 | 2026-09-17 | Papers #11–#15                                | Reading in progress — `(not read)` marks retained; bib entries withheld until each paper is finished (team decision 2026-09-17). Read count stays at 42; 5 unread     | Team status check |
+| 2026-11-09 | Status check                                  | No new paper reviews. Papers #11–#15 (`liang2024divergent`, `chan2024chateval`, `pham2024cipher`, `zeng2025s2mad`, `campedelli2025breakfree`) remain unread; bib entries still withheld. The 2025–26 trust/debate papers listed in `docs/agent/04_LITERATURE_AND_GAPS.md` are not yet reviewed here, so the matrix has no new entries. | `docs/agent/04_LITERATURE_AND_GAPS.md`; this index |
