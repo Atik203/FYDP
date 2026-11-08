@@ -229,21 +229,24 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 
 | Item | Rate | Source |
 |---|---:|---|
-| RTX A6000 48 GB spot | **$0.382/hr** median at 100 GiB | `vastai search offers ... -i --storage 100` |
+| RTX A6000 48 GB spot | **$0.263/hr** median at **80 GiB**, reliability ≥0.98 | `vastai search offers ... -i --storage 80` |
+| RTX PRO 6000 Max-Q 96 GB spot | **$0.74–1.02/hr** median | same |
 | RTX PRO 6000 S 96 GB spot | **$1.432/hr** median | same |
 | RTX PRO 6000 WS 96 GB spot | $1.245/hr median | same |
-| Bandwidth | $0.004–0.011/GB typical; avoid $0.026–0.049/GB | `inet_up_cost` / `inet_down_cost` |
-| Storage | $0.20–0.40/GB/month on instance disk | `storage_cost` |
+| Bandwidth | $0.004–0.011/GB typical; $0.026–0.033/GB high | `inet_up_cost` / `inet_down_cost` |
+| Storage | **$0.20/GB/month** median on a Vast volume; instance disk $0.20–0.40 | `storage_cost` |
 
 | Scenario | GPU-h | GPU $ | Bandwidth + storage | Overhead 20% | **Total** |
 |---|---:|---:|---:|---:|---:|
-| P0 smoke | 15 | $6 | $1–3 | $2 | **~$9** |
-| Pilot 100–150 Q | 225 | $86 | $1–3 | $18 | **~$105** |
-| **C+ core** (Dev 1,100 + Final 100) | 1,200 | $563 | $10–20 | $115 | **~$690** |
-| **TACL main** (6 arms × 3 datasets × 400 × 2 seeds = 14,400 debates; + pilot/sweep, 8–10 min/debate) | 2,520–3,320 | $1,090–1,400 | $30–60 | $220–290 | **~$1,340–1,750** |
-| Full law-testing (Dev 2,860 + Final 120) | 2,980 | $1,264 | $45–90 | $253 | **~$1,560** |
+| P0 smoke | 15 | $4 | $1–3 | $1 | **~$6** |
+| Pilot 100–150 Q | 225 | $59 | $1–3 | $12 | **~$72** |
+| **C+ core** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** |
+| **TACL main** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** |
+| Full law-testing — 6 min (optimistic) | 2,860 + 100 | $854 | $60–120 | $170 | **~$1,100** |
+| Full law-testing — 8 min (realistic) | 3,813 + 100 | $1,105 | $60–120 | $220 | **~$1,390** |
+| Full / high (8 min, high rate, 6-month storage) | 3,813 + 100 | $1,457 | $150–250 | $320 | **~$1,930** |
 
-**Budget:** **C+ ~$550–850 all-in; TACL main ~$1,300–1,800 all-in; full law-testing ~$1,300–2,050 all-in.** GPU hours dominate; bandwidth/storage add 10–25%. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $11,000+, not runnable.
+**Budget:** **C+ ~$420–580 all-in; TACL main ~$900–1,200 all-in; full law-testing ~$1,100 (6 min) to ~$1,400–1,900 (8 min); high ~$2,450.** GPU hours dominate; bandwidth/storage add 10–25%. The 2,860 GPU-h figure is a **6-min** number; at 8 min it is **3,813**. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026–0.033/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $8,000–11,000+, not runnable.
 
 **TACL feasibility:** 14,400 debates × 8 min = 1,920 GPU-h main; 4×24 GB GPUs = 480 GPU-h each = 20 days; 4 weeks with buffer. Annotation 500 items × 5 claims × 2 annotators = 5,000 labels ≈ 167 h; 6 people × 7 h/week × 4 weeks = 168 h. The theorem check is the real bottleneck.
 

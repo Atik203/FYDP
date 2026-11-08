@@ -97,7 +97,7 @@
 | 4 | Human evaluation | 150 paired items | Validate the automatic metrics. |
 | 5 | Decide | If **ρ > 0.4** and the pilot shows the effect → run TACL. If not → stop at 8.3–8.6. | Do not gamble the thesis. |
 
-**TACL full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours**. Four 24 GB GPUs = 480 GPU-hours each = **20 days**; 4 weeks with buffer.
+**TACL full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours** main, **2,460–2,700 GPU-hours** with pilot/sweep and Final replication. Four 24 GB GPUs = 480 GPU-hours each = **20 days** main; 4 weeks with buffer.
 
 **Human annotation:** 500 items × 5 claims × 2 annotators = **5,000 labels** ≈ 167 hours. Six people × 7 hours/week × 4 weeks = 168 hours.
 
@@ -121,24 +121,24 @@
 
 | Item | Real price |
 |---|---:|
-| RTX A6000 48 GB spot | **$0.382/hr** median |
+| RTX A6000 48 GB spot | **$0.263/hr** median at **80 GiB** |
 | RTX 4090 24 GB spot | $0.409/hr median |
+| RTX PRO 6000 Max-Q 96 GB spot | **$0.74–1.02/hr** median |
 | RTX PRO 6000 S 96 GB spot | **$1.432/hr** median |
 | RTX PRO 6000 WS 96 GB spot | $1.245/hr median |
-| RTX PRO 6000 Max-Q 96 GB spot | $1.017/hr median (but $0.026/GB bandwidth) |
-| Bandwidth | $0.004–0.011/GB typical; avoid $0.026–0.049/GB |
-| Storage | $0.20–0.40/GB/month on the instance disk |
+| Bandwidth | $0.004–0.033/GB |
+| Storage | **$0.20/GB-month** median on a Vast volume |
 
 | Path | All-in cost |
 |---|---:|
-| C+ core | **$550–850** |
-| TACL main | **$1,300-1,800** |
-| Full law-testing | $1,300–2,050 |
+| C+ core | **$420–580** |
+| TACL main | **$900–1,200** |
+| Full law-testing | **$1,100 (6 min) / $1,400–1,900 (8 min)** |
 
 **What blows the budget:**
 1. Re-downloading the model cache every session.
-2. Leaving a stopped instance for days.
-3. Running the 15×5×3×1,000 matrix (~$11,000+).
+2. Leaving a stopped instance/volume for months ($0.20/GB-month; 160 GB × 6 months = $192).
+3. Running the 15×5×3×1,000 matrix (~$8,000–11,000+).
 4. Using on-demand for everything.
 5. Idle GPUs while debugging.
 6. High-bandwidth hosts ($0.026/GB).

@@ -21,7 +21,7 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 | Theory drafting and proof exploration | **2–3x** | Agents can propose models and proof sketches, but LLM math is often plausible-but-wrong; a human must verify every step |
 | Benchmark item drafting and claim decomposition | **3–4x** | Agents can draft items and claims; humans must adjudicate gold labels |
 | Human evaluation | **1–1.5x** | Agents can prepare sheets and analyze agreement; they cannot replace the two human annotators |
-| GPU experiments | **1x** | C+ ~1,200 GPU-h; TACL ~2,520–3,320; full ~2,860; agents cannot compress it |
+| GPU experiments | **1x** | C+ ~1,200 GPU-h; TACL ~2,460–2,700; full ~3,813 at 8 min (2,860 at 6 min); agents cannot compress it |
 | Peer review / venue cycle | **1x** | 3–6 months; not compressible |
 
 **What this means for the plan:**
@@ -602,7 +602,7 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 - **Analysis:** paired by question; cluster bootstrap over questions; mixed-effects with dataset fixed effect.
 - **Target:** 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
 
-**Budget (Vast.ai spot, 8 Nov 2026):** A6000 $0.382/hr median; RTX PRO 6000 S $1.432/hr; WS $1.245/hr; bandwidth $0.004–0.011/GB typical; storage $0.20–0.40/GB/month. **C+ ~$550–850 all-in; TACL ~$1,300–1,800; full ~$1,300–2,050.** See `08_COMPUTE_COST.md`.
+**Budget (Vast.ai spot, 8 Nov 2026):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; bandwidth $0.004–0.033/GB; storage **$0.20/GB-month**. **C+ ~$420–580 all-in; TACL ~$900–1,200; full ~$1,100 (6 min) / $1,400–1,900 (8 min); high ~$2,450.** See `08_COMPUTE_COST.md`.
 
 **Venue:** **TACL, 1 February 2027.** Fallback: **EMNLP 2027, 28 May 2027.** **Do not submit ACL 2027** — the 4 January deadline is too early, and an ARR rejection blocks TACL for nine months.
 
