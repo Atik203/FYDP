@@ -13,7 +13,7 @@ import time
 
 from openai import APIConnectionError, APIStatusError, APITimeoutError, OpenAI, RateLimitError
 
-from ..config import ModelConfig
+from ..config import ModelConfig, agents_for_phase
 
 RETRYABLE = (APIConnectionError, APITimeoutError, RateLimitError)
 
@@ -74,13 +74,22 @@ class VLLMClient:
         raise RuntimeError(f"vLLM call failed after {total} attempts: {last_error}")
 
 
-def vllm_clients(cfg: ModelConfig, seed: int | None = None) -> list[VLLMClient]:
-    """One client per agent, in agent order (Agent 1, 2, 3).
+def vllm_clients(
+    cfg: ModelConfig,
+    seed: int | None = None,
+    phase: str | None = None,
+    n: int | None = None,
+) -> list[VLLMClient]:
+    """One client per agent, in agent order.
 
     When `seed` is given, agents get ``seed + index`` so runs are reproducible
-    per-agent without making the three agents identical.
+    per-agent without making the three agents identical. ``phase`` selects the
+    Dev or Final stack. ``n`` supports the Phase 3b N-scaling check: panels
+    larger than the configured trio cycle the served models/ports.
     """
+    agents = agents_for_phase(cfg, phase)
     clients = []
-    for i, agent in enumerate(cfg.agents):
+    for i in range(n or len(agents)):
+        agent = agents[i % len(agents)]
         clients.append(VLLMClient(agent.base_url, agent.model, seed=None if seed is None else seed + i))
     return clients

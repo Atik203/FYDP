@@ -9,6 +9,8 @@ from pathlib import Path
 import yaml
 
 ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
+PHASE_PATH = Path(__file__).resolve().parents[2] / "configs" / "phase.yaml"
+PHASES = ("dev", "final")
 
 
 def load_env(path: Path | None = None) -> bool:
@@ -59,10 +61,12 @@ class ModelConfig:
     gpu_memory_utilization: float | None = None
     agents: list[AgentConfig] = field(default_factory=list)
     final_agents: list[AgentConfig] = field(default_factory=list)
+    final_rounds: int | None = None
+    final_max_model_len: int | None = None
 
 
 def load_models(path: Path | str) -> ModelConfig:
-    """Parse configs/models.yaml. Use `cfg.final_agents` for the Final stack."""
+    """Parse configs/models.yaml. Use `agents_for_phase` to pick Dev vs Final."""
     raw = yaml.safe_load(Path(path).read_text())
     final = raw.get("final_phase", {})
     return ModelConfig(
@@ -71,7 +75,46 @@ def load_models(path: Path | str) -> ModelConfig:
         gpu_memory_utilization=raw.get("gpu_memory_utilization"),
         agents=[AgentConfig(**a) for a in raw["agents"]],
         final_agents=[AgentConfig(**a) for a in final.get("agents", [])],
+        final_rounds=final.get("rounds"),
+        final_max_model_len=final.get("max_model_len"),
     )
+
+
+def default_phase() -> str:
+    """Phase for scripts: ``TRUSTCAL_PHASE`` env > configs/phase.yaml > dev.
+
+    The two runnable branches (`Phase-1-dev`, `Phase-1-main`) differ only in
+    this one config value; no code is duplicated.
+    """
+    env = os.getenv("TRUSTCAL_PHASE", "").strip().lower()
+    if env in PHASES:
+        return env
+    if PHASE_PATH.is_file():
+        raw = yaml.safe_load(PHASE_PATH.read_text()) or {}
+        value = str(raw.get("default_phase", "dev")).strip().lower()
+        if value in PHASES:
+            return value
+    return "dev"
+
+
+def agents_for_phase(cfg: ModelConfig, phase: str | None = None) -> list[AgentConfig]:
+    """The agent list for ``phase``; raises rather than silently using Dev."""
+    name = (phase or default_phase()).strip().lower()
+    if name == "dev":
+        return cfg.agents
+    if name == "final":
+        if not cfg.final_agents:
+            raise ValueError("config has no final_phase.agents; cannot run the Final stack")
+        return cfg.final_agents
+    raise ValueError(f"unknown phase {name!r}; expected one of {PHASES}")
+
+
+def rounds_for_phase(cfg: ModelConfig, phase: str | None = None) -> int:
+    """Debate depth for the selected stack (Final may override the top-level value)."""
+    name = (phase or default_phase()).strip().lower()
+    if name == "final" and cfg.final_rounds:
+        return int(cfg.final_rounds)
+    return int(cfg.rounds)
 
 
 def load_datasets(path: Path | str) -> dict:
