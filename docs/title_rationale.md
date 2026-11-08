@@ -2,13 +2,13 @@
 
 **Registered FYDP title:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
 
-**Paper/site title (2026-11):** The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate: A Causal Benchmark for Sycophantic Consensus
+**Paper/site title (2026-11):** The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus
 
 This note explains the registered title and records the paper-title change. The FYDP cover keeps the registered title until the supervisor approves a change; the journal and site use the paper title.
 
 ## Why the paper title changed
 
-The registered title promises a mitigation (“for Mitigating”). The paper’s defensible contribution is narrower and more useful: it formalizes **when** evidence-grounded trust helps and when it amplifies a wrong majority, builds a controlled causal benchmark, and tests the sign reversal. “The Boundaries of…” states that contribution without claiming an efficacy result the experiments have not yet measured. “A Causal Benchmark for Sycophantic Consensus” keeps the phenomenon and the benchmark in the title. The question form (“When Does…?”) was considered and rejected for the final paper because a declarative title reads as a stronger, more specific contribution; it remains a reasonable fallback for a workshop version.
+The registered title promises a mitigation (“for Mitigating”). The paper’s defensible contribution is narrower and more useful: it formalizes **when** evidence-grounded trust helps and when it amplifies a wrong majority, builds a controlled causal benchmark, and tests the sign reversal. “The Boundaries of…” states that contribution without claiming an efficacy result the experiments have not yet measured. “with a Controlled Benchmark for Sycophantic Consensus” names the second contribution and keeps the phenomenon in the title. The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is the accurate word while the benchmark is a manipulated stress set; “causal” is reserved for the abstract and results once the estimand and identification assumptions are stated. The question form (“When Does…?”) was considered and rejected for the final paper because a declarative title reads as a stronger, more specific contribution; it remains a reasonable fallback for a workshop version.
 
 This note explains each part of the registered title and why that word was chosen. It answers the common review questions, in particular why the title says "Scientific" and why it says "Deliberation".
 

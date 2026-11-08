@@ -23,7 +23,7 @@ export function SiteFooter() {
           <div>
             <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-3">FYDP Research</h3>
             <p className="text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
-              The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate: a causal benchmark for sycophantic consensus.
+              The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate, with a controlled benchmark for sycophantic consensus.
             </p>
             <p className="text-sm mt-2 text-[rgba(255,255,255,0.45)]">
               Jul 2026 – Apr 2027 &middot; Single RTX PRO 6000 &middot; Open-weight Models

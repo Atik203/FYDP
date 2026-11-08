@@ -6,7 +6,7 @@
 **Manuscript:** `cas-sc-template.tex`
 **Audit:** `CLAIMS_AUDIT.md`
 
-**Title:** “The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate: A Causal Benchmark for Sycophantic Consensus.” The FYDP report cover keeps the registered title until the supervisor approves a change.
+**Title:** “The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.” The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is used until the causal estimand is formally defined. The FYDP report cover keeps the registered title until the supervisor approves a change.
 
 ## What this branch does
 

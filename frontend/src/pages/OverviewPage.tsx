@@ -40,7 +40,7 @@ export function OverviewPage() {
             Trust in Multi-Agent Debate
           </>
         }
-        subtitle="A causal benchmark for sycophantic consensus · Agentic AI · TACL / EMNLP 2028"
+        subtitle="with a controlled benchmark for sycophantic consensus · Agentic AI · TACL / EMNLP 2028"
         coverItems={[
           { label: "Prepared By", value: "Md. Atikur Rahaman" },
           {

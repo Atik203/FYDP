@@ -147,9 +147,9 @@ export function ProposalPage() {
         }}
       >
         <h1 style={h1Style}>
-          The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate:
+          The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate,
           <br />
-          A Causal Benchmark for Sycophantic Consensus
+          with a Controlled Benchmark for Sycophantic Consensus
         </h1>
         <p
           style={{
