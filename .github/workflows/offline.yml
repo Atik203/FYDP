@@ -1,0 +1,49 @@
+name: offline
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  trustcal-offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install offline test deps
+        run: pip install pytest numpy pyyaml openai python-dotenv requests
+      - name: Pytest
+        working-directory: trustcal
+        run: pytest -q
+      - name: Matrix dry-run
+        working-directory: trustcal
+        run: python scripts/run_matrix.py --dry-run
+      - name: Render serve commands
+        working-directory: trustcal
+        run: |
+          python scripts/gen_serve_cmds.py --phase dev > /dev/null
+          python scripts/gen_serve_cmds.py --phase final > /dev/null
+      - name: Phase single-source guard
+        working-directory: trustcal
+        run: |
+          ! grep -q '^phase:' configs/experiments.yaml
+          ! grep -q 'PHASE:-dev' scripts/serve.sh
+
+  frontend:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - working-directory: frontend
+        run: npm ci
+      - working-directory: frontend
+        run: npm run lint
+      - working-directory: frontend
+        run: npm run build

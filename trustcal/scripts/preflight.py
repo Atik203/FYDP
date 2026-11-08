@@ -12,6 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from trustcal.config import agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.preflight import format_report, run_preflight  # noqa: E402
 
 
@@ -23,6 +24,10 @@ def main() -> None:
     parser.add_argument("--max-tokens", type=int, default=1024)
     parser.add_argument("--phase", choices=["dev", "final"], default=None, help="default: configs/phase.yaml")
     args = parser.parse_args()
+
+    phase = args.phase or default_phase()
+    stack = " / ".join(a.model for a in agents_for_phase(load_models(args.config), phase))
+    print(f"phase={phase} stack={stack}")
 
     results = run_preflight(
         model_config=args.config,

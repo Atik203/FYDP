@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trustcal.config import default_phase  # noqa: E402
+from trustcal.config import agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.runner import ARMS, RunConfig, run  # noqa: E402
 
 
@@ -38,6 +38,9 @@ def main() -> None:
     parser.add_argument("--no-progressive", action="store_true", help="ablation: full retrieval depth from round 1")
     parser.add_argument("--no-adaptive", action="store_true", help="ablation: update trust every round, even on unanimous panels")
     args = parser.parse_args()
+
+    stack = " / ".join(a.model for a in agents_for_phase(load_models(args.config), args.phase))
+    print(f"phase={args.phase} stack={stack}")
 
     cfg = RunConfig(
         arm=args.arm,

@@ -29,7 +29,9 @@ fi
 
 CMD_FILE=$(mktemp)
 trap 'rm -f "$CMD_FILE"' EXIT
-PHASE="${PHASE:-dev}"
+if [ -z "${PHASE:-}" ]; then
+  PHASE="$("$PY_CMD" -c 'from trustcal.config import default_phase; print(default_phase())')"
+fi
 if [ "$PHASE" != "dev" ] && [ "$PHASE" != "final" ]; then
   echo "PHASE must be 'dev' or 'final' (got '$PHASE')" >&2
   exit 2

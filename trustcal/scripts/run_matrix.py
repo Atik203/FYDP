@@ -25,7 +25,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trustcal.config import PHASES, default_phase  # noqa: E402
+from trustcal.config import PHASES, agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.eval.stats import summarize as summarize_values  # noqa: E402
 from trustcal.runner import ARMS, RunConfig, run  # noqa: E402
 
@@ -274,6 +274,9 @@ def main() -> int:
     except (OSError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
+
+    stack = " / ".join(a.model for a in agents_for_phase(load_models("configs/models.yaml"), matrix.phase))
+    print(f"phase={matrix.phase} stack={stack}")
 
     if args.dry_run:
         print(f"dry run: {len(plan)} planned runs (phase={matrix.phase}, out={out_root})")

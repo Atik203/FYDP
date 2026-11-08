@@ -13,8 +13,6 @@
 # frozen questions file and must pass Gate 1 before this matrix runs. Use
 # `run_experiment.py --arm pilot --questions-file ...` and `pilot_report.py`.
 
-phase: dev
-
 datasets:
   - brokermath      # adversarial, worst-case by construction
   - brokenarxiv     # adversarial, monthly-refreshed
