@@ -156,3 +156,40 @@ def test_matrix_gpu_hours_math() -> None:
     runs, hours = p0_gate._matrix_gpu_hours(config, minutes_per_debate=8.0)
     assert runs == 2 * 2 * 2 * 100
     assert hours == pytest.approx(800 * 8 / 60)
+
+
+def _stub_manifest_module(accept_mismatch: bool):
+    import types
+
+    module = types.ModuleType("trustcal.manifest")
+
+    class ManifestMismatch(RuntimeError):
+        pass
+
+    module.ManifestMismatch = ManifestMismatch
+    module.build_manifest = lambda **kwargs: {"config_hash": "aaa", "seed": kwargs.get("seed", 0)}
+    module.write_manifest = lambda path, manifest: Path(path).write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
+
+    def check_resume(path, current_manifest):
+        if not accept_mismatch:
+            previous = json.loads(Path(path).read_text(encoding="utf-8"))
+            if previous != current_manifest:
+                raise ManifestMismatch("differs")
+
+    module.check_resume = check_resume
+    return module
+
+
+def test_manifest_path_guard_is_driven_correctly(monkeypatch) -> None:
+    monkeypatch.setitem(sys.modules, "trustcal.manifest", _stub_manifest_module(False))
+    result = p0_gate.check_manifest_resume()
+    assert result.status == p0_gate.PASS
+
+
+def test_manifest_guard_that_accepts_mismatch_fails(monkeypatch) -> None:
+    monkeypatch.setitem(sys.modules, "trustcal.manifest", _stub_manifest_module(True))
+    result = p0_gate.check_manifest_resume()
+    assert result.status == p0_gate.FAIL
+    assert "mismatch was accepted" in result.detail

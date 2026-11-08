@@ -536,7 +536,10 @@ def check_trust_bound() -> CheckResult:
     first: str | None = None
     for n in (1, 3, 5):
         for _ in range(10_000):
-            scores = rng.normal(0.0, 2.0, n)
+            # Trust vectors are probability simplices (records.py enforces the
+            # same invariant); uniform-weight inputs are out of domain for the
+            # log-domain operator and would test an error path, not the bound.
+            scores = rng.dirichlet(np.ones(n))
             support = rng.integers(0, 9, n).astype(float)
             harm = rng.integers(0, 9, n).astype(float)
             n_claims = rng.integers(1, 9, n).astype(float)
@@ -569,11 +572,18 @@ def check_trust_neutral() -> CheckResult:
     import numpy as np
 
     rng = np.random.default_rng(424242)
+    floor = float(parameters["floor"].default) if "floor" in parameters else 0.1
+
+    def feasible(n: int) -> np.ndarray:
+        """A point inside the trust polytope (floor <= w_i, sum == 1)."""
+        share = 1.0 - n * floor
+        return floor + share * rng.dirichlet(np.ones(n))
+
     neutral_failures = 0
     first_neutral: str | None = None
     for n in (1, 3, 5):
         for _ in range(200):
-            scores = rng.dirichlet(np.ones(n))
+            scores = feasible(n)
             out = np.asarray(
                 update_trust(scores, np.zeros(n), np.zeros(n), np.zeros(n)), dtype=float
             )
@@ -588,7 +598,7 @@ def check_trust_neutral() -> CheckResult:
     first_verbosity: str | None = None
     for n in (3, 5):
         for _ in range(100):
-            scores = rng.dirichlet(np.ones(n))
+            scores = feasible(n)
             support = rng.integers(0, 5, n).astype(float)
             harm = rng.integers(0, 3, n).astype(float)
             claims = rng.integers(1, 4, n).astype(float)
@@ -942,14 +952,65 @@ def _refused(result: object) -> bool:
     return bool(result)
 
 
+def _check_resume_file(module) -> CheckResult:
+    """Exercise ``check_resume(manifest_path, current_manifest)`` on disk."""
+    build = getattr(module, "build_manifest", None)
+    if callable(build):
+        try:
+            manifest = build(seed=1, temperature=0.0, run_config={"arm": "B8", "alpha": 0.5})
+        except Exception as exc:
+            return _result(12, "manifest resume", ERROR, f"build_manifest failed: {exc}", DEPENDENCIES[12])
+    else:
+        manifest = {
+            "config_hash": "aaa111",
+            "prompt_hash": "bbb222",
+            "code_commit": "ccc333",
+            "dataset_revisions": {"gpqa": "633f5ee89ab8ad4522a9f850766b73f62147ffdd"},
+            "seed": 1,
+            "temperature": 0.0,
+        }
+    other = dict(manifest) | {"config_hash": "different-#2"}
+    writer = getattr(module, "write_manifest", None)
+    guard = module.check_resume
+    with tempfile.TemporaryDirectory(prefix="p0-manifest-") as tmp:
+        path = Path(tmp) / "run_manifest.json"
+        if callable(writer):
+            writer(path, manifest)
+        else:
+            path.write_text(json.dumps(manifest), encoding="utf-8")
+        try:
+            guard(path, manifest)
+        except Exception as exc:
+            return _result(
+                12,
+                "manifest resume",
+                FAIL,
+                f"identical manifest was refused: {type(exc).__name__}: {exc}",
+                DEPENDENCIES[12],
+            )
+        try:
+            guard(path, other)
+        except Exception as exc:
+            return _result(
+                12,
+                "manifest resume",
+                PASS,
+                f"mismatch refused with {type(exc).__name__}; identical manifest accepted",
+            )
+        return _result(12, "manifest resume", FAIL, "manifest mismatch was accepted", DEPENDENCIES[12])
+
+
 def check_manifest_resume() -> CheckResult:
     name = "manifest resume"
     try:
         module = importlib.import_module("trustcal.manifest")
     except Exception as exc:
         return _result(12, name, PENDING, f"manifest module not importable ({exc})", DEPENDENCIES[12])
+    # WP-04 landed a path-based guard: check_resume(manifest_path, current_manifest).
+    if callable(getattr(module, "check_resume", None)):
+        return _check_resume_file(module)
     guard = None
-    for candidate in ("assert_resumable", "check_resume", "ensure_resumable", "resume_guard", "compare_manifests"):
+    for candidate in ("assert_resumable", "ensure_resumable", "resume_guard", "compare_manifests"):
         function = getattr(module, candidate, None)
         if callable(function):
             guard = function
@@ -959,7 +1020,7 @@ def check_manifest_resume() -> CheckResult:
             12,
             name,
             ERROR,
-            "manifest module has no resume guard (assert_resumable/check_resume/compare_manifests)",
+            "manifest module has no resume guard (check_resume/assert_resumable/compare_manifests)",
             DEPENDENCIES[12],
         )
     manifest = {
