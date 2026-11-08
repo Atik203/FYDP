@@ -89,6 +89,10 @@ def update_trust(
     ceiling: float = 0.9,
 ) -> np.ndarray: ...
 
+# Trust bound (P0-5): min >= floor - 1e-9, sum == 1 +/- 1e-9,
+# max <= max(ceiling, 1/N) + 1e-9. n_claims=None is the legacy raw-count
+# path; new code must pass per-agent claim counts.
+
 # eval/metrics.py
 def final_answer(aggregation: dict) -> str: ...
 ```

@@ -177,7 +177,7 @@ Source-Partitioned Retrieval (Agent A→PubMed, B→ArXiv, C→Semantic Scholar)
         ↓
 Evidence Scoring (cross-encoder reranker: supports / contradicts / no evidence)
         ↓
-Trust Update (Sᵢ(t+1) = Sᵢ(t) + αVᵢ − βHᵢ → softmax → clamp[0.1,0.9] → renormalize)
+Trust Update (Sᵢ(t+1) = logit accumulation → softmax → floor/ceiling simplex projection; claim-count normalized)
         ↓
 [Optional: Injection point for testing, between Round 1 and Round 2]
         ↓
@@ -200,10 +200,10 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 - **Revision rounds:** agents see each other's arguments and their own evolving trust standing, simulating real deliberation rather than one-shot voting.
 - **Trust-weighted aggregation:** the actual mechanism that should prevent sycophantic collapse — a correct, evidence-backed minority agent can outweigh two unsupported majority agents if its trust score is sufficiently higher.
 
-**Consistency check against prior discussions:** this section carries forward the architecture exactly as verified in earlier reviews (softmax→clamp→renormalize order, K=3 rounds, N=3 agents, source-partitioned retrieval). No changes made. The confidence-estimator gate (§4.1 originally) and the trust math (§4.4) are unchanged. The one addition is explicit placement of the **Month 1 behavioral-effectiveness pilot** as a design requirement, not just a risk note — this doesn't change the architecture, it changes _when_ one specific validation happens, moving it earlier per Section 0's risk ranking.
+**P0 correction (2026-11):** the original logit accumulation→softmax→simplex projection order was found to violate the [0.1, 0.9] floor after renormalization (`trust/update.py`); P0-5 replaces it with a floor/ceiling simplex projection. K=3, N=3, source-partitioned retrieval, and the Month-1 pilot placement are unchanged. The confidence-estimator gate (§4.1) is also unchanged.
 
 > [!IMPORTANT]
-> **Frozen design invariants — do not drift:** softmax → clamp → renormalize (exactly this order, clamp to [0.1, 0.9]) · K = 3 rounds · N = 3 heterogeneous agents · source-partitioned retrieval · inference only, no fine-tuning.
+> **Frozen design invariants — do not drift:** logit accumulation → softmax → floor/ceiling simplex projection (P0-5) · K = 3 rounds · N = 3 heterogeneous agents · source-partitioned retrieval · inference only, no fine-tuning.
 
 ---
 
@@ -263,13 +263,13 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 #### Orchestrator (implementation detail, not a research-facing agent, but required for the pipeline to function)
 
 - **Purpose:** coordinates round sequencing, injects test pressure at the specified point (t=1→2), triggers trust updates, and calls final aggregation.
-- **Responsibilities:** state management across rounds; enforcing the K=3 round cap; invoking the trust formula in the exact specified operator order (softmax → clamp → renormalize).
+- **Responsibilities:** state management across rounds; enforcing the K=3 round cap; invoking the trust formula in the exact specified operator order (logit accumulation → softmax → simplex projection).
 - **Implementation:** LangGraph state machine (consistent with tooling choice already used for iMAD reimplementation, Baseline B9, for consistency across the codebase).
 - **Failure cases:** state corruption across rounds, infinite retry loops.
 - **Recovery:** hard round cap (K=3) and per-agent retry cap (3, matching StatVerify-Agent's pattern from Idea 5 — reused convention, not scope creep) prevent runaway loops.
 
 > [!CAUTION]
-> **The operator order is fixed: softmax → clamp → renormalize.** Any reordering breaks the boundedness guarantee (Proposition 1). Unit-test the trust function in isolation before wiring it into the debate loop (Section 13, step 6).
+> **The operator is fixed: logit accumulation → softmax → simplex projection.** Do not substitute clamp-then-renormalize; that order violated the floor after renormalization (P0-5). Unit-test the trust function in isolation before wiring it into the debate loop (Section 13, step 6).
 
 ---
 
@@ -354,7 +354,7 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 1. Basic vLLM multi-model serving — low difficulty, well-documented.
 2. Retrieval integration + reranking — moderate, mostly API/plumbing work.
 3. Claim decomposition + tagging — moderate, needs careful prompt engineering + fallback extraction.
-4. Trust update math + LangGraph state machine — moderate-high, needs careful operator-order implementation (softmax→clamp→renormalize) to match the proven Proposition 1.
+4. Trust update math + LangGraph state machine — moderate-high, needs careful operator-order implementation (logit accumulation→softmax→simplex projection) to enforce the floor/ceiling bound.
 5. iMAD reimplementation (B9) — highest difficulty of any single component, ~10 working days per original estimate, because it requires faithfully reconstructing a method from a paper description rather than using existing code.
 
 ---
@@ -433,7 +433,7 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 | **Retrieval returns no evidence** (evidence sparsity)                        | Zero passages above relevance threshold                                   | Broaden query reformulation before declaring sparse                              | Mark claim abstained, exclude from trust update (no reward/penalty)              | Stratify results by retrieval-success rate in reporting — turns a failure mode into a measured, honest boundary |
 | **Contradictory evidence retrieved** (two valid sources disagree)            | Evidence verdicts conflict at >0.75 relevance for both support/contradict | N/A — real phenomenon, not a bug                                                 | Flag claim as "contested," report separately from clean support/contradict cases | Included as its own category in human eval annotation                                                           |
 | **All agents hallucinate the same way** (correlated failure)                 | Homogeneous-vs-heterogeneous comparison shows no CCR difference           | Heterogeneous model families (partial mitigation, not elimination)               | Diagnosed explicitly in Phase 4 failure analysis                                 | Reported honestly as a scope boundary, not hidden                                                               |
-| **Trust collapse** (all agents pushed toward T_min)                          | Trust variance monitoring across rounds                                   | Hard clamp floor (0.1) by design                                                 | Sanity-check against running-accuracy heuristic                                  | Already structurally prevented by Proposition 1's boundedness — but empirically verified, not just assumed      |
+| **Trust collapse** (all agents pushed toward T_min)                          | Trust variance monitoring across rounds                                   | Simplex floor (0.1) by projection                                                 | Sanity-check against running-accuracy heuristic                                  | Already structurally prevented by Proposition 1's boundedness — but empirically verified, not just assumed      |
 | **Claim extraction fails** (unparseable agent output)                        | Tagged-claim regex/schema validation fails                                | Structured output prompting with explicit tags                                   | Fallback LLM-based extraction pass                                               | If both fail, exclude that agent's turn from trust update for that round only                                   |
 | **API rate limit / downtime** (retrieval APIs)                               | HTTP error codes, timeout                                                 | Local caching of prior retrievals                                                | Retry with exponential backoff                                                   | OpenAlex fallback (new, added in Section 8)                                                                     |
 | **Context window overflow** (long debate histories)                          | Token count monitoring before each round                                  | Cap K=3 rounds; summarize prior rounds instead of full replay if needed          | Truncate oldest round detail first, preserve trust trajectory numerically        | Documented as an N/K-scaling limitation, tested explicitly in N-scaling ablation                                |
@@ -501,7 +501,7 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 5. **Claim decomposition + source-partitioned retrieval** — must come before the trust update function, since the trust formula's inputs (Vᵢ, Hᵢ) are _outputs_ of retrieval and evidence scoring. Building trust math before retrieval exists means it can only be tested against mocked data — acceptable for unit tests, not for validation.
 
-6. **Trust update function (softmax → clamp → renormalize)** — implement and unit-test the exact operator order in isolation before wiring it into the full debate loop. This is where Proposition 1's boundedness must be verified computationally (write a test that runs thousands of synthetic score sequences and confirms Tᵢ never leaves [0.1, 0.9]) before it's trusted inside the larger system.
+6. **Trust update function (logit accumulation → softmax → simplex projection)** — implement and unit-test the exact operator order in isolation before wiring it into the full debate loop. This is where Proposition 1's boundedness must be verified computationally (write a test that runs thousands of synthetic score sequences and confirms min ≥ floor, sum = 1, and max ≤ effective ceiling) before it's trusted inside the larger system.
 
 7. **Full debate loop integration** (LangGraph state machine) — only after steps 1–6 are each independently validated. Integration bugs are far easier to isolate when every component has already been unit-verified alone.
 
@@ -630,7 +630,7 @@ Question → [3 AI opinions] → [fact-check each claim] → [adjust trust]
 **What each team member should understand before implementation begins:**
 
 1. The plain-English workflow (Section 14/15 above) — everyone, regardless of role.
-2. The trust formula and why softmax→clamp→renormalize is the specified order (Section 4.4 of original design) — whoever implements the orchestrator.
+2. The trust formula and why logit accumulation→softmax→simplex projection is the specified order (Section 4.4 of original design) — whoever implements the orchestrator.
 3. The injection protocol and why it exists (§5.4) — whoever builds/runs experiments.
 4. The baseline set B1–B9 and what each one isolates — whoever writes the results/paper sections.
 

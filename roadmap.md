@@ -88,7 +88,7 @@ Assumptions: injection/RAG prompts add ~20–30% over the vanilla 6.2 min/debate
 **Keypoints:**
 - Atomic claim decomposition + `<claim id="cX">` tagging (structured CoT, fallback extraction)
 - Source-partitioned retrieval: Agent A→PubMed, B→ArXiv, C→Semantic Scholar + cross-encoder reranker
-- Trust update as **pure functions**: `Sᵢ(t+1) = Sᵢ(t) + αVᵢ − βHᵢ → softmax → clamp[0.1,0.9] → renormalize` (exact operator order) + boundedness unit test (thousands of synthetic sequences)
+- Trust update as **pure functions**: `Sᵢ(t+1) = logit accumulation → softmax → floor/ceiling simplex projection` (claim-count normalized; the original clamp→renormalize violated the floor and was replaced in P0-5) + boundedness unit test (10k synthetic sequences, N=1,3,5)
 - Full LangGraph debate loop (K=3 rounds, per-agent retry cap 3, injection point)
 - Baselines B5–B6 (Self-Consistency, MoA); **B9 (iMAD) reimplementation** — hardest component, ~10 days, sequenced last
 - B10 (ConsensAgent): preferred lightweight reimplementation; minimum acceptable = published-numbers comparison + mechanism-differentiation paragraph (mandatory, non-optional)

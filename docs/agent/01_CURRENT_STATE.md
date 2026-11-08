@@ -2,6 +2,8 @@
 
 **Snapshot:** 8 November 2026. **Canonical branch:** `feat/full-pipeline`. **Public default:** `main` (10 commits behind).
 
+> **Historical snapshot:** the P0 work lives on `feat/p0-hardening`. The trust-floor finding in §4.6 is fixed by WP-03 (simplex projection); current status is `trustcal/IMPLEMENTATION_STATUS.md` and `experiments/p0/`.
+
 This file is the status source of truth. If code and this file disagree, **code wins**; update this file and report the discrepancy.
 
 ---
