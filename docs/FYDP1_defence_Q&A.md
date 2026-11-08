@@ -2,6 +2,8 @@
 
 **Group 6 · Team Phantom Devs · CSE 4000A (B) · Final Defence**
 
+> **P0 status note (2026-11-09):** the trust and retrieval sections below are updated to the P0 branch. Older "stub / not wired" lines elsewhere are historical and are being reconciled in the claims audit. Current gate: 10/13 passed; pending are WP-13 (B8-no-trust), WP-09 (B8+injection), WP-14 (matrix/prereg).
+>
 > Deep-dive rehearsal file: system mechanics, code pointers, what-if behavior, and honest status.
 > The slide-by-slide speech and quick judge questions live in `docs/presentation.md` — do not duplicate them here.
 >
@@ -65,9 +67,9 @@
 **Scope today (be exact):**
 
 - ✅ Gate 0: full three-model debate loop runs end to end on 10 GPQA questions — 10/10 debates, 90/90 positions (`experiments/gate0/README.md:29-35`).
-- ✅ Trust math, parser, CCR/MPR, injection, runner, κ tooling — all tested (103 test functions).
-- 🟡 Trust update not yet wired into the debate loop (`trustcal/src/trustcal/orchestrator/debate.py:31`); revisions currently use a uniform placeholder weight (`debate.py:69`).
-- 🔴 Retrieval clients, verdicts, ECR, baselines B2/B4–B10, bootstrap statistics, non-GPQA loaders — Phase 2–3.
+- ✅ Trust math, parser, endpoints, injection, runner, verifier interface, κ tooling — tested (459 tests on the P0 branch).
+- ✅ Trust update is wired into the debate loop; revisions use the evolving trust and the final vote uses `trust_for_positions`.
+- 🟡 Retrieval/verifier quality and the human audit remain the bottleneck; ECR is deprecated and not a primary endpoint.
 
 **Why it matters.** Answers come with citations a reader can check. The design fits scientific QA, research assistants, and any evidence-rich domain (law, medicine).
 
@@ -75,7 +77,7 @@
 
 If asked "explain your project in two minutes," say this:
 
-"Three language models answer the same science question. Most debate systems then take a majority vote, so a confident wrong pair can outvote a correct third model and pressure it into changing its answer — we call that sycophantic consensus. We replace the vote with an evidence-grounded trust score. Each answer is split into atomic claims, every claim is checked against scientific literature, and each model's trust updates every round from what the sources say. The final answer is a trust-weighted vote, not a head count. Today the debate loop, the injection stress test and logging run end to end — Gate 0 completed ten of ten debates and ninety of ninety positions. The trust and retrieval layers are implemented and unit-tested; wiring them into the debate loop is Phase 2."
+"Three language models answer the same science question. Most debate systems then take a majority vote, so a confident wrong pair can outvote a correct third model and pressure it into changing its answer — we call that sycophantic consensus. We replace the vote with an evidence-grounded trust score. Each answer is split into atomic claims, every claim is checked against scientific literature, and each model's trust updates every round from what the sources say. The final answer is a trust-weighted vote, not a head count. Today the debate loop, the injection stress test and logging run end to end — Gate 0 completed ten of ten debates and ninety of ninety positions. The trust and retrieval layers are implemented, unit-tested, and wired into the loop; the paid matrix and the human verifier audit are next."
 
 ### 1.2 Quick Status Card
 
@@ -83,12 +85,12 @@ If asked "explain your project in two minutes," say this:
 | --- | --- | --- |
 | Debate loop + serving | ✅ measured | Gate 0: 10/10 debates, 90/90 positions, 370.8 s mean |
 | Injection stress test | ✅ implemented | one shot t1→2, minority-targeted (`injection.py:41-71`) |
-| Trust math | 🟡 tested, not wired | `trust/update.py:16-43`; guard `debate.py:31` |
-| Confidence gate | 🟡 prompt only | `agents/prompts.py:11-17` |
-| Retrieval + verdicts | 🔴 Phase 2 | `retrieval/sources.py`, `verdicts.py` stubs |
-| CCR / MPR | ✅ implemented | `eval/metrics.py:35-46` |
-| ECR | 🔴 Phase 3 | `eval/metrics.py:49-54` |
-| Statistics (bootstrap, d) | 🔴 planned | blueprint `:419` |
+| Trust math | ✅ wired | `trust/update.py`; simplex projection + claim counts |
+| Confidence gate | 🟡 prompt only | `agents/prompts.py` |
+| Retrieval + verdicts | 🟡 implemented; human audit pending | `retrieval/sources.py`, `verifier.py` |
+| CCR / MPR / accuracy | ✅ implemented | `eval/metrics.py`, `eval/endpoints.py` |
+| ECR | 🟡 deprecated | `eval/metrics.py`; not a primary endpoint |
+| Statistics (bootstrap, McNemar, Holm) | ✅ implemented | `eval/stats.py`, `scripts/run_matrix.py` |
 | Tests | ✅ 103 functions | colocated `test_*.py` |
 
 **The one sentence to repeat:** "The loop is real, the math is real and tested, and the evidence layer is the Phase 2 wiring — the gates exist to make that boundary honest."
@@ -102,15 +104,15 @@ This is the story to tell when a judge asks "walk me through what actually happe
 | 1 | Intake & Gate | Question enters; a prompt asks the model whether debate is needed (`DEBATE=YES/NO`). Easy questions take a direct answer. | gate prompt `trustcal/src/trustcal/agents/prompts.py:11-17` | 🟡 prompt defined; not invoked in the runner yet |
 | 2 | Round 0 — Initial positions | Each of the three agents answers independently (temperature 0.7, 1024 max tokens). | loop `trustcal/src/trustcal/orchestrator/debate.py:41-45`; client `inference/client.py:30-46` | ✅ |
 | 3 | Claim decomposition | Agents self-tag claims as `<claim id="cX">…</claim>`; a parser extracts them; if tags are missing, a sentence-split fallback caps at 20 claims, minimum 3 words. | `agents/prompts.py:9,23-24`; `agents/parser.py:38-71` | ✅ |
-| 4 | Source-partitioned retrieval | Agent A's claims query PubMed, B's query arXiv, C's query Semantic Scholar; top-k 10 per claim, reranked by a cross-encoder to 3 passages. OpenAlex is the fallback. | `retrieval/sources.py:6-18`; `retrieval/verdicts.py:6-8` | 🔴 stubs (NotImplementedError); design in `docs/blueprint.md:253-260` |
-| 5 | Verdicts | Each claim gets supported / contradicted / unverifiable / contested. Unverifiable claims are excluded from trust. | `retrieval/verdicts.py:11-16` | 🔴 stub (three verdicts in docstring; contested designed) |
-| 6 | Trust update | S(t+1) = S(t) + αV − βH, then softmax → clamp [0.1, 0.9] → renormalize. α = 0.5, β = 0.3 by default. | `trust/update.py:16-43` | 🟡 tested standalone; not called by the loop |
+| 4 | Claim-domain retrieval | Claims route by domain: bio/clinical → PubMed + Semantic Scholar; physics/chem and math/CS → arXiv + Semantic Scholar; other → Semantic Scholar/OpenAlex. Dedup by DOI, arXiv ID, or title; evidence volume is equalized. | `retrieval/sources.py`, `retrieval/pipeline.py` | ✅ implemented and routed; live APIs not yet run |
+| 5 | Verdicts | Each claim gets supported / contradicted / unverifiable; `supported` requires bidirectional support, no evidence → unverifiable. Unverifiable claims do not move trust. | `retrieval/verifier.py` | ✅ interface + lexical verifier; human audit pending |
+| 6 | Trust update | Logit accumulation + α·V/n − β·H/n, then one softmax, then a floor/ceiling simplex projection. α = 0.5, β = 0.3 by default; V and H are normalized by claims checked. | `trust/update.py` | ✅ unit-tested and called by the loop |
 | 7 | Injection (stress only) | One fabricated wrong expert consensus appended to the targeted agent's system prompt between rounds 1 and 2; off in B1–B4. | `orchestrator/injection.py:41-71`; `orchestrator/debate.py:47-56` | ✅ |
-| 8 | Revision rounds | Agents see peer positions (capped at 1500 chars) and revise, K = 3 rounds. | `orchestrator/debate.py:58-75` | ✅ (currently uniform placeholder trust in revisions, `:69`) |
-| 9 | Trust-weighted aggregation | Final answer = argmax of Σ trust × position. No head counting. | `trust/aggregation.py:8-15` | 🟡 implemented, no production caller yet |
-| 10 | Result package | Answer + citations + trust trajectory, written to records and summary. | `runner.py:102-144` | ✅ (trust trajectory currently null, `debate.py:83`) |
+| 8 | Revision rounds | Agents see peer positions (capped at 1500 chars) and their own trust, then revise; K = 3 rounds. | `orchestrator/debate.py` | ✅ |
+| 9 | Trust-weighted aggregation | Final answer = argmax of Σ trust × position, using the trust computed from the final positions. No head counting. | `trust/aggregation.py` | ✅ called with `trust_for_positions` |
+| 10 | Result package | Answer + citations + trust trajectory, written to records and summary. | `runner.py` | ✅ (trajectory and `trust_for_positions` recorded) |
 
-**How to phrase the gap honestly:** "The debate loop, injection and logging are running. The trust and retrieval layers are built and tested, and Phase 2 wires them into that loop — that is exactly what the Gate sequence protects."
+**How to phrase the gap honestly:** "The debate loop, injection, retrieval, trust, and logging now run end to end in mock and integration tests. The remaining gap is the paid main matrix and the human verifier audit, not the wiring."
 
 ### 2.1 Walkthrough Questions
 
@@ -118,11 +120,11 @@ This is the story to tell when a judge asks "walk me through what actually happe
 - **Q: How do agents see each other's answers?** Only peer positions plus reasoning, truncated to 1500 chars each (`orchestrator/debate.py:60`). They never see raw prompts or another agent's system message.
 - **Q: What exactly is logged per question?** Position per agent per round, parsed claims, injection metadata (targets, scope), timing, and the final answer — written to `records.jsonl` plus summary files (`runner.py:102-144`).
 - **Q: Where does the gold answer touch the system?** Selection and scoring only — never inside the loop (`INJECTION_PROTOCOL.md`).
-- **Q: Which stage is the current bottleneck?** Retrieval. Until it is implemented, claims default to unverifiable and trust does not move (Phase 2 wiring).
+- **Q: Which stage is the current bottleneck?** Verifier quality and the human audit. Retrieval is implemented and routed; the question is whether the verifier's labels are accurate enough for the trust signal to be meaningful.
 - **Q: How long does one question take end to end?** About 6 minutes at Gate 0 settings (370.8 s mean), dominated by nine generations on one GPU.
 - **Q: Can the pipeline run without GPUs?** Yes, for logic verification — `mock_vllm.py` serves agree / divergent / untagged modes, used by the integration tests.
 - **Q: What is the first thing to check when a run looks wrong?** The preflight report and the per-round positions in `records.jsonl`; most failures are serving or parsing, not the loop itself.
-- **Q: Where is the final "answer" chosen?** Stage 9, weighted aggregation (`trust/aggregation.py:8-15`). Until the trust vote is wired, metrics use internal majority matching (`eval/metrics.py:147`).
+- **Q: Where is the final "answer" chosen?** Stage 9, weighted aggregation (`trust/aggregation.py`), using the trust computed from the final positions. The record stores that actual answer and its source; metrics do not recompute a majority.
 - **Q: What stops the loop from running forever?** Fixed K = 3 rounds and a retry cap of 3 per agent per call (`configs/models.yaml:16`; `inference/client.py:38`).
 
 ### 2.2 A Full Worked Example
@@ -131,7 +133,7 @@ Walk this story with the dataflow figure (`frontend/public/figures/fig-dataflow.
 
 - **Question:** "Which mechanism most directly explains the observed temperature dependence of reaction rates?" Gold: B.
 - **Rounds 0–1:** A answers "A", B answers "B", C answers "A" — consensus A, correct minority B.
-- **Claims + retrieval (Phase 2 stubs):** B's claims go to arXiv (its partition); A's to PubMed, C's to Semantic Scholar.
+- **Claims + retrieval:** B's physics claim routes to arXiv + Semantic Scholar; A's bio claim routes to PubMed + Semantic Scholar.
 - **Verdicts + trust:** B's main claim supported; A's contradicted; C's unverifiable. B gains weight, A loses weight, C unchanged.
 - **Injection branch (stress only):** a fabricated expert consensus for "A" is appended to B's prompt between rounds 1 and 2. If B switches without new evidence, that is one collapse event.
 - **Vote + package:** the weighted vote carries B's evidence-backed answer; the package returns answer B, arXiv citations, and the trust trajectory.
@@ -145,10 +147,10 @@ Every "why did you choose X" question, in one table.
 | Number of agents | 3, different families (Qwen, Gemma, Mistral) | Smallest group where a majority can form; different families reduce correlated errors | `configs/models.yaml:20-48`; blueprint §5 |
 | No fine-tuning | Inference-only | The mechanism must be model-agnostic; fine-tuning hides whether trust itself changes behavior | `Papev_Summer26_6/cas-sc-template.tex:194` |
 | Rounds | K = 3 | Enough for trust to update twice; bounded cost | `configs/models.yaml:16` |
-| Trust update | Additive S + αV − βH | Transparent, bounded, unit-testable; counts of supported/contradicted claims | `trust/update.py:26` |
-| α / β | 0.5 / 0.3 defaults | Conservative start; the Phase-3b grid search tunes them | `trust/update.py:20-21`; sweep Jan 2027 blueprint `:476` |
-| Clamp | [0.1, 0.9] | No agent can dominate or vanish; keeps every voice in the vote | `trust/update.py:22-23`; `Papev:218` |
-| Operator order | softmax → clamp → renormalize | Fixed order proves boundedness; reordering breaks Proposition 1 | `trust/update.py:27-29,42-43`; blueprint `:266-272` |
+| Trust update | Logit accumulation + α·V/n − β·H/n | Transparent, bounded, unit-testable; support and contradiction normalized by claims checked | `trust/update.py` |
+| α / β | 0.5 / 0.3 defaults | Conservative start; the Phase-3b grid search tunes them | `trust/update.py`; sweep blueprint `:476` |
+| Floor / ceiling | [0.1, 0.9] by simplex projection | No agent can dominate or vanish; projection enforces the floor after every update | `trust/update.py`; `Papev:218` |
+| Operator | Logit accumulation → softmax → simplex projection | The projection enforces the bound; the old clamp→renormalize order could drop below the floor | `trust/update.py`; blueprint `:266-272` |
 | Aggregation | argmax Σ trust × position | Influence from evidence, not head count | `trust/aggregation.py:15`; blueprint `:304-305` |
 | Confidence gate | Binary prompt, pre-filtered eval sets | Avoids ~9 passes/question on easy items; misclassification only hurts throughput, not correctness | blueprint `:216-228` |
 | Source partitioning | A→PubMed, B→arXiv, C→Semantic Scholar | No agent can win by searching one easier slice of literature | blueprint `:198,256` |
@@ -157,9 +159,9 @@ Every "why did you choose X" question, in one table.
 | Injection point | between rounds 1 and 2, once | Pressure with no new evidence; upper-bound stress test | blueprint `:182,299` |
 | Injection target | the correct-minority agents by default | Tests exactly the collapse thesis | `orchestrator/injection.py:64-67` |
 | Datasets | 5 sets: 2 stable, 2 adversarial, 1 ceiling | Accuracy comparability plus collapse stress | [Section 13](#13-datasets--sources) |
-| Sample size | pilot 50, main 1000 per set | Stable paired statistics vs iteration speed | `configs/datasets.yaml:52-54` |
-| Seeds | 3 | Variance and confidence intervals, not one lucky run | `configs/datasets.yaml:49` |
-| Metrics | CCR (primary), MPR, ECR, accuracy | Collapse, minority survival, calibration, no regression | blueprint `:407-413` |
+| Sample size | pilot 50; main 400 per dataset | Stable paired statistics vs iteration speed | `configs/experiments.yaml` |
+| Seeds | 2 for the main matrix; 3 for the pilot | Variance and confidence intervals without doubling the C+ budget | `configs/experiments.yaml` |
+| Metrics | Final accuracy + CMR primary; ARR, trust AUROC/Brier; ECR deprecated | Correction, minority survival, ranking, no regression | `eval/endpoints.py` |
 | κ gate | ≥ 0.75 | Human annotation quality before any measurement counts | `trustcal/INJECTION_PROTOCOL.md:59-64` |
 | CCR threshold | baseline CCR ≥ 0.30 | Gate 1: the injection must induce real collapse before trust is tested | `FYDP_Summer/3.design.tex:121` |
 | Oracle baseline | B7, Gemini 3.1 Pro, one call/question | Upper-bound ceiling reference, not part of the mechanism | blueprint `:322,339` |
@@ -168,8 +170,8 @@ Every "why did you choose X" question, in one table.
 **Why questions with longer answers:**
 
 - **Q: Why additive trust and not a learned weight?** Additive counts are transparent and testable, and every step is provable; a learned scorer would need training data we do not have and would blur attribution.
-- **Q: Why is the clamp 0.1–0.9 and not 0–1?** Zero would permanently mute an agent after one bad round and 1.0 would let it dominate; the bounds keep the process reversible.
-- **Q: Why softmax first?** Softmax normalizes raw scores into a distribution so scores from different scales compare fairly, then the clamp enforces bounds, then renormalization returns a valid weight vector that sums to one.
+- **Q: Why is the floor 0.1 and not 0?** Zero would permanently mute an agent after one bad round; the floor keeps the process reversible. The simplex projection enforces it after every update — the old clamp-then-renormalize could drop below the floor, so P0-5 replaced it.
+- **Q: Why softmax then projection?** Softmax turns the scores into a distribution; the projection enforces the floor and ceiling without breaking the sum-to-one constraint.
 - **Q: Why these three model families?** They do not share training pipelines, so their errors are less correlated; certificates of "who searched better" are avoided by partitioning sources.
 - **Q: Why 1000 questions per set?** Paired statistics need stable denominators, especially for minority survival where the event rate is low; 50 is only the pilot for speed.
 
@@ -180,9 +182,9 @@ Every "why did you choose X" question, in one table.
 - **Q: Why penalize contradiction instead of just not rewarding?** Contradiction is evidence against the position; ignoring it would let confidently wrong agents keep their influence.
 - **Q: Why not weight agents by how many citations they collect?** Retrieval volume measures search luck. Verdicts — supported or contradicted — are the signal.
 - **Q: Why three rounds and not debate-until-consensus?** A fixed K bounds cost and keeps the experiment identical across runs; adaptive stopping is future work.
-- **Q: Why do agents not see each other's trust scores?** In the designed loop an agent may see its own trust but not others' weights (`blueprint.md:243,246`); today revisions use a uniform placeholder.
+- **Q: Why do agents not see each other's trust scores?** In the designed loop an agent may see its own trust but not others' weights (`blueprint.md:243,246`); the loop follows that rule.
 - **Q: Why is the injection delivered through the system prompt?** It represents an external expert consensus — the strongest realistic pressure — which matches the upper-bound framing.
-- **Q: Why 0.1–0.9 and not 0.2–0.8?** Wide bounds preserve recoverability, and the range is symmetric around 0.5; the grid search will test sensitivity.
+- **Q: Why 0.1–0.9 and not 0.2–0.8?** Wide bounds preserve recoverability, and the range is symmetric around 0.5. Both bounds are parameters; the grid search tests sensitivity.
 - **Q: Why GPQA and MMLU-Pro for accuracy?** Both are stable, peer-reviewed, multiple-choice sets with published numbers, so accuracy changes are attributable to our mechanism.
 - **Q: Why MPR when CCR already exists?** CCR is agent-level and requires injection exposure; MPR is debate-level survival and works on the no-pressure runs too.
 - **Q: Why source-partition instead of letting all agents search everything?** A shared corpus lets one agent dominate through retrieval luck; partitioning makes "who searched better" impossible.
@@ -222,8 +224,8 @@ The "if we do this, what happens" bank. Every answer names the exact current beh
 - **If the round-0 answers tie?** `majority_answer` picks the earliest position with count 1, and the debate is still eligible with two targets (`eval/answers.py:118`).
 - **If only one agent succeeds?** The debate is ineligible: `fewer_than_two_agents` (`injection.py:53-54`).
 - **If an agent's reasoning is very long?** Peer text is truncated to 1500 chars per peer before being shown (`debate.py:60`).
-- **If revisions currently weight the agents how?** Uniform placeholder `1/len(clients)` — because the trust updater is not wired yet; this is the explicit Phase 2 gap (`debate.py:69`).
-- **If the trust updater is passed to the loop today?** The loop raises `NotImplementedError("Phase 2: full trust-calibrated loop")` — a deliberate guard, not a crash (`debate.py:30-31`).
+- **If revisions currently weight the agents how?** Revisions see the evolving trust vector; the final aggregation uses `trust_for_positions`, computed from the final positions.
+- **If the trust updater is passed to the loop today?** The loop accepts it and updates after each evidence round; neutral evidence is an identity, not a re-uniformization.
 - **If a model server returns HTTP 500 or times out?** It is retried (up to 3 attempts, exponential backoff capped at 8 s); a 400 is not retried and surfaces as-is (`client.py:21-26,69-74`).
 - **If the model returns an empty completion?** It is treated as a failed attempt and retried; after 3 attempts a `RuntimeError` names the last error (`client.py:64-67,74`).
 - **If rounds are set to 2?** With real clients the round count comes from `models.yaml`; the `--rounds` flag is ignored in that path (`runner.py:161-166`).
@@ -243,7 +245,7 @@ The "if we do this, what happens" bank. Every answer names the exact current beh
 ### 4.4 Retrieval
 
 - **If PubMed returns nothing for a claim?** The query is broadened; if still empty, the claim is unverifiable and excluded from the trust update (blueprint `:260,429`).
-- **If Semantic Scholar is rate-limited?** The design falls back to OpenAlex with retry/backoff and disk caching (`blueprint.md:379,434`); today these clients are stubs (`sources.py:6-18`).
+- **If Semantic Scholar is rate-limited?** The design falls back to OpenAlex with retry/backoff and disk caching (`blueprint.md:379,434`); the clients are implemented, and live rate limits are the operational risk.
 - **If two sources return opposite evidence?** The claim is contested and reported separately, not counted as support or contradiction (`Papev:201`; blueprint `:430`).
 - **If the top passage is wrong?** The mechanism is only as strong as its sources; wrong passages can mislead the score — stated limitation (Papev `:398`).
 - **If a claim retrieves 30 candidate passages?** Top-k 10 are taken per claim and a cross-encoder reranks to the best 3 (`verdicts.py:6-8`, planned).
@@ -255,16 +257,16 @@ The "if we do this, what happens" bank. Every answer names the exact current beh
 
 ### 4.5 Trust Update
 
-- **If an agent's claims are all supported?** V rises and S grows toward the 0.9 ceiling (`update.py:26,29`).
-- **If all claims are contradicted?** H applies and S falls toward the 0.1 floor — it never reaches zero (`update.py:26,29`).
-- **If an agent produces no checkable claims?** V = H = 0, so its raw score is unchanged that round (`update.py:26`).
+- **If an agent's claims are all supported?** Support raises the logit and the projection caps the weight at the ceiling (0.9 for N=3).
+- **If all claims are contradicted?** Contradiction lowers the weight; the simplex projection guarantees it never falls below the floor.
+- **If an agent produces no checkable claims?** V = H = 0 is an exact identity that round — no re-uniformization.
 - **If unverifiable claims dominate?** They are excluded — trust cannot be moved by claims the literature cannot check (`blueprint.md:260`).
-- **If two agents end with identical scores?** Renormalization keeps equal weights; the tie in aggregation resolves to the first option index (`aggregation.py:15`).
-- **If one agent dominates after renormalization?** The clamp bounds each weight, but renormalization can push a dominant agent slightly below its floor — a documented operator-order effect (`update.py:5-8`).
+- **If two agents end with identical scores?** The projection keeps equal weights; the tie in aggregation resolves to the first option index (`aggregation.py`).
+- **If one agent dominates?** The simplex projection caps it at the ceiling; it cannot push another agent below the floor. This is the P0-5 fix.
 - **If α and β are swapped?** Punishing support and rewarding contradiction inverts the mechanism; the parameter grid search is planned for Phase 3b (blueprint `:476`).
-- **If the trust trajectory is needed in the output?** It is logged per round and carried in the result package once the loop is wired (`debate.py:83` currently `None`).
+- **If the trust trajectory is needed in the output?** It is logged per round and carried in the record, along with `trust_for_positions`.
 - **If we use K = 5 rounds?** The formula supports it; K = 3 is chosen for cost and drift control (blueprint `:699`).
-- **If two seeds disagree?** That is why there are three seeds — report intervals, not point estimates (`blueprint.md:401-403`).
+- **If two seeds disagree?** Report intervals, not point estimates; the main matrix uses two seeds and the pilot uses three.
 
 ### 4.6 Aggregation
 
@@ -334,7 +336,7 @@ Multi-step "if we do this, what happens" chains — trace them step by step.
 - **Chain 7 — seeds disagree on one debate.** Report per-seed outcomes and the paired interval; never average into a single claim.
 - **Chain 8 — κ comes back at 0.68.** The Go/No-Go fails, the annotate CLI exits 2, the rubric is revised and the 40 items are relabeled before any measurement counts (`annotate.py:55-58`).
 - **Chain 9 — baseline CCR < 0.30.** The injection did not induce collapse on the pilot → strengthen consensus wording/targeting before trust experiments; otherwise the premise is untestable (Gate 1).
-- **Chain 10 — a correct agent hits the floor.** Clamp keeps it at 0.1; renormalization still gives it nonzero weight; it can recover next round (`update.py:22-23`).
+- **Chain 10 — a correct agent hits the floor.** The simplex projection keeps it at the floor (0.1); it still has nonzero weight and can recover next round (`update.py`).
 - **Chain 11 — a wrong agent hits the ceiling.** Clamp caps it at 0.9; its peers still count, so one capped agent cannot nullify the vote.
 - **Chain 12 — final weighted vote ties.** Argmax picks the first option index today (`aggregation.py:15`); a margin-based tie-break is future work.
 - **Chain 13 — `--rounds 2` on real clients.** Ignored — rounds come from `models.yaml` (3); edit the config to change rounds (`runner.py:161-166`).
@@ -518,20 +520,21 @@ Source: `trustcal/INJECTION_PROTOCOL.md`; paper `Papev:316-326`.
 
 ## 8. Trust Mechanism Deep-Dive
 
-**Equation:** `S(t+1) = S(t) + αV − βH`.
+**Equation:** `S_i(t+1) = log(max(S_i(t), ε)) + α·V_i/n_i − β·H_i/n_i`, then one softmax, then a floor/ceiling simplex projection.
 
 | Symbol | Meaning | Value / range |
 | --- | --- | --- |
-| S | Agent trust score (its vote weight) | [0.1, 0.9] after processing |
+| S | Agent trust weight | `>= floor`, `sum = 1`, `<= max(ceiling, 1/N)` |
 | t | Debate round | 0..3 |
-| V | Number of claims supported by evidence in this round | ≥ 0 integer |
-| H | Number of claims contradicted in this round | ≥ 0 integer |
-| α | Reward per supported claim | 0.5 default |
-| β | Penalty per contradicted claim | 0.3 default |
+| V | Claims supported by evidence in this round | ≥ 0 count |
+| H | Claims contradicted in this round | ≥ 0 count |
+| n | Claims checked for that agent this round | ≥ 1 |
+| α | Reward per supported claim (normalized) | 0.5 default |
+| β | Penalty per contradicted claim (normalized) | 0.3 default |
 
-Code: raw step `trustcal/src/trustcal/trust/update.py:26`; α/β `:20-21`; floor/ceiling `:22-23`; pipeline `:27-29,42-43`.
+Code: `trustcal/src/trustcal/trust/update.py` (`update_trust`, `project_simplex_with_floor`).
 
-**Operator order and why it matters:** softmax → clamp → renormalize. The paper states the fixed order is what preserves boundedness (Proposition 1); reordering breaks it (blueprint `:266-272`). The boundedness test runs the clamp 5,000 times and checks the renormalized weights sum to one (`trust/test_boundedness.py:12-30`).
+**Operator and why it matters:** logit accumulation → softmax → simplex projection. The projection is what enforces the floor and ceiling; the original clamp-then-renormalize order could drop a weight below the floor, so P0-5 replaced it. The bounds test covers 10k random draws for N=1,3,5 (`trust/test_boundedness.py`).
 
 **Unverifiable claims do not move trust** — they are excluded from V and H (blueprint `:260`). Contested claims are reported separately, not scored (`Papev:201`).
 
@@ -539,31 +542,31 @@ Code: raw step `trustcal/src/trustcal/trust/update.py:26`; α/β `:20-21`; floor
 
 **Parameter sensitivity:** the α/β grid is a Phase-3b sweep (blueprint `:476`); the blueprint claims <4% CCR variation under the planned grid (`:691`) — have the grid ready before defending that number.
 
-**What is real today:** the math is implemented and unit-tested (boundedness, renormalization, minority-wins); it is not called inside the debate loop yet — revisions use `1/N` (`debate.py:31,69`).
+**What is real today:** the math is implemented, unit-tested (10k bounds draws, neutral identity, verbosity invariance, minority-wins), and called by the debate loop; `trust_for_positions` is the vector used by the final weighted vote.
 
 ### 8.1 Worked Trust Example
 
-Start: three agents at S = [0.33, 0.33, 0.33]. Round 1 verdicts: A has V = 3, H = 0; B has V = 1, H = 2; C has V = 2, H = 1.
+Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has V = 3, H = 0; B has V = 1, H = 2; C has V = 2, H = 1; each has n = 3 claims checked.
 
-- Raw update (α = 0.5, β = 0.3): A = 0.33 + 1.5 = 1.83; B = 0.33 + 0.5 − 0.6 = 0.23; C = 0.33 + 1.0 − 0.3 = 1.03.
-- Softmax turns these into preliminary weights; clamp keeps each in [0.1, 0.9]; renormalization makes them sum to one. A ends with the strongest weight.
-- Aggregation multiplies each weight by the agent's position and takes the argmax — the evidence-backed agent now has the loudest vote despite any majority pressure.
+- Normalized evidence (α = 0.5, β = 0.3): A +0.500; B 0.167 − 0.200 = −0.033; C 0.333 − 0.100 = +0.233.
+- Logits [0.500, −0.033, 0.233] → softmax ≈ [0.425, 0.249, 0.326]. The projection leaves them unchanged because all three are inside [0.1, 0.9]; A has the largest weight.
+- Aggregation multiplies each weight by the agent's position and takes the argmax — the evidence-backed agent has the loudest vote despite any majority pressure. Repeated supported rounds widen the gap; a contradiction cannot push a weight below the floor.
 
 ### 8.2 Trust Q&A
 
 - **Q: Why does B fall so fast after one bad round?** The update is per-round and counts contradictions: two contradictions cost 0.6, more than one support gains. The Phase-3 grid search calibrates that trade-off.
-- **Q: Can an agent recover after a bad round?** Yes — scores are additive and clamped, never zeroed; later supported claims raise it again.
+- **Q: Can an agent recover after a bad round?** Yes — logits are additive and projected, never zeroed; later supported claims raise the weight again.
 - **Q: What if an agent fabricates many claims?** More claims means more chances to be contradicted; unverifiable fabrication never moves trust.
 - **Q: What stops one lucky retrieval from swinging the vote?** Partitioned sources, reranking to three passages, verdicts grounded in passages, and the contested flag.
-- **Q: Where is boundedness proven?** The fixed operator order is the proof outline (Proposition 1); the test clamps 5,000 times and checks the sums (`trust/test_boundedness.py:12-30`).
-- **Q: What exactly does renormalization guarantee?** The weights sum to 1, so the vote is a weighted average — no double-counting and no scale drift.
-- **Q: Does the clamp ever fight renormalization?** Renormalization can push a dominant weight slightly below its floor — documented and accepted (`update.py:5-8`).
+- **Q: Where is boundedness proven?** The simplex projection is the guarantee: min ≥ floor, sum = 1, max ≤ max(ceiling, 1/N). The test covers 10k random draws for N=1,3,5 (`trust/test_boundedness.py`).
+- **Q: What exactly does the projection guarantee?** The weights sum to 1 and respect the floor/ceiling, so the vote is a weighted average with no double-counting and no scale drift.
+- **Q: Did renormalization ever fight the floor?** Yes — the old clamp-then-renormalize could push a weight below 0.1. P0-5 replaced it with the projection, so that failure mode is gone.
 
 ## 9. Retrieval & Evidence Deep-Dive
 
-**Design:** source-partitioned retrieval. Agent A → PubMed, B → arXiv, C → Semantic Scholar, so no agent wins because it searched an easier slice of literature (`blueprint.md:198,256`).
+**Design:** claim-domain retrieval. Bio/clinical claims → PubMed + Semantic Scholar; physics/chem and math/CS → arXiv + Semantic Scholar; other → Semantic Scholar/OpenAlex. Sources are rotated across agents so no agent wins by searching an easier slice (`retrieval/sources.py`).
 
-**Pipeline:** claim → query construction → top-k 10 candidates → cross-encoder rerank (ms-marco-MiniLM) → best 3 passages → verdict classification (`retrieval/sources.py`, `retrieval/verdicts.py` — both stubs).
+**Pipeline:** claim → domain route → query construction → top-k candidates → dedup by DOI/arXiv ID/title → rerank/select the passages shown → verdict classification (`retrieval/pipeline.py`, `retrieval/verifier.py`).
 
 **Verdicts:** supported / contradicted / unverifiable / contested (`Papev:201`).
 
@@ -634,7 +637,7 @@ Start: three agents at S = [0.33, 0.33, 0.33]. Round 1 verdicts: A has V = 3, H 
 | `src/trustcal/agents/` | prompts, claim parser, gate prompt |
 | `src/trustcal/orchestrator/` | debate loop, injection |
 | `src/trustcal/trust/` | update math, aggregation |
-| `src/trustcal/retrieval/` | source clients, verdicts (stubs) |
+| `src/trustcal/retrieval/` | source clients, claim routing, dedup, verifier |
 | `src/trustcal/eval/` | metrics, baselines, annotation, agreement |
 | `src/trustcal/runner.py` | experiment loop, records, summaries |
 | `scripts/` | setup.sh, serve.sh, run_experiment.py, preflight.py, annotate.py, mock_vllm.py |
@@ -678,7 +681,7 @@ If a judge asks "run it live": prefer the mock-server path — it proves orchest
 | `agents/parser` + `eval/answers` (31) | claim tags, fallback split/cap/drop, canonical answer matching |
 | `inference/client` (5) | retry then success, empty retried, cap → RuntimeError, 400 not retried |
 | `orchestrator/debate` + `injection` (12) | rounds, peers visible, targeting, one delivery, uncheckable |
-| `trust/boundedness` (2) | clamp 5,000×, renormalized sum = 1, evidence-backed minority wins |
+| `trust/boundedness` (2) | 10k draws N=1,3,5, simplex bounds, neutral identity, evidence-backed minority wins |
 | `eval/metrics` + `agreement` + `annotation` (23) | collapse/hold/evidence flags, κ, zero denominators |
 | `runner` + `config` + `env` + `preflight` + `integration-mock` (35) | records, resume, arms, preflight, mock end-to-end |
 
@@ -692,8 +695,8 @@ If a judge asks "run it live": prefer the mock-server path — it proves orchest
 | `agents/prompts.py` | agent prompts, gate prompt, injection prompt |
 | `agents/parser.py` | claim tags, answer extraction, fallbacks |
 | `orchestrator/debate.py` + `injection.py` | round loop, peer context, injection plan and delivery |
-| `trust/update.py` + `aggregation.py` | S(t+1) math, clamp/softmax/renormalize, weighted vote |
-| `retrieval/sources.py` + `verdicts.py` | source clients, rerank, verdicts (stubs) |
+| `trust/update.py` + `aggregation.py` | logit accumulation, softmax, simplex projection, weighted vote |
+| `retrieval/sources.py` + `verifier.py` | source clients, routing, dedup, rerank, verdicts |
 | `eval/metrics.py` + `baselines.py` | CCR/MPR/ECR, B1–B10 registry and arms |
 | `eval/answers.py` + `agreement.py` + `annotation.py` | canonical matching, κ, sheets |
 | `runner.py` + `preflight.py` + `mock_vllm.py` | experiment loop, checks, GPU-free mocks |
@@ -706,11 +709,11 @@ If a judge asks "run it live": prefer the mock-server path — it proves orchest
 | Three-model debate loop (Gate 0) | ✅ | `experiments/gate0/README.md:29-35` |
 | Injection (t1→2, one shot, targeting) | ✅ | `orchestrator/injection.py:41-71`, `debate.py:47-56` |
 | Claim tagging + parser + fallback | ✅ | `agents/parser.py:38-71`, 15 parser tests |
-| Trust update math + aggregation | 🟡 tested, not wired | `trust/update.py:16-43`, `trust/aggregation.py:8-15`, `debate.py:31` |
+| Trust update math + aggregation | ✅ wired | `trust/update.py`, `trust/aggregation.py`, `debate.py` |
 | Confidence gate | 🟡 prompt defined, not invoked | `agents/prompts.py:11-17` |
 | CCR / MPR | ✅ | `eval/metrics.py:35-46` |
 | ECR | 🔴 Phase 3 | `eval/metrics.py:49-54` |
-| Retrieval sources / rerank / verdicts | 🔴 Phase 2 stubs | `retrieval/sources.py`, `verdicts.py` |
+| Retrieval sources / rerank / verdicts | ✅ implemented; human audit pending | `retrieval/sources.py`, `verifier.py` |
 | Baselines B2, B4–B10 | 🔴 deferred | `eval/baselines.py:28-37` |
 | Bootstrap CIs / Cohen's d | 🔴 planned | blueprint `:419` |
 | Non-GPQA dataset loaders | 🔴 | `eval/datasets.py:22` |
@@ -719,7 +722,7 @@ If a judge asks "run it live": prefer the mock-server path — it proves orchest
 ### 12.1 Status Q&A
 
 - **Q: What is the highest-risk item not yet done?** Wiring trust into the loop and the behavioral Go/No-Go — the assumption that weights change decisions (blueprint `:83,86-87`).
-- **Q: Why are you defending with stubs?** The project is phased by design: FYDP I validates the loop and freezes the mechanism; the gates exist so stubs are documented and scheduled, not hidden.
+- **Q: Why did earlier drafts have stubs?** The project is phased by design: FYDP I validated the loop and froze the mechanism; the gates made each stub visible and scheduled. The P0 branch replaces them with tested implementations.
 - **Q: What exactly will be live by the end of FYDP II?** Retrieval + verdicts + trust wiring, injection arms measured on GPU, κ pilot passed, and the main matrix running.
 - **Q: What result would falsify the thesis?** A correct, evidence-supported minority still losing under trust weighting — or trust never changing the final answer. That is the frozen Go/No-Go.
 - **Q: What is the honest headline today?** "Servable, looping, parsable, and the mechanism math is proven — the evidence layer is the current work."
@@ -767,12 +770,12 @@ Config: `trustcal/configs/datasets.yaml:10-54`; blueprint table `docs/blueprint.
 - 10/10 debates completed; 90/90 non-empty positions; 275,668 characters generated.
 - 3,708.1 s total; 370.8 s mean per debate; 21.5 s stdev (5.8%); fastest 334.8 s / slowest 404.4 s.
 - Ministral missed claim tags in 5/30 generations; the fallback parser handled all of them.
-- Cost ≈ USD 4.29. Trust trajectory: null (not wired).
+- Cost ≈ USD 4.29. Trust trajectory: null — Gate 0 was vanilla MAD, before trust wiring.
 - Artifacts: `experiments/gate0/README.md`, `experiments/gate0/artifacts/summary-20260916T193249Z.md`, raw transcript.
 
 **What Gate 0 proves / does not prove:** proves serving, orchestration and parsing work end to end at 4-bit on one GPU; it does not measure collapse, retrieval or trust.
 
-**Pending:** retrieval + trust wiring, κ pilot (40 items), injection runs on GPU, full matrix (1,000/set), ablations A1–A4, human study — `roadmap.md:42-46,118-130`.
+**Pending:** paid C+ matrix (400/dataset, 2 seeds), human verifier audit (150–200 pairs), Final-stack smoke, injection runs on GPU, ablations A1–A4, human study. Retrieval and trust wiring are done.
 
 **Ablations:** A1 no trust, A2 no progressive retrieval, A3 no source partitioning, A4 no adaptive triggering (blueprint `:400,417`).
 
@@ -851,9 +854,9 @@ Config: `trustcal/configs/datasets.yaml:10-54`; blueprint table `docs/blueprint.
 
 | Weak spot | The honest answer |
 | --- | --- |
-| Trust update not wired into the loop yet | "Built and tested standalone; wiring is Phase 2. `debate.py:31` is the guard that prevents a half-wired run." |
-| Retrieval/verdicts/ECR are stubs | "Design is frozen and unit interfaces exist; implementations are Phase 2–3 by plan, not an accident." |
-| Revisions currently use uniform 1/N trust | "Placeholder until the loop is wired; it prevents mixing placeholder and real trust." (`debate.py:69`) |
+| Verifier accuracy is not yet human-validated | "The 150–200 pair audit is the next gate. The lexical baseline scores 0.58 balanced accuracy on the synthetic audit set, so it is a diagnostic, not a paper result." |
+| The effect has not been measured yet | "The C+ matrix is the next gate. No efficacy claim is made before it; the P0 gate is engineering readiness, not evidence." |
+| Placebo/oracle arms are not implemented yet | "WP-13 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset." |
 | `--rounds` ignored with real clients | "Rounds come from the config file; the flag is legacy for mocks. We will remove or fix it in Phase 2." (`runner.py:161-166`) |
 | Empty constraints subsections in report | "The standards/constraints chapter is being completed this week; the mapping exists in Ch5." (`FYDP_Summer/5.sic.tex:53-73`) |
 | Blueprint says "B1–B9 + B8 main" | "B8 is ours inside the comparison set; B1–B9 are baselines. The older line is a naming leftover." (`blueprint.md:397`) |
