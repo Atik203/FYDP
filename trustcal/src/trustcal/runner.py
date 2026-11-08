@@ -46,6 +46,7 @@ from .orchestrator.strategies import (
     run_single_rag,
 )
 from .retrieval.pipeline import RetrievalConfig, Retriever
+from .retrieval.verifier import build_verifier
 from .trust import TrustConfig, TrustState, aggregate
 
 ARMS = RUNNER_ARMS
@@ -79,6 +80,10 @@ class RunConfig:
     # B3 + injection is the no-retrieval pressure baseline.
     inject: bool = False
     injection_scope: str = "minority"
+    injection_arm: str = "authority"  # authority | peer | neutral | none
+    injection_source: str | None = None  # None -> external for authority, panel otherwise
+    injection_template: int = 0  # 0..2
+    verifier: str = "lexical"  # lexical | cross-encoder | nli | llm-judge
     # baseline hyperparameters
     samples: int = 5  # B5
     layers: int = 2  # B6
@@ -95,6 +100,14 @@ class RunConfig:
             raise ValueError(
                 f"unknown injection_scope {self.injection_scope!r}; expected 'minority' or 'all'"
             )
+        if self.injection_arm not in ("authority", "peer", "neutral", "none"):
+            raise ValueError(
+                f"unknown injection_arm {self.injection_arm!r}; expected authority/peer/neutral/none"
+            )
+        if self.injection_source not in (None, "external", "panel"):
+            raise ValueError("injection_source must be None, 'external', or 'panel'")
+        if not 0 <= self.injection_template <= 2:
+            raise ValueError("injection_template must be 0, 1, or 2")
         self.out_root = Path(self.out_root)
         self.questions_file = Path(self.questions_file) if self.questions_file else None
 
@@ -178,6 +191,10 @@ def _run_config_dict(cfg: RunConfig, rounds: int) -> dict:
         "adaptive_triggering": cfg.adaptive_triggering,
         "inject": cfg.inject,
         "injection_scope": cfg.injection_scope,
+        "injection_arm": cfg.injection_arm,
+        "injection_source": cfg.injection_source,
+        "injection_template": cfg.injection_template,
+        "verifier": cfg.verifier,
         "samples": cfg.samples,
         "layers": cfg.layers,
         "agents": cfg.agents,
@@ -605,6 +622,10 @@ def _make_runner(
         rounds=rounds,
         retriever=retriever,
         injection_scope=injection_scope,
+        injection_arm=cfg.injection_arm,
+        injection_source=cfg.injection_source,
+        injection_template=cfg.injection_template,
+        verifier=build_verifier(cfg.verifier),
         trust_config=cfg.trust_config(),
         seed=cfg.seed,
         question_id=qid or None,

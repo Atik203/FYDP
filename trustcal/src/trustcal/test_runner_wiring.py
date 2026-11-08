@@ -125,7 +125,7 @@ def test_b8_injection_uses_retriever_and_trust(tmp_path, monkeypatch) -> None:
     assert record["injection"]["consensus"]
     assert record["injection"]["targets"] == [0]
     assert record["injection"]["delivered"] is True
-    assert record["injection"]["consensus_source"] == "panel"
+    assert record["injection"]["consensus_source"] == "external"
     assert record["trust_trajectory"]
     assert record["trust_for_positions"] is not None
     assert record["evidence"]
@@ -257,7 +257,18 @@ def test_injection_record_defaults_delivered_and_source(tmp_path) -> None:
     assert validate_record(record) == []
     assert record["injection"]["eligible"] is True
     assert record["injection"]["delivered"] is True
+    assert record["injection"]["consensus_source"] == "external"
+    assert record["targets"] == [2]
+
+
+def test_peer_injection_uses_the_panel_majority(tmp_path) -> None:
+    cfg = _cfg(tmp_path, arm="injection", rounds=2, injection_arm="peer")
+    clients = [FakeClient("beta"), FakeClient("beta"), FakeClient("alpha")]
+    run(cfg, clients=clients, questions=[MCQ])
+    record = read_records(records_path(cfg))[0]
+
     assert record["injection"]["consensus_source"] == "panel"
+    assert record["injection"]["arm"] == "peer"
     assert record["targets"] == [2]
 
 
