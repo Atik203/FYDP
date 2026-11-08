@@ -21,6 +21,7 @@ from ..agents import (
     parse_position,
 )
 from ..eval.answers import distinct_answers
+from ..eval.options import RenderedOptions, build_options
 from ..inference import VLLMClient
 from ..retrieval.pipeline import Retriever, StaticRetriever, evidence_block
 from ..retrieval.verdicts import classify_claim, count_verdicts
@@ -38,10 +39,21 @@ class DebateRunner:
     retriever: Retriever | StaticRetriever | None = None
     trust_config: TrustConfig = field(default_factory=TrustConfig)
     aggregate_final: bool = True
+    # P0-0: seeded option rendering. Direct callers may omit these; the runner
+    # always passes the run seed and question id so a resumed run re-renders
+    # exactly the same order and the scorer can map letters back to options.
+    seed: int = 0
+    question_id: str | None = None
+    gold: str | None = None
 
     def run(self, question: str, options: list[str] | None = None) -> dict:
         """Run one debate; returns positions, transcript, verdicts, trust, aggregation."""
-        return self._run_debate(question, options)
+        rendered = build_options(
+            {"question": question, "answer": self.gold, "options": options},
+            self.seed,
+            self.question_id or _question_key(question),
+        )
+        return self._run_debate(question, options, rendered)
 
     def _passages(self, agent_index: int, claim: str, round_number: int) -> list[str]:
         if self.retriever is not None:
@@ -68,23 +80,35 @@ class DebateRunner:
             verdicts.append(agent_verdicts)
         return evidence, verdicts
 
-    def _run_debate(self, question: str, options: list[str] | None = None) -> dict:
+    def _run_debate(
+        self, question: str, options: list[str] | None, rendered: RenderedOptions
+    ) -> dict:
         systems = [AGENT_SYSTEM] * len(self.clients)
         transcript: list[dict] = []
         trust = TrustState(len(self.clients), self.trust_config)
         verdict_log: list[dict] = []
         evidence_log: list[dict] = []
         trust_used = False
+        rendered_options = rendered.options or None
 
         positions = [
-            client.complete(system, AGENT_INITIAL.format(agent_id=i, question=question))
+            client.complete(
+                system,
+                AGENT_INITIAL.format(
+                    agent_id=i, question=question, options_block=rendered.block
+                ),
+            )
             for i, (client, system) in enumerate(zip(self.clients, systems), start=1)
         ]
         transcript.append({"round": 1, "positions": positions})
 
         injection = None
         if self.injection_scope and self.rounds >= 2:
-            plan = build_injection([parse_position(p) for p in positions], options, scope=self.injection_scope)
+            plan = build_injection(
+                [parse_position(p) for p in positions],
+                rendered_options,
+                scope=self.injection_scope,
+            )
             injection = plan.as_dict() | {"round": 2, "scope": self.injection_scope}
             if plan.eligible:
                 injected_system = AGENT_SYSTEM + "\n\n" + INJECTION_SYSTEM.format(consensus=plan.consensus)
@@ -103,7 +127,7 @@ class DebateRunner:
                 support = [count_verdicts(v)[0] for v in verdicts]
                 harm = [count_verdicts(v)[1] for v in verdicts]
                 should_update = not self.trust_config.adaptive_triggering or distinct_answers(
-                    [parse_position(p) for p in positions], options
+                    [parse_position(p) for p in positions], rendered_options
                 ) > 1
                 if should_update:
                     if self.trust_update is not None:
@@ -122,6 +146,8 @@ class DebateRunner:
                         agent_id=i,
                         round=r,
                         rounds=self.rounds,
+                        question=question,
+                        options_block=rendered.block,
                         own_position=positions[i - 1],
                         trust=float(trust.scores[i - 1]),
                         evidence=evidence_block(evidence[i - 1]),
@@ -132,6 +158,8 @@ class DebateRunner:
                         agent_id=i,
                         round=r,
                         rounds=self.rounds,
+                        question=question,
+                        options_block=rendered.block,
                         own_position=positions[i - 1],
                         trust=float(trust.scores[i - 1]),
                         peer_positions=peers,
@@ -155,8 +183,22 @@ class DebateRunner:
             "trust_trajectory": trust.trajectory if trust_used else None,
             "verdicts": verdict_log,
             "evidence": evidence_log,
+            "options_raw": list(options) if options else None,
+            "options": rendered.options or None,
+            "option_permutation": rendered.permutation or None,
+            "gold_letter_rendered": rendered.gold_letter,
         }
         if self.aggregate_final:
-            result["aggregation"] = aggregate(trust.scores, [parse_position(p) for p in positions], options)
+            result["aggregation"] = aggregate(
+                trust.scores, [parse_position(p) for p in positions], rendered_options
+            )
             result["final_trust"] = trust.scores.tolist()
         return result
+
+
+def _question_key(question: str) -> str:
+    """Stable id for direct callers that do not pass a question id."""
+    from hashlib import sha256
+
+    return "adhoc-" + sha256((question or "").encode("utf-8")).hexdigest()[:16]
+

@@ -1,6 +1,15 @@
 """Evaluation harness: datasets, metrics (CCR/MPR/ECR), baselines B1–B10."""
 
-from .answers import canonical, distinct_answers, is_correct, majority_answer, normalize, same_answer
+from .answers import (
+    Score,
+    canonical,
+    distinct_answers,
+    is_correct,
+    majority_answer,
+    normalize,
+    same_answer,
+    score_answer,
+)
 from .baselines import APPROXIMATIONS, BASELINES, DEFERRED, IMPLEMENTED, RUNNER_ARMS, arm_for
 from .datasets import load_dataset
 from .endpoints import (
@@ -32,6 +41,7 @@ from .metrics import (
     mpr,
     summarize,
 )
+from .options import RenderedOptions, build_options
 from .pilot import load_pilot_questions, pilot_verdict, score_pilot, validate_question
 from .stats import (
     bootstrap_ci,
@@ -61,6 +71,10 @@ __all__ = [
     "normalize",
     "same_answer",
     "is_correct",
+    "score_answer",
+    "Score",
+    "RenderedOptions",
+    "build_options",
     "canonical",
     "distinct_answers",
     "majority_answer",
