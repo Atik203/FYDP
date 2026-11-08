@@ -32,6 +32,15 @@ from .options import CHOICE_LETTERS, FREE_TEXT_BLOCK, RenderedOptions, build_opt
 
 OPTIONS = ["alpha structure", "beta structure", "gamma structure", "delta structure"]
 QUESTION = {"question": "Which structure is correct?", "answer": "gamma structure", "options": OPTIONS}
+GPQA_QUESTION = {
+    "question": (
+        "Two quantum states with energies E1 and E2 have lifetimes of 10^-9 s and "
+        "10^-8 s. Which one of the following options could be their energy difference "
+        "so that they can be clearly resolved?"
+    ),
+    "answer": "10^-4 eV",
+    "options": ["10^-4 eV", "10^-5 eV", "7.3e-7 eV", "1e-6 eV"],
+}
 
 
 class FakeClient:
@@ -189,12 +198,13 @@ def test_b3_debate_record_stores_option_permutation(tmp_path) -> None:
 
 
 def test_mock_debate_letter_maps_to_rendered_option(tmp_path) -> None:
-    rendered = build_options(QUESTION, 5, "local-0000")
+    """A GPQA-shaped debate: the mock's letter is a rendered position, not dataset A."""
+    rendered = build_options(GPQA_QUESTION, 5, "gpqa-0000")
     letter = rendered.gold_letter
     assert letter is not None
-    cfg = RunConfig(arm="B3", dataset="local", limit=1, seed=5, out_root=tmp_path, rounds=2)
+    cfg = RunConfig(arm="B3", dataset="gpqa", limit=1, seed=5, out_root=tmp_path, rounds=2)
     clients = [FakeClient(f"Answer: {letter}") for _ in range(3)]
-    run(cfg, clients=clients, questions=[QUESTION])
+    run(cfg, clients=clients, questions=[GPQA_QUESTION])
     record = read_records(records_path(cfg))[0]
 
     assert record["gold_letter_rendered"] == letter
@@ -202,7 +212,7 @@ def test_mock_debate_letter_maps_to_rendered_option(tmp_path) -> None:
     answer = record["rounds"][-1]["answers"][0]
     resolved = choice_letter(answer, record["options"])
     assert resolved == letter
-    assert record["options"][CHOICE_LETTERS.index(resolved)] == "gamma structure"
+    assert record["options"][CHOICE_LETTERS.index(resolved)] == "10^-4 eV"
 
 
 REQUIRED_V2_FIELDS = (
