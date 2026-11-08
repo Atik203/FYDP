@@ -1,42 +1,80 @@
-"""Plain-Python debate loop skeleton. Phase 2 replaces this with a LangGraph state machine.
+"""Debate loop: rounds, injection, evidence retrieval, trust updates, aggregation.
 
-Rounds: 1 (initial positions) → optional injection at t=1→2 → revision rounds,
-K=3 total. Injection follows trustcal/INJECTION_PROTOCOL.md: only the targeted
-agents (the minority by default) receive the fabricated-consensus system prompt.
+The plain-Python state machine is the target shape; Phase 2's LangGraph port
+wraps the same round functions rather than reimplementing them. With no
+retriever and no trust config this is still the vanilla MAD loop of Gate 0, so
+existing Phase 0/1 runs and tests are unchanged.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable
 
+from ..agents import (
+    AGENT_INITIAL,
+    AGENT_REVISION,
+    AGENT_REVISION_EVIDENCE,
+    AGENT_SYSTEM,
+    INJECTION_SYSTEM,
+    claim_texts,
+    parse_position,
+)
+from ..eval.answers import distinct_answers
 from ..inference import VLLMClient
+from ..retrieval.pipeline import Retriever, StaticRetriever, evidence_block
+from ..retrieval.verdicts import classify_claim, count_verdicts
+from ..trust import TrustConfig, TrustState, aggregate
+from .injection import build_injection
 
 
 @dataclass
 class DebateRunner:
     clients: list[VLLMClient]
     rounds: int = 3
-    retrieve: Callable | None = None
-    trust_update: Callable | None = None
+    retrieve: Callable | None = None  # legacy hook: retrieve(agent_index, claim) -> passages
+    trust_update: Callable | None = None  # optional override: (trust, support, harm) -> trust
     injection_scope: str | None = None  # None = plain debate; "minority" | "all"
+    retriever: Retriever | StaticRetriever | None = None
+    trust_config: TrustConfig = field(default_factory=TrustConfig)
+    aggregate_final: bool = True
 
     def run(self, question: str, options: list[str] | None = None) -> dict:
-        """Run one debate; returns the final result package (answers + trajectories).
-
-        Phase 0/1 scope: rounds without retrieval/trust. Phase 2 wires in
-        retrieve/trust_update.
-        """
-        if self.trust_update is not None:
-            raise NotImplementedError("Phase 2: full trust-calibrated loop")
+        """Run one debate; returns positions, transcript, verdicts, trust, aggregation."""
         return self._run_debate(question, options)
 
-    def _run_debate(self, question: str, options: list[str] | None = None) -> dict:
-        from ..agents import AGENT_INITIAL, AGENT_REVISION, AGENT_SYSTEM, INJECTION_SYSTEM, parse_position
-        from .injection import build_injection
+    def _passages(self, agent_index: int, claim: str, round_number: int) -> list[str]:
+        if self.retriever is not None:
+            return list(self.retriever.retrieve(agent_index, claim, round_number))
+        if self.retrieve is not None:
+            return list(self.retrieve(agent_index, claim))
+        return []
 
+    def _evidence_for(
+        self, positions: list[str], round_number: int
+    ) -> tuple[list[list[str]], list[list[str]]]:
+        """Per-agent passages + per-claim verdicts for one revision round."""
+        evidence: list[list[str]] = []
+        verdicts: list[list[str]] = []
+        for i, position in enumerate(positions):
+            claims = claim_texts(position, max_claims=self.trust_config.max_claims)
+            agent_passages: list[str] = []
+            agent_verdicts: list[str] = []
+            for claim in claims:
+                passages = self._passages(i, claim, round_number)
+                agent_verdicts.append(classify_claim(claim, passages))
+                agent_passages.extend(passages)
+            evidence.append(list(dict.fromkeys(agent_passages)))
+            verdicts.append(agent_verdicts)
+        return evidence, verdicts
+
+    def _run_debate(self, question: str, options: list[str] | None = None) -> dict:
         systems = [AGENT_SYSTEM] * len(self.clients)
         transcript: list[dict] = []
+        trust = TrustState(len(self.clients), self.trust_config)
+        verdict_log: list[dict] = []
+        evidence_log: list[dict] = []
+        trust_used = False
 
         positions = [
             client.complete(system, AGENT_INITIAL.format(agent_id=i, question=question))
@@ -56,29 +94,69 @@ class DebateRunner:
                 injection["scope"] = None  # nothing delivered
 
         for r in range(2, self.rounds + 1):
-            # Cap each peer position so round prompts stay inside max_model_len.
+            evidence, verdicts = self._evidence_for(positions, r)
+            has_evidence = any(evidence)
+            if has_evidence:
+                evidence_log.append({"round": r, "passages": evidence, "verdicts": verdicts})
+
+            if has_evidence and self.trust_config.use_trust:
+                support = [count_verdicts(v)[0] for v in verdicts]
+                harm = [count_verdicts(v)[1] for v in verdicts]
+                should_update = not self.trust_config.adaptive_triggering or distinct_answers(
+                    [parse_position(p) for p in positions], options
+                ) > 1
+                if should_update:
+                    if self.trust_update is not None:
+                        trust.scores = self.trust_update(trust.scores, support, harm)
+                        trust.trajectory.append(list(trust.scores))
+                    else:
+                        trust.update(support, harm)
+                    trust_used = True
+                verdict_log.append({"round": r, "support": support, "harm": harm})
+
             peers = "\n\n".join(f"Agent {i}: {p[:1500]}" for i, p in enumerate(positions, start=1))
-            positions = [
-                client.complete(
-                    systems[i - 1],
-                    AGENT_REVISION.format(
+            new_positions = []
+            for i, client in enumerate(self.clients, start=1):
+                if has_evidence:
+                    prompt = AGENT_REVISION_EVIDENCE.format(
                         agent_id=i,
                         round=r,
                         rounds=self.rounds,
                         own_position=positions[i - 1],
-                        trust=1 / len(self.clients),
+                        trust=float(trust.scores[i - 1]),
+                        evidence=evidence_block(evidence[i - 1]),
                         peer_positions=peers,
-                    ),
-                )
-                for i, client in enumerate(self.clients, start=1)
-            ]
-            transcript.append({"round": r, "positions": positions})
+                    )
+                else:
+                    prompt = AGENT_REVISION.format(
+                        agent_id=i,
+                        round=r,
+                        rounds=self.rounds,
+                        own_position=positions[i - 1],
+                        trust=float(trust.scores[i - 1]),
+                        peer_positions=peers,
+                    )
+                new_positions.append(client.complete(systems[i - 1], prompt))
+            positions = new_positions
+            transcript.append(
+                {
+                    "round": r,
+                    "positions": positions,
+                    "trust": trust.scores.tolist() if has_evidence else None,
+                }
+            )
 
-        return {
+        result = {
             "question": question,
             "final_positions": positions,
             "rounds_completed": self.rounds,
             "transcript": transcript,
             "injection": injection,
-            "trust_trajectory": None,
+            "trust_trajectory": trust.trajectory if trust_used else None,
+            "verdicts": verdict_log,
+            "evidence": evidence_log,
         }
+        if self.aggregate_final:
+            result["aggregation"] = aggregate(trust.scores, [parse_position(p) for p in positions], options)
+            result["final_trust"] = trust.scores.tolist()
+        return result
