@@ -193,3 +193,14 @@ def test_manifest_guard_that_accepts_mismatch_fails(monkeypatch) -> None:
     result = p0_gate.check_manifest_resume()
     assert result.status == p0_gate.FAIL
     assert "mismatch was accepted" in result.detail
+
+
+def test_options_probe_counts_each_option_once() -> None:
+    result = p0_gate.check_options_in_prompts()
+    assert result.status == p0_gate.PASS, result.detail
+
+
+def test_parser_corpus_probe_finds_the_50_case_fixture() -> None:
+    result = p0_gate.check_parser_corpus()
+    assert result.status == p0_gate.PASS, result.detail
+    assert "50/50" in result.detail

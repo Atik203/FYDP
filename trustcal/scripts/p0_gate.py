@@ -369,7 +369,7 @@ def check_options_in_prompts() -> CheckResult:
                     rounds=3,
                     own_position="own",
                     trust=0.5,
-                    evidence=block,
+                    evidence="A supporting passage from the assigned source.",
                     peer_positions="peers",
                     question=question["question"],
                     options=block,
@@ -411,8 +411,13 @@ def check_options_in_prompts() -> CheckResult:
 
 
 def _find_parser_corpus() -> Path | None:
-    patterns = ("*parser*corpus*.json", "*parser*corpus*.jsonl", "*corpus*parser*.json")
-    for base in (ROOT, REPO / "experiments", REPO / "docs"):
+    patterns = (
+        "*parser*corpus*.json",
+        "*parser*corpus*.jsonl",
+        "*corpus*parser*.json",
+        "*parser*cases*.json",
+    )
+    for base in (ROOT, ROOT / "tests", REPO / "experiments", REPO / "docs"):
         if not base.is_dir():
             continue
         for pattern in patterns:
@@ -484,24 +489,45 @@ def check_parser_corpus() -> CheckResult:
         return _result(4, name, ERROR, f"{path.name}: corpus is empty", DEPENDENCIES[4])
 
     from trustcal.agents import parse_position
+    from trustcal.eval.answers import score_answer
+    from trustcal.eval.options import RenderedOptions
 
     matches = 0
+    misses: list[str] = []
     for item in items:
-        text = item.get("text", item.get("raw", item.get("output")))
-        expected = item.get("expected", item.get("gold", item.get("gold_parse")))
-        if text is None or expected is None:
-            return _result(
-                4,
-                name,
-                ERROR,
-                f"{path.name}: case is missing text/expected (keys: {sorted(item)})",
-                DEPENDENCIES[4],
-            )
-        parsed = str(parse_position(str(text))).strip()
-        if parsed == str(expected).strip():
-            matches += 1
+        if "position" in item and "gold" in item and "expect" in item:
+            rendered = None
+            raw = item.get("rendered")
+            if raw:
+                rendered = RenderedOptions(
+                    options=raw["options"],
+                    permutation=raw["permutation"],
+                    gold_letter=raw["gold_letter"],
+                    block="",
+                )
+            score = score_answer(str(item["position"]), str(item["gold"]), rendered)
+            expect = item["expect"]
+            exact = score.parsed == expect.get("parsed") and score.kind == expect.get("kind")
+        else:
+            text = item.get("text", item.get("raw", item.get("output")))
+            expected = item.get("expected", item.get("gold", item.get("gold_parse")))
+            if text is None or expected is None:
+                return _result(
+                    4,
+                    name,
+                    ERROR,
+                    f"{path.name}: case is missing text/expected (keys: {sorted(item)})",
+                    DEPENDENCIES[4],
+                )
+            exact = str(parse_position(str(text))).strip() == str(expected).strip()
+        matches += exact
+        if not exact and len(misses) < 3:
+            misses.append(str(item.get("id", "?")))
     rate = matches / len(items)
-    detail = f"{path.name}: {matches}/{len(items)} exact = {rate:.1%}; probes: {probe_note}"
+    detail = f"{path.name}: {matches}/{len(items)} exact = {rate:.1%}"
+    if misses:
+        detail += f"; first misses: {', '.join(misses)}"
+    detail += f"; probes: {probe_note}"
     return _result(4, name, PASS if rate >= 0.95 else FAIL, detail, DEPENDENCIES[4])
 
 
