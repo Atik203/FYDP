@@ -14,7 +14,7 @@ FIXTURE = Path(__file__).resolve().parents[3] / "tests" / "fixtures" / "parser_c
 
 RENDERED = RenderedOptions(
     options=["alpha structure", "beta structure", "gamma structure", "delta structure"],
-    permutation=[2, 0, 3, 1],
+    permutation=[0, 1, 2, 3],
     gold_letter="C",
     block="",
 )
