@@ -29,6 +29,7 @@ from ..retrieval.pipeline import StaticRetriever
 from ..runner import RunConfig, read_records, records_path, run
 from .answers import choice_letter
 from .options import CHOICE_LETTERS, FREE_TEXT_BLOCK, RenderedOptions, build_options
+from .records import validate_record
 
 OPTIONS = ["alpha structure", "beta structure", "gamma structure", "delta structure"]
 QUESTION = {"question": "Which structure is correct?", "answer": "gamma structure", "options": OPTIONS}
@@ -234,24 +235,15 @@ REQUIRED_V2_FIELDS = (
 )
 
 
-def _validate_record(record: dict) -> None:
-    """Local stand-in for WP-04's eval/records.py (not on this branch yet)."""
-    missing = [key for key in REQUIRED_V2_FIELDS if key not in record]
-    if missing:
-        raise ValueError(f"record missing required fields: {missing}")
-
-
-def test_missing_final_answer_fails_validation(tmp_path) -> None:
+def test_runner_record_passes_schema_v2_validation(tmp_path) -> None:
+    """The runner's record is schema-v2 valid; dropping final_answer is not."""
     cfg = RunConfig(arm="B1", dataset="local", limit=1, seed=11, out_root=tmp_path)
     run(cfg, clients=[FakeClient("Answer: A")], questions=[QUESTION])
     record = read_records(records_path(cfg))[0]
 
-    with pytest.raises(ValueError, match="final_answer"):
-        _validate_record(record)
+    assert set(REQUIRED_V2_FIELDS) <= set(record)
+    assert validate_record(record) == []
 
-    record.update(
-        final_answer="gamma structure",
-        final_answer_correct=True,
-        final_answer_source="single",
-    )
-    _validate_record(record)  # no raise
+    del record["final_answer"]
+    errors = validate_record(record)
+    assert any("final_answer" in error for error in errors)

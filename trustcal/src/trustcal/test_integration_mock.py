@@ -10,6 +10,7 @@ from __future__ import annotations
 import pytest
 
 from .eval.options import CHOICE_LETTERS, build_options
+from .eval.records import validate_record
 from .inference.client import VLLMClient
 from .mock_vllm import base_urls, start_mock_trio, stop_all
 from .runner import RunConfig, read_records, records_path, run
@@ -135,3 +136,27 @@ def test_health_endpoint_matches_verify_env(mock_trio) -> None:
         with urllib.request.urlopen(f"{url}/models", timeout=5) as resp:
             payload = json.load(resp)
         assert payload["data"][0]["id"].startswith("mock-agent")
+
+
+@pytest.mark.parametrize("arm", ["B1", "B3", "B8"])
+def test_mock_records_are_schema_v2_valid(tmp_path, mock_trio, monkeypatch, arm) -> None:
+    """Every mock end-to-end arm emits a valid, fully stamped schema-v2 record."""
+    if arm == "B8":
+        from .retrieval.pipeline import StaticRetriever
+
+        monkeypatch.setattr(
+            "trustcal.runner._retriever",
+            lambda cfg, partition=None: StaticRetriever(
+                fallback=["This follows from the base rate."]
+            ),
+        )
+    cfg = RunConfig(arm=arm, limit=1, seed=3, out_root=tmp_path, rounds=2)
+    run(cfg, clients=_clients(mock_trio), questions=QUESTIONS)
+    record = read_records(records_path(cfg))[0]
+
+    assert validate_record(record) == []
+    assert record["final_answer"]
+    assert isinstance(record["final_answer_correct"], bool)
+    assert record["final_answer_source"] in {"majority", "weighted", "single", "oracle"}
+    assert record["manifest_hash"]
+    assert (records_path(cfg).parent / "run_manifest.json").is_file()

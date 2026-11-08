@@ -79,6 +79,8 @@ _OVERRIDE_KEYS = (
     "source_partitioning",
     "progressive_retrieval",
     "adaptive_triggering",
+    "inject",
+    "injection_scope",
     "alpha",
     "beta",
     "samples",

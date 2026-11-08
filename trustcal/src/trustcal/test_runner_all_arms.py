@@ -9,14 +9,14 @@ from .runner import RunConfig, read_records, records_path, run
 
 QUESTION = {
     "question": "Which option is supported?",
-    "answer": "B",
-    "options": ["A", "B"],
+    "answer": "beta",
+    "options": ["alpha", "beta", "gamma"],
     "verdicts": [{"support": 0, "harm": 2}, {"support": 2, "harm": 0}, {"support": 2, "harm": 0}],
 }
 
 
 class FakeClient:
-    def __init__(self, answer: str = "B") -> None:
+    def __init__(self, answer: str = "beta") -> None:
         self.answer = answer
 
     def complete(self, system: str, user: str) -> str:
@@ -27,7 +27,7 @@ class FakeOracle:
     model = "fake-oracle"
 
     def answer(self, question: str) -> str:
-        return "Answer: B"
+        return "Answer: beta"
 
 
 ARMS = ["B1", "B2", "B3", "B4", "B5", "B6", "B8", "B9", "B10", "pilot", "injection"]
@@ -49,7 +49,7 @@ def test_arm_produces_record(tmp_path, monkeypatch, arm) -> None:
         samples=3,
         layers=2,
     )
-    clients = [FakeClient("B"), FakeClient("B"), FakeClient("A")]
+    clients = [FakeClient("beta"), FakeClient("beta"), FakeClient("alpha")]
     summary = run(cfg, clients=clients, questions=[QUESTION])
 
     records = read_records(records_path(cfg))
@@ -71,7 +71,7 @@ def test_b7_oracle_record(tmp_path) -> None:
 
 def test_agent_scaling_cycles_clients(tmp_path) -> None:
     cfg = RunConfig(arm="B3", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=2, agents=5)
-    clients = [FakeClient("A"), FakeClient("B"), FakeClient("C")]
+    clients = [FakeClient("alpha"), FakeClient("beta"), FakeClient("gamma")]
     run(cfg, clients=clients, questions=[QUESTION])
     record = read_records(records_path(cfg))[0]
     assert len(record["rounds"][0]["answers"]) == 5
@@ -83,7 +83,7 @@ def test_resume_skips_completed(tmp_path, monkeypatch) -> None:
         lambda cfg, partition=None: StaticRetriever(fallback=["evidence"]),
     )
     cfg = RunConfig(arm="B3", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=2)
-    clients = [FakeClient("B"), FakeClient("B"), FakeClient("A")]
+    clients = [FakeClient("beta"), FakeClient("beta"), FakeClient("alpha")]
     run(cfg, clients=clients, questions=[QUESTION])
     run(cfg, clients=clients, questions=[QUESTION])
     assert len(read_records(records_path(cfg))) == 1
