@@ -11,6 +11,8 @@ Phase-by-phase execution plan (Jul 2026 – Apr 2027). Source of truth: `docs/bl
 
 All pipeline code is model-agnostic — the Dev→Final swap is a config edit in `configs/models.yaml`, nothing else. Total GPU budget ≈ **$500–1,000** (+ ~$5–7 Gemini oracle API).
 
+> **Offline code status (2026-11-08):** the full harness — B1–B10, the Month-1 pilot, retrieval/trust loop, four B8 ablations, matrix, stats, failure taxonomy, and human-eval tooling — is implemented and mock-tested without a GPU. This does **not** change the gate order: the Month-1 pilot still gates Phase 2, and the matrix still waits for Gate 3 prerequisites. See `trustcal/IMPLEMENTATION_STATUS.md` for what is real vs. approximation.
+
 > Dev checkpoints are pinned as **quantized variants of these three models** in `trustcal/configs/models.yaml` (4-bit AWQ Qwen, QAT 4-bit Gemma, FP8 Ministral) so the trio fits one 48GB card. The model names above are the models; the config file is the servable artifacts.
 
 ---

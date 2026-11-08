@@ -18,10 +18,10 @@ Canonical agent instructions for this directory: the Phase 0+ implementation (vL
 | `configs/datasets.yaml` | datasets, revisions, seeds, sample caps |
 | `src/trustcal/inference/` | OpenAI-compatible client, one per port; retries transient failures only |
 | `src/trustcal/agents/` | prompts (`AGENT_SYSTEM`, initial/revision, injection) + claim parser (+ fallback) |
-| `src/trustcal/orchestrator/` | debate loop (`DebateRunner`) + injection plan (`injection.py`) |
-| `src/trustcal/trust/` | pure trust math (softmax → clamp → renormalize) + aggregation |
-| `src/trustcal/retrieval/` | source-partitioned RAG stubs (Ph 2) |
-| `src/trustcal/eval/` | datasets, answers, CCR/MPR metrics, baselines, annotation/κ |
+| `src/trustcal/orchestrator/` | debate loop (`DebateRunner`) + injection plan (`injection.py`) + baseline strategies (`strategies.py`) |
+| `src/trustcal/trust/` | pure trust math (softmax → clamp → renormalize) + aggregation + `TrustState`/`TrustConfig` |
+| `src/trustcal/retrieval/` | PubMed/arXiv/S2 clients, progressive retriever, reranker/verdicts |
+| `src/trustcal/eval/` | datasets, answers, CCR/MPR/ECR, baselines, stats, failures, pilot, oracle, annotation/κ |
 | `src/trustcal/runner.py` | resumable experiment runner (JSONL per question, metrics, summary) |
 | `src/trustcal/mock_vllm.py` | stdlib mock servers for GPU-free end-to-end tests |
 | `src/trustcal/preflight.py` | cost-safety checks (servers, cache, disk, context, keys) |
@@ -33,6 +33,11 @@ Canonical agent instructions for this directory: the Phase 0+ implementation (vL
 | `scripts/preflight.py` | CLI for the preflight checks; exits non-zero on any failure |
 | `scripts/mock_vllm.py` | CLI for the mock servers (local end-to-end runs) |
 | `scripts/annotate.py` | annotation sheets + Cohen's κ for the injection gate |
+| `scripts/run_matrix.py` | conditions × datasets × seeds matrix (dry-run + resumable rows) |
+| `scripts/pilot_report.py` | Month-1 PASS/AMBIGUOUS/NO-GO report |
+| `scripts/analyze.py` | pooled metrics, failure taxonomy, pilot, ECR |
+| `scripts/human_eval.py` | Phase 4 blinded Likert sheets + κ |
+| `scripts/smoke_test.py` | model-swap smoke test before the matrix |
 | `scripts/verify_env.py` | imports/versions + `--check-servers` health gate |
 
 ## Dev stack (RTX A6000 48GB)
@@ -46,8 +51,13 @@ Quantized checkpoints pinned in `models.yaml` — the model names stay the roadm
 | `HF_TOKEN=hf_... [VENV=1] bash setup.sh` | install deps + nightly vLLM + checkpoints (~31GB), start servers, verify. `VENV=1` on any image that blocks system pip (PEP 668): Thunder Compute, Vast PyTorch images |
 | `python scripts/verify_env.py --check-servers` | gate: three `server OK` lines |
 | `python scripts/preflight.py [--offline]` | cost-safety gate before paid runs (servers, cache, disk, context, keys) |
-| `python scripts/run_experiment.py --arm B3 --limit 10 --seed 1` | run/resume an arm; writes `results/<arm>/<dataset>/seed<N>/` + summary |
+| `python scripts/run_experiment.py --arm B3 --limit 10 --seed 1` | run/resume an arm (B1-B10, pilot, injection); writes `results/<arm>/<dataset>/seed<N>/` + summary |
 | `python scripts/run_experiment.py --arm injection --questions-file q.json` | injection harness; add `--questions-file` to bypass the HF dataset |
+| `python scripts/run_experiment.py --arm pilot --questions-file experiments/pilot-month1/questions.json` | Month-1 trust-weight pilot |
+| `python scripts/run_matrix.py --dry-run` | print the conditions x datasets x seeds plan; `--arms`/`--datasets`/`--seed` filter |
+| `python scripts/pilot_report.py --dir results/pilot/<dataset>/seed1` | PASS/AMBIGUOUS/NO-GO; exit 0/2/1 |
+| `python scripts/analyze.py --records results/<arm>/<dataset>/seed1/records.jsonl` | pooled CCR/MPR, failures, pilot, ECR |
+| `python scripts/smoke_test.py --phase final --limit 20` | model-swap smoke test (claims, trust, K rounds, injection) |
 | `python scripts/repro_mad.py --limit 10` | Gate 0; writes `results/gate0/` |
 | `python scripts/mock_vllm.py --ports 8000,8001,8002 --mode divergent` | local mock servers for GPU-free end-to-end runs |
 | `python scripts/annotate.py make --records <records.jsonl>` | κ annotation sheets (then `score --rater1/--rater2`, exit 2 if κ < 0.75) |
