@@ -32,15 +32,15 @@ export function OverviewPage() {
   return (
     <>
       <PageHeader
-        docType="Final Year Design Project · Trust-Calibrated Multi-Agent Scientific Deliberation"
+        docType="Final Year Design Project · The Trust Boundary"
         title={
           <>
-            Trust-Calibrated Multi-Agent
+            The Boundaries of Evidence-Grounded
             <br />
-            Scientific Deliberation
+            Trust in Multi-Agent Debate
           </>
         }
-        subtitle="For Mitigating Sycophantic Consensus in LLM Reasoning · Agentic AI · ACL / EMNLP / NeurIPS 2027"
+        subtitle="A causal benchmark for sycophantic consensus · Agentic AI · TACL / EMNLP 2028"
         coverItems={[
           { label: "Prepared By", value: "Md. Atikur Rahaman" },
           {

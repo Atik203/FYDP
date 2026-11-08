@@ -258,7 +258,7 @@ export function RoadmapPage() {
       <PageHeader
         docType="FYDP Learning & Execution Roadmap · Idea 1"
         title={<>Idea 1 Learning &amp; Execution Roadmap</>}
-        subtitle="Trust-Calibrated Multi-Agent Scientific Deliberation · Nov 2026 – Dec 2027"
+        subtitle="The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate · Nov 2026 – Dec 2027"
         coverItems={[
           { label: 'Timeline', value: 'P0 → Paper (Nov 2026 – Dec 2027)' },
           { label: 'Weekly Time', value: '15–20 Hours' },

@@ -89,8 +89,8 @@ export function GroupSlide({
             fontFamily: "'Source Serif 4', Georgia, serif",
           }}
         >
-          Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating
-          Sycophantic Consensus in LLM Reasoning
+          The Boundaries of Evidence-Grounded Trust
+          in Multi-Agent Debate
         </h1>
         <div
           className="mt-[1.5cqh] flex items-center justify-center gap-[1.6cqw] text-[2.6cqh] font-bold"
@@ -1964,7 +1964,7 @@ export function ThankYouSlide() {
           className="mt-[1cqh] text-[2.4cqh] font-semibold"
           style={{ color: DEEP_INK, opacity: 0.8 }}
         >
-          Trust-Calibrated Multi-Agent Scientific Deliberation
+          Trust Boundaries in Multi-Agent Debate
         </div>
         <div
           className="mt-[4cqh] inline-flex items-center rounded-full px-[2.4cqw] py-[1cqh] text-[2.2cqh] font-bold"

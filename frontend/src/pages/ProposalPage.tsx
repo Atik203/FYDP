@@ -147,9 +147,9 @@ export function ProposalPage() {
         }}
       >
         <h1 style={h1Style}>
-          Trust-Calibrated Multi-Agent Scientific Deliberation
+          The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate:
           <br />
-          for Mitigating Sycophantic Consensus in LLM Reasoning
+          A Causal Benchmark for Sycophantic Consensus
         </h1>
         <p
           style={{

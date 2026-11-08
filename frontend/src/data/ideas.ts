@@ -25,8 +25,8 @@ export interface IdeaMetadata {
 export const ideaMetadata: IdeaMetadata[] = [
   {
     id: 1,
-    title: 'Trust-Calibrated Multi-Agent Scientific Deliberation',
-    shortTitle: 'Trust-Calibrated Debate',
+    title: 'The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate',
+    shortTitle: 'The Trust Boundary',
     icon: '🤖',
     domain: 'Agentic AI / Reasoning',
     rank: 1,
