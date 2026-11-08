@@ -8,7 +8,12 @@ pass ``revision=`` to freeze a run once the Phase 0 hashes are recorded.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
+
+import yaml
+
+DATASET_CONFIG = Path(__file__).resolve().parents[3] / "configs" / "datasets.yaml"
 
 # repo, default split, extra kwargs. Revisions are intentionally left to the
 # caller/config: a moving "main" must be pinned before the first real run.
@@ -73,6 +78,16 @@ def _row_to_question(row: dict, name: str) -> dict:
     return {"question": str(question), "answer": str(answer), "options": options}
 
 
+def pinned_revision(name: str) -> str | None:
+    """Revision from configs/datasets.yaml; ``main`` means not yet pinned."""
+    if not DATASET_CONFIG.is_file():
+        return None
+    raw = yaml.safe_load(DATASET_CONFIG.read_text(encoding="utf-8")) or {}
+    spec = (raw.get("datasets") or {}).get(name) or {}
+    revision = spec.get("revision")
+    return revision if revision and revision != "main" else None
+
+
 def load_dataset(
     name: str = "gpqa",
     split: str | None = None,
@@ -94,8 +109,9 @@ def load_dataset(
     kwargs: dict[str, Any] = {"split": split or spec["split"]}
     if spec.get("config"):
         kwargs["name"] = spec["config"]
-    if revision:
-        kwargs["revision"] = revision
+    pinned = revision or pinned_revision(name)
+    if pinned:
+        kwargs["revision"] = pinned
     try:
         ds = hf_load(spec["repo"], **kwargs)
     except ValueError:
