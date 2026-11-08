@@ -29,6 +29,12 @@ Honest status map for the Python pipeline in `trustcal/`. `roadmap.md` remains t
 - **Reranking / verdicts** — the default scorer is lexical. If `sentence-transformers` is installed, `rerank` lazy-loads `cross-encoder/ms-marco-MiniLM-L-6-v2`; its logits are squashed to [0,1], but support still requires claim-term coverage (relevance is not entailment). The LLM-judge hook exists at `classify_claim` and is not passed by `DebateRunner`.
 - **ECR** — implemented as `1 - ECE` between trust and final-answer correctness; it is a calibration proxy, not an independent evidence audit, and has not been measured on real runs.
 
+## Branches
+
+- `feat/full-pipeline` — canonical implementation; `configs/phase.yaml` defaults to `dev`.
+- `Phase-1-dev` — same code, Dev stack selected by default (`configs/phase.yaml`, `serve.sh`).
+- `Phase-1-main` — same code, Final stack selected by default. Both are snapshots; fix bugs on `feat/full-pipeline` and cherry-pick, do not let the two diverge.
+
 ## Verification
 
 Run from `trustcal/`. These are checks, not a result log; no pass/fail numbers are recorded here.
