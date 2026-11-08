@@ -1,9 +1,52 @@
-"""Source-partitioned retrieval: PubMed / ArXiv / Semantic Scholar + reranker.
+"""Source-partitioned retrieval + per-claim evidence verdicts (Phase 2)."""
 
-Phase 2 module. Signatures are fixed; implementations land with the trust work.
-"""
+from .pipeline import RetrievalConfig, Retriever, StaticRetriever, evidence_block
+from .sources import (
+    ARXIV,
+    PUBMED,
+    SEMANTIC_SCHOLAR,
+    SOURCES,
+    SearchResult,
+    agent_source,
+    passage_text,
+    search,
+    search_arxiv,
+    search_pubmed,
+    search_semantic_scholar,
+)
+from .verdicts import (
+    CONTRADICTED,
+    SUPPORTED,
+    UNVERIFIABLE,
+    VERDICTS,
+    classify_claim,
+    count_verdicts,
+    lexical_score,
+    rerank,
+)
 
-from .sources import search_arxiv, search_pubmed, search_semantic_scholar
-from .verdicts import classify_claim, rerank
-
-__all__ = ["search_pubmed", "search_arxiv", "search_semantic_scholar", "rerank", "classify_claim"]
+__all__ = [
+    "Retriever",
+    "RetrievalConfig",
+    "StaticRetriever",
+    "evidence_block",
+    "SearchResult",
+    "search",
+    "search_pubmed",
+    "search_arxiv",
+    "search_semantic_scholar",
+    "agent_source",
+    "passage_text",
+    "PUBMED",
+    "ARXIV",
+    "SEMANTIC_SCHOLAR",
+    "SOURCES",
+    "classify_claim",
+    "count_verdicts",
+    "rerank",
+    "lexical_score",
+    "SUPPORTED",
+    "CONTRADICTED",
+    "UNVERIFIABLE",
+    "VERDICTS",
+]
