@@ -211,9 +211,9 @@ const STEPS: Step[] = [
     body: (
       <div className="space-y-2">
         {[
-          { name: "Agent A", from: 33, to: 18, color: A },
-          { name: "Agent B", from: 33, to: 17, color: B },
-          { name: "Agent C", from: 33, to: 65, color: C },
+          { name: "Agent A", from: 33, to: 10, color: A },
+          { name: "Agent B", from: 33, to: 10, color: B },
+          { name: "Agent C", from: 33, to: 80, color: C },
         ].map((r) => (
           <div key={r.name} className="text-xs">
             <div className="flex items-center justify-between mb-0.5">
@@ -233,8 +233,10 @@ const STEPS: Step[] = [
           </div>
         ))}
         <p className="text-[11px] text-[#64748b] dark:text-[#94a3b8]">
-          Bounded by softmax → clamp[0.1, 0.9] → renormalize, so A and B are
-          down-weighted but never fully silenced.
+          After three rounds at α = 0.5 and β = 0.3, the vector is [0.10, 0.10,
+          0.80]. The 10% floor is active on A and B: down-weighted, never
+          silenced. One softmax plus the floor/ceiling simplex projection keeps
+          ΣTᵢ = 1.
         </p>
       </div>
     ),
@@ -254,7 +256,7 @@ const STEPS: Step[] = [
           </div>
           <div className="rounded-lg border border-[#0ca678]/30 bg-[#0ca678]/5 p-2">
             <div className="font-bold text-[#0ca678] mb-0.5">Ours</div>
-            Trust 65% on “Y” &gt; 35% on “X” → picks the{" "}
+            Trust 80% on “Y” &gt; 20% on “X” → picks the{" "}
             <strong>evidence-backed</strong> answer.
           </div>
         </div>

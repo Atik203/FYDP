@@ -1013,7 +1013,8 @@ function CeProblemOneSlide() {
               Trust weighting vs diversity; evidence coverage vs rate limits.
             </Bullet>
             <Bullet>
-              Round caps and clamping bounds resolve the conflicts.
+              Round caps and the floor/ceiling trust projection resolve the
+              conflicts.
             </Bullet>
           </ul>
         </Card>
@@ -1187,10 +1188,12 @@ function CeKnowledgeOneSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Softmax, clamping and renormalization of trust.
+              Log-prior evidence update, one softmax and a floor/ceiling simplex
+              projection.
             </Bullet>
             <Bullet>
-              Trust stays a valid distribution across rounds.
+              Trust stays on the probability simplex across rounds; neutral
+              evidence is an identity.
             </Bullet>
             <Bullet>
               Paired bootstrap and effect sizes back the results.
@@ -1472,8 +1475,9 @@ function CeActivityTwoSlide() {
               scientific question answering.
             </Bullet>
             <Bullet>
-              Environmental cost stays low: about 300 GPU-hours, standard
-              configurations, no fine-tuning.
+              Environmental cost stays bounded: the pre-registered Core run
+              (24 rows, Jan 2027) is 1,280 GPU-hours, standard configurations,
+              no fine-tuning.
             </Bullet>
             <Bullet>
               The prototype shows a pathway to safer AI-assisted research;

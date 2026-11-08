@@ -21,6 +21,7 @@ import {
 import type { ReactNode } from "react";
 import {
   AlertTriangle,
+  ArrowRight,
   BarChart3,
   BookOpen,
   ClipboardCheck,
@@ -211,9 +212,9 @@ function FinalObjectiveSlide() {
               Design a bounded trust update from retrieved evidence.
             </Bullet>
             <Bullet>
-              Raw score rises with support, falls with contradiction.
+              Log-prior plus α·V − β·H, divided by each agent's claim count.
             </Bullet>
-            <Bullet>Bounded by design.</Bullet>
+            <Bullet>One softmax, then a floor/ceiling simplex projection.</Bullet>
           </ul>
         </Card>
         <Card
@@ -248,7 +249,7 @@ function FinalObjectiveSlide() {
               calibration (ECR).
             </Bullet>
             <Bullet>
-              Three seeds, 95% confidence intervals and Cohen's d.
+              Two seeds, 95% confidence intervals and Cohen's d.
             </Bullet>
           </ul>
         </Card>
@@ -331,12 +332,11 @@ function FinalDatasetSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              The main matrix draws 1,000 questions per dataset; the pilot
-              draws 50.
+              Core: 400/dataset × 2 seeds (24 rows, Jan 2027); Full: 6 arms,
+              Feb 2027.
             </Bullet>
             <Bullet>
-              Gold answers are used for selection and scoring only; agents
-              never see them.
+              Pilot: 50 questions. Gold answers are never shown to agents.
             </Bullet>
           </ul>
         </Card>
@@ -478,20 +478,65 @@ function FinalMethodSlide() {
               unverifiable or contested.
             </Bullet>
             <Bullet>
-              Trust update each round: S(t+1) = S(t) + αV − βH, then softmax →
-              clamp [0.1, 0.9] → renormalize.
+              Trust update: log S + αV − βH → one softmax → floor/ceiling
+              simplex projection; claim counts are normalized.
             </Bullet>
             <Bullet>
               The weighted vote decides the final answer, not a head count.
             </Bullet>
           </ul>
         </Card>
-        <Figure
-          src="/figures/fig-trust-detail.png"
-          alt="The five steps of the trust update"
-          caption="Verdict counts to bounded weights, step by step."
-          className="flex-1 min-h-0"
-        />
+        <div className="flex-1 min-h-0 flex flex-col justify-center">
+          <div className="flex items-stretch gap-[0.6cqw]">
+            {[
+              ["1", "Verdict counts", "supported V, contradicted H"],
+              ["2", "Log-prior", "log S + αV − βH"],
+              ["3", "One softmax", "applied once"],
+              ["4", "Simplex projection", "floor 0.1 · ceiling 0.9"],
+              ["5", "Trust vector", "ΣT = 1"],
+            ].map(([n, title, sub], i, arr) => (
+              <div key={n} className="flex items-center flex-1">
+                <div
+                  className="flex-1 rounded-xl border-2 px-[0.8cqw] py-[1.4cqh] text-center h-full flex flex-col justify-center"
+                  style={{ borderColor: `${TEAL}4d`, background: "#ffffff" }}
+                >
+                  <div
+                    className="text-[1.55cqh] font-extrabold uppercase tracking-wide"
+                    style={{ color: TEAL }}
+                  >
+                    Step {n}
+                  </div>
+                  <div
+                    className="mt-[0.4cqh] text-[2.05cqh] font-extrabold leading-tight"
+                    style={{ color: DEEP_INK }}
+                  >
+                    {title}
+                  </div>
+                  <div
+                    className="mt-[0.4cqh] text-[1.7cqh] font-semibold leading-snug"
+                    style={{ color: "#475569" }}
+                  >
+                    {sub}
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <ArrowRight
+                    size="2.2cqh"
+                    style={{ color: TEAL }}
+                    className="mx-[0.25cqw] flex-shrink-0"
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+          <div
+            className="mt-[1.5cqh] text-[1.75cqh] font-semibold text-center"
+            style={{ color: "#475569" }}
+          >
+            Counts are divided by each agent's claim count before the softmax;
+            the projection uses water-filling.
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -547,7 +592,7 @@ function FinalSetupSlide() {
     "K = 3 rounds",
     "Temperature 0.7",
     "1,024 output tokens · 4,096 context",
-    "Three seeds",
+    "Two seeds",
     "Retry cap 3 per agent",
   ];
   const stress = [
@@ -614,74 +659,91 @@ function FinalSetupSlide() {
         </Card>
       </div>
       <NoteStrip color={ACCENT}>
-        Serving: vLLM, OpenAI-compatible, one server per agent · compute ≈300
-        GPU-hours · budget USD 340–820.
+        Serving: vLLM, OpenAI-compatible, one server per agent · Final stack
+        69.73 GB / 80 GB · Core run 24 rows / 1,280 GPU-h (Jan 2027).
       </NoteStrip>
     </div>
   );
 }
 
-/* ── Slide 11: Results (expected + pilot) ───────────────────────── */
+/* ── Slide 11: P0 implementation status (no efficacy claims) ────── */
 function FinalResultsSlide() {
   return (
     <div className="w-full h-full flex flex-col px-[4cqw] py-[3cqh]">
       <SlideHeader
-        badge="Results"
+        badge="Implementation Status"
         badgeBg="#ccfbf1"
         badgeColor={TEAL}
-        title="Project Results"
-        subtitle="Expected outcomes and the results already measured."
+        title="P0 Build: Status, Not Efficacy"
+        subtitle="What is implemented and verified; the Core run is pre-registered, not run."
       />
       <div className="grid grid-cols-[1.45fr_1fr] gap-[2cqw] flex-1 min-h-0">
         <div className="flex flex-col justify-center min-h-0">
           <SlideTable
-            head={["Metric", "What it measures", "Expected"]}
-            colWidths={["15%", "45%", "40%"]}
+            head={["Area", "Status", "Evidence"]}
+            colWidths={["17%", "18%", "65%"]}
             accent={ACCENT}
             rows={[
               [
-                "Accuracy",
-                "correct final answers",
-                "no regression on GPQA / MMLU-Pro",
+                "Trust operator",
+                "Implemented",
+                "log-prior + αV − βH · one softmax · simplex projection",
               ],
               [
-                "CCR",
-                "correct agents who cave under pressure",
-                "20–30% lower than debate",
+                "Test suite",
+                "465+",
+                "tests passing across trust, runner and evaluation",
               ],
               [
-                "MPR",
-                "debates where a correct minority survives",
-                "higher than debate",
+                "P0 gate",
+                "11 / 13",
+                "2 pending: B8-no-trust prompts, B8+injection wiring",
               ],
               [
-                "ECR",
-                "does the trust weight track correctness",
-                "above 0.80 on the expert set",
+                "Core run",
+                "24 rows",
+                "4 arms × 3 datasets × 2 seeds = 1,280 GPU-h · Jan 2027",
+              ],
+              [
+                "Final stack",
+                "69.73 GB",
+                "of the 80 GB weight budget · 0.90 utilization",
+              ],
+              [
+                "Benchmark",
+                "300 target",
+                "180 floor · 600 stretch · 800 no-go",
               ],
             ]}
           />
         </div>
         <Card
           icon={<ClipboardCheck size="2.4cqh" color="#fff" />}
-          title="Completed Experiments"
+          title="Not Claimed Yet"
           color={TEAL}
         >
           <ul className="flex flex-col justify-center h-full">
-            <Bullet>10 GPQA questions, three rounds each.</Bullet>
-            <Bullet>10/10 debates completed · 90/90 non-empty positions.</Bullet>
             <Bullet>
-              Mean 370.8 s per debate (3,708 s total); 21.5 s variation.
+              No efficacy result: the Core run (24 rows, Jan 2027) is
+              pre-registered, not run.
             </Bullet>
             <Bullet>
-              Claim tags parsed every generation; fallback used in 5 of 30.
+              The pilot is 10 GPQA questions; it shows the pipeline runs end to
+              end.
+            </Bullet>
+            <Bullet>
+              CCR/MPR/ECR comparisons are planned, not measured.
+            </Bullet>
+            <Bullet>
+              Guarantees are structural — floor, ceiling and sum — not accuracy
+              gains.
             </Bullet>
           </ul>
         </Card>
       </div>
       <NoteStrip color={TEAL}>
-        Largest gains expected on the adversarial sets · a reusable CCR/MPR/ECR
-        harness ships with the mechanism.
+        Next: run the Core stage (Jan 2027), then the Full stage (Feb 2027). No
+        efficacy claim is made yet.
       </NoteStrip>
     </div>
   );
@@ -785,7 +847,8 @@ function FinalLimitationsSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              The pilot covers 10 questions; the main matrix is still to run.
+              The pilot covers 10 questions; the Core run (24 rows, Jan 2027) is
+              pre-registered, not yet run.
             </Bullet>
             <Bullet>
               Injection is an explicit upper-bound stress test, not everyday
@@ -815,7 +878,7 @@ function FinalConclusionSlide() {
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
         title="The Project in One View"
-        subtitle="The problem, the mechanism, and what the evaluation shows."
+        subtitle="The problem, the mechanism, and what comes next."
       />
       <div className="grid grid-cols-2 gap-[2cqw] flex-1 min-h-0">
         <Card
@@ -829,8 +892,9 @@ function FinalConclusionSlide() {
               sycophantic consensus.
             </Bullet>
             <Bullet>
-              A bounded trust score from retrieved evidence re-weights agents,
-              and CCR/MPR/ECR measures the effect against the baselines.
+              A trust score from retrieved evidence — one softmax plus a
+              floor/ceiling simplex projection — re-weights agents, and
+              CCR/MPR/ECR measures the effect against the baselines.
             </Bullet>
             <Bullet>
               Every result package returns the answer, citations and trust
@@ -845,19 +909,18 @@ function FinalConclusionSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Expected: fewer collapses, a preserved minority, calibrated
-              trust.
+              Status: the P0 mechanism is implemented and tested; no efficacy
+              claim yet.
             </Bullet>
             <Bullet>
-              Completed runs show the pipeline works end to end on three
-              models.
+              The pilot shows the pipeline runs end to end on three models.
             </Bullet>
             <Bullet>
               Applies to scientific QA, education and other evidence domains.
             </Bullet>
             <Bullet>
-              Remaining: full matrix, ablations, human study, open-source
-              release.
+              Remaining: run the Core (Jan 2027) and Full (Feb 2027) stages,
+              ablations, human study, open-source release.
             </Bullet>
           </ul>
         </Card>
@@ -892,8 +955,9 @@ function FinalCompactConclusionSlide() {
               sycophantic consensus.
             </Bullet>
             <Bullet>
-              A bounded trust score from retrieved evidence re-weights agents,
-              and CCR/MPR/ECR measures the effect against the baselines.
+              A trust score from retrieved evidence — one softmax plus a
+              floor/ceiling simplex projection — re-weights agents, and
+              CCR/MPR/ECR measures the effect against the baselines.
             </Bullet>
             <Bullet>
               Every result package returns the answer, citations and trust
@@ -917,12 +981,12 @@ function FinalCompactConclusionSlide() {
               Extends to law or medicine where an evidence corpus exists.
             </Bullet>
             <Bullet>
-              Expected: fewer collapses, a preserved minority, calibrated
-              trust.
+              Status: mechanism implemented and tested; efficacy not yet
+              measured.
             </Bullet>
             <Bullet>
-              Remaining: full matrix, ablations, human study, open-source
-              release.
+              Remaining: run the Core (Jan 2027) and Full (Feb 2027) stages,
+              ablations, human study, open-source release.
             </Bullet>
           </ul>
         </Card>
