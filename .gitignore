@@ -38,6 +38,10 @@ config.bat
 .env.*
 !.env.example
 
+# LaTeX build outputs (compiled PDFs stay local in out/)
+/Papev_Summer26_6/out/
+/FYDP_Summer/out/
+
 # FYDP pipeline (Python)
 __pycache__/
 *.py[cod]
