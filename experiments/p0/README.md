@@ -19,7 +19,7 @@ Integration branch: `feat/p0-hardening`. Slice branches: `p0/wp-A` … `p0/wp-F`
 | 12 | P0-8 | F | Claim→domain routing; dedup; equal evidence volume | 1 |
 | 13 | P0-7 | A + B | B8-no-trust control; trust-line removal; B5 seeds; fidelity labels | 2 |
 | 14 | P0-10 | F | 6-arm matrix cut; power table; `PRE_REGISTRATION.md` | 2 |
-| 15 | P0-11 | B | `analyze.py` arm/dataset guard; manifest reproduction check | 2 |
+| 15 | P0-11 | B | `analyze.py` arm/dataset guard; manifest reproduction check | 1 (guard) / 2 (wiring) |
 | 16 | P0-12 | integrator | Docs/status reconciliation; branch promotion | 4 |
 | 17 | — | integrator | Final-stack readiness: pin FP8 repos, <80 GB, `setup.sh`/`serve.sh`, smoke | 3 |
 
