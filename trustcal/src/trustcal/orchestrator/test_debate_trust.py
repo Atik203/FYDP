@@ -55,8 +55,8 @@ def test_evidence_updates_trust_and_flips_aggregation() -> None:
 
     assert result["trust_trajectory"] is not None
     assert result["trust_trajectory"][-1][0] > 0.5
-    assert result["verdicts"][0]["support"] == [1, 0, 0]
-    assert result["verdicts"][0]["harm"] == [0, 1, 1]
+    assert result["trust_rounds"][0]["support"] == [1, 0, 0]
+    assert result["trust_rounds"][0]["harm"] == [0, 1, 1]
     assert result["aggregation"]["majority"] == "wrong"
     assert result["aggregation"]["weighted"] == "correct"
     assert result["aggregation"]["changed"] is True
@@ -178,12 +178,12 @@ def test_trust_for_positions_is_computed_from_final_positions() -> None:
 
 def test_trust_status_is_updated_on_every_scored_round() -> None:
     result = _timing_run()
-    verdicts = result["verdicts"]
-    assert [entry["round"] for entry in verdicts] == [2, 3]
-    assert verdicts[0]["support"] == [1, 0, 0]
-    assert verdicts[0]["harm"] == [0, 1, 1]
-    assert verdicts[1]["support"] == [0, 0, 1]
-    assert verdicts[1]["harm"] == [1, 1, 0]
+    rounds = result["trust_rounds"]
+    assert [entry["round"] for entry in rounds] == [2, 3]
+    assert rounds[0]["support"] == [1, 0, 0]
+    assert rounds[0]["harm"] == [0, 1, 1]
+    assert rounds[1]["support"] == [0, 0, 1]
+    assert rounds[1]["harm"] == [1, 1, 0]
 
 
 def test_trust_status_abstains_when_panel_is_unanimous() -> None:
@@ -244,7 +244,7 @@ def test_duplicate_claims_do_not_change_trust() -> None:
     )
 
     # Deduplication happened: eight copies of one claim are one claim checked.
-    assert all(entry["n_claims"] == [1, 1, 1] for entry in noisy["verdicts"])
+    assert all(entry["n_claims"] == [1, 1, 1] for entry in noisy["trust_rounds"])
     assert np.allclose(
         noisy["trust_trajectory"], plain["trust_trajectory"], atol=1e-12, rtol=0
     )

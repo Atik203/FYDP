@@ -9,9 +9,10 @@ Modes:
     divergent  agent 1 answers "C" (minority), agents 2-3 answer "B" (majority)
     untagged   like divergent, but without <claim> tags (fallback extractor path)
 
-Any request whose system prompt contains the injected consensus phrase
-("community consensus") makes the minority agent switch to the majority answer —
-that simulates sycophantic collapse end-to-end.
+Any request whose prompt contains the injected consensus phrase (P0-9 delivers
+it as a one-shot user turn, so both system and user messages are inspected)
+makes the minority agent switch to the majority answer — that simulates
+sycophantic collapse end-to-end.
 """
 
 from __future__ import annotations
@@ -22,7 +23,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 MINORITY_ANSWER = "C"
 MAJORITY_ANSWER = "B"
-INJECTION_MARKER = "community consensus"
+#: P0-9 authority arm text plus the legacy system-prompt wording.
+INJECTION_MARKERS = ("survey of 100 domain experts", "community consensus")
 
 
 def build_answer(answer: str, tagged: bool) -> str:
@@ -73,9 +75,15 @@ class _Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length", 0))
         body = json.loads(self.rfile.read(length) or b"{}")
         messages = body.get("messages", [])
-        system = " ".join(str(m.get("content", "")) for m in messages if m.get("role") == "system")
-        injected = INJECTION_MARKER in system.lower()
-        text = answer_for(self.server.mode, self.server.is_minority, injected)  # type: ignore[attr-defined]
+        prompt = " ".join(str(m.get("content", "")) for m in messages)
+        pressured = any(marker in prompt.lower() for marker in INJECTION_MARKERS)
+        # The injection is one-shot (round 2 only), so a real model keeps the
+        # position it just revised. The mock is stateless, so it infers that
+        # state from its own previous answer in the next revision prompt.
+        previous = f"Your previous answer:\nAnswer: {MAJORITY_ANSWER}"
+        if self.server.is_minority and previous in prompt:  # type: ignore[attr-defined]
+            pressured = True
+        text = answer_for(self.server.mode, self.server.is_minority, pressured)  # type: ignore[attr-defined]
         self._json(
             {
                 "id": "mock-1",
