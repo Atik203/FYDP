@@ -45,7 +45,7 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 **Key corrections vs the first estimate:**
 
 1. **Use 80 GiB, not 100 GiB, for the Dev instance.** At 80 GiB and `reliability>0.98`, A6000 spot offers were **$0.156** and **$0.370**, median **$0.263**. At 100 GiB, only **one** offer remained: **$0.384, reliability 0.796** — a bad host. 80 GiB fits the 22 GB Dev cache + 20 GB results + OS. The 100 GiB requirement was overprovisioned and selected the worst host.
-2. **A6000 median is $0.263/hr, not $0.382/hr.** At $0.263, C+ saves ~$130 and full law-testing ~$340.
+2. **A6000 median is $0.263/hr, not $0.382/hr.** At $0.263, the Core run saves ~$130 and full law-testing ~$340.
 3. **Full law-testing at 8 min/debate is 3,813 GPU-h, not 2,860.** The 2,860 figure is a **6-min** number. Label 2,860 as “6 min/debate, optimistic.” At 8 min, 2,860 × 8/6 = 3,813 GPU-h; with 20% overhead, 4,576 GPU-h.
 4. **Vast volume storage is $0.20/GB-month median, not $0.07.** Vast volumes are local-only and cannot move between hosts. $0.07 is RunPod network storage. `160 GB × $0.20 × 6 months = $192`, not $67.
 5. **Max-Q is the cheapest 96 GB option, not a trap.** At $1.017 vs S $1.432, Max-Q saves **$0.415/hr**. Its $0.026/GB bandwidth penalty is only **~$3.7 per 150 GB download**. Break-even is ~11 fresh sessions per 100 GPU-h, or a ~40% slowdown. With a persistent cache, Max-Q is the best value; choose S only for reliability.
@@ -86,12 +86,14 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 
 ### Scenario table (USD)
 
+> **Stage names (2026-11-09):** `docs/GLOSSARY.md` — **Core run** (legacy “C+”) and **Full run** (legacy “TACL full”); **TACL** is a venue only. The Full-run row is the all-in estimate; Core run is a prefix, so completed cells are not re-run and the costs are not additive.
+
 | Scenario | GPU-h | GPU $ | Bandwidth + storage | Overhead 20% | **Total base** | Low–high |
 |---|---:|---:|---:|---:|---:|---:|
 | P0 smoke | 15 | $4 | $1–3 | $1 | **~$6** | $4–10 |
 | Pilot 100–150 Q | 225 | $59 | $1–3 | $12 | **~$72** | $50–100 |
-| **C+ core** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** | **$420–580** |
-| **TACL main** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** | **$900–1,200** |
+| **Core run** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** | **$420–580** |
+| **Full run** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min; all-in, not additive with Core) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** | **$900–1,200** |
 | **Full law-testing — 6 min (optimistic)** | 2,860 + 100 | $854 | $60–120 | $170 | **~$1,100** | $900–1,400 |
 | **Full law-testing — 8 min (realistic)** | 3,813 + 100 | $1,105 | $60–120 | $220 | **~$1,390** | **$1,400–1,900** |
 | Full / high (8 min, high rate, 6-month storage) | 3,813 + 100 | $1,457 | $150–250 | $320 | **~$1,930** | up to **$2,450** |
@@ -99,8 +101,8 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 
 **Interpretation:**
 
-- **C+ is ~$420–580 all-in**, not $550–850.
-- **TACL main is ~$900–1,200 all-in**, not $1,300–1,800.
+- **Core run is ~$420–580 all-in**, not $550–850.
+- **Full run is ~$900–1,200 all-in**, not $1,300–1,800. Core run is a prefix; do not add the two rows.
 - **Full law-testing is ~$1,400–1,900 at 8 min/debate**; the earlier $1,300–2,050 was a mix of 6-min hours and 8-min assumptions. At 6 min, it is ~$1,100.
 - **GPU hours dominate.** Bandwidth/storage add 10–25%; the old $3.20 ingress was an outlier, not the norm.
 - **The biggest avoidable cost is re-downloading the model cache** on a high-bandwidth host and **leaving stopped storage** for months.
@@ -115,7 +117,7 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 - **Why:** 48 GB fits the three 4-bit models without swaps; 4090 24 GB needs model swaps.
 - **Fallback:** L40S 48 GB at ~$0.56/hr or A100 PCIE 40 GB at ~$0.43/hr.
 - **Cache:** pin `HF_HOME`; persist the ~22 GB cache on a Vast volume (~$0.20/GB-month) or network volume (~$0.07/GB-month at RunPod); set `HF_HUB_OFFLINE=1` after the cache is complete.
-- **Sessions:** batch P0/pilot/C+ into 2–3 long sessions.
+- **Sessions:** batch P0/pilot/Core run into 2–3 long sessions.
 
 ### Final stack
 
@@ -162,8 +164,8 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 
 - **Dev:** A6000 80 GiB spot, **$0.26/hr median ($0.16–0.37)**; 22 GB cache; 2–3 sessions; reliability ≥0.98.
 - **Final:** Max-Q **$0.74–1.02/hr** best value; S **$1.43/hr** for reliability; 100–160 GB cache; **60–100 GPU-h**.
-- **C+ core:** 1,100 Dev GPU-h incl. pilot/sweep + 60 Final GPU-h ≈ **$420–580 all-in**.
-- **TACL main:** 2,460–2,700 GPU-h ≈ **$900–1,200 all-in**.
+- **Core run:** 1,100 Dev GPU-h incl. pilot/sweep + 60 Final GPU-h ≈ **$420–580 all-in**.
+- **Full run:** 2,460–2,700 GPU-h ≈ **$900–1,200 all-in**; Core run is a prefix, so the incremental top-up is lower and the costs are not additive.
 - **Full law-testing:** 2,860 GPU-h at 6 min (~$1,100) or **3,813 at 8 min (~$1,400–1,900)**; + Final; high ~$2,450.
 - **Bandwidth:** $0.004–0.011/GB typical; $0.026–0.033/GB high; 150 GB re-download = $0.6–5.
 - **Storage:** $0.20/GB-month median; 160 GB × 6 months = $192; volumes local-only; destroy stopped instances.

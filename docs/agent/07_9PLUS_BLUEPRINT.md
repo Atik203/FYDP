@@ -4,7 +4,7 @@
 **Premise:** the user wants 9+ but explicitly says: *do not suggest things that will fail; suggest what will work.*  
 **Honest verdict:** **9+ is a low-probability option, not a plan.** The rational target for this 6-person FYDP in 7–8 months is **8.4–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
 
-> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **C+ staged**: a 4-arm causal study + a 180-item EG-SSS, 17–22 weeks, expected score 8.4. The full 9+ stack is a call option, not the plan. See §9A.
+> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **Core-run staged** (legacy “C+”): a 4-arm causal study + a 180-item EG-SSS, 17–22 weeks, expected score 8.4. The full 9+ stack is a call option, not the plan. See §9A. **Stage names (2026-11-09):** use `docs/GLOSSARY.md` — Core run and Full run; **TACL** is a venue only.
 
 ---
 
@@ -21,7 +21,7 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 | Theory drafting and proof exploration | **2–3x** | Agents can propose models and proof sketches, but LLM math is often plausible-but-wrong; a human must verify every step |
 | Benchmark item drafting and claim decomposition | **3–4x** | Agents can draft items and claims; humans must adjudicate gold labels |
 | Human evaluation | **1–1.5x** | Agents can prepare sheets and analyze agreement; they cannot replace the two human annotators |
-| GPU experiments | **1x** | C+ ~1,200 GPU-h; TACL ~2,460–2,700; full ~3,813 at 8 min (2,860 at 6 min); agents cannot compress it |
+| GPU experiments | **1x** | Core run ~1,200 GPU-h; Full run ~2,460–2,700; full ~3,813 at 8 min (2,860 at 6 min); agents cannot compress it |
 | Peer review / venue cycle | **1x** | 3–6 months; not compressible |
 
 **What this means for the plan:**
@@ -412,7 +412,7 @@ Value-of-information verification can be a secondary experiment: under a fixed a
 
 ### 5.1 Size
 
-- **180 items = C+ supporting artifact** (8.0–8.3), not a 9+ benchmark.
+- **180 items = Core-run supporting artifact** (8.0–8.3), not a 9+ benchmark.
 - **300 items = 8.5**; **600 = 9.0**; **800 + SDT model + private split = 9.0–9.3**.
 - **800-item design:** 4 domains × 200 (physics, chemistry/materials, biology/medicine, CS/ML); 120 dev / 480 public test / 200 private.
 - Each item: question, gold answer, 3 positions (1 correct minority, 2 wrong majority), 3–6 atomic claims per position, gold evidence, gold verdicts, controls.
@@ -577,7 +577,7 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 
 ---
 
-## 9A. Red-team verdict: C+ staged is the recommended path
+## 9A. Red-team verdict: Core-run staged is the recommended path
 
 | Path | Time | P(finish) | P(9+) | Score if finishes | Verdict |
 |---|---:|---:|---:|---:|---|
@@ -589,9 +589,9 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 | E. 1,000 + leaderboard | 22–30 wk | 32% | 7% | 7.3 | **Trap** |
 | F. New mechanism | 9–14 wk | 65% | 8% | 7.6 | Viable ablation; trap as headline |
 | G. Full 9+ stack | 24–30 wk | 42% | 8% | 8.55 | **Strategically dominated** |
-| **C+ staged** | **17–22 wk** | **82%** | **11–12%** | **8.4** | **Recommended** |
+| **Core-run staged** | **17–22 wk** | **82%** | **11–12%** | **8.4** | **Recommended** |
 
-### C+ scope
+### Core-run scope
 
 - **4 arms + oracle:** B3, B8-no-trust, B8, B8-placebo, B8-oracle (oracle subset only).
 - **~1,000 questions:** GPQA-Main 350, MMLU-Pro 500, EG-SSS 180.
@@ -602,7 +602,7 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 - **Analysis:** paired by question; cluster bootstrap over questions; mixed-effects with dataset fixed effect.
 - **Target:** 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
 
-**Budget (Vast.ai spot, 8 Nov 2026):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; bandwidth $0.004–0.033/GB; storage **$0.20/GB-month**. **C+ ~$420–580 all-in; TACL ~$900–1,200; full ~$1,100 (6 min) / $1,400–1,900 (8 min); high ~$2,450.** See `08_COMPUTE_COST.md`.
+**Budget (Vast.ai spot, 8 Nov 2026):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; bandwidth $0.004–0.033/GB; storage **$0.20/GB-month**. **Core run ~$420–580 all-in; Full run ~$900–1,200; full ~$1,100 (6 min) / $1,400–1,900 (8 min); high ~$2,450.** See `08_COMPUTE_COST.md`.
 
 **Venue:** **TACL, 1 February 2027.** Fallback: **EMNLP 2027, 28 May 2027.** **Do not submit ACL 2027** — the 4 January deadline is too early, and an ARR rejection blocks TACL for nine months.
 
@@ -632,8 +632,8 @@ If any one fails, G is a trap. The 5x leverage makes G **attemptable**, not **ad
 | Outcome | Probability (with agents) | Core | Weighted |
 |---|---:|---:|---:|
 | P0 only | 99% | 6.25 | 6.21 |
-| C+ core (4-arm + 180-item benchmark) | **82%** | 8.3–8.6 | 8.2–8.4 |
-| C+ + theory section (R2/R4/R6) | 50–60% | 8.5–8.8 | 8.4–8.7 |
+| Core run (4-arm + 180-item benchmark) | **82%** | 8.3–8.6 | 8.2–8.4 |
+| Core run + theory section (R2/R4/R6) | 50–60% | 8.5–8.8 | 8.4–8.7 |
 | Full 9+ stack (theory + SEA-Cert + full benchmark) | **11–12%** | 9.0–9.2 | 8.9–9.1 |
 | 9.5+ | <3% | — | — |
 

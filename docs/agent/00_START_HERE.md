@@ -2,7 +2,7 @@
 
 **Read this first. Do not edit code until you finish `06_AGENT_CHECKLIST.md` Phase 0 (Recon).**
 
-> **Status note (2026-11-08):** this file records the pre-P0 audit and its scores. P0-5 (trust floor) is fixed on `feat/p0-hardening`; P0-0/P0-1/P0-2 are in the Wave-1 build. Treat the findings below as the diagnosis, not as the current code state.
+> **Status note (2026-11-08):** this file records the pre-P0 audit and its scores. P0-5 (trust floor) is fixed on `feat/p0-hardening`; P0-0/P0-1/P0-2 are in the Wave-1 build. Treat the findings below as the diagnosis, not as the current code state. **Stage names (2026-11-09):** use `docs/GLOSSARY.md` — **Core run** (legacy “C+”) and **Full run** (legacy “TACL full”); **TACL** is a venue only.
 
 > **TL;DR for an agent**
 > - Do **not** run the main matrix. It is ~30,000 GPU-hours.
@@ -26,7 +26,7 @@ Three heterogeneous LLM agents answer a hard scientific question, debate for up 
 
 Round-8 eight-factor rubric. **Compute is excluded at the user's request**; 7-factor weights are renormalized. Scores are working estimates, not acceptance probabilities.
 
-| Factor | 8F weight | 7F weight | Current | After P0 | C+ (P1 reframe) | TACL full | 9+ tail |
+| Factor | 8F weight | 7F weight | Current | After P0 | Core run (P1 reframe) | Full run | 9+ tail |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Novelty | 25% | 26.3% | 4.5 | 4.5 | 7.0 | 7.5 | 8.5 |
 | Method | 20% | 21.1% | 7.0 | 7.5 | 8.0 | 8.5 | 8.5 |
@@ -39,7 +39,7 @@ Round-8 eight-factor rubric. **Compute is excluded at the user's request**; 7-fa
 | **Core** | | | **5.50** | **6.25** | **7.63** | **8.00** | **8.38** |
 | **Weighted** | | | **5.42** | **6.21** | **7.53** | **7.89** | **8.37** |
 
-**Stages:** C+ = causal study + 180-item benchmark + 150-item human eval. TACL full = 6 arms × 3 datasets × 400 × 2 seeds + 300–500-item benchmark + human eval. 9+ tail = 800-item benchmark + SDT model + private split + full law-testing.
+**Stages:** Core run = causal study + 180-item benchmark + 150-item human eval. Full run = 6 arms × 3 datasets × 400 × 2 seeds + 300–500-item benchmark + human eval. 9+ tail = 800-item benchmark + SDT model + private split + full law-testing.
 
 **Eight-factor vs holistic:** the 9+ tail’s eight-factor score is **8.38/8.37** because Feasibility drops to 6.5 (1,824 annotation hours). The audits’ **9.0–9.3** is a holistic reviewer judgment of the final paper, not the eight-factor arithmetic. A true 9.0 eight-factor score would require near-9 on every factor, which is not realistic for a 6-person FYDP.
 

@@ -6,6 +6,8 @@
 **Full details:** `docs/agent/` — start at `README.md`.
 
 > **Current P0 status (9 November 2026):** P0 hardening is on the temporary `feat/p0-hardening` branch. The gate is **11/13 passed**, with WP-13 (B8-no-trust) and WP-09 (B8+injection) pending; `pytest` is **478**. The executable matrix is **24 rows / 1,280 GPU-h** with `PRE_REGISTRATION.md` v1.0. The long-lived branches are `dev` (development/integration) and `main` (release trunk; the web frontend deploys from it). The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`; `feat/p0-hardening` is deleted after the merge. The 8 November audit below is the diagnosis; the unchecked boxes in §3 are the original plan, not current status.
+>
+> **Stage names:** `docs/GLOSSARY.md` — **Core run** (legacy “C+”) and **Full run** (legacy “TACL full”); **TACL** is a venue only.
 
 ---
 
@@ -15,8 +17,8 @@
 |---|---:|---:|---|
 | **Current idea/plan** | **5.50** | **5.42** | Plausible, but high risk. Not top-Q1 yet. |
 | After the P0 fixes | 6.25 | 6.21 | The instrument is fixed. Still not novel enough. |
-| C+ core (causal study + 180-item benchmark) | 8.3–8.6 | 8.2–8.4 | Strong Q1 paper. This is the realistic target. |
-| TACL full run (6 arms × 3 datasets × 400 questions) | 8.5–8.8 | 8.4–8.7 | Strong Q1 journal paper. |
+| Core run (causal study + 180-item benchmark) | 8.3–8.6 | 8.2–8.4 | Strong Q1 paper. This is the realistic target. |
+| Full run (6 arms × 3 datasets × 400 questions) | 8.5–8.8 | 8.4–8.7 | Strong Q1 journal paper. |
 | 9+ (tail outcome) | 9.0–9.2 | 8.9–9.1 | 11–12% unconditional; 30–35% only if the “evidence backfires” effect is real. |
 
 **The current manuscript is 2.5/10 as a paper.** Do not submit it. It has no results, broken metrics, and claims results it does not have.
@@ -40,7 +42,7 @@
 | 9 | **B8 vs B4 is confounded** | B4 uses all sources; B8 uses one source per agent. The comparison changes two things. | Use **B8-no-trust** as the main control. Match prompts and retrieval. |
 | 10 | **The baselines are approximations** | B9 iMAD is a heuristic. B10 ConsensAgent has no prompt optimizer. B6 MoA is simplified. | Make them faithful, or label them as approximations. Do not claim “+X% over iMAD.” |
 | 11 | **The datasets do not fit the method** | BrokenMath is 451/451 proof-only. BrokenArXiv is 87/87 proof-only. HLE is designed to be un-googleable. | Drop BrokenMath/BrokenArXiv from the main matrix. Use GPQA-Main + MMLU-Pro STEM + EG-SSS. HLE = abstention control. |
-| 12 | **The matrix is too big** | 15 conditions × 5 datasets × 3 seeds × 1,000 questions ≈ 30,000 GPU-hours. | C+ = 4 arms + oracle, ~1,000 questions. TACL = 6 arms × 3 datasets × 400 × 2 seeds ≈ 1,920 GPU-hours. |
+| 12 | **The matrix is too big** | 15 conditions × 5 datasets × 3 seeds × 1,000 questions ≈ 30,000 GPU-hours. | Core run = 4 arms + oracle, ~1,000 questions. Full run = 6 arms × 3 datasets × 400 × 2 seeds ≈ 1,920 GPU-hours. |
 | 13 | **The cost ignored bandwidth and storage** | The old plan used GPU $/hr only. Downloads, storage, and stopped instances add 10–25%. | Use the Vast.ai spot model in `08_COMPUTE_COST.md`. Persist the cache. |
 | 14 | **The paper overclaims** | The abstract says “produced fewer hallucinated answers” but there are no results. It says “no mechanism exists” — false. | Rewrite the claims. See `05_WRITING_AND_VENUE.md`. |
 
@@ -85,23 +87,23 @@
 - [ ] Update the docs.
 - [ ] Keep P0 work on `feat/p0-hardening`; push the slice branches. Do **not** merge into `dev` or `main` until the gate.
 
-**Done when:** C+ matrix ≤1,500 GPU-h or TACL ≤3,400 GPU-h; pre-registration exists; pilot passes the gates.
+**Done when:** Core run matrix ≤1,500 GPU-h or Full run ≤3,400 GPU-h; pre-registration exists; pilot passes the gates.
 
 ---
 
-## 4. What to run — C+ first
+## 4. What to run — Core run first
 
 | Step | What | Size | Why |
 |---|---|---:|---|
 | 1 | Pilot | 100–150 questions | Check the wiring and the effect. |
-| 2 | P0 causal matrix | 4 conditions × 3 datasets × 2 seeds (24 rows) | Real causal result; 1,280 GPU-h. |
-| 3 | EG-SSS benchmark | 300 items (180 floor) | Gold-evidence stress test. |
+| 2 | Core run | 4 arms + oracle, ~400/dataset × 2 seeds, 180-item benchmark | Real causal result; $420–580. |
+| 3 | Full-run benchmark | 300 items (180 Core-run benchmark) | Gold-evidence stress test for the Full run. |
 | 4 | Human evaluation | 150 paired items | Validate the automatic metrics. |
-| 5 | Decide | If **ρ > 0.4** and the pilot shows the effect → run TACL. If not → stop at 8.3–8.6. | Do not gamble the thesis. |
+| 5 | Decide | If **ρ > 0.4** and the pilot shows the effect → run the Full run. If not → stop at 8.3–8.6. | Do not gamble the thesis. |
 
-**P0 matrix (current):** 4 conditions × 3 datasets × 2 seeds, caps 400/400/200 = 8,000 debates ≈ **1,067 GPU-hours**; the gate uses the conservative 9,600-debate figure = **1,280 GPU-hours**. See `PRE_REGISTRATION.md` §5.
+**P0 matrix (current executable subset):** 4 conditions × 3 datasets × 2 seeds, caps 400/400/200 = 8,000 debates ≈ **1,067 GPU-hours**; the gate uses the conservative 9,600-debate figure = **1,280 GPU-hours**. See `PRE_REGISTRATION.md` §5.
 
-**TACL full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours** main, **2,460–2,700 GPU-hours** with pilot/sweep and Final replication. Four 24 GB GPUs = 480 GPU-hours each = **20 days** main; 4 weeks with buffer.
+**Full run:** 6 arms × 3 datasets × 400 questions × 2 seeds = 14,400 debates ≈ **1,920 GPU-hours** main, **2,460–2,700 GPU-hours** with pilot/sweep and Final replication. Four 24 GB GPUs = 480 GPU-hours each = **20 days** main; 4 weeks with buffer. Core run is a prefix: completed cells are not re-run, and the costs are not additive.
 
 **Human annotation:** 500 items × 5 claims × 2 annotators = **5,000 labels** ≈ 167 hours. Six people × 7 hours/week × 4 weeks = 168 hours.
 
@@ -109,12 +111,12 @@
 
 | Size | What it is | Annotation | Earlier score estimate | Decision |
 |---:|---|---:|---:|---|
-| **180** | Floor / C+ supporting artifact | ~410 h | 8.0–8.3 | Minimum |
-| **300** | Target | ~684 h | 8.5 | Default |
+| **180** | Core-run benchmark | ~410 h | 8.0–8.3 | Core run |
+| **300** | Full-run benchmark | ~684 h | 8.5 | Full run |
 | **600** | Stretch | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
 | **800 + SDT model** | No-go | ~1,824 h | 9.0–9.3 | Do not build |
 
-- **Target: 300 items.** 180 is the floor; 600 is the stretch; 800 is a no-go.
+- **Core run uses 180 items; the Full run uses 300.** 600 is the stretch; 800 is a no-go.
 - **Do not build 800 unless 2–3 people can annotate for five months.** A 300-item set with 3% bad gold is the target; a larger set with bad gold is not an improvement.
 - **The 9+ benchmark needs the SDT model** (sycophancy = social weight / evidence weight; verifier trust; abstention criterion; competence). Without it, 800 items is a dataset paper.
 - If annotation capacity is uncertain, build 180–300 and do the theory/causal paper.
@@ -135,8 +137,8 @@
 
 | Path | All-in cost |
 |---|---:|
-| C+ core | **$420–580** |
-| TACL main | **$900–1,200** |
+| Core run | **$420–580** |
+| Full run (all-in, not additive with Core) | **$900–1,200** |
 | Full law-testing | **$1,100 (6 min) / $1,400–1,900 (8 min)** |
 
 **What blows the budget:**
@@ -154,8 +156,8 @@
 
 ## 6. Venue
 
-- **Current calendar (9 November 2026):** thesis submission **June/July 2027**; paper submission **after the defence, August–December 2027**.
-- **Historical venue plan:** the earlier target was TACL, 1 February 2027, with EMNLP 2027 main, 28 May 2027, as fallback. Those dates were set before the P0 matrix cut and no longer match the thesis calendar. Do not treat them as current deadlines.
+- **Current calendar (9 November 2026):** Pilot Dec 2026; Core run Jan 2027; Full run Feb 2027; Final replication after the Full run; Law-testing Apr 2027; thesis June 2027; defence June/July 2027; paper after defence, August–December 2027.
+- **Historical venue plan:** the earlier submission target was TACL, 1 February 2027, with EMNLP 2027 main, 28 May 2027, as fallback. TACL is a venue, not an experiment stage. The current paper submission is after the defence, August–December 2027; do not treat the old deadlines as current.
 - **TMLR is Q2, not Q1.** If Q1 is mandatory, use TACL/IP&M/KBS.
 - **Do not split into two papers.** Thesis + one TACL paper.
 
@@ -228,7 +230,7 @@ No “done” without a command and its output.
 | `docs/agent/00_START_HERE.md` | Orientation, score, warnings |
 | `docs/agent/01_CURRENT_STATE.md` | What is real vs broken |
 | `docs/agent/02_P0_FIXES.md` | The 12 fixes with acceptance tests |
-| `docs/agent/03_EXPERIMENT_PLAN.md` | C+ and TACL design, power, cost |
+| `docs/agent/03_EXPERIMENT_PLAN.md` | Core run and Full run design, power, cost |
 | `docs/agent/04_LITERATURE_AND_GAPS.md` | Prior art and missing references |
 | `docs/agent/05_WRITING_AND_VENUE.md` | Claims, writing, venue |
 | `docs/agent/06_AGENT_CHECKLIST.md` | DeepSeek V4.1 Flash Max checklist |

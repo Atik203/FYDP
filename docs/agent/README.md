@@ -8,6 +8,8 @@
 
 These docs are for LLM coding agents and human teammates. They are deliberately short, explicit, and test-driven. Read them in order.
 
+**Experiment stage names:** [`../GLOSSARY.md`](../GLOSSARY.md) — **Core run**, **Full run**, and the rule that **TACL** is a venue only.
+
 | # | File | Read it when |
 |---:|---|---|
 | 00 | [`00_START_HERE.md`](00_START_HERE.md) | First. Orientation, score, top warnings, commands, repo map. |

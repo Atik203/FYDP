@@ -160,7 +160,7 @@ Every "why did you choose X" question, in one table.
 | Injection target | the correct-minority agents by default | Tests exactly the collapse thesis | `orchestrator/injection.py:64-67` |
 | Datasets | 5 sets: 2 stable, 2 adversarial, 1 ceiling | Accuracy comparability plus collapse stress | [Section 13](#13-datasets--sources) |
 | Sample size | pilot 25; main caps 400/400/200 | Stable paired statistics vs iteration speed | `configs/experiments.yaml`; `PILOT_CRITERION.md` |
-| Seeds | 2 for the main matrix; the pilot is a single frozen set | Replication without doubling the C+ budget; the unit of analysis is the question | `PRE_REGISTRATION.md` |
+| Seeds | 2 for the main matrix; the pilot is a single frozen set | Replication without doubling the Core-run budget; the unit of analysis is the question | `PRE_REGISTRATION.md` |
 | Metrics | Final accuracy + CMR primary; ARR, trust AUROC/Brier; ECR deprecated | Correction, minority survival, ranking, no regression | `eval/endpoints.py` |
 | κ gate | ≥ 0.75 | Human annotation quality before any measurement counts | `trustcal/INJECTION_PROTOCOL.md:59-64` |
 | CCR threshold | baseline CCR ≥ 0.30 | Gate 1: the injection must induce real collapse before trust is tested | `FYDP_Summer/3.design.tex:121` |
@@ -775,7 +775,7 @@ Config: `trustcal/configs/datasets.yaml:10-54`; blueprint table `docs/blueprint.
 
 **What Gate 0 proves / does not prove:** proves serving, orchestration and parsing work end to end at 4-bit on one GPU; it does not measure collapse, retrieval or trust.
 
-**Pending:** paid C+ matrix (400/dataset, 2 seeds), human verifier audit (150–200 pairs), Final-stack smoke, injection runs on GPU, ablations A1–A4, human study. Retrieval and trust wiring are done.
+**Pending:** paid Core run (400/dataset, 2 seeds), human verifier audit (150–200 pairs), Final-stack smoke, injection runs on GPU, ablations A1–A4, human study. Retrieval and trust wiring are done.
 
 **Ablations:** A1 no trust, A2 no progressive retrieval, A3 no source partitioning, A4 no adaptive triggering (blueprint `:400,417`).
 
@@ -855,7 +855,7 @@ Config: `trustcal/configs/datasets.yaml:10-54`; blueprint table `docs/blueprint.
 | Weak spot | The honest answer |
 | --- | --- |
 | Verifier accuracy is not yet human-validated | "The 150–200 pair audit is the next gate. The lexical baseline scores 0.58 balanced accuracy on the synthetic audit set, so it is a diagnostic, not a paper result." |
-| The effect has not been measured yet | "The C+ matrix is the next gate. No efficacy claim is made before it; the P0 gate is engineering readiness, not evidence." |
+| The effect has not been measured yet | "The Core run is the next gate. No efficacy claim is made before it; the P0 gate is engineering readiness, not evidence." |
 | Placebo/oracle arms are not implemented yet | "WP-13 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset." |
 | `--rounds` ignored with real clients | "Rounds come from the config file; the flag is legacy for mocks. We will remove or fix it in Phase 2." (`runner.py:161-166`) |
 | Empty constraints subsections in report | "The standards/constraints chapter is being completed this week; the mapping exists in Ch5." (`FYDP_Summer/5.sic.tex:53-73`) |
