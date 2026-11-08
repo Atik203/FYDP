@@ -75,8 +75,7 @@ export function Idea1Content() {
         <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
         <Callout variant="info" title="📌 P0 implementation status (Nov 2026)">
           <p className="mb-2">
-            <strong>478 tests; P0 gate 11/13 passed.</strong> Pending items are
-            WP-13 (B8-no-trust) and WP-09 (B8+injection). The core is wired:
+            <strong>514 tests; P0 gate 13/13 passed.</strong> The core is wired:
             options in prompts, parser/scorer, trust simplex projection, verifier
             interface, claim-domain routing, endpoints, and manifest/resume.
             This is engineering readiness, <strong>not an efficacy result</strong>.
@@ -1233,8 +1232,8 @@ export function Idea1Content() {
         </SectionTitle>
         <p className="text-sm mb-4">
           Per the execution plan: P0 Nov 2026; Pilot run Dec 2026; Core run
-          (legacy "C+") Jan 2027 with the 180-item benchmark; Full run (legacy
-          "TACL full") + 300-item benchmark Feb 2027; human eval/SDT Mar;
+          Jan 2027 with the 180-item benchmark; Full run
+          + 300-item benchmark Feb 2027; human eval/SDT Mar;
           results freeze Apr; thesis chapters May; thesis submit Jun; defence
           Jun/Jul; paper after defence Aug–Dec 2027. No fixed conference deadline
           drives the schedule; the thesis clock comes first.
@@ -1270,7 +1269,7 @@ export function Idea1Content() {
             {
               step: 3,
               title: "Injection protocol (§5.4 Steps 1–6)",
-              desc: "Must exist before trust mechanism — trust calibration is only evaluable against a working stress test. Protocol and B8 injection wiring are in progress; WP-09 is one of the two pending P0 items. GPU pilot next.",
+              desc: "Must exist before trust mechanism — trust calibration is only evaluable against a working stress test. Protocol and B8 injection wiring are in place; GPU pilot next.",
             },
             {
               step: 4,
@@ -1290,7 +1289,7 @@ export function Idea1Content() {
             {
               step: 7,
               title: "Full debate loop (LangGraph state machine)",
-              desc: "Core loop, endpoints, manifest, and resume are wired at P0. P0 gate is 11/13 with WP-13 (B8-no-trust) and WP-09 (B8+injection) pending.",
+              desc: "Core loop, endpoints, manifest, and resume are wired at P0. P0 gate is 13/13.",
             },
             {
               step: 8,

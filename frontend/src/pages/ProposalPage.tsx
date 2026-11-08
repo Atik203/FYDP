@@ -177,8 +177,7 @@ export function ProposalPage() {
           }}
         >
           <strong>Implementation status (Nov 2026).</strong> P0 is engineering
-          readiness: 478 tests, 11/13 gate checks passed, with WP-13
-          (B8-no-trust) and WP-09 (B8+injection) pending. No efficacy result has
+          readiness: 514 tests, 13/13 gate checks passed. No efficacy result has
           been measured. Planned work is labelled as planned throughout.
         </p>
 
@@ -646,7 +645,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
         <p>
           These are bounded <em>design properties</em>, not global convergence
           theorems. The boundedness test covers 10,000 random draws for{" "}
-          <em>N</em> &isin; &#123;1, 3, 5&#125; and is part of the 478-test P0
+          <em>N</em> &isin; &#123;1, 3, 5&#125; and is part of the 514-test P0
           suite; the empirical trajectory is logged for every debate. The
           defaults in the current pipeline are &alpha; = 0.5 and &beta; = 0.3,
           with floor/ceiling sensitivity checked before the matrix is frozen.
@@ -1004,7 +1003,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
         <h2 style={h2Style}>10. Timeline and Milestones</h2>
         <p>
           P0 closes in Nov 2026. The Pilot run follows in Dec 2026, the Core run
-          (legacy "C+") in Jan 2027, and the Full run (legacy "TACL full") plus
+          in Jan 2027, and the Full run plus
           the 300-item benchmark in Feb 2027. Core run is a prefix of the Full
           run; completed cells are reused, so the costs are not additive for
           those cells. Human evaluation and the SDT analysis follow in Mar,
@@ -1033,7 +1032,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Oct&ndash;Nov 2026</td>
               <td style={tdStyle}>P0</td>
               <td style={tdStyle}>Engineering hardening: options, parser/scorer, trust projection, verifier interface, claim-domain routing, endpoints, manifest/resume</td>
-              <td style={tdStyle}>478 tests; P0 gate 11/13 passed. Pending: WP-13 (B8-no-trust), WP-09 (B8+injection)</td>
+              <td style={tdStyle}>514 tests; P0 gate 13/13 passed</td>
             </tr>
             <tr>
               <td style={tdStyle}>Dec 2026</td>

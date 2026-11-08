@@ -44,7 +44,7 @@ export interface RiskRow {
 // Execution plan — P0 (Nov 2026) through paper submission (Dec 2027)
 export const ganttPhases: GanttPhase[] = [
   { name: 'Ph 0: Literature & Setup', duration: 'Jul–Sep 2026', deliverables: 'Literature freeze, vLLM 3-model serving on the A6000, Gate 0 MAD reproduction — passed 16 Sep 2026 (10/10 debates × 3 rounds)', progress: 100, barVariant: 'teal' },
-  { name: 'Ph 1: P0 Engineering', duration: 'Oct–Nov 2026', deliverables: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 478 tests; P0 gate 11/13 passed, with WP-13 (B8-no-trust) and WP-09 (B8+injection) still pending.', progress: 85, barVariant: 'default' },
+  { name: 'Ph 1: P0 Engineering', duration: 'Oct–Nov 2026', deliverables: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 514 tests; P0 gate 13/13 passed.', progress: 100, barVariant: 'default' },
   { name: 'Ph 2: Pilot run', duration: 'Dec 2026', deliverables: '24-item calibration first; then the behavioural pilot and κ check. Two seeds. Gate 1 decides whether the Core run proceeds.', progress: 0, barVariant: 'amber' },
   { name: 'Ph 3: Core run', duration: 'Jan 2027', deliverables: '4 executable arms (B3, B4-matched, B8-no-trust, B8) + oracle; 3 datasets × 400 items × 2 seeds = 24 rows, 1,280 GPU-h, plus the 180-item EG-SSS benchmark. PRE_REGISTRATION.md v1.0.', progress: 0, barVariant: 'rose' },
   { name: 'Ph 4: Full run + benchmark', duration: 'Feb 2027', deliverables: '6-arm Full run (3 datasets × 400 items × 2 seeds) adds B8-placebo/B8-oracle (pending WP-13) and extends EG-SSS to 300 items (600 stretch, 800 no-go).', progress: 0, barVariant: 'rose' },
@@ -66,8 +66,8 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'P0 engineering gate',
     date: 'Nov 2026',
-    description: '478 tests; P0 gate 11/13 passed. Pending: WP-13 (B8-no-trust) and WP-09 (B8+injection). Core wiring is in place — this is engineering readiness, not an efficacy result.',
-    deliverable: 'P0 gate report + runnable matrix — 11/13',
+    description: '514 tests; P0 gate 13/13 passed. Core wiring is in place — this is engineering readiness, not an efficacy result.',
+    deliverable: 'P0 gate report + runnable matrix — 13/13',
   },
   {
     milestone: 'Pilot run',
@@ -78,13 +78,13 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'Core run',
     date: 'Jan 2027',
-    description: 'Core run (legacy "C+"): 4 executable arms + oracle; 3 datasets × 400 items × 2 seeds = 24 rows, budgeted at 1,280 GPU-h, plus the 180-item EG-SSS benchmark. No efficacy claim is made before the pre-registered analysis.',
+    description: 'Core run: 4 executable arms + oracle; 3 datasets × 400 items × 2 seeds = 24 rows, budgeted at 1,280 GPU-h, plus the 180-item EG-SSS benchmark. No efficacy claim is made before the pre-registered analysis.',
     deliverable: 'Core-run causal result',
   },
   {
     milestone: 'Full run + benchmark',
     date: 'Feb 2027',
-    description: 'Full run (legacy "TACL full"): add B8-placebo/B8-oracle if WP-13 lands, then extend to the 6-arm design. Build EG-SSS to 300 items (180 floor, 600 stretch, 800 no-go).',
+    description: 'Full run: add B8-placebo/B8-oracle, then extend to the 6-arm design. Build EG-SSS to 300 items (180 floor, 600 stretch, 800 no-go).',
     deliverable: 'Full-run matrix + EG-SSS v1',
   },
   {

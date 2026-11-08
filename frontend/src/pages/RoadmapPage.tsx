@@ -129,7 +129,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'P0 — in progress',
     hours: '~20 hr/wk',
     learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX playlist, videos 1–6 only); trust projection math from the P0 interfaces.',
-    build: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 478 tests; P0 gate 11/13, with WP-13 and WP-09 pending.',
+    build: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 514 tests; P0 gate 13/13.',
     links: [
       { label: 'Agentic AI using LangGraph (CampusX)', href: 'https://www.youtube.com/playlist?list=PLKnIA16_RmvYsvB8qkUQuJmJNuiCUJFPL' },
       { label: 'LangGraph docs', href: 'https://langchain-ai.github.io/langgraph/' },
@@ -274,8 +274,8 @@ export function RoadmapPage() {
           <SectionTitle icon={Calendar}>A. Execution Plan (Blueprint §12)</SectionTitle>
           <p className="text-sm mb-4">
             P0 closes in Nov 2026; the Pilot run follows in Dec; the Core run
-            (legacy "C+") in Jan 2027 with the 180-item benchmark; the Full run
-            (legacy "TACL full") plus the 300-item benchmark in Feb; human
+            in Jan 2027 with the 180-item benchmark; the Full run
+            plus the 300-item benchmark in Feb; human
             eval/SDT in Mar; results freeze in Apr; thesis chapters in May;
             thesis submission in Jun; defence in Jun/Jul; paper after the
             defence (Aug–Dec 2027). Gates mark explicit go/no-go decisions. Core
@@ -296,11 +296,11 @@ export function RoadmapPage() {
             {[
               { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this. Done — three-model serving verified 16 Sep 2026.' },
               { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions. Done — 10/10 debates, 3/3 rounds.' },
-              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Protocol and B8 injection wiring are in progress; WP-09 remains pending. GPU pilot next.' },
+              { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Protocol and B8 injection wiring are in place; GPU pilot next.' },
               { step: 4, title: 'Calibration + behavioural-effectiveness pilot (Dec 2026)', desc: '24-item calibration first; then the pilot on the highest-risk assumption.' },
               { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Claim decomposition, domain routing, verifier interface, and endpoints are wired at P0.' },
               { step: 6, title: 'Trust update function', desc: 'Unit-test the operator order in isolation: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong.' },
-              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 and WP-09 remain before the matrix.' },
+              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 remains for the placebo/oracle arms before the Full run.' },
               { step: 8, title: 'Baselines B1–B4', desc: 'Built and mock-verified; B3 and B4-matched are in the executable matrix.' },
               { step: 9, title: 'Baselines B5–B6 (Self-Consistency, MoA)', desc: 'Independent of core mechanism. Can build in parallel with step 10.' },
               { step: 10, title: 'Baseline B9 (iMAD reimplementation)', desc: 'Highest difficulty (~10 days). Sequenced last.' },
@@ -321,7 +321,7 @@ export function RoadmapPage() {
           <Callout variant="info" title="🌿 Repository workflow" className="mt-4">
             <p className="text-sm">
               Two long-lived branches only: <code>main</code> (public mirror) and{" "}
-              <code>feat/full-pipeline</code> (canonical implementation).
+              <code>dev</code> (development; <code>main</code> is the release deploy).
               Snapshots are git tags (P0, Pilot, Core, Full), not long-lived
               phase branches. Feature work lands on short-lived slices and
               merges back with <code>--no-ff</code>.
