@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Editor directories and files
-!.vscode/extensions.json
+.vscode/
 .idea
 .DS_Store
 *.suo
@@ -33,13 +33,14 @@ dist-ssr
 .agents
 config.bat
 
+# Secrets
+.env
+.env.*
+!.env.example
+
 # FYDP pipeline (Python)
 __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
-/trustcal/.env
 /trustcal/results/
-
-# --- anti-malware: block VS Code auto-task payloads ---
-**/public/fonts/fa-brand-400.woff
