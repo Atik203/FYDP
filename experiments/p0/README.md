@@ -33,7 +33,8 @@ Integration branch: temporary `feat/p0-hardening`; it merges into `dev` after th
 | 03b | `31e8d35` | trust from final positions, real claim counts, telemetry |
 | 04 / 15 | `62fa3f7` | records + manifest modules, analyze guard |
 | 04b | `e1ce1a7` | runner wiring: manifest, accuracy, eligible_n, routes, inject flags |
-| 05 / 06 | `ef38fd9` | endpoints + 13-check gate (12 pass / 1 pending) |
+| 05 / 06 | `ef38fd9` | endpoints + 13-check gate (13/13) |
+| 09 / 10 / 13 | `9641476` | verifier, one-shot injection, neutral trust line |
 | 07 / 08 | `efd11ae` | verifier interface, audit harness |
 | 11 / 12 | `4b5f366` | dataset pins, domain routing |
 | 14 | `9b57b9d` | 24-row matrix, per-dataset caps, pre-registration |
