@@ -171,7 +171,7 @@ Cause: `p0_gate.py` check 3 renders `AGENT_REVISION_EVIDENCE.format(..., evidenc
 options_block=block)` — after A's P0-0 change the template renders the options block
 twice (once as `{options_block}`, once as fake `{evidence}`). The harness needs a
 non-option evidence string; `p0_gate.py` is E's lease, `prompts.py` is A's. Trust
-checks 5 and 6 pass; check 1 (the whole 469-test suite) passes.
+checks 5 and 6 pass; check 1 (the whole 470-test suite) passes.
 
 ## 4. Handoffs and remaining raw counts
 
