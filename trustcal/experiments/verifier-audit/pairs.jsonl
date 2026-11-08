@@ -1,0 +1,20 @@
+{"id": "syn-01", "claim": "The sky appears blue because of Rayleigh scattering.", "passages": ["Rayleigh scattering is the elastic scattering of light by particles much smaller than the wavelength of light, which makes the sky appear blue."], "gold_label": "supported"}
+{"id": "syn-02", "claim": "Water boils at 100 degrees Celsius at sea level.", "passages": ["At standard atmospheric pressure at sea level, pure water boils at 100 degrees Celsius."], "gold_label": "supported"}
+{"id": "syn-03", "claim": "The speed of light in vacuum is about 3e8 m/s.", "passages": ["Light travels in vacuum at 299,792,458 metres per second."], "gold_label": "supported"}
+{"id": "syn-04", "claim": "DNA replication is semiconservative.", "passages": ["Each new DNA molecule consists of one original strand and one newly synthesized strand, so replication is semiconservative."], "gold_label": "supported"}
+{"id": "syn-05", "claim": "Penicillin inhibits bacterial cell wall synthesis.", "passages": ["Penicillin blocks the transpeptidase enzymes that cross-link peptidoglycan, weakening the bacterial cell wall."], "gold_label": "supported"}
+{"id": "syn-06", "claim": "Photosynthesis converts light energy into chemical energy.", "passages": ["In photosynthesis, light energy is captured and stored as chemical bonds in glucose."], "gold_label": "supported"}
+{"id": "syn-07", "claim": "The Earth orbits the Sun once per year.", "passages": ["Earth completes one revolution around the Sun every 365.25 days."], "gold_label": "supported"}
+{"id": "syn-08", "claim": "The boiling point of water is 90 degrees Celsius at sea level.", "passages": ["At standard atmospheric pressure at sea level, pure water boils at 100 degrees Celsius."], "gold_label": "contradicted"}
+{"id": "syn-09", "claim": "Antibiotics are effective against viral infections.", "passages": ["Antibiotics target bacterial structures such as cell walls and ribosomes and have no effect on viruses."], "gold_label": "contradicted"}
+{"id": "syn-10", "claim": "The speed of light in vacuum is about 3e6 m/s.", "passages": ["Light travels in vacuum at 299,792,458 metres per second."], "gold_label": "contradicted"}
+{"id": "syn-11", "claim": "DNA replication is conservative.", "passages": ["Each new DNA molecule consists of one original strand and one newly synthesized strand, so replication is semiconservative."], "gold_label": "contradicted"}
+{"id": "syn-12", "claim": "The Sun orbits the Earth.", "passages": ["Earth and the other planets orbit the Sun, which lies at the centre of the solar system."], "gold_label": "contradicted"}
+{"id": "syn-13", "claim": "Penicillin promotes bacterial cell wall synthesis.", "passages": ["Penicillin blocks the transpeptidase enzymes that cross-link peptidoglycan, weakening the bacterial cell wall."], "gold_label": "contradicted"}
+{"id": "syn-14", "claim": "Photosynthesis releases light energy.", "passages": ["In photosynthesis, light energy is captured and stored as chemical bonds in glucose."], "gold_label": "contradicted"}
+{"id": "syn-15", "claim": "Cats sleep more than dogs.", "passages": [], "gold_label": "unverifiable"}
+{"id": "syn-16", "claim": "The patient recovered after two weeks.", "passages": ["The trial enrolled 120 adults with hypertension."], "gold_label": "unverifiable"}
+{"id": "syn-17", "claim": "Quantum gravity is renormalizable.", "passages": ["Cats sleep for many hours each day."], "gold_label": "unverifiable"}
+{"id": "syn-18", "claim": "The new algorithm is faster than the baseline.", "passages": ["We describe a sorting algorithm and its worst-case complexity analysis."], "gold_label": "unverifiable"}
+{"id": "syn-19", "claim": "The dose is 5 mg.", "passages": ["The trial enrolled 120 adults with hypertension."], "gold_label": "unverifiable"}
+{"id": "syn-20", "claim": "The reaction produced a blue precipitate.", "passages": ["The reaction was run at room temperature for 24 hours."], "gold_label": "unverifiable"}
