@@ -101,8 +101,8 @@ Only the lease holder edits the file. Everyone else files a 3-line request in th
 
 | File | Lease holder | Notes |
 |---|---|---|
-| `trustcal/src/trustcal/runner.py` | **B** | A hands over option fields; E hands over endpoint wiring; B applies |
-| `trustcal/src/trustcal/orchestrator/debate.py` | **D** | A/C hand over patches; D applies; no parallel edits |
+| `trustcal/src/trustcal/runner.py` | **B (wk2–4)** | A may edit option fields in wk1 only; E hands over endpoint wiring; B applies |
+| `trustcal/src/trustcal/orchestrator/debate.py` | **time-sliced** | A wk1 (options), C wk2 (trust timing), D wk3 (verifier/message loop); no parallel edits |
 | `trustcal/src/trustcal/agents/prompts.py` | **A** | Injection text + trust-line variant are A's |
 | `trustcal/src/trustcal/eval/metrics.py` | **E** | No one else edits; records live in `eval/records.py` |
 | `trustcal/configs/*.yaml` + `trustcal/scripts/run_matrix.py` | **F** | Others submit config deltas |
