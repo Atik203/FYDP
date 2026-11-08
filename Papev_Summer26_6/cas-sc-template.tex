@@ -184,7 +184,7 @@ The baseline has one central weakness. Majority voting counts repeated answers a
 \section{Proposed Method}\label{sec3}
 
 \subsection{Overview of Framework}
-This is a deliberation layer placed between a question and its answer. A confidence gate either answers the question directly or sends it to a debate with three independent heterogeneous agents. Each agent tags the claims in its reasoning; each tagged claim is checked against retrieved scientific evidence; and the verdicts update the trust weight of the agent. Agents then revise their positions with access to the other positions and their current trust weights. The loop runs for at most three rounds. The final answer is the trust-weighted plurality of the final positions. The result package contains the answer, the citations that support or oppose it, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:framework-flow} shows the end-to-end flow, and Figure~\ref{fig:context} shows the system boundary and the external actors.
+This is a deliberation layer placed between a question and its answer. A confidence gate either answers the question directly or sends it to a debate with three independent heterogeneous agents. Each agent tags the claims in its reasoning; each tagged claim is checked against retrieved scientific evidence; and the verdicts update the trust weight of the agent. Agents then revise their positions with access to the other positions and their current trust weights. The loop runs for at most three rounds. The final answer is the trust-weighted plurality of the final positions. The result package contains the answer, the citations that support or oppose it, the trust trajectory, and the reasoning trace of each agent. Figure~\ref{fig:framework-flow} shows the end-to-end flow, and Figure~\ref{fig:context} shows the failure mode that motivates the design: a wrong majority can pressure a correct minority, while evidence-grounded trust can reweight the correct minority.
 
 \begin{figure}[pos=htbp]
   \centering
@@ -195,7 +195,7 @@ This is a deliberation layer placed between a question and its answer. A confide
 \begin{figure}[pos=htbp]
   \centering
   \includegraphics[width=0.80\linewidth]{fig-context.png}
-  \caption{Context diagram of the framework. The evaluation harness submits questions, the evidence sources return passages, the model server runs the three agents, and the user receives the result package.}\label{fig:context}
+  \caption{Problem context. A wrong majority can pressure a correct minority into agreement; evidence-grounded trust reweights the correct minority. The failure-mode triad (verifier noise, claim redundancy, shared error) and the resulting sign reversal are shown below.}\label{fig:context}
 \end{figure}
 
 \subsection{Confidence Gate}
@@ -218,7 +218,7 @@ A verifier interface maps each claim and its passages to one of three labels: su
 \begin{figure}[pos=htbp]
   \centering
   \includegraphics[width=0.80\linewidth]{fig-claim-example.png}
-  \caption{Worked example of a single claim verified against a retrieved passage. The claim is marked supported, and the trust weight of the agent rises for that round.}\label{fig:claim-example}
+  \caption{Worked claim decomposition. One scientific claim is split into atomic claims; the verifier labels them supported, contradicted, or unverifiable, and only the decisive labels move the agent's trust.}\label{fig:claim-example}
 \end{figure}
 
 \subsection{Trust Update}
@@ -238,14 +238,14 @@ where $\Pi$ is the Euclidean projection, computed by water-filling. The projecti
 
 \begin{figure}[pos=htbp]
   \centering
-  \includegraphics[width=0.58\linewidth]{fig-trust-detail.png}
+  \includegraphics[width=0.88\linewidth]{fig-trust-detail.png}
   \caption{One trust update. Verdict counts are normalized by the number of claims checked, accumulated in the log domain, and mapped through one softmax; the simplex projection then enforces the floor and the ceiling.}\label{fig:trust-detail}
 \end{figure}
 
 \subsection{Deliberation Protocol}
 One debate runs through positions, decomposition, retrieval, verdicts, and trust update. In the three-agent, three-round configuration, a debate makes nine model calls: three initial positions and three revisions in each of two revision rounds. Gate checks add up to three calls when the confidence gate is enabled. Claim checking, trust updates, injection, and aggregation make no model calls in the default lexical configuration. Agents see their own position, the positions of the other agents, and their current trust weights in rounds two and three. The debate stops after round three.
 
-In the stress test, the evaluation harness delivers a fabricated expert consensus once, between round one and round two, and does not repeat it. The injected consensus contradicts the answer held by the correct minority. No consensus is inserted during normal operation. An agent that times out or returns an unparseable response is marked inconclusive for that round, and the debate continues with the remaining agents. Figure~\ref{fig:round-loop} shows the round loop, and Figure~\ref{fig:dataflow} shows the level-one data flow.
+In the stress test, the evaluation harness delivers a fabricated expert consensus once, between round one and round two, and does not repeat it. The injected consensus contradicts the answer held by the correct minority. No consensus is inserted during normal operation. An agent that times out or returns an unparseable response is marked inconclusive for that round, and the debate continues with the remaining agents. Figure~\ref{fig:round-loop} shows the round loop, and Figure~\ref{fig:dataflow} shows the record and endpoint data flow.
 
 \begin{figure}[pos=htbp]
   \centering
@@ -256,7 +256,7 @@ In the stress test, the evaluation harness delivers a fabricated expert consensu
 \begin{figure}[pos=htbp]
   \centering
   \includegraphics[width=0.88\linewidth]{fig-dataflow.png}
-  \caption{Level-one data flow of the framework with the debate state, the evidence log, and the results log.}\label{fig:dataflow}
+  \caption{Record and endpoint data flow. The schema-v2 record carries the option permutation, raw and parsed answers, claims and verdicts, trust trajectory and final trust vector, final answer/source/correctness, and manifest hash; the endpoint panel shows accuracy, CMR, ARR, and trust AUROC/Brier.}\label{fig:dataflow}
 \end{figure}
 
 \subsection{Trust-Weighted Aggregation}
