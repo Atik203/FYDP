@@ -1,50 +1,104 @@
-# §8 Dataset Plan. Pin snapshot values at Phase 0 freeze and never move them mid-project.
-# BrokenMath/BrokenArXiv are adversarial/worst-case by construction — frame results that way.
+# §8 Dataset Plan. Revisions are frozen commit SHAs (P0-8) — never move them mid-project.
 # Provenance: all datasets are the official releases from their authors (HuggingFace orgs and
 # project pages). None are taken from Kaggle. Licenses verified 2026-09-15.
 #
-# `revision:` fields start as "main" and MUST be replaced by the exact commit hash on the
-# first Phase 0 download; every later run loads that revision (datasets.load_dataset(revision=...)).
+# P0-8 audit (8 Nov 2026):
+#   * BrokenMath benchmark is 451/451 `proof` with an empty `gold_answer`; BrokenArXiv is
+#     87/87 `proof` with an empty `answer`. Both are appendix-only premise-rejection sets:
+#     they are excluded from the primary evidence/CCR matrix and must not be used for
+#     retrieval trust. Their loaders stay for the appendix.
+#   * Load BrokenMath from its `benchmark` split. A `train` split is never an eval set;
+#     GPQA and BrokenArXiv are the two documented exceptions where the official release
+#     publishes its benchmark under `train` (recorded as `train_is_benchmark: true`).
+#   * Sampling is deterministic and stratified (configs/datasets.yaml `sample_seed`).
+#
+# Every `revision:` must be a 40-character commit SHA. If a repo truly cannot be pinned,
+# set `revision: null` plus `revision_status: unpinned` so the P0 gate fails visibly.
+
+sample_seed: 1
 
 datasets:
   brokermath:
+    repo: "INSAIT-Institute/BrokenMath"
     source: "INSAIT-Institute/BrokenMath (HuggingFace, official release)"
     paper: "BrokenMath: A Benchmark for Sycophancy in Theorem Proving with LLMs, arXiv:2510.04721"
     license: "CC BY-NC-SA 4.0 (non-commercial)"
-    role: "primary adversarial stress test"
-    filtering: "divergent-answer filter per §5.4 Step 1 (~60-70% retention)"
-    revision: "main"
+    role: "appendix: premise-rejection stress test (proof-only, no retrieval trust)"
+    split: "benchmark"
+    appendix_only: true
+    filtering: "none for answers: 451/451 proof with empty gold_answer; LLM-judge premise audit only"
+    revision: "5eda8c5fbd150afde41b6206b60700ab7d8e25c7"
   brokenarxiv:
+    repo: "MathArena/brokenarxiv"
     source: "MathArena/brokenarxiv (HuggingFace, official release)"
     homepage: "https://matharena.ai/"
     paper: "MathArena, arXiv:2605.00674"
     license: "CC BY-SA 4.0"
-    role: "adversarial, monthly-refreshed"
+    role: "appendix: qualitative premise rejection (proof-only, no retrieval trust)"
+    split: "train"   # the release's only split; 87/87 proof, empty answer
+    appendix_only: true
     snapshot: "0226-0526"
-    filtering: "same as brokermath"
-    revision: "main"
+    filtering: "none for answers: 87/87 proof with empty answer"
+    revision: "011306b8e06b61161069e713338fa74aa0f3699f"
   hle:
+    repo: "cais/hle"
     source: "cais/hle (HuggingFace, official release by Center for AI Safety and Scale AI)"
     paper: "Humanity's Last Exam, Nature 649, 1139-1146 (2026); arXiv:2501.14249"
     license: "MIT (gated: accept terms before download)"
-    role: "hard scientific reasoning ceiling"
-    note: "access approved 2026-09-16; load with HF_TOKEN (gated repo)"
-    revision: "main"
+    role: "ceiling/abstention control (retrieval-resistant; not positive evidence)"
+    split: "test"
+    note: "access approved 2026-09-16; load with HF_TOKEN (gated repo); preserve answer_type"
+    revision: "5a81a4c7271a2a2a312b9a690f0c2fde837e4c29"
   gpqa:
+    repo: "Idavidrein/gpqa"
     source: "Idavidrein/gpqa (HuggingFace, official release)"
     homepage: "https://github.com/idavidrein/gpqa"
     paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
     license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
-    role: "stable comparison baseline"
-    note: "terms accepted 2026-09-16; export HF_TOKEN before repro_mad.py; HF release has only a 'train' split"
-    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"   # pinned at first Phase 0 download
+    role: "pilot only: GPQA-Diamond (198 items; underpowered for 10 pp); use gpqa_main for the matrix"
+    split: "train"   # the public release has only a train split; it is the benchmark
+    train_is_benchmark: true
+    note: "terms accepted 2026-09-16; export HF_TOKEN before repro_mad.py"
+    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"
+  gpqa_main:
+    repo: "Idavidrein/gpqa"
+    source: "Idavidrein/gpqa (HuggingFace, official release)"
+    homepage: "https://github.com/idavidrein/gpqa"
+    paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
+    license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
+    role: "primary evidence-grounded set (448 items; 270-360 usable)"
+    split: "train"   # same public release, `gpqa_main` config
+    train_is_benchmark: true
+    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"
+  gpqa_diamond:
+    repo: "Idavidrein/gpqa"
+    source: "Idavidrein/gpqa (HuggingFace, official release)"
+    homepage: "https://github.com/idavidrein/gpqa"
+    paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
+    license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
+    role: "pilot only (198 items)"
+    split: "train"
+    train_is_benchmark: true
+    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"
+  gpqa_extended:
+    repo: "Idavidrein/gpqa"
+    source: "Idavidrein/gpqa (HuggingFace, official release)"
+    homepage: "https://github.com/idavidrein/gpqa"
+    paper: "GPQA: A Graduate-Level Google-Proof Q&A Benchmark, arXiv:2311.12022"
+    license: "CC BY 4.0 (gated: accept conditions + HF_TOKEN before download)"
+    role: "appendix scale set (not in the primary matrix)"
+    split: "train"
+    train_is_benchmark: true
+    revision: "633f5ee89ab8ad4522a9f850766b73f62147ffdd"
   mmlu_pro:
+    repo: "TIGER-Lab/MMLU-Pro"
     source: "TIGER-Lab/MMLU-Pro (HuggingFace, official release)"
     homepage: "https://github.com/TIGER-AI-Lab/MMLU-Pro"
     paper: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, arXiv:2406.01574"
     license: "MIT"
-    role: "stable comparison baseline"
-    revision: "main"
+    role: "primary scale/robustness set (6,696 STEM; 1,000 stratified for the matrix)"
+    split: "test"
+    revision: "b189ec765aa7ed75c8acfea42df31fdae71f97be"
 
 seeds: [1, 2, 3]
 rounds: 3
