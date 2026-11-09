@@ -1,12 +1,41 @@
-# 06 — Agent Checklist (DeepSeek V4.1 Flash Max)
+# 06 — Agent Checklist (Historical P0 Board + Post-P0 Checklist)
 
-> **Status note (2026-11-09):** this checklist records the pre-P0 plan from 8 November 2026. P0 is now **11/13** passed on temporary `feat/p0-hardening` (WP-13 and WP-09 pending) with **478** tests. The landing sequence is `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`. The unchecked boxes and the 206-test expectation below are the historical baseline, not current status. Current state: `trustcal/IMPLEMENTATION_STATUS.md` and `experiments/p0/`.
+> **Historical P0 board (8 November 2026).** Current task board: **`roadmap.md`**. This file is retained as the record of the pre-P0 plan and its checkboxes. The legacy work branch is retired; current slices are `next/<slice>` from `dev`. Do not follow the old branch instructions.
 
-**How to use:** this is the task board. Work top to bottom. Do not skip a gate. For every item, record the command and the exact output. If an item cannot pass, stop and report — do not improvise around a gate.
+> **Status at P0 release (9 November 2026):** **13/13** gate checks, **514** tests, released at tag `p0-release` (`7f2c11f`); `main` = `dev` = `2ae56a3`. The old **WP-13** was the landed **B8-no-trust prompt split** (trust-line removal). The pending placebo/oracle slice is **WP-18**, not WP-13.
+
+## Post-P0 checklist (9 November 2026 — current)
+
+Work in this order. Record commands and exact output in `experiments/next/WP-<id>.md`.
+
+- [ ] **N1 — Final-stack 96 GB smoke (Nov 2026).** Not run yet. On the 96 GB GPU:
+  ```bash
+  cd trustcal
+  PHASE=final bash setup.sh
+  python scripts/verify_env.py --check-servers
+  python scripts/check_stack.py --phase final
+  HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline
+  python scripts/smoke_test.py --phase final --limit 20
+  ```
+  **Pass:** three `server OK`; all preflight checks OK; smoke PASS; record peak `nvidia-smi` and loaded weights. Cost 60–100 GPU-h / $80–120.
+- [ ] **N2 — WP-18 placebo/oracle (Nov–Dec 2026).** Implement B8-placebo and B8-oracle, prompt/config switches, tests, and `configs/experiments_full.yaml`. **Freeze the Full definition:** 36 runs if B8-oracle uses gold-answer trust at 300 items/dataset (10,800 debates / 1,440 GPU-h envelope); 32 runs and recompute if B8-oracle is gold-evidence-only on EG-SSS. **Not implemented.**
+- [ ] **N3 — Benchmark calibration (Nov 2026–Feb 2027).** 24-item calibration first; if clean, 180-item **v1.2 freeze** (Core floor); 300-item Full target only if the 180 set is clean; 600 stretch; 800 no-go.
+- [ ] **N4 — Verifier audit (Nov–Dec 2026).** 150–200 claim–passage pairs, 2 annotators. Target balanced accuracy ≥0.75, κ ≥0.60. Current lexical verifier: **0.58** on the synthetic audit. **Pending.**
+- [ ] **N5/G2 — Pilot (Dec 2026).** Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records.
+- [ ] **G3 — Core run (Jan 2027).** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main` 400, `mmlu_pro` 400, `hle` 200) × 2 seeds = 24 runs. 8,000 debates ≈ 1,067 GPU-h planned; 1,280 cap.
+- [ ] **G4/G5 — Full run (Feb 2027).** 6-arm target, conditional 36/32 runs; placebo ≠ B8; oracle separates; sign reversal at the predicted q/ρ boundary; external validity.
+- [ ] **Results freeze (Apr 2027).** CIs, negative results, pre-registered contrasts, manifest trace.
+- [ ] **Thesis (Jun 2027), defence (Jun/Jul 2027), paper (Aug–Dec 2027).** No paper deadline before the defence.
+
+---
+
+## Historical P0 plan (use for the record only)
+
+**How to use (historical):** this was the task board from 8 November 2026. Work top to bottom. Do not follow the branch instructions below; use `next/<slice>` from `dev`.
 
 **Repo:** `E:\FYDP`  
-**Work branch (historical):** `feat/full-pipeline` (now `dev`)
-**Do not edit `main` directly.** Merge at the end, after P0.
+**Current slice model:** `next/<slice>` from `dev`
+**Do not edit `main` directly.** Merge slices into `dev`; release only after a gate.
 
 ---
 
@@ -37,7 +66,7 @@
   .\.venv\Scripts\python.exe -m pytest -q --ignore=.venv
   ```
   **Done when:** you have the pass/fail count.
-  **Record:** exact count and any failures. Expected: 206 passed, 0 failed.
+  **Record:** exact count and any failures. Historical baseline: 206 passed. Current P0-release suite: **514 passed**.
 
 - [ ] **0.4 Confirm environment limitations**
   ```bash
@@ -229,7 +258,7 @@
 
 ### P1.12 — Branch + docs (P0-12)
 
-- [ ] **1.12.1 Merge `feat/full-pipeline` into `main`** (historical; `feat/full-pipeline` is now `dev`, and the P0 landing is `feat/p0-hardening` → `dev` → `main`)
+- [x] **1.12.1 Branch promotion (completed)** — the old feature branch is retired; `dev` released to `main` with tags `p0-gate` and `p0-release`. Current HEAD: `main` = `dev` = `2ae56a3`.
   - **Done when:** public `main` has the full pipeline.
 - [ ] **1.12.2 Update stale docs**
   - `IMPLEMENTATION_STATUS.md`, `docs/FYDP1_defence_Q&A.md`, `roadmap.md`.
@@ -290,9 +319,7 @@ Do not proceed until:
 
 ## Phase 3 — Main experiments
 
-- [ ] **3.1 Core 6-arm matrix**
-  - B3, B4-matched, B8-no-trust, B8, B8-placebo, B8-oracle.
-  - 3 datasets × 250–350 eligible × 2 seeds.
+- [ ] **3.1 Historical Phase 3 plan (superseded).** The old 6-arm Core plan is not executable as written. Core v1.0 is 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = 24 runs. The 6-arm matrix is the Full target pending **WP-18** (conditional 36/32 runs).
   - **Done when:** all records have final accuracy, trust trajectory, per-claim verdicts.
 - [ ] **3.2 Verification-ceiling sweep**
   - Flip verdicts at 0–50% noise; recompute trust; estimate \(q^\star\).
@@ -341,7 +368,7 @@ Do not proceed until:
 
 Stop immediately and report if:
 
-- `pytest` fails on `feat/full-pipeline` and you cannot fix it without changing the experimental design.
+- `pytest` fails on `dev` and you cannot fix it without changing the experimental design.
 - The B8+injection mock run lacks `consensus`, `exposed`, `trust_trajectory`, or `evidence`.
 - `final_answer` is missing or is a recomputed majority.
 - `evidence_introduced` is not set.
@@ -372,7 +399,7 @@ Stop immediately and report if:
 - Never cite a 2027 OpenReview submission as accepted.
 - Never submit the current draft.
 - Never commit secrets, raw data, model weights, or credentials.
-- Never edit `main` directly; work on `feat/full-pipeline` (historical; now `dev`).
+- Never edit `main` directly; work on `next/<slice>` from `dev`.
 - Never add a condition after seeing the primary result.
 
 ---
@@ -419,7 +446,7 @@ Stop immediately and report if:
 
 1. `git status --short` and `git branch -vv`.
 2. Read `docs/agent/01_CURRENT_STATE.md §4.0`.
-3. Run `pytest -q --ignore=.venv` and record 206 passed.
+3. Run `pytest -q --ignore=.venv` and record the current suite count (514 at P0 release; the 206 figure was the 8 Nov baseline).
 4. Open `eval/datasets.py:59-65` and `agents/prompts.py:19-27`; confirm options are not in the prompt.
 5. Open `eval/answers.py:40-51`; confirm the first-number bug.
 6. Open `eval/metrics.py:109-131`; confirm no final accuracy.

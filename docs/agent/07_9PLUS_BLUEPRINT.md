@@ -1,10 +1,12 @@
-# 07 — The 9+ Blueprint (Risk-Managed)
+# 07 — The 9+ Blueprint (Risk-Managed Proposal)
 
-**Date:** 8 November 2026  
+> **Status 9 November 2026:** this is a **proposal/strategy document, not results**. P0 engineering is released (13/13, 514 tests, `p0-release`); there are **no efficacy results** and the **96 GB hardware smoke has not run** (the offline 69.73 GB fit check passes). The project title is fixed: *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.* The 8 November 2026 probability/score estimates and week schedule are historical judgments, not current status. The current order of work is `roadmap.md`.
+
+**Date:** 8 November 2026 (original proposal); status banner added 9 November 2026
 **Premise:** the user wants 9+ but explicitly says: *do not suggest things that will fail; suggest what will work.*  
-**Honest verdict:** **9+ is a low-probability option, not a plan.** The rational target for this 6-person FYDP in 7–8 months is **8.4–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
+**Honest verdict:** **9+ is a low-probability option, not a plan.** The rational target for this 6-person FYDP is **8.4–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
 
-> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **Core-run staged** (legacy “C+”): a 4-arm causal study + a 180-item EG-SSS, 17–22 weeks, expected score 8.4. The full 9+ stack is a call option, not the plan. See §9A. **Stage names (2026-11-09):** use `docs/GLOSSARY.md` — Core run and Full run; **TACL** is a venue only.
+> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **Core-run staged**: a 4-arm causal study plus the 180-item EG-SSS at the v1.2 benchmark freeze, expected score 8.4. Core v1.0 itself uses GPQA/MMLU-Pro/HLE; the 180-item set is not in the v1.0 matrix. The full 9+ stack is a call option, not the plan. See §9A.
 
 ---
 
@@ -21,7 +23,7 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 | Theory drafting and proof exploration | **2–3x** | Agents can propose models and proof sketches, but LLM math is often plausible-but-wrong; a human must verify every step |
 | Benchmark item drafting and claim decomposition | **3–4x** | Agents can draft items and claims; humans must adjudicate gold labels |
 | Human evaluation | **1–1.5x** | Agents can prepare sheets and analyze agreement; they cannot replace the two human annotators |
-| GPU experiments | **1x** | Core run ~1,200 GPU-h; Full run ~2,460–2,700; full ~3,813 at 8 min (2,860 at 6 min); agents cannot compress it |
+| GPU experiments | **1x** | Core run 1,280 GPU-h cap (~1,067 planned); Full run 1,440 GPU-h envelope (conditional 36/32 runs); law-testing is additional and only if the effect is real; agents cannot compress GPU wall-clock |
 | Peer review / venue cycle | **1x** | 3–6 months; not compressible |
 
 **What this means for the plan:**
@@ -67,7 +69,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 | **Math** | A simple expectation argument | Concentration bounds, effective sample size, minimax lower bound, submodularity |
 | **Method** | Bounded trust update | **Value-of-information verification** with a near-optimality guarantee; risk-controlled abstention |
 | **Benchmark** | 180-item EG-SSS | **300–500 items**, 3 domains, 5 conditions, verifier-quality labels, human-validated |
-| **Causal study** | 2×2 with a few arms | **6-arm factorial + mediation + claim-level vs document-level + evidence-supports-majority** |
+| **Causal study** | 2×2 with a few arms | **6-arm Full core (conditional 36/32 runs) + ceiling/granularity sweeps + mediation + claim-level vs document-level + evidence-supports-majority** |
 | **Human eval** | 60 Likert items | **150–200 binary judgments**, 2 blinded annotators, κ/ICC, citation faithfulness |
 | **Writing** | A system report | A crisp law/benchmark paper with a falsifiable headline |
 
@@ -79,23 +81,27 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 
 ### Title
 
-**The Verification Ceiling: A Threshold Law and Diagnostic Benchmark for Evidence-Grounded Multi-Agent Debate**
+**Fixed project title:** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
 
-### Headline claim
+**Working 9+ framing (not the title):** the "verification ceiling" is a derived hypothesis about a verifier-accuracy/coverage boundary. It is not proved and must not be presented as the paper title or as a result.
 
-*Evidence-grounded trust reduces sycophantic collapse only when verifier accuracy and coverage exceed a threshold \(q^\star\); below \(q^\star\), it amplifies noise and can increase conformity. We derive \(q^\star\), prove a finite-sample bound, and release a gold-evidence stress benchmark that measures the boundary.*
+### Headline claim (derived hypothesis, not proved)
+
+*Evidence-grounded trust reduces sycophantic collapse only when verifier accuracy and coverage exceed a threshold \(q^\star\); below \(q^\star\), it amplifies noise and can increase conformity. We derive \(q^\star\), check a finite-sample bound, and release a gold-evidence stress benchmark that measures the boundary.*
 
 ### Contributions
 
-1. **Theory:** a threshold law for a correct minority under a wrong majority, with claim dependence and adversarial evidence bias; sufficiency, necessity, and a finite-sample bound.
-2. **Method:** a value-of-information verification policy that chooses which claims to verify under a fixed budget, with a submodular near-optimality guarantee; an abstention gate when the evidence is insufficient.
+1. **Theory (derived, proof check required):** a threshold law for a correct minority under a wrong majority, with claim dependence and adversarial evidence bias; sufficiency, necessity, and a finite-sample bound.
+2. **Method (proposal):** a value-of-information verification policy that chooses which claims to verify under a fixed budget, with a submodular near-optimality guarantee; an abstention gate when the evidence is insufficient.
 3. **Benchmark:** EG-SSS-300, 300 gold-evidence items across biomed, physics/chemistry, and math/CS, with five pressure/evidence conditions.
-4. **Causal study:** a 6-arm factorial isolating evidence *information* from evidence *influence*, with placebo/trust-hidden/oracle controls and a claim-level vs document-level test.
+4. **Causal study:** the 6-arm Full core (conditional 36/32 runs) plus ceiling/granularity sweeps isolating evidence *information* from evidence *influence*, with placebo/trust-hidden/oracle controls and a claim-level vs document-level test. The 6-arm core alone is 8+, not 9+.
 5. **Human evaluation:** 150–200 binary judgments of unwarranted switch and citation faithfulness.
 
 ---
 
-## 3. Theory and math: what is actually provable
+## 3. Theory and math: derived, not proved
+
+> **Proposal status (9 Nov 2026).** The results in this section are derived sketches. No independent proof check has signed them. Do not present \(q^\star\), Theorem 1–3, or the finite-sample bound as proved until that check exists.
 
 ### 3.1 The model
 
@@ -186,7 +192,9 @@ The strongest 9+ result is not “trust helps.” It is **“evidence can hurt.�
 
 ---
 
-## 3A. The stronger theory result: the double-counting phase boundary
+## 3A. The stronger theory result: the double-counting phase boundary (derived, not proved)
+
+> **Proposal status.** The \(\rho^\star\) boundary and the likelihood-ratio ceiling are derived claims awaiting an independent proof check. They are a research target, not a result.
 
 The simple threshold in §3 is the pedagogical special case. The actual 9+ result is **claim double-counting**.
 
@@ -296,14 +304,16 @@ The 9+ claim is not “trust helps.” It is **“evidence can backfire, and the
 - **Mediator:** trust margin; selection vs persuasion; silent dissent.
 - **Replication:** a second model family and a second domain.
 
-**The 6-arm design is 8+, not 9+.** The 9+ design needs:
+**6-arm vs 9+ resolution:** the 6-arm matrix (conditional 36/32 runs) is the **8+ core**; it is the Full run. The 9+ layer is **8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6)** — not a different 6-arm count. Do not describe the 6-arm Full target as a 9+ design, and do not fold 9+ sweeps into the 1,440 GPU-h Full envelope.
 - 8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6).
-- ~2,860 GPU-h at 6 min/debate; 5–7 months with 4–6 GPUs.
+- The 9+ layer adds sweeps beyond the **1,440 GPU-h Full envelope**; it is not budgeted and is not part of the Core/Full plan.
 - Pre-register the four primary contrasts and the three-way interaction **before** the main runs.
 
 **Why this is 9+:** it predicts a **sign reversal** that no current paper reports. A paper that shows *when evidence makes debate worse* is more surprising and more useful than another “our trust score wins” paper.
 
-## 4. Method: SEA-Cert (Shared-Error-Aware Certification)
+## 4. Method: SEA-Cert (Shared-Error-Aware Certification) — proposal, not proved
+
+> **Proposal status (9 Nov 2026).** SEA-Cert is a design proposal. Its theorems are derived sketches, not proved; it is not part of Core v1.0 and is not funded.
 
 **Do not use conformal trust calibration (CTC).** It is preempted by Wang et al., *Conformal Social Choice for Safe Multi-Agent Deliberation* (EMNLP 2026 SAC Highlight, arXiv 2604.07667), and its coverage guarantee is invariant to the trust weights — calibrating weights cannot improve validity, only set size. CTC is a 4.5–5.5 paper, not 9+.
 
@@ -412,9 +422,10 @@ Value-of-information verification can be a secondary experiment: under a fixed a
 
 ### 5.1 Size
 
-- **180 items = Core-run supporting artifact** (8.0–8.3), not a 9+ benchmark.
-- **300 items = 8.5**; **600 = 9.0**; **800 + SDT model + private split = 9.0–9.3**.
-- **800-item design:** 4 domains × 200 (physics, chemistry/materials, biology/medicine, CS/ML); 120 dev / 480 public test / 200 private.
+- **24 items = calibration batch** (start here; one week).
+- **180 items = v1.2 benchmark-freeze floor** (~410 h annotation). It is **not** in the Core v1.0 matrix.
+- **300 items = Full target**; **600 = stretch**; **800 + SDT model + private split = no-go**.
+- **800-item design (do not build):** 4 domains × 200 (physics, chemistry/materials, biology/medicine, CS/ML); 120 dev / 480 public test / 200 private.
 - Each item: question, gold answer, 3 positions (1 correct minority, 2 wrong majority), 3–6 atomic claims per position, gold evidence, gold verdicts, controls.
 - **2–3 dedicated annotators; ~1,824 h for 800 items; κ ≥0.75.** Do not build 800 with agents alone.
 
@@ -422,7 +433,7 @@ Value-of-information verification can be a secondary experiment: under a fixed a
 
 No pressure, neutral restatement, peer pressure, authority pressure, emotional escalation, evidence placebo, evidence-supports-minority, evidence-supports-majority, ambiguous evidence, evidence shuffle, label/position shuffle, majority-correct items, verifier-quality sweep, no-verifier ablation. The minimum essential set is 11 of 14; do not drop majority-correct, placebo, E−, or label shuffle.
 
-### 5.3 The SDT measurement model (the 9+ intellectual contribution)
+### 5.3 The SDT measurement model (proposal, not validated)
 
 \[
 z = w_e e + w_s s_{\text{maj}} + w_v v + b + \epsilon
@@ -448,6 +459,8 @@ This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 8
 
 ### 6.1 Arms
 
+**Core v1.0** uses the first four rows. **B8-placebo and B8-oracle are the Full target, pending WP-18**; the Full count is conditional (36 runs if B8-oracle uses gold-answer trust; 32 and recomputed if B8-oracle is gold-evidence-only on EG-SSS).
+
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
 | B3 | none | majority | Vanilla MAD |
@@ -455,7 +468,7 @@ This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 8
 | B8-no-trust | retrieved | majority | **Primary control** |
 | B8 | retrieved | trust | Treatment |
 | B8-placebo | shuffled verdicts | trust | Evidence calibration vs any reweighting |
-| B8-oracle | gold evidence | trust | Verifier upper bound |
+| B8-oracle | gold evidence or gold-answer trust | trust | Verifier upper bound; definition frozen by WP-18 |
 
 ### 6.2 Add-ons
 
@@ -467,16 +480,16 @@ This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 8
 
 ### 6.3 Primary endpoints
 
-- CMR (correct-minority retention).
-- Final-answer accuracy.
-- Trust AUROC.
-- ARR (appropriate revision rate).
+- Final-answer accuracy (primary).
+- CMR (correct-minority retention; co-primary).
+- Trust AUROC / Brier (secondary).
+- ARR (appropriate revision rate; secondary).
 
 ### 6.4 Power
 
-- 300–350 eligible per condition, paired.
-- 2 seeds on the full set; 3 seeds on a 100-question subset.
-- MDE ~15–22% relative at n=350.
+- Core v1.0 plans 400 GPQA-Main + 400 MMLU-Pro + 200 HLE per condition; HLE is a control, not a powered primary.
+- Full target: 300 items/dataset if the 180-item set is clean; 2 seeds on the full set; 3 seeds on a 100-question subset.
+- MDE ~15–22% relative at n=350–400; report the achieved MDE.
 
 ---
 
@@ -537,20 +550,23 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 
 ---
 
-## 8. Risk-managed sequence
+## 8. Risk-managed sequence (historical proposal, 8 Nov 2026)
+
+> **Historical planning.** This week-numbered sequence is superseded by the dated N1–N5/G2–G5 calendar in §11 and `roadmap.md`. Keep it as the rationale for staging; do not use the week numbers as the current schedule.
 
 **Do not build the 9+ layer first. Secure the 8.3–8.6 core, then add it.**
 
 | Phase | Weeks | Work | Score secured |
 |---|---|---|---|
-| **P0** | 1–4 | Fix GPQA options, parser, final accuracy, injection/trust, metrics, trust math, verifier; cut matrix; pre-register | 6.25 |
-| **Benchmark** | 3–11 | EG-SSS-300 annotation starts week 3; gold labels; freeze week 11 | 8.1–8.3 |
+| **P0** | Done 2026-11-09 | Engineering hardening; 13/13, 514 tests | 6.25 |
+| **Benchmark** | 3–11 | EG-SSS annotation starts week 3; 180-item v1.2 freeze; 300-item Full target only if clean | 8.1–8.3 |
 | **Theory** | 1–11 | Model + R2/R4/R6; proof check weeks 9–11; measure \(\rho\) in week 4 | 8.3–8.6 |
-| **P1 core** | 5–19 | 6-arm causal study; GPQA-Main + MMLU-Pro STEM; 300–350 questions; 2 seeds; verify phase boundary | 7.6–8.0 |
-| **Human eval** | 15–22 | 150–200 binary judgments; 2 blinded annotators | 8.2–8.4 |
+| **Core run** | 5–19 | 4-arm causal study; GPQA-Main + MMLU-Pro + HLE; 400/400/200; 2 seeds; verify boundary | 7.6–8.0 |
+| **Full run** | 12–22 | 6-arm target pending WP-18; conditional 36/32 runs; 300-item target | 8.0–8.3 |
+| **Human eval** | 15–22 | 150–200 binary judgments; 3 raters | 8.2–8.4 |
 | **9+ layer** | 12–22 | Value-of-information method; full theory validation; benchmark release | 8.6–9.0 |
-| **Writing** | 20–30 | Paper A + thesis; Paper B if time; submit W30 | 8.6–9.0 |
-| **Defence** | 30–32 | Reproducibility, mock defence, final defence W32 | — |
+| **Writing** | 20–30 | Paper A + thesis; Paper B if time | 8.6–9.0 |
+| **Defence** | 30–32 | Reproducibility, mock defence, final defence | — |
 
 **Critical path:** benchmark annotation (W3–11) → main GPU runs (W12–19) → human eval (W15–22) → writing (W20–30) → submission (W30) → defence (W32).
 
@@ -577,7 +593,9 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 
 ---
 
-## 9A. Red-team verdict: Core-run staged is the recommended path
+## 9A. Red-team verdict: Core-run staged is the recommended path (8 Nov 2026 estimates)
+
+> **Historical judgment.** The probabilities and scores in this section are the 8 Nov 2026 estimates, not current results or acceptance probabilities. The scope and budget below are updated to the 9 Nov 2026 release facts.
 
 | Path | Time | P(finish) | P(9+) | Score if finishes | Verdict |
 |---|---:|---:|---:|---:|---|
@@ -591,24 +609,24 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 | G. Full 9+ stack | 24–30 wk | 42% | 8% | 8.55 | **Strategically dominated** |
 | **Core-run staged** | **17–22 wk** | **82%** | **11–12%** | **8.4** | **Recommended** |
 
-### Core-run scope
+### Core-run scope (v1.0, executable)
 
-- **4 arms + oracle:** B3, B8-no-trust, B8, B8-placebo, B8-oracle (oracle subset only).
-- **~1,000 questions:** GPQA-Main 350, MMLU-Pro 500, EG-SSS 180.
-- **Seeds:** 1 primary; a second on a 150-question subset.
-- **GPU:** ~550–700 h main; ~1,000–1,200 h including pilot/sweep.
-- **Annotation:** 500–900 human judgments; 180 benchmark items (1,620–3,240 claim-evidence pairs), 2 annotators.
-- **Endpoints:** final accuracy primary; CMR secondary; trust AUROC, ARR, placebo, oracle, coverage.
+- **4 conditions:** B3, B4-matched, B8-no-trust, B8. B8-placebo/B8-oracle are the Full target pending **WP-18**.
+- **3 datasets:** `gpqa_main` 400, `mmlu_pro` 400, `hle` 200 = 1,000 questions per cell.
+- **24 runs:** 4 conditions × 3 datasets × 2 seeds; 8,000 debates.
+- **GPU:** ~1,067 GPU-h planned; **1,280 GPU-h cap**. Pilot ~112; final-stack smoke 60–100. The final stack is **one 96 GB GPU** with the pinned **69.73 GB** weights (offline check only; hardware smoke not run).
+- **Annotation:** 24-item calibration → 180-item v1.2 freeze; 300 Full target; 600 stretch only with dedicated annotators.
+- **Endpoints:** final accuracy and CMR primary; trust AUROC/Brier, ARR, coverage secondary.
 - **Analysis:** paired by question; cluster bootstrap over questions; mixed-effects with dataset fixed effect.
-- **Target:** 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
+- **Target:** historical estimate 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
 
-**Budget (Vast.ai spot, 8 Nov 2026):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; bandwidth $0.004–0.033/GB; storage **$0.20/GB-month**. **Core run ~$420–580 all-in; Full run ~$900–1,200; full ~$1,100 (6 min) / $1,400–1,900 (8 min); high ~$2,450.** See `08_COMPUTE_COST.md`.
+**Budget (Vast.ai spot, 8 Nov 2026 price snapshot):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74-1.02/hr**; S **$1.432/hr**; bandwidth $0.004-0.033/GB; storage **$0.20/GB-month**. **Final-stack smoke 60-100 GPU-h / $80-120; pilot ~112 / $50-100; Core 1,280 cap / $420-580; Full 1,440 envelope / $900-1,200; law-testing $1,400-1,900 only if the effect is real. Hard stop $1,350 before law-testing.** See `08_COMPUTE_COST.md`.
 
-**Venue:** **TACL, 1 February 2027.** Fallback: **EMNLP 2027, 28 May 2027.** **Do not submit ACL 2027** — the 4 January deadline is too early, and an ARR rejection blocks TACL for nine months.
+**Venue:** paper in **August–December 2027**, after the thesis defence. Target TACL rolling, EMNLP 2028, or a Q1 journal. **No paper deadline before the defence.**
 
 ### When the full 9+ stack becomes worth attempting
 
-Only if **all four** are true by week 10:
+Only if **all four** are true before attempting the 9+ layer:
 
 1. An independent probabilist has verified a corrected theorem, not an agent.
 2. Two dedicated annotators have 300 items at κ ≥0.70.
@@ -621,13 +639,13 @@ If any one fails, G is a trap. The 5x leverage makes G **attemptable**, not **ad
 
 - **False completion:** agents produce a polished paper, passing tests, and 300 draft items before humans verify 100. P(finish) rises, P(9+) falls to 3–5%.
 - **Agent-certified science:** no agent-certified proof, test, or gold label. Every scientific claim needs a human owner and a command/output trail.
-- **Benchmark debt:** 180 items core; 300 only with two dedicated annotators; 500+ is a trap.
+- **Benchmark debt:** 180 items is the v1.2 floor; 300 is the Full target only with two dedicated annotators; 500+ is a trap.
 - **Theorem headline:** the theorem is the highest-risk, lowest-expected-value use of the leverage.
 - **VoI/CTC headline:** preempted or incremental; keep as a section.
 
 ---
 
-## 10. Realistic score projection
+## 10. Realistic score projection (8 Nov 2026 estimates)
 
 | Outcome | Probability (with agents) | Core | Weighted |
 |---|---:|---:|---:|
@@ -643,7 +661,28 @@ These are judgments, not guarantees. The expected-value-maximizing plan is the r
 
 ---
 
-## 11. First 8 weeks (agent-accelerated)
+## 11. Current calendar (9 November 2026)
+
+**Source of truth: `roadmap.md`.** Do not use the old week-numbered plan.
+
+| Window | Work | Gate |
+|---|---|---|
+| Nov 2026 | **N1** final-stack 96 GB smoke (not run); **N2** WP-18 starts; **N3** 24-item calibration; **N4** verifier audit starts | N1 PASS |
+| Nov–Dec 2026 | WP-18 B8-placebo/B8-oracle + Full config; verifier audit (150–200 pairs) | N2/N4 |
+| Dec 2026 | **N5 pilot** | **G2:** baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75 |
+| Jan 2027 | **Core run**; 180-item benchmark v1.2 freeze | **G3** |
+| Feb 2027 | **Full run**; 300-item target if the 180 set is clean | **G4/G5** |
+| Mar 2027 | Human evaluation / SDT | κ ≥0.60 |
+| Apr 2027 | Results freeze; law-testing only if the effect is real | — |
+| May–Jun 2027 | Thesis chapters; internal review; **submission June 2027** | — |
+| Jun–Jul 2027 | **Defence** | — |
+| Aug–Dec 2027 | Paper: TACL rolling / EMNLP 2028 / Q1 journal | After defence |
+
+**Decision rule:** the 9+ layer is only attempted if the 8.0 core is already safe. Do not trade the thesis for a theorem.
+
+### Historical appendix — first 8 weeks (8 November 2026 plan)
+
+> **Historical only.** This schedule was written before P0 was released. It is retained to show the original sequencing, not as current instructions.
 
 1. **Week 1:** P0-0 (options), P0-1 (parser), P0-2 (accuracy), P0-3 (injection/trust). Agents implement; a human reviews every test diff.
 2. **Week 2:** P0-4 (metrics), P0-5 (trust math), P0-6 (verifier audit); run the 206-test suite + new tests.
@@ -651,8 +690,6 @@ These are judgments, not guarantees. The expected-value-maximizing plan is the r
 4. **Weeks 4–5:** pilot gates; fix failures; start EG-SSS item drafting with agents and human adjudication.
 5. **Weeks 6–7:** 6-arm causal study on GPQA-Main + MMLU-Pro STEM; theory draft (Theorem 1 + finite-sample bound).
 6. **Week 8:** decision gate — if the pilot passes and the causal effect is in the right direction, add Theorem 2–3 + the value-of-information method; if not, pivot to the measurement/negative paper and protect the 8.0 thesis.
-
-**Decision gate at week 8:** the 9+ layer is only attempted if the 8.0 core is already safe. Do not trade the thesis for a theorem.
 
 ---
 
@@ -675,7 +712,7 @@ These are different bars.
 ## 13. Bottom line
 
 - **9+ is not the rational target; 8.5 is.** The 9+ layer is a call option, not the plan.
-- **The one 9+ path that can work:** a threshold law + claim-dependence/adversarial extensions + a 300-item gold-evidence benchmark + a 6-arm causal study + a value-of-information method.
+- **The one 9+ path that can work:** a derived threshold law + claim-dependence/adversarial extensions + a 180-item v1.2 benchmark (300 Full target) + the 4-arm Core / 6-arm Full causal study + a value-of-information method, all subject to an independent proof check.
 - **The one thing that will kill the thesis:** trying to do all of it before securing the 8.3 core.
 - **The right order:** fix the instrument → run the causal study → build the benchmark → add the theory → add the method. If the theory or benchmark slips, you still have a strong thesis.
 - **The 9+ thesis is a portfolio; the 9+ paper is a hit.** Build the portfolio first.

@@ -1,22 +1,26 @@
-# 03 — Experiment Plan (Reframed)
+# 03 — Experiment Plan
 
-**Status:** proposed; replaces the 15×5×3×1,000 matrix. **Compute cash is excluded from the score, but wall-clock is not.** The plan below fits 7–8 months.
+> **Historical naming note (9 November 2026):** the retired stage labels were `C+` and `TACL full`; current names are Core run and Full run.
 
-> **Stage names (2026-11-09):** use `docs/GLOSSARY.md`: **Core run** (legacy “C+”) = 4 arms + oracle, ~400/dataset × 2 seeds, 180-item benchmark; **Full run** (legacy “TACL full”) = 6 arms × 3 datasets × 400 × 2 seeds, 300-item benchmark. TACL is a venue only. The 6-arm tables below describe the Full-run target.
+**Status:** design source of truth, refreshed 9 November 2026. **Pre-registration v1.0 and the v1.1 erratum are frozen.** The erratum records the released prompt hash `bc9c7b...`; `6cc9b0...` is pre-WP-13 and must not be described as current.
+
+**Stage names:** use `docs/GLOSSARY.md` — **Core run** and **Full run**. **TACL is a venue only.** The Core matrix below is executable; the Full matrix is a target pending **WP-18**.
 
 ---
 
-## 1. The reframed claim
+## 1. The claim and its status
 
-**Title:** *Evidence as Influence: The Verification Ceiling of Trust-Calibrated Multi-Agent Debate*
+**Title:** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
 
-**Headline:** External evidence reduces sycophantic collapse only when claim verification is reliable and coverage is high; below a critical verification accuracy, trust reweighting amplifies noise and can increase collapse. We derive the ceiling, measure it, and release a validated pressure protocol.
+**Headline hypothesis (derived, not proved):** external evidence reduces sycophantic collapse only when claim verification is reliable and coverage is high; below a critical verification accuracy, trust reweighting can amplify noise and increase collapse. The project derives a boundary, measures it, and releases a validated pressure protocol.
 
 **What this buys:**
 - A negative or conditional result is still publishable.
 - The mechanism is an instrument, not the hero.
-- The project's weakest fact (lexical verification cannot check math) becomes the central finding.
-- It fits ACL/EMNLP analysis/evaluation and NeurIPS D&B benchmark tracks.
+- The project's weakest fact (lexical verification cannot check math) becomes a boundary finding rather than a hidden flaw.
+- It fits TACL rolling, EMNLP 2028, or a Q1 journal after the defence; ACL/EMNLP main is a stretch, not the target.
+
+**What P0 established:** engineering readiness only — 13/13 gate checks, 514 tests, compiled manuscripts, offline final-stack fit. **No efficacy result exists.** Do not write the headline as a finding.
 
 **Do not claim:** "our mechanism beats 10 baselines" as the headline. That is a 2024–2025 paper in a 2026 field.
 
@@ -26,31 +30,31 @@
 
 ### Primary (confirmatory; pre-register)
 
-1. **CMR — Correct-Minority Retention.** On pressure-eligible items: at the frozen round-0 state, the majority is wrong, ≥1 agent is correct, all answers are checkable. CMR = fraction where ≥1 initially-correct agent still holds gold at round K. Binary, question-level, paired.
-2. **Final-answer accuracy.** The actual aggregated answer (weighted for B8, majority for controls) is correct. Binary, question-level, paired.
+1. **Final-answer accuracy.** The actual aggregated answer (weighted for B8, majority for controls) is correct. Binary, question-level, paired.
+2. **CMR — Correct-Minority Retention.** On pressure-eligible items: at the frozen round-0 state, the majority is wrong, ≥1 agent is correct, and all answers are checkable. CMR = fraction where ≥1 initially-correct agent still holds gold at round K. Binary, question-level, paired.
 
-Pre-register both; Holm-adjust across the two and across 3 datasets. If only one primary is allowed, choose **final accuracy**; report CMR as the mechanism endpoint.
+Pre-register both; Holm-adjust across the two primaries and the 4-test confirmatory family; HLE is a control, not pooled. If only one primary is allowed, choose **final accuracy**; report CMR as the mechanism endpoint. The old ECR target is dead.
 
 ### Secondary
 
+- **Trust AUROC:** probability that a correct agent is ranked above an incorrect agent, out-of-sample.
+- **Trust Brier / vote calibration:** compare to a constant-1/3 predictor; reliability diagram.
 - **CCR-0:** no-retrieval injection; switch to the fabricated consensus / exposed correct agents.
 - **CCR-E:** retrieval arm; switch away from gold when the agent's evidence verdict is not decisive-negative.
 - **MPR-weighted:** final aggregated answer correct on divergent items; report `gold_held` separately.
 - **ARR — Appropriate Revision Rate:** initially wrong agents who switch to gold when the majority is correct. A good mechanism is not stubborn.
 - **Any-wrong-switch rate:** error adoption, separate from consensus switching.
-- **Accuracy non-inferiority** on GPQA/MMLU-Pro: margin 3–5 pp (2 pp is not resolvable at n≈450–500).
+- **Accuracy non-inferiority** on GPQA/MMLU-Pro: **5 pp at n≈300–400**.
 
 ### Mechanism / process (not confirmatory)
 
-- **Trust AUROC:** probability that a correct agent is ranked above an incorrect agent, out-of-sample.
-- **Trust Brier / vote calibration:** compare to a constant-1/3 predictor; reliability diagram.
-- **Verifier balanced accuracy, precision/recall, coverage:** human-labeled set.
+- **Verifier balanced accuracy, precision/recall, coverage:** human-labeled set (N4).
 - **Retrieval coverage:** fraction of claims with a relevant passage.
 - **Trust inversion rate:** fraction of questions where the highest-trust agent is wrong. If >30%, the mechanism is dangerous, not calibrated.
 - **Claim-count vs trust correlation:** verbosity control.
-- **Reasoning alignment:** CARA-style metric or human audit (response to Consistency Illusion).
+- **Reasoning alignment:** CARA-style metric or human audit (response to the Consistency Illusion).
 
-**Delete ECR > 0.80 as a target.** Replace with trust AUROC ≥0.65 and Brier better than constant-1/3, out-of-sample.
+**ECR is deprecated.** It is ECE on a simplex and is anti-correlated with correctness. Do not report it as calibration.
 
 ---
 
@@ -64,24 +68,35 @@ Pre-register both; Holm-adjust across the two and across 3 datasets. If only one
 | **Evidence** | none / retrieved / oracle | Separates no evidence, noisy evidence, gold evidence |
 | **Trust** | majority / trust / placebo | Separates aggregation from evidence-calibrated aggregation |
 
-A full 3×3×3 is too large. Use the **Full-run 6-arm factorial** plus targeted additions.
+A full 3×3×3 is too large. Use the **Core 4-arm design** plus the **Full 6-arm target** and targeted additions.
 
-### 3.2 Full-run arms (run on all primary datasets)
+### 3.2 Core run — executable 4-arm table (v1.0)
 
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
 | **B3** | none | majority | Vanilla MAD baseline |
 | **B4-matched** | retrieved, same partition/prompt as B8 | majority | Evidence-information control |
-| **B8-no-trust** | retrieved, same as B8 | majority (`use_trust=False`) | **Primary control**: same everything except trust |
+| **B8-no-trust** | retrieved, same as B8 | majority (`use_trust=False`) | **Primary control:** same everything except trust |
 | **B8** | retrieved | trust-weighted | Treatment |
-| **B8-placebo** | retrieved, verdicts shuffled within debate | trust-weighted | Tests whether evidence calibration matters vs any reweighting |
-| **B8-oracle** | gold evidence (SciFact/PubMedQA subset) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
 
-### 3.3 Targeted additions (subset)
+**Core matrix:** 4 conditions × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**; conservative gate cap **1,280 GPU-h**. EG-SSS is **not** in Core v1.0.
+
+### 3.3 Full run — target pending WP-18
+
+The Full target adds B8-placebo and B8-oracle:
+
+| Arm | Evidence | Aggregation | Purpose |
+|---|---|---|---|
+| **B8-placebo** | retrieved, labels/verdicts shuffled within debate | trust-weighted | Tests whether evidence calibration matters vs any reweighting |
+| **B8-oracle** | gold evidence or gold-answer trust (definition to freeze) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
+
+**Conditional Full count:** 6 arms × 3 datasets × 2 seeds = **36 runs** if B8-oracle uses **gold-answer trust**, at **300 items/dataset** = 10,800 debates / **1,440 GPU-h envelope**. If B8-oracle is **gold-evidence-only on EG-SSS**, the target is **32 runs** and the envelope must be recomputed. **WP-18 freezes the definition and the row count.** Do not assert either count as final before WP-18.
+
+### 3.4 Targeted additions (subset; not Core v1.0)
 
 | Arm | Purpose | Response to |
 |---|---|---|
-| **B8-trust-hidden** | Trust computed but not shown to agents; aggregation weighted | Is the gain behavioral or aggregation-only? |
+| **B8-trust-hidden** | Trust computed but not shown; aggregation weighted | Is the gain behavioral or aggregation-only? |
 | **B8-doc-level** | Document-level trust instead of claim-level | Is claim-level attribution causally active? |
 | **B8-label-shuffled** | Claim labels shuffled across claims | Direct test of Verify, Then Argue |
 | **B8-evidence-supports-majority** | Evidence supports the wrong majority | Authority Bias: does trust amplify deference? |
@@ -91,10 +106,10 @@ A full 3×3×3 is too large. Use the **Full-run 6-arm factorial** plus targeted 
 | **B8-same-model** | 3× Qwen panel | Is heterogeneity necessary? |
 | **B8-K1** | One-shot evidence-weighted aggregation | Is debate necessary? |
 
-### 3.4 The two contrasts that decide the paper
+### 3.5 The contrasts that decide the paper
 
 1. **B8 vs B8-no-trust:** the causal effect of trust weighting, with evidence, prompts, partition, and compute matched.
-2. **B8 vs B8-placebo:** whether the effect is **evidence-calibrated** trust or just any reweighting.
+2. **B8 vs B8-placebo (Full):** whether the effect is **evidence-calibrated** trust or just any reweighting.
 
 If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust, the mechanism fails. Both are publishable as boundary results; neither is a top-tier mechanism paper.
 
@@ -102,44 +117,44 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 
 ## 4. Datasets and evidence sources
 
-### 4.1 Primary testbed (evidence-grounded)
+### 4.1 Core v1.0 testbed
 
-> **Dataset audit finding (8 Nov 2026):** BrokenMath's official benchmark is **451/451 proof** with empty `gold_answer`; BrokenArXiv is **87/87 proof** with empty `answer`. Answer-type retention is **0%**, not 60–70%. HLE is designed to be retrieval-resistant. **Only GPQA and MMLU-Pro STEM are usable positive-evidence datasets.** Do not use BrokenMath/BrokenArXiv for claim-level evidence grounding or CCR.
+| Dataset | Role | N to run | Notes |
+|---|---|---:|---|
+| **GPQA-Main** | Primary accuracy/CMR | 400 | Shuffle options; no correct-first leak; GPQA-Diamond is pilot only |
+| **MMLU-Pro STEM** | Primary scale/robustness | 400 | Stratified; claim-domain routing; exclude non-STEM from evidence |
+| **HLE** | Ceiling/abstention control | 200 | Google-proof; expect high `unverifiable`; **not** a powered primary |
+| **EG-SSS** | Benchmark artifact, **not in Core v1.0** | 180 at v1.2 freeze | Joins at benchmark freeze under v1.2; 300 is the Full target |
 
-| Dataset | Role | N to run | Usable n (est.) | Source routing | Notes |
-|---|---|---:|---:|---|---|
-| **GPQA-Main** | Primary accuracy/CCR/MPR | 448 | 270–360 | Claim-domain: bio/chem → PubMed+S2; physics/chem → arXiv+S2; all get S2 fallback | Shuffle options; no correct-first leak; GPQA-Diamond (198) is pilot only |
-| **MMLU-Pro STEM** | Primary scale/robustness | 1,000 stratified from 6,696 | 2,700–4,000 available; run 1,000 | Same claim-domain routing; math/CS → arXiv+S2; bio/health → PubMed+S2 | Exclude non-STEM from evidence; keep 200 non-STEM as abstention control |
-| **EG-SSS** | Mechanism test with gold evidence | 180 | 180 | Gold evidence by domain | 60 biomed, 60 phys/chem, 60 math/CS; 5 conditions; release CC BY 4.0 |
-| **HLE** | Ceiling/abstention control | 300–500 (MCQ + numeric) | 550–830 divergent | All sources; expect high `unverifiable` | Google-proof; use to measure false support/contradiction and abstention, not positive evidence |
-| **BrokenMath** | Appendix premise-rejection | 451 proof | 0 for CCR | **No retrieval trust** | LLM judge validated on 100 human labels; report acceptance/rejection; do not mix with CCR |
-| **BrokenArXiv** | Appendix qualitative | 87 proof | 0 for CCR | **No retrieval trust** | Frozen snapshot; report separately |
-| **SciFact** | Verdict validation | 300 test | — | PubMed/S2 | Internal only (CC BY-NC 2.0) |
-| **VitaminC** | 3-way verdict validation | 1,000 stratified | — | Wikipedia | Internal (CC BY-SA 3.0) |
-| **PubMedQA** | Biomedical answer calibration | 500 | — | PubMed | Internal (MIT) |
+**Core totals:** 4 arms × (400 + 400 + 200) × 2 seeds = **8,000 debates**, ≈ **1,067 GPU-h** at 8 min/debate. The **1,280 GPU-h** cap is the conservative gate number (it assumes up to 400/cell across all three datasets).
 
-### 4.1b Benchmark scale decision (EG-SSS)
+### 4.2 Supporting and appendix datasets
 
-**180 items is the Core-run supporting artifact, not a 9+ benchmark.** The benchmark audit’s scale ladder:
+| Dataset | Role | N | Notes |
+|---|---|---:|---|
+| **BrokenMath** | Appendix premise-rejection | 451 proof | **No retrieval trust; not for CCR** (0% answer-type retention) |
+| **BrokenArXiv** | Appendix qualitative | 87 proof | **No retrieval trust; not for CCR** (0% answer-type retention) |
+| **SciFact** | Verdict validation | 300 test | PubMed/S2; internal only (CC BY-NC 2.0) |
+| **VitaminC** | 3-way verdict validation | 1,000 stratified | Wikipedia; internal (CC BY-SA 3.0) |
+| **PubMedQA** | Biomedical answer calibration | 500 | PubMed; internal (MIT) |
 
-| Scale | What it is | Annotation | Score | Decision |
-|---:|---|---:|---:|---|
-| **180** | Core-run benchmark | ~410 h | 8.0–8.3 | Core run |
-| 300 | Full-run benchmark | ~684 h | 8.5 | Full run |
-| 600 | Stretch | ~1,368 h | 9.0 | Only with 2–3 dedicated annotators |
-| **800** | **No-go: 9+ benchmark + SDT model + private split** | **~1,824 h** | **9.0–9.3** | Do not build |
-| 1,000 | No-go: execution risk | ~2,280 h | 9.0–9.3, ~50% risk | **No** |
+> **Dataset audit finding (8 Nov 2026, still binding):** BrokenMath's official benchmark is **451/451 proof** with empty `gold_answer`; BrokenArXiv is **87/87 proof** with empty `answer`. Answer-type retention is **0%**, not 60–70%. They cannot be used for claim-level evidence grounding or CCR. HLE is designed to be retrieval-resistant; use it as an abstention/ceiling control.
 
-**What makes 800 a 9+ benchmark, not a dataset dump:**
-- **4 domains × 200 items:** physics, chemistry/materials, biology/medicine, CS/ML.
-- **120 dev / 480 public test / 200 private.** Private split preserves leaderboard integrity.
-- **14 controls:** no pressure, neutral, peer, authority, emotional, evidence placebo, evidence-supports-minority, evidence-supports-majority, ambiguous evidence, evidence shuffle, label/position shuffle, majority-correct items, verifier quality sweep, no-verifier ablation.
-- **SDT measurement model:** \(z = w_e e + w_s s_{\text{maj}} + w_v v + b + \epsilon\); sycophancy \(=w_s/w_e\), verifier trust \(=w_v\), abstention criterion \(\lambda\), competence \(d'\). This is the intellectual contribution that lifts a dataset to an instrument.
-- **Leaderboard:** 6-axis profile + trust-plane plot, three tracks, code submission, mandatory ablations, private split.
+### 4.3 Benchmark ladder (EG-SSS)
 
-**Rule:** if the team cannot commit 2–3 dedicated annotators for five months, **do not build 800**. Build 180–300 and do the theory/causal paper. A 800-item set with 12% bad gold is worse than a 300-item set with 3% bad gold.
+| Size | Role | Annotation | Decision |
+|---:|---|---:|---|
+| **24** | Calibration batch | ~1 week | Start here; if `H_attempt > 2.0` or defect >15%, cut to 120 immediately |
+| **180** | v1.2 benchmark freeze; Core floor/supporting artifact | ~410 h | Freeze by Jan 2027; joins the Core matrix under v1.2 |
+| **300** | Full-run target | ~684 h | Target by Feb 2027; only if the 180 set is clean |
+| **600** | Stretch | ~1,368 h | Only with 2–3 dedicated annotators |
+| **800** | No-go | ~1,824 h | Do not build |
 
-### 4.2 Source routing rules (replace agent→source)
+**Item rules:** 3 domains (biomed, phys/chem, math/CS); 3–6 atomic claims per position; gold evidence and verdicts; five conditions (evidence available/absent/placebo/contradictory × pressure); original items CC BY 4.0; gated dataset text not redistributed.
+
+**Rule:** if the team cannot commit 2–3 dedicated annotators for five months, **do not build 800**. A 300-item set with 3% bad gold beats an 800-item set with 12% bad gold.
+
+### 4.4 Source routing rules (replace agent→source)
 
 - Classify each **claim** into `biomed/clinical`, `physics/chemistry`, `math/CS`, or `other`.
 - Query:
@@ -153,18 +168,19 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 - **Do not use Agent 1 = PubMed, Agent 2 = arXiv, Agent 3 = S2 in the main experiment.** It confounds source, domain, and model family; on MMLU-Pro STEM it can create a ~21 pp trust bias.
 - Report retrieval coverage per domain and per agent; if source remains significant after controlling for correctness, the trust score is source-driven.
 
-### 4.3 Eligibility and retention
+### 4.5 Eligibility and retention
 
-| Dataset | N | Answer-type eligible | Divergence (est.) | Usable for injection |
-|---|---:|---:|---:|---:|
-| GPQA-Diamond | 198 | 198 | 60–80% | 120–160 (pilot; underpowered for 10 pp) |
-| GPQA-Main | 448 | 448 | 60–80% | 270–360 (primary) |
-| MMLU-Pro STEM | 6,696 | 6,696 | 40–60% | 2,700–4,000 (primary) |
-| HLE | 2,500 | 790–980 | 70–85% | 550–830 (control) |
-| BrokenMath benchmark | 451 | **0** | n/a | **0** |
-| BrokenArXiv | 87 | **0** | n/a | **0** |
+| Dataset | N | Answer-type eligible | Divergence (est.) | Core use |
+|---|---:|---:|---:|---|
+| GPQA-Diamond | 198 | 198 | 60–80% | Pilot only; underpowered for 10 pp |
+| GPQA-Main | 448 | 448 | 60–80% | 400 (primary) |
+| MMLU-Pro STEM | 6,696 | 6,696 | 40–60% | 400 (primary) |
+| HLE | 2,500 | 790–980 | 70–85% | 200 (control) |
+| EG-SSS | 180 at v1.2 | 180 | constructed | v1.2 freeze; not Core v1.0 |
+| BrokenMath benchmark | 451 | **0** | n/a | **0**; appendix only |
+| BrokenArXiv | 87 | **0** | n/a | **0**; appendix only |
 
-### 4.4 Licensing
+### 4.6 Licensing
 
 - BrokenMath: CC BY-NC-SA 4.0 (non-commercial). Do not redistribute; link and cite.
 - BrokenArXiv: CC BY-SA 4.0; pin the snapshot.
@@ -207,9 +223,10 @@ Two-proportion test, α=0.05 two-sided, power=0.80. Baseline CCR \(b_0\); relati
 |---:|---:|---:|---:|
 | 250 | ~26% rel. | ~21% rel. | ~18% rel. |
 | 350 | ~22% rel. | ~18% rel. | ~15% rel. |
+| 400 | ~20% rel. | ~17% rel. | ~14% rel. |
 | 500 | ~18% rel. | ~15% rel. | ~12% rel. |
 
-**Decision:** target **350–500 eligible, paired** per condition. GPQA-Diamond yields only 120–160; use **GPQA-Main (270–360)** and **MMLU-Pro STEM (2,700–4,000)**. BrokenMath/BrokenArXiv yield 0 for CCR. Do not claim a 20–30% effect from n=120.
+**Decision:** target **350–500 eligible, paired** per condition. Core v1.0 runs 400 on GPQA-Main and MMLU-Pro; HLE runs 200 and is a **control**, not a powered primary. GPQA-Diamond yields only 120–160; do not use it for the primary. BrokenMath/BrokenArXiv yield 0 for CCR. Do not claim a 20–30% effect from n=120.
 
 **Seeds:** 2 seeds × more questions beats 3 seeds × fewer. Use 2 seeds on the full set; add a third on a 100-question subset for sign consistency. The unit of analysis is the question; seeds are technical replicates.
 
@@ -219,40 +236,19 @@ Two-proportion test, α=0.05 two-sided, power=0.80. Baseline CCR \(b_0\); relati
 
 Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust.
 
-| Plan | Arms | Datasets | Seeds | Questions | Debates | GPU-h @8 min | One-GPU days |
+| Plan | Arms | Datasets | Seeds | Items | Debates | GPU-h | Cash |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Current blueprint | 15 | 5 | 3 | 1,000 | 225,000 | 30,000 | 1,250 |
-| Current at 200 Q | 15 | 5 | 3 | 200 | 45,000 | 6,000 | 250 |
-| **Full run 6-arm** | 6 | GPQA-Main + MMLU-Pro STEM + EG-SSS | 2 | 350 | 9,300 | 1,240 | 52 |
-| **Full run 6-arm (lean)** | 6 | same | 2 | 250 | 6,900 | 920 | 38 |
-| Full run + additions | 10 | same | 1–2 | 150–250 | ~10,900 | ~1,450 | 60 |
+| Old blueprint (do not run) | 15 | 5 | 3 | 1,000 | 225,000 | ~30,000 | $8,000+ |
+| **Core v1.0** | 4 | GPQA 400 + MMLU-Pro 400 + HLE 200 | 2 | 1,000/cell | **8,000** | **~1,067 planned; 1,280 cap** | **$420–580** |
+| **Full target A** (B8-oracle = gold-answer trust) | 6 | 300/dataset | 2 | 900/cell | **10,800** | **1,440 envelope** | **$900–1,200 envelope** |
+| **Full target B** (B8-oracle = gold-evidence on EG-SSS) | 6 | recompute | 2 | recompute | **32 runs; recompute** | **not frozen** | **not frozen** |
+| Pilot (N5) | 3–4 | pilot subset | 1–2 | 100–150 | — | ~112 | $50–100 |
+| Final-stack smoke (N1) | — | — | — | — | — | 60–100 | $80–120 |
+| Law-testing (N9) | sweeps | — | — | — | — | 8-min basis | $1,400–1,900 only if effect |
 
-### Vast.ai spot cost (8 Nov 2026 CLI)
+**Budget rules:** Core and Full are different stacks (Dev vs Final); do not assume Core cells are reusable. The **$900–1,200 is the Full-run budget envelope**; compute a true top-up only if the stack and model revisions match. **Hard stop: $1,350 before law-testing.** If the Core/Full effect is absent, do not start law-testing. The exact Full caps are **not frozen** until WP-18.
 
-| Item | Rate | Source |
-|---|---:|---|
-| RTX A6000 48 GB spot | **$0.263/hr** median at **80 GiB**, reliability ≥0.98 | `vastai search offers ... -i --storage 80` |
-| RTX PRO 6000 Max-Q 96 GB spot | **$0.74–1.02/hr** median | same |
-| RTX PRO 6000 S 96 GB spot | **$1.432/hr** median | same |
-| RTX PRO 6000 WS 96 GB spot | $1.245/hr median | same |
-| Bandwidth | $0.004–0.011/GB typical; $0.026–0.033/GB high | `inet_up_cost` / `inet_down_cost` |
-| Storage | **$0.20/GB/month** median on a Vast volume; instance disk $0.20–0.40 | `storage_cost` |
-
-| Scenario | GPU-h | GPU $ | Bandwidth + storage | Overhead 20% | **Total** |
-|---|---:|---:|---:|---:|---:|
-| P0 smoke | 15 | $4 | $1–3 | $1 | **~$6** |
-| Pilot 100–150 Q | 225 | $59 | $1–3 | $12 | **~$72** |
-| **Core run** (1,100 Dev incl. pilot/sweep + 60 Final) | 1,160 | $350 | $50–80 | $70 | **~$470** |
-| **Full run** (1,920 main + 480–680 pilot/sweep + 60–100 Final; 8 min; all-in, not additive with Core) | 2,460–2,700 | $690–790 | $50–120 | $140–180 | **~$880–1,090** |
-| Full law-testing — 6 min (optimistic) | 2,860 + 100 | $854 | $60–120 | $170 | **~$1,100** |
-| Full law-testing — 8 min (realistic) | 3,813 + 100 | $1,105 | $60–120 | $220 | **~$1,390** |
-| Full / high (8 min, high rate, 6-month storage) | 3,813 + 100 | $1,457 | $150–250 | $320 | **~$1,930** |
-
-**Budget:** **Core run ~$420–580 all-in; Full run ~$900–1,200 all-in (Core is a prefix, so the incremental top-up is lower and the costs are not additive); full law-testing ~$1,100 (6 min) to ~$1,400–1,900 (8 min); high ~$2,450.** GPU hours dominate; bandwidth/storage add 10–25%. The 2,860 GPU-h figure is a **6-min** number; at 8 min it is **3,813**. Persist the ~22 GB Dev cache and ~100–160 GB Final cache on a volume; avoid re-downloading on a $0.026–0.033/GB host. The 15×5×3×1,000 matrix is ~30,000 GPU-h ≈ $8,000–11,000+, not runnable.
-
-**Full-run feasibility:** 14,400 debates × 8 min = 1,920 GPU-h main; 4×24 GB GPUs = 480 GPU-h each = 20 days; 4 weeks with buffer. Annotation 500 items × 5 claims × 2 annotators = 5,000 labels ≈ 167 h; 6 people × 7 h/week × 4 weeks = 168 h. The theorem check is the real bottleneck.
-
-Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
+Full price table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
 ---
 
@@ -273,61 +269,77 @@ Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
 ## 8. Human evaluation
 
-- **n:** 150–200 items, 2 blinded annotators.
+- **n:** 150–200 paired items, 3 raters; arm-blind, hypothesis-blind, random IDs.
 - **Tasks:**
   - Binary: was the switch away from gold "unwarranted" (no decisive counter-evidence)?
-  - Binary: does the cited passage support the claim? (citation faithfulness)
+  - Binary: does the cited passage support the claim? (citation faithfulness; 300 pairs)
   - Ordinal: reasoning alignment (CARA-style).
-- **Agreement:** Cohen's κ for binary; ICC(2,k) for ordinal. Target κ ≥0.6, ICC ≥0.7.
-- **Power:** n=60 is descriptive only; 150–200 is the minimum for a system comparison.
+  - Expert ceiling: 60 items, 3 experts.
+- **Taxonomy:** UWS (unwarranted switch), EWE (evidence-warranted error), ARR (warranted correction), lucky correction, stubborn error, ambiguous. Automatic CCR conflates these; the human study decomposes them.
+- **Agreement:** Cohen's κ for binary; ICC(2,k) for ordinal. Target κ ≥0.60, ICC ≥0.70.
+- **Analysis:** corrected automatic rate on the full 350–500 items per arm using the human sample to estimate sensitivity/specificity (Rogan–Gladen). The human subset is calibration/sensitivity, not the powered primary endpoint.
 - **Do not** use a 7-point Likert as the primary human endpoint; use binary decisions.
+- **Schedule:** March 2027; 3-axis SDT for the paper, 6-axis for the thesis.
 
 ---
 
-## 9. Gates and kill criteria
+## 9. Gates, dates, and kill criteria
 
-| Gate | Criterion | If fail |
-|---|---|---|
-| **G0 — Wiring** | B8+injection runs; weighted final answer scored; accuracy computed; CCR defined | Do not run the matrix |
-| **G1 — Verifier** | 150–200 human pairs; balanced accuracy ≥0.75 | 0.60–0.75: swap to NLI/LLM judge and re-audit. <0.60 after swap: stop mechanism work; publish harness/negative result |
-| **G2 — Manipulation** | Baseline CCR ≥0.30 on ≥30 exposed items; trust AUROC ≥0.65; ≥65% correct-direction change on 40 pilot items | Pivot to descriptive/diagnostic paper |
-| **G3 — Powered primary** | n ≥350–400 eligible/condition; B8 vs B8-no-trust relative reduction ≥20%; 95% CI excludes 0 and a 5 pp SESOI; accuracy non-inferior 3–5 pp | 10–20% with CI excluding 0: Findings/TMLR. <10% or CI includes 0: negative/boundary paper |
-| **G4 — Mechanism** | B8-trust-hidden and B8-placebo do **not** match B8; mediation significant | If placebo matches B8, the causal claim fails; reframe as disclosure/extra deliberation |
-| **G5 — External** | Natural-divergence or non-math scientific set shows the same sign | If not, drop "real scientific QA"; retitle as adversarial stress test |
+| Gate / phase | When | Criterion | If fail |
+|---|---|---|---|
+| **G0 — Wiring** | Done 2026-09-16 | 10/10 vanilla MAD debates; 90/90 positions | — |
+| **P0 — Engineering** | Done 2026-11-09 | 13/13 checks; 514 tests; 0 undefined refs; 600 DPI figures | — |
+| **N1 — Final-stack smoke** | Nov 2026 | `check_stack.py --phase final`; `preflight.py --phase final --offline`; three `server OK`; `smoke_test.py --phase final` PASS | Do not start Full; fix `gpu_memory_utilization` or quantization and re-run |
+| **N2 — WP-18** | Nov–Dec 2026 | Mock B8-placebo/B8-oracle validate; placebo ≠ B8; oracle ≥ B8; dry-run shows 24 Core rows; **Full count (36 or 32) frozen** | Do not start Full |
+| **N3 — Benchmark calibration** | Nov 2026–Feb 2027 | 24-item report; 180-item freeze with κ and defect rate; 300 only if clean | Cut to 120; do not build 600/800 |
+| **N4 — Verifier audit** | Nov–Dec 2026 | 150–200 pairs, 2 annotators; balanced accuracy ≥0.75; κ ≥0.60 | 0.60–0.75: swap to NLI/LLM judge and re-audit. <0.60: measurement/negative paper; do not claim a high-q result |
+| **G2 — Pilot** | Dec 2026 | Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records | Pivot to descriptive/diagnostic paper; do not run Core |
+| **G3 — Core** | Jan 2027 | Primary accuracy/CMR measured with CIs; B8 > B8-no-trust direction; pre-registration frozen | Negative/boundary paper; no Full unless the design still warrants it |
+| **G4/G5 — Full** | Feb 2027 | Placebo does not match B8; oracle separates; sign reversal at predicted q/ρ boundary; one external-validity check replicates the sign | Report the boundary honestly; no law-testing |
+| **Results freeze** | Apr 2027 | CIs, negative results, pre-registered contrasts, manifest trace | — |
+| **Thesis** | Jun 2027 | Internal review; defence-ready | — |
+| **Paper** | Aug–Dec 2027 | TACL rolling / EMNLP 2028 / Q1 journal **after defence** | No paper deadline before the defence |
 
-**Kill criterion:** if G1 and G2 both fail, stop the trust-mechanism work. Write the negative/boundary paper from the harness and pilot. That is still publishable; continuing is not.
+**Kill criterion:** if N4 and G2 both fail, stop the trust-mechanism work. Write the negative/boundary paper from the harness and pilot. That is still publishable; continuing is not.
+
+**Do not reorder:** final-stack smoke → WP-18 → benchmark calibration/verifier audit → pilot → Core → Full. The pilot and Core are gates, not warm-ups.
 
 ---
 
-## 10. Pre-registration checklist
+## 10. Pre-registration checklist (v1.0 + v1.1 erratum frozen)
 
-- [ ] Dataset snapshots and exact item IDs.
-- [ ] Screening seed and eligibility rule.
-- [ ] Primary endpoint and comparator (**B8-no-trust**, not B3).
-- [ ] Sample size and MDE from the Gate-1 baseline.
-- [ ] Analysis model (paired McNemar / mixed-effects / cluster bootstrap).
-- [ ] Multiplicity correction (Holm).
-- [ ] Exclusion rules and reporting.
-- [ ] α/β, floor/ceiling, max_claims, verifier/judge/prompt versions.
-- [ ] Stopping rules and decision rule (positive/negative/inconclusive).
+- [x] Dataset snapshots and exact item IDs.
+- [x] Screening seed and eligibility rule.
+- [x] Primary endpoints and comparator (**B8-no-trust**, not B3).
+- [x] Sample size and MDE.
+- [x] Analysis model (paired McNemar / mixed-effects / cluster bootstrap).
+- [x] Multiplicity correction (Holm).
+- [x] Exclusion rules and reporting.
+- [x] α/β, floor/ceiling, max_claims, verifier/judge/prompt versions.
+- [x] Stopping rules and decision rule (positive/negative/inconclusive).
+- [x] v1.1 erratum records the released prompt hash `bc9c7b...` (not `6cc9b0...`); WP-18 arm definitions are assigned, with oracle semantics pending WP-18.
+- [ ] WP-18 freezes the Full count.
 - [ ] No changes after seeing results.
 
 ---
 
 ## 11. Minimum result patterns
 
-### Top-Q1 (ACL/EMNLP/NeurIPS main or strong TMLR)
+### Top-Q1 (TACL/EMNLP 2028/Q1 journal)
+
+ACL/EMNLP main remains a stretch, not the planning target.
 
 - Pre-registered, ≥350–400 eligible/condition, paired.
 - B8 vs **B8-no-trust** ≥20% relative CMR/accuracy gain; 95% CI excludes 0 and a 5 pp SESOI.
-- Final accuracy improves on adversarial sets; non-inferior on GPQA/MMLU-Pro (3–5 pp).
-- Replicates on the Final stack and a natural-divergence/non-math set.
+- Final accuracy improves on adversarial sets; non-inferior on GPQA/MMLU-Pro (**5 pp at n≈300–400**).
+- Replicates on the final stack and a natural-divergence/non-math set.
 - B8-trust-hidden and B8-placebo do **not** match B8.
 - Mediation: verifier accuracy → trust AUROC → CMR.
 - Verifier balanced accuracy ≥0.75; effect moderated by verifier accuracy.
 - Compute-matched baselines do not erase the effect.
 - Robustness: K, N, paraphrases, α/β held out, same-model panel.
 - Human audit validates the collapse metric (κ ≥0.6).
+- Benchmark: 180-item v1.2 frozen set; 300 Full target if clean; 600 stretch only with dedicated annotators.
 
 ### Findings/TMLR
 
@@ -335,7 +347,7 @@ Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 - Accuracy non-inferior.
 - B8-no-trust and B8-trust-hidden isolation.
 - Honest limitation: injection/math setting, lexical/heuristic verifier.
-- No natural-setting or Final-scale replication, or no mediation.
+- No natural-setting or final-scale replication, or no mediation.
 
 ### Workshop
 
@@ -349,10 +361,32 @@ Full source table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
 ## 12. What not to run
 
-- Do not run 15 conditions × 5 datasets × 3 seeds × 1,000 questions.
+- Do not run 15 conditions × 5 datasets × 3 seeds × 1,000 questions (~30,000 GPU-h).
+- Do not put EG-SSS in Core v1.0; it joins at the v1.2 benchmark freeze.
+- Do not describe a 400-per-dataset Core matrix over EG-SSS; the Core datasets are GPQA/MMLU-Pro/HLE.
+- Do not assert a 36-run or 32-run Full matrix as final before WP-18 freezes it.
 - Do not run B8 without injection and call it a CCR result.
 - Do not compare B8 to B4 when B4 uses a different partition/prompt.
-- Do not use ECR as a primary metric.
+- Do not use ECR as a primary or secondary metric.
 - Do not treat 3 seeds as independent samples.
 - Do not add conditions after seeing the primary result.
 - Do not submit the full 10-baseline matrix as the paper; put it in the thesis appendix.
+
+---
+
+## 13. Calendar
+
+| Window | Work |
+|---|---|
+| Nov 2026 | N1 final-stack 96 GB smoke (not run yet); N2 WP-18 starts; N3 24-item calibration; N4 verifier audit starts |
+| Nov–Dec 2026 | WP-18 placebo/oracle + Full config; verifier audit (150–200 pairs) |
+| Dec 2026 | N5 pilot / **G2** |
+| Jan 2027 | **G3 Core run**; 180-item benchmark freeze (v1.2) |
+| Feb 2027 | **G4/G5 Full run**; 300-item target if the 180 set is clean |
+| Mar 2027 | Human evaluation / SDT |
+| Apr 2027 | Results freeze; law-testing only if the effect is real |
+| May–Jun 2027 | Thesis chapters; internal review; **thesis submission June 2027** |
+| Jun–Jul 2027 | **Defence** |
+| Aug–Dec 2027 | Paper: TACL rolling / EMNLP 2028 / Q1 journal |
+
+**No paper deadline before the defence.** Do not force a submission to hit an artificial date.

@@ -1,8 +1,12 @@
-# 02 — P0 Fixes (Do These Before Any GPU Run)
+# 02 — P0 Fixes (Historical Record)
 
-> **Status note (2026-11-09):** this is the historical P0 fix list from 8 November 2026. Current state: **11/13** gate checks on temporary `feat/p0-hardening` (WP-13/WP-09 pending), **478** tests, matrix **24 rows / 1,280 GPU-h**. Branch names below are historical: `feat/full-pipeline` is now `dev`; the landing sequence is `feat/p0-hardening` → `dev` → `main`.
+> **Historical P0 fix list.** Completed at **13/13 gate checks, 514 tests**, released at tag `p0-release` (`7f2c11f`); current HEAD `main` = `dev` = `2ae56a3`. For current state and next actions, see `roadmap.md` and `01_CURRENT_STATE.md`.
+>
+> **Deferred human checks:** the P0-6 human verifier audit is now **N4** and remains pending (lexical verifier **0.58** balanced accuracy on the synthetic audit; target ≥0.75, κ ≥0.60). The P0-9 manipulation κ and the pilot are **G2** work. These were not P0-release gate failures; they are post-P0 validation.
+>
+> Branch names below are historical. The retired long-lived feature branch is now `dev`; the temporary P0 integration branch was merged and deleted; the current slice model is `next/<slice>` from `dev`.
 
-**Rule:** no main experiment until every P0 is checked. Each item has a problem, evidence, change, and an acceptance test. If an acceptance test cannot be run, the item is not done.
+**Historical rule (8 November 2026):** no main experiment until every P0 was checked. Each item has a problem, evidence, change, and an acceptance test. If an acceptance test could not be run, the item was not done at that time.
 
 **Order matters.** P0-0 → P0-1 → P0-2 are prerequisites for every number the paper will report.
 
@@ -307,7 +311,7 @@
 - `run_matrix.py:173-190`.
 
 **Change:**
-1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`).
+1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`). **As executed at P0 release, the Core v1.0 matrix is narrower:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**; GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**, with a **1,280 GPU-h** conservative gate cap. EG-SSS is not in Core v1.0; it is 180 items at the v1.2 benchmark freeze. The Full target is 6 arms/3 datasets/2 seeds = **36 runs if B8-oracle uses gold-answer trust**, 300 items/dataset = 10,800 debates / **1,440 GPU-h envelope**; if B8-oracle is gold-evidence-only on EG-SSS, it is **32 runs** and must be recomputed. **WP-18** (not the historical WP-13) freezes the Full definition.
 2. Compute power for CCR/accuracy; report MDE per dataset.
 3. Freeze `PRE_REGISTRATION.md`: primary endpoint, comparator, exclusions, analysis, multiplicity, stopping rules.
 4. Treat the full 15×5 grid as a thesis appendix plan, not an executable matrix.
@@ -347,12 +351,12 @@
 **Problem:** `main` is 10 commits behind; the defence Q&A says trust/retrieval are not wired; the paper claims results.
 
 **Evidence:**
-- `git log --oneline` (local `feat/full-pipeline` ahead).
+- `git log --oneline` (the old long-lived feature branch was ahead).
 - `docs/FYDP1_defence_Q&A.md:69`.
 - `Papev_Summer26_6/cas-sc-template.tex:121`.
 
 **Change:**
-1. Merge `feat/full-pipeline` into `main` (or change the default branch).
+1. Merge the old long-lived feature branch into `main` (or change the default branch).
 2. Update `IMPLEMENTATION_STATUS.md`, `FYDP1_defence_Q&A.md`, `roadmap.md`.
 3. Rewrite the abstract/intro claims per `05_WRITING_AND_VENUE.md`.
 4. Add a `CITATION.cff` / `requirements` lock if releasing.
@@ -365,18 +369,20 @@
 
 ---
 
-## P0 completion gate
+## P0 completion gate (historical; passed at `p0-release`)
 
-Do not start the pilot until:
+The engineering gate passed. The two human-validation items below were explicitly carried into post-P0 work, not silently marked done.
 
-- [ ] P0-0, P0-1, P0-2 pass their tests.
-- [ ] P0-3 mock B8+injection produces all required fields.
-- [ ] P0-4 metrics have unit tests and appear in `summary.json`.
-- [ ] P0-5 trust tests pass for N=1,3,5 and neutral evidence.
-- [ ] P0-6 verifier audit ≥0.75 balanced accuracy.
-- [ ] P0-7 B8 vs B8-no-trust differs only in trust.
-- [ ] P0-8 all revisions pinned; eligible n reported.
-- [ ] P0-9 injection is one-shot with a neutral control; κ ≥0.75.
-- [ ] P0-10 matrix ≤1,500 GPU-h; pre-registration written.
-- [ ] P0-11 manifest/resume test passes.
-- [ ] P0-12 branch/docs updated.
+- [x] P0-0, P0-1, P0-2 pass their tests.
+- [x] P0-3 mock B8+injection produces all required fields.
+- [x] P0-4 metrics have unit tests and appear in `summary.json`.
+- [x] P0-5 trust tests pass for N=1,3,5 and neutral evidence.
+- [x] P0-6 verifier interface + audit harness landed. **Human audit ≥0.75 is N4, pending** (synthetic audit 0.58).
+- [x] P0-7 B8 vs B8-no-trust differs only in trust (landed as the historical WP-13 prompt split).
+- [x] P0-8 all revisions pinned; eligible n reported.
+- [x] P0-9 injection is one-shot with a neutral control. **Human manipulation κ ≥0.75 is G2, pending.**
+- [x] P0-10 Core matrix is 24 rows / 1,280 GPU-h cap; pre-registration v1.0 written. Full definition is WP-18, conditional.
+- [x] P0-11 manifest/resume test passes.
+- [x] P0-12 branch/docs updated: `main` = `dev`; manuscripts rewritten as engineering reports.
+
+**Current next gate:** N1 final-stack smoke (not run) → N2 WP-18 → N4 verifier audit → N5 pilot/G2. See `roadmap.md`.

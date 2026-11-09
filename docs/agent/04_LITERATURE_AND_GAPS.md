@@ -1,8 +1,10 @@
-# 04 — Literature, Prior Art, and Missing References
+# 04 — Literature, Prior Art, and Missing References (8 November 2026 Snapshot)
 
-**Snapshot:** 8 November 2026. **Purpose:** give an agent the exact novelty boundary, the papers that preempt parts of the project, and the references the current draft is missing.
+> **Historical snapshot — literature verified 8 November 2026.** This file is retained for the prior-art matrix and gap map. The manuscript claim audit in §7 was **resolved on 9 November 2026**; the authoritative record is `Papev_Summer26_6/CLAIMS_AUDIT.md` and `FYDP_Summer/CLAIMS_AUDIT.md`. Do not present §7 as the current manuscript state.
 
-**Read this before writing any novelty claim.** The current draft's "no mechanism exists" sentence is false. See §7.
+**Snapshot:** 8 November 2026. **Purpose:** give an agent the exact novelty boundary, the papers that preempt parts of the project, and the references the 8 November 2026 draft was missing.
+
+**Read this before writing any novelty claim.** The 8 November 2026 draft's "no mechanism exists" sentence was false. See §7 (historical).
 
 ---
 
@@ -161,7 +163,7 @@ If you cannot run all of them, compare against the **published numbers** on a sh
 
 ## 6. Missing references to add
 
-### 6.1 Classic / foundational (not in the current draft)
+### 6.1 Classic / foundational (not in the 8 November 2026 draft)
 
 | Reference | Venue | Why add | Verify |
 |---|---|---|---|
@@ -206,7 +208,7 @@ If you cannot run all of them, compare against the **published numbers** on a sh
 
 ### 6.3 2025–2026 sycophancy, pressure, and evidence-grounded debate
 
-The FYDP's current related work is missing the 2025–2026 empirical sycophancy literature and the evidence-grounded debate precedents. Add these before writing the related-work section.
+The FYDP's 8 November 2026 related work was missing the 2025–2026 empirical sycophancy literature and the evidence-grounded debate precedents. Add these before writing the related-work section.
 
 | Reference | Venue/status | Why add | Link |
 |---|---|---|---|
@@ -236,9 +238,11 @@ The FYDP's current related work is missing the 2025–2026 empirical sycophancy 
 
 ---
 
-## 7. Claims in the current draft that must be deleted or rewritten
+## 7. Claims in the 8 November 2026 draft that had to be deleted or rewritten (historical)
 
-| Current claim (file:line) | Problem | Rewrite |
+> **Resolved 9 November 2026.** This table is the historical audit source. The applied changes are in `Papev_Summer26_6/CLAIMS_AUDIT.md` and `FYDP_Summer/CLAIMS_AUDIT.md`; the manuscripts now compile as engineering reports with no efficacy claims.
+
+| Historical claim (file:line) | Problem | Rewrite |
 |---|---|---|
 | "Currently, there is no mechanism within any debate system to check an individual agent's assertions against outside scientific evidence..." (`Papev...:121`) | False absolute; CRITIC, RAG debate, GAVEL, SciTrue, DebateCV exist | "We are not aware of a deployed method that combines claim-level external evidence with in-debate agent-level trust reweighting; the closest systems are R²-MAD, TERA-RAG, and GAVEL." |
 | "Our proposed framework produced fewer hallucinated answers..." (`Papev...:121`) | No results exist | Delete until results; then report a defined hallucination metric |
@@ -281,4 +285,4 @@ The FYDP's current related work is missing the 2025–2026 empirical sycophancy 
 4. Do not cite a paper you have not read at least the abstract + method of.
 5. For each closest competitor, record: mechanism, dataset, metric, result, and why it does/does not preempt.
 6. Keep a `references_verified.csv` with columns: cite key, title, venue, year, DOI/URL, status, verified date, verified by.
-7. The current `literature_review/index.md` has 5 unread papers; finish them before submission.
+7. At the 8 November 2026 snapshot, `literature_review/index.md` had 5 unread papers; verify the current count before submission.

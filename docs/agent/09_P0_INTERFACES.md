@@ -1,6 +1,8 @@
-# 09 — P0 Interfaces, Record Schema, and File Leases
+# 09 — P0 Interfaces, Record Schema, and File Leases (Historical Contract)
 
-**Status:** frozen for P0. Every P0 work package codes against this file. If a change is needed, change this file first and note it in the commit.
+> **Historical contract — P0 interfaces v1.0, released 9 November 2026** at `p0-release` (`7f2c11f`); current HEAD `main` = `dev` = `2ae56a3`. The **record schema v2 and function signatures remain useful** for current code. The P0 worktree/landing sequence and file leases are **historical**. Active execution rules: `roadmap.md`.
+
+**Status:** frozen for P0. Every P0 work package coded against this file. This is the historical contract; do not create P0 worktrees from it.
 
 ---
 
@@ -99,7 +101,7 @@ def final_answer(aggregation: dict) -> str: ...
 
 ---
 
-## 3. File leases
+## 3. File leases (historical P0)
 
 Only the lease holder edits the file. Everyone else files a 3-line request in their work-package note; the lease holder applies it in the owning commit.
 
@@ -119,7 +121,7 @@ Only the lease holder edits the file. Everyone else files a 3-line request in th
 
 ---
 
-## 4. Evidence convention
+## 4. Evidence convention (historical P0)
 
 - One evidence file per work package: `experiments/p0/WP-NN.md`.
 - Heavy artifacts go under `trustcal/results/` (gitignored), referenced by path + sha256.
@@ -128,19 +130,19 @@ Only the lease holder edits the file. Everyone else files a 3-line request in th
 
 ---
 
-## 5. Push and merge rules
+## 5. Push and merge rules (historical P0; current rules in `roadmap.md`)
 
-- Slice branch: `p0/wp-<id>`; worktree: `E:\FYDP-p0-<letter>`. Slice branches are temporary and deleted after merge.
+- **Current slice branch:** `next/<slice>` from `dev`, in one worktree; delete after merge. Do not recreate P0 slice branches.
 - Push the slice branch after every green checkpoint.
-- Integrator merges to `feat/p0-hardening` in a fixed daily window (`--no-ff`). `feat/p0-hardening` is temporary; after the 13/13 gate it merges into `dev` and is deleted.
-- Long-lived branches: `dev` (development/integration) and `main` (release trunk; the web frontend deploys from `main`). Neither takes P0 work directly.
-- Final landing sequence: `feat/p0-hardening` → `dev` → `main`, tagged `p0-gate` and `p0-release`.
-- `Phase-1-dev` and `Phase-1-main` are retired tags (`phase-1-dev`, `phase-1-main-untested`), not branches. Do not recreate them.
-- No force-push.
+- Integrator merges to `dev`; `dev` releases to `main` only after a gate and a clean frontend build.
+- Long-lived branches: **`dev`** (development/integration) and **`main`** (release trunk; the web frontend deploys from `main`).
+- **P0 landing (completed):** the temporary P0 integration branch merged to `dev`, then `main`, tagged `p0-gate` (`055a244`) and `p0-release` (`7f2c11f`). It is deleted; only `main` and `dev` remain.
+- **Future gate tags:** `g2`, `g3`, `g4`, `results-freeze`, `thesis`, `paper`. No direct `main` pushes; no force-push.
+- `phase-1-dev` and `phase-1-main-untested` are retired tags, not branches. Do not recreate them.
 - No commit mixes `docs/**` with `trustcal/**` or `frontend/**`.
 
 ---
 
-## 6. P0 gate
+## 6. P0 gate (historical; passed)
 
-`scripts/p0_gate.py` encodes the 13 checks. Do not run the pilot or matrix until it exits 0 on `feat/p0-hardening`.
+`scripts/p0_gate.py` encodes the 13 checks. **The P0 gate passed 13/13 at `p0-gate` (`055a244`).** Future slices use `next/<slice>`; future gates are **`g2`, `g3`, `g4`, `results-freeze`, `thesis`, `paper`**. Do not run the pilot or matrix until **G2** passes.
