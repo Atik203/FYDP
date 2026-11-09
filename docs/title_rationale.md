@@ -8,7 +8,7 @@ This note explains the registered title and records the paper-title change. The 
 
 ## Why the paper title changed
 
-The registered title promises a mitigation (“for Mitigating”). The paper’s defensible contribution is narrower and more useful: it formalizes **when** evidence-grounded trust helps and when it amplifies a wrong majority, builds a controlled causal benchmark, and tests the sign reversal. “The Boundaries of…” states that contribution without claiming an efficacy result the experiments have not yet measured. “with a Controlled Benchmark for Sycophantic Consensus” names the second contribution and keeps the phenomenon in the title. The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is the accurate word while the benchmark is a manipulated stress set; “causal” is reserved for the abstract and results once the estimand and identification assumptions are stated. The question form (“When Does…?”) was considered and rejected for the final paper because a declarative title reads as a stronger, more specific contribution; it remains a reasonable fallback for a workshop version.
+The registered title promises a mitigation (“for Mitigating”). The paper’s defensible contribution is narrower and more useful: it formalizes **when** evidence-grounded trust helps and when it amplifies a wrong majority, builds a controlled benchmark, and tests the sign reversal. “The Boundaries of…” states that contribution without claiming an efficacy result the experiments have not yet measured. “with a Controlled Benchmark for Sycophantic Consensus” names the second contribution and keeps the phenomenon in the title. The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is the accurate word while the benchmark is a manipulated stress set; “causal” is reserved for the abstract and results once the estimand and identification assumptions are stated. The question form (“When Does…?”) was considered and rejected for the final paper because a declarative title reads as a stronger, more specific contribution; it remains a reasonable fallback for a workshop version.
 
 This note explains each part of the registered title and why that word was chosen. It answers the common review questions, in particular why the title says "Scientific" and why it says "Deliberation".
 
@@ -16,7 +16,7 @@ This note explains each part of the registered title and why that word was chose
 
 **Meaning.** Every agent's influence is set by a score that is adjusted against external evidence. The raw score rises with supported claims and falls with contradicted claims. The score is accumulated in log space, then passed through one softmax and a floor/ceiling simplex projection each round. The projection keeps every weight inside [0.1, 0.9] and keeps the weights summing to one.
 
-**Why this word.** It names both the mechanism and its property. "Calibrated" means the score tracks correctness, which is exactly what the Evidence-Calibration Rate (ECR) measures. The word also separates this work from majority voting, where every agent carries equal weight, and from confidence weighting, where the signal is self-reported.
+**Why this word.** It names both the mechanism and its property. "Calibrated" means the score tracks correctness, which is what trust AUROC and the Brier score measure. The word also separates this work from majority voting, where every agent carries equal weight, and from confidence weighting, where the signal is self-reported. (The earlier Evidence-Calibration Rate, ECR, is deprecated and is not a current calibration metric.)
 
 **If removed.** The title would describe ordinary debate with voting, which is the behavior this work replaces.
 
@@ -35,7 +35,7 @@ This note explains each part of the registered title and why that word was chose
 **Why scientific questions only.** Four reasons.
 
 1. **Evidence exists.** Claims can be verified against a real literature corpus (PubMed, arXiv, Semantic Scholar). The trust mechanism needs an independent external signal. In opinion, creative, or open-ended domains there is no corpus that can reliably support or contradict a claim, so there is nothing to calibrate against.
-2. **Ground truth exists.** GPQA and MMLU-Pro carry objective answers. Accuracy, Consensus-Collapse Rate (CCR), Minority-Preservation Rate (MPR), and ECR can all be measured. Without ground truth, the mechanism cannot be evaluated.
+2. **Ground truth exists.** GPQA and MMLU-Pro carry objective answers. Accuracy, CMR, trust AUROC and Brier scores can all be measured. Without ground truth, the mechanism cannot be evaluated.
 3. **Claims decompose cleanly.** A scientific statement splits into atomic propositions, for example "drug X lowers Y by Z in group G". Retrieval can check each piece. Subjective text does not split this way.
 4. **Failure is costly.** A confidently wrong scientific consensus can mislead health, policy, and research decisions. The failure deserves a measured fix rather than a post-hoc patch.
 

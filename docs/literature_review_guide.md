@@ -1,6 +1,8 @@
 # 📚 Literature Review Guide — FYDP Idea 1
 
-### Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
+**Registered FYDP title:** Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning
+
+**Paper title (2026-11):** The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus
 
 ---
 

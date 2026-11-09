@@ -1,6 +1,6 @@
 # Project Structure — Runtime Implementation
 
-Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on the rented GPU instance (RTX A6000 48GB, Dev phase — RunPod or Thunder Compute) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU.
+Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on a rented Vast.ai GPU instance (RTX A6000 48GB for Dev; RTX PRO 6000 96GB for Final) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU. Execution order is in `roadmap.md`; per-component status is in `trustcal/IMPLEMENTATION_STATUS.md`.
 
 > **Status note (2026-11-09):** this is the reference layout, not a status report. The current implementation uses a plain-Python debate runner, claim-domain retrieval routing, and the P0 trust operator (logit accumulation → one softmax → floor/ceiling simplex projection). `trustcal/IMPLEMENTATION_STATUS.md` is the status source.
 
@@ -18,21 +18,28 @@ trustcal/
 ├── .env.example                  # API keys (Semantic Scholar, etc.) — .env is gitignored
 ├── configs/
 │   ├── models.yaml               # THE two-phase swap: agent → model id, port, quant
-│   └── datasets.yaml             # eval datasets, split, sample caps
+│   ├── datasets.yaml             # eval datasets, split, sample caps
+│   ├── experiments.yaml          # Core matrix: 4 conditions × 3 datasets × 2 seeds
+│   └── phase.yaml                # dev | final phase selector
 ├── src/trustcal/
 │   ├── inference/                # thin OpenAI-compatible client for vLLM
 │   ├── agents/                   # per-agent prompt templates + response parsing
 │   ├── retrieval/                # PubMed / ArXiv / Semantic Scholar + reranker
 │   ├── trust/                    # trust math + weighted aggregation (pure functions)
 │   ├── orchestrator/             # debate state machine (rounds, injection, K=3)
-│   └── eval/                     # harness: metrics, baselines B1–B9, dataset loaders
+│   └── eval/                     # harness: metrics, baselines B1–B10, dataset loaders
 ├── scripts/
 │   ├── serve.sh                  # starts 3 vLLM instances (ports 8000–8002)
-│   ├── run_experiment.py         # runs a named experiment arm (B1/B3/injection)
+│   ├── run_experiment.py         # runs one named arm (B1–B10, pilot, injection)
+│   ├── run_matrix.py             # executes the Core/Full matrix from configs
+│   ├── p0_gate.py                # 13-check P0 engineering gate
+│   ├── verify_env.py             # environment + server check
 │   ├── preflight.py              # cost-safety checks before paid sessions
+│   ├── check_stack.py            # offline Final-stack weight/VRAM budget check
+│   ├── verifier_audit.py         # 150–200 claim–passage audit harness
 │   ├── mock_vllm.py              # mock OpenAI-compatible servers (GPU-free tests)
 │   ├── annotate.py               # annotation sheets + Cohen's κ
-│   └── smoke_test.py             # 20-question model-swap gate (§13 step 11)
+│   └── smoke_test.py             # 20-question Final-stack smoke gate
 └── results/                      # gitignored; one folder per experiment run
 ```
 
@@ -60,7 +67,7 @@ Quantized variants of the roadmap's model trio: the official Ministral FP8 check
 
 **`src/trustcal/orchestrator/`** — plain-Python debate state machine (the planned LangGraph port is not implemented): round sequencing, the t=1→2 injection point, the K=3 round cap, per-agent retry cap. The only module that glues retrieval + trust + agents together; it writes the full trust trajectory to `results/` after every debate (load-bearing for Propositions 2–3 and trust calibration, not optional logging).
 
-**`src/trustcal/eval/`** — the harness: dataset loaders (GPQA slice, etc. per §8), the CCR/MPR/ECR metrics, and the baselines (B1–B4 trivial reuses, B5 self-consistency, B6 MoA, B7 Gemini oracle, B9 iMAD reimplementation). Each baseline is a runnable config, not a fork of the pipeline.
+**`src/trustcal/eval/`** — the harness: dataset loaders (GPQA-Main, MMLU-Pro, HLE, plus appendix-only BrokenMath/BrokenArXiv), the accuracy/CMR/ARR/trust-AUROC/Brier endpoints (ECR is deprecated), and the B1–B10 baseline registry (B1–B4 trivial reuses, B5 self-consistency, B6 MoA, B7 Gemini oracle, B8/B8-no-trust, B9 iMAD, B10 ConsensAgent). B8-placebo and B8-oracle are pending WP-18. Each baseline is a runnable config, not a fork of the pipeline.
 
 **`scripts/serve.sh`** — launches three `vllm serve` processes, one per model in `models.yaml` (commands generated, never hand-edited), each on its own port with the per-instance `gpu_memory_utilization` from the config (current split 0.28/0.26/0.36, ~41GB of 45GB usable). Servers start **sequentially** with a readiness gate — concurrent startup makes vLLM's memory profiling race and report phantom OOM. `--enforce-eager` avoids memory spikes when sharing.
 
@@ -80,21 +87,21 @@ Quantized variants of the roadmap's model trio: the official Ministral FP8 check
 
 ## Pod workflow
 
-1. `setup.sh` on a fresh instance: `git clone` the repo, install pinned deps + nightly vLLM, pre-download the three quantized Dev checkpoints, then start `serve.sh` in the background. On Thunder Compute add `VENV=1` (keeps the preinstalled CUDA 13 / PyTorch 2.9 environment untouched).
-2. RunPod: work via SSH/VS Code Remote in `/workspace`; the 100GB network volume keeps repo, `HF_HOME` cache, and `results/` across stop/start. Thunder Compute: everything lives in `$HOME` on the persistent disk; there is no stop — snapshot, delete the instance, restore later (~8 min per 100GB).
-3. GitHub is the safety net (spot pods get reclaimed; Thunder snapshots have no durability guarantee). Push code; copy `results/` out before deleting an instance.
+1. `setup.sh` on a fresh Vast.ai instance: `git clone` the repo, install pinned deps + vLLM, pre-download the three quantized checkpoints, then start `serve.sh` in the background. The Final path is `PHASE=final bash setup.sh` on the 96 GB RTX PRO 6000.
+2. Vast.ai is the primary provider: work via SSH/VS Code Remote in `/workspace`; persist the repo, `HF_HOME` cache, and `results/` on a Vast.ai volume so a stop/start does not re-download weights.
+3. GitHub is the safety net (spot instances get reclaimed). Push code; copy `results/` out before destroying an instance. Run `check_stack.py`, `preflight.py`, and the smoke test before any paid matrix session.
 
 ## Correspondence with the blueprint
 
 | Blueprint section | Lives in |
 | --- | --- |
-| §5.2 confidence gate | `src/trustcal/agents/gate` |
+| §5.2 confidence gate | `src/trustcal/agents/prompts.py` |
 | §5.3 agents + claim tagging | `src/trustcal/agents/` |
 | §5.5 claim-domain routed retrieval | `src/trustcal/retrieval/` |
 | §5.6 trust update (Eq. 1–3) | `src/trustcal/trust/` |
 | §5.7 aggregation (Eq. 4) | `src/trustcal/trust/aggregation.py` |
 | §5.8 deliberation protocol | `src/trustcal/orchestrator/` |
 | §7 two-phase models | `configs/models.yaml` |
-| §8 datasets | `configs/datasets.yaml` + `src/trustcal/eval/datasets/` |
-| §9–10 metrics (CCR/MPR/ECR) | `src/trustcal/eval/metrics/` |
+| §8 datasets | `configs/datasets.yaml` + `src/trustcal/eval/datasets.py` |
+| §9–10 metrics (accuracy/CMR/AUROC/Brier; ECR deprecated) | `src/trustcal/eval/metrics.py`, `src/trustcal/eval/endpoints.py` |
 | §13 build order | `scripts/` + milestone gates in this repo's roadmap |

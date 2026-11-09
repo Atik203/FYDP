@@ -2,17 +2,21 @@
 
 **Trust-Calibrated Multi-Agent Scientific Deliberation** — a bounded, evidence-grounded trust score that re-weights each agent's influence during a multi-agent debate, so a correct minority is not talked out of its answer by a confidently wrong majority.
 
+**Paper title:** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
+
 ![status](https://img.shields.io/badge/status-canonical%20source%20of%20truth-2ea043)
 ![structure](https://img.shields.io/badge/structure-5%20phases%20%C2%B7%2018%20sections-1f6feb)
-![headline metric](https://img.shields.io/badge/headline%20metric-CCR%20(collapse%20rate)-d29922)
+![headline metric](https://img.shields.io/badge/headline%20metric-accuracy%20%2F%20CMR-d29922)
 ![closest competitors](https://img.shields.io/badge/closest%20competitors-ConsensAgent%20%C2%B7%20DebUnc-cf222e)
-![stack](https://img.shields.io/badge/stack-Qwen%20%C2%B7%20Gemma%20%C2%B7%20Mistral%20%C2%B7%20vLLM%20%C2%B7%20LangGraph-8250df)
+![stack](https://img.shields.io/badge/stack-Qwen%20%C2%B7%20Gemma%20%C2%B7%20Mistral%20%C2%B7%20vLLM%20%C2%B7%20plain%20Python-8250df)
 
 > [!IMPORTANT]
 > **Canonical source of truth.** Every research decision in this repository traces back to this file. If a decision changes, change it here first — the report, the journal, and the roadmap follow this blueprint.
 
 > [!NOTE]
-> **P0 state note (2026-11-09).** Two parts of the original design below are superseded. The trust operator is now logit accumulation → one softmax → floor/ceiling simplex projection (`trust/update.py`), not clamp-then-renormalize. Retrieval routes by claim domain, not by agent identity; the source-per-agent diagram in §5 is the original design and was replaced to remove the source-by-agent confound. Current state: `trustcal/IMPLEMENTATION_STATUS.md`.
+> **P0 release (2026-11-09).** `main` = `dev` = `2ae56a3`; P0 gate 13/13; 514 tests; tags `p0-gate` = `055a244`, `p0-release` = `7f2c11f`. P0 is engineering readiness, not efficacy evidence. The 96 GB Final-stack hardware smoke has **not run**; only the offline 69.73 GB budget check passes. Execution order, costs and dates live in `roadmap.md`; per-component status lives in `trustcal/IMPLEMENTATION_STATUS.md`.
+>
+> Two parts of the original design below are superseded. The trust operator is logit accumulation → one softmax → floor/ceiling simplex projection (`trust/update.py`), not clamp-then-renormalize. Retrieval routes by claim domain, not by agent identity; the source-per-agent diagram in §5 is the original design and is retained as history.
 
 > [!TIP]
 > **Reading guide:** first day on the project → **§1** and **§15** · supervisor or defence prep → **§14** and **§18** · building the pipeline → **§5**, **§7**, **§13** · running experiments → **§9–§12** · writing the paper → **§2**, **§16**, **§18**.
@@ -33,7 +37,7 @@
 
 | § | Section | Read it for |
 | --- | --- | --- |
-| 5 | [Detailed Multi-Agent Pipeline](#section-5--detailed-multi-agent-pipeline) | Component specs: [gate](#agent-0--confidence-estimator-gatekeeper-not-a-debate-participant), [debate agents](#agents-13--debate-agents-two-phase-model-strategy), [retrieval](#retrieval-sub-system-source-partitioned-rag-shared-infrastructure-not-an-agent-per-se), [orchestrator](#orchestrator-implementation-detail-not-a-research-facing-agent-but-required-for-the-pipeline-to-function) |
+| 5 | [Detailed Multi-Agent Pipeline](#section-5--detailed-multi-agent-pipeline) | Component specs: [gate](#agent-0--confidence-estimator-gatekeeper-not-a-debate-participant), [debate agents](#agents-13--debate-agents-two-phase-model-strategy), [retrieval](#retrieval-sub-system-claim-domain-routed-rag-shared-infrastructure-not-an-agent-per-se), [orchestrator](#orchestrator-implementation-detail-not-a-research-facing-agent-but-required-for-the-pipeline-to-function) |
 | 6 | [Complete Data Flow](#section-6--complete-data-flow) | The nine-step trace with every intermediate output |
 | 7 | [Models & Tools](#section-7--models--tools) | Dev vs Final model stack, [GPU budget](#gpu-budget--cost-breakdown), build difficulty ranking |
 | 8 | [Dataset Plan](#section-8--dataset-plan) | Five datasets, licenses, access risks, contingency fallbacks |
@@ -42,10 +46,10 @@
 
 | § | Section | Read it for |
 | --- | --- | --- |
-| 9 | [Evaluation Strategy](#section-9--evaluation-strategy) | Metrics (CCR/MPR/ECR), baselines B1–B10, ablations, statistics |
+| 9 | [Evaluation Strategy](#section-9--evaluation-strategy) | Metrics (accuracy/CMR/AUROC/Brier; ECR deprecated), B1–B10 registry, ablations, statistics |
 | 10 | [Edge Cases & Failure Handling](#section-10--edge-cases--failure-handling) | Ten failure scenarios with detection, prevention, recovery |
 | 11 | [Risk Assessment](#section-11--risk-assessment) | Risk register with likelihood, impact, and mitigation |
-| 12 | [Month-by-Month Roadmap](#section-12--month-by-month-roadmap-july-2026--april-2027) | Jul 2026 to Apr 2027 plan, gates, and the Month-1 pilot |
+| 12 | [Month-by-Month Roadmap](#section-12--month-by-month-roadmap-november-2026--december-2027) | Nov 2026 to Dec 2027 plan, G2–G5, and the pilot gate |
 
 **Phase 4 of 5 — Execution (Sections 13–15)**
 
@@ -87,11 +91,11 @@
 4. Heterogeneous model families reduce, but don't eliminate, correlated hallucination (accepted as a named limitation, not assumed away).
 
 > [!WARNING]
-> **Assumption 3 is the make-or-break item (Challenge C).** The entire mechanism lives or dies on whether trust weights behaviorally change the output. That is why the Month-1 pilot exists (Sections 12 and 13), and why it gates the full build.
+> **Assumption 3 is the make-or-break item (Challenge C).** The entire mechanism lives or dies on whether trust weights behaviorally change the output. That is why the pilot run exists (Sections 12 and 13), and why it gates the full build.
 
 **High-risk assumptions requiring early validation** (in priority order):
 
-- Assumption 3 (behavioral effectiveness) — must be piloted in Month 1, not discovered in Month 8.
+- Assumption 3 (behavioral effectiveness) — must be piloted before the Core matrix, not discovered after it.
 - Assumption 1 (claim decomposition reliability) — must be spot-checked against a small hand-labeled set before full pipeline build.
 
 **Alternative directions considered and rejected:**
@@ -138,9 +142,9 @@ We build the system, and we build a way to reliably test whether it works — in
 **Expected research contribution:**
 
 - **Primary (C1):** the trust-calibrated evidence-grounded aggregation mechanism itself.
-- **Co-primary (C2):** an open, reproducible sycophancy-stress evaluation harness (injection protocol + CCR/MPR/ECR metrics), independently reusable by others regardless of whether they adopt our mechanism.
+- **Co-primary (C2):** an open, reproducible sycophancy-stress evaluation harness (injection protocol + accuracy/CMR/trust-calibration metrics; ECR is deprecated), independently reusable by others regardless of whether they adopt our mechanism.
 
-**Why publication-worthy.** It closes a stated gap in two recent, directly relevant works (Yao et al., He et al.), it's evaluated against the two strongest existing published baselines in the space (MoA, iMAD), and it ships a reusable evaluation artifact — which is often as valuable to a research community as the mechanism itself.
+**Why publication-worthy.** It closes a stated gap in two recent, directly relevant works (Yao et al., He et al.), it is positioned against the strongest published competitors (MoA, iMAD, ConsensAgent, DebUnc), and it ships a reusable evaluation artifact — which is often as valuable to a research community as the mechanism itself.
 
 ---
 
@@ -156,8 +160,8 @@ We build the system, and we build a way to reliably test whether it works — in
 
 1. Design and formally specify a bounded trust-update mechanism (Section 4.4 of original proposal — carried forward unchanged).
 2. Build a reproducible injection protocol to measure sycophantic collapse under controlled conditions.
-3. Empirically validate the mechanism against 9 baselines including the two strongest published competitors (MoA, iMAD).
-4. Establish, empirically and early (Month 1 pilot — new addition, see Section 0), that trust re-weighting causally changes output, not just context.
+3. Empirically validate the mechanism against a B1–B10 registry, with the Core matrix running four conditions (B3, B4-matched, B8-no-trust, B8) and the Full target adding B8-placebo and B8-oracle (WP-18).
+4. Establish, empirically and early (pilot run, Dec 2026), that trust re-weighting causally changes output, not just context.
 
 **Expected contribution.** A working, evaluated mitigation mechanism plus a reusable stress-testing harness for the research community — see Section 2.
 
@@ -176,7 +180,7 @@ Three Heterogeneous Agents state initial positions (Round 0)
         ↓
 Claim Decomposition (each agent's answer → atomic propositions)
         ↓
-Source-Partitioned Retrieval (Agent A→PubMed, B→ArXiv, C→Semantic Scholar)
+Claim-Domain Retrieval (bio/clinical → PubMed + S2; physics/chem, math/CS → arXiv + S2; shared fallback)
         ↓
 Evidence Scoring (cross-encoder reranker: supports / contradicts / no evidence)
         ↓
@@ -198,12 +202,12 @@ Final Output: Answer + Evidence Citations + Trust Trajectory + Per-Agent Reasoni
 - **Confidence Estimator:** avoids wasting compute on easy questions where all agents would agree correctly anyway. Cheap classifier or self-reported confidence check.
 - **Initial positions:** establishes each agent's independent, unpressured baseline answer — critical for later measuring whether a position _changed_ and _why_.
 - **Claim decomposition:** breaks compound scientific claims into checkable units (e.g., "Drug X reduces mortality by 30% in patients over 65" → separate checks for the effect, the magnitude, and the subgroup qualifier).
-- **Source-partitioned retrieval:** prevents all three agents from retrieving from the same narrow slice of evidence, which would reduce the system to "whoever searched better" rather than "whoever is actually supported."
+- **Claim-domain retrieval:** routes each claim by subject rather than by agent, so an agent cannot win by owning an easier slice of the literature and the retrieval signal stays independent of speaker identity.
 - **Trust update:** the core contribution — converts evidence support/contradiction into a bounded influence score. Full formal specification unchanged from original proposal (Section 4.4).
 - **Revision rounds:** agents see each other's arguments and their own evolving trust standing, simulating real deliberation rather than one-shot voting.
 - **Trust-weighted aggregation:** the actual mechanism that should prevent sycophantic collapse — a correct, evidence-backed minority agent can outweigh two unsupported majority agents if its trust score is sufficiently higher.
 
-**P0 correction (2026-11):** the original softmax→clamp→renormalize order was found to violate the [0.1, 0.9] floor after renormalization (`trust/update.py`); P0-5 replaces it with logit accumulation → one softmax → floor/ceiling simplex projection. K=3, N=3, claim-domain routed retrieval, and the Month-1 pilot placement are unchanged. The confidence-estimator gate (§4.1) is also unchanged.
+**P0 correction (2026-11):** the original softmax→clamp→renormalize order was found to violate the [0.1, 0.9] floor after renormalization (`trust/update.py`); P0-5 replaces it with logit accumulation → one softmax → floor/ceiling simplex projection. K=3, N=3, claim-domain routed retrieval, and the pilot placement are unchanged. The confidence-estimator gate (§4.1) is also unchanged.
 
 > [!IMPORTANT]
 > **Frozen design invariants — do not drift:** logit accumulation → one softmax → floor/ceiling simplex projection (P0-5) · K = 3 rounds · N = 3 heterogeneous agents · claim-domain routed retrieval (P0-12) · inference only, no fine-tuning.
@@ -236,10 +240,10 @@ Empirically, the debate pipeline behaves identically regardless of which models 
 
 | Phase | Agent 1 | Agent 2 | Agent 3 | GPU | Est. Cost |
 |-------|---------|---------|---------|-----|-----------|
-| **Dev** (Ph 0-2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB (spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) | C+ $350; TACL $690-790; full $1,105 at 8 min |
-| **Final** (Ph 3-5) | [Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B) | [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B) | [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**) | $61-102 |
+| **Dev** (Ph 0-2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB (spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) | Dev iteration |
+| **Final** (Ph 3-5) | Qwen3.6-27B-FP8 | Gemma-4-26B-A4B-FP8 | Mistral-24B-AWQ | RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**) | Final-stack smoke 60–100 GPU-h, **$80–120** |
 
-During development, all pipeline code (claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol) is written and debugged using the smaller Dev models (at 4-bit quantisation, ~28GB total) on a cheap RTX A6000 48GB. The final experiment matrix is then run once on the full-scale models (FP8, native on Blackwell) using an RTX PRO 6000 Blackwell 96GB — no code changes needed, only a model-name swap in the config.
+During development, all pipeline code (claim decomposition, retrieval, trust update, state machine, injection protocol) is written and debugged using the smaller Dev models (at 4-bit quantisation, ~28GB total) on a cheap RTX A6000 48GB. The Final-stack runs then use the full-scale models (FP8/AWQ, native on Blackwell) on an RTX PRO 6000 Blackwell 96GB — no code changes needed, only a model-name swap in the config. The Core run is planned on the Dev stack; the Full run is a separate Final-stack matrix.
 
 - **Purpose:** independently reason about the question, then defend or revise positions across rounds based on evidence and each other's arguments.
 - **Responsibilities:** (1) produce an initial answer + reasoning trace, (2) decompose own claims into atomic propositions for retrieval, (3) revise position in light of evidence and peer arguments, (4) maintain awareness of own accumulating trust score.
@@ -253,21 +257,21 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 - **Alternative implementation:** could use more than 3 agents (N-scaling ablation at N∈{2,3,5} already planned) or fewer; N=3 is the primary configuration because it's the minimum needed to create a genuine "1 vs 2" minority-suppression scenario, which is the core phenomenon under test.
 - **What happens if one agent is removed:** system degrades to N=2, which changes the experiment from "minority vs majority" to "two-way disagreement" — a materially different (and already separately covered) N-scaling condition, not a silent degradation. This is why N=3 is treated as the primary configuration, not arbitrary.
 
-#### Retrieval Sub-System (Source-Partitioned RAG, shared infrastructure, not an "agent" per se)
+#### Retrieval Sub-System (Claim-Domain Routed RAG, shared infrastructure, not an "agent" per se)
 
 - **Purpose:** fetch external evidence to support/contradict each atomic claim.
-- **Responsibilities:** route Agent A's claims to PubMed, Agent B's to ArXiv, Agent C's to Semantic Scholar; rerank retrieved passages via cross-encoder; classify each claim as supported / contradicted / unverifiable.
+- **Responsibilities:** route bio/clinical claims to PubMed + Semantic Scholar, physics/chem and math/CS claims to arXiv + Semantic Scholar, with Semantic Scholar/OpenAlex as the shared fallback; rerank retrieved passages via cross-encoder; classify each claim as supported / contradicted / unverifiable / contested.
 - **Input:** atomic claims tagged per agent.
 - **Output:** per-claim evidence verdict + supporting passage + relevance score.
 - **Failure cases:** (a) no relevant documents found (evidence sparsity — a named, planned failure-analysis category); (b) retrieved documents are low-quality or off-topic; (c) API rate limits/downtime.
 - **Recovery:** (a) mark claim as abstained, exclude from trust update per original design (abstention doesn't penalize or reward); (b) citation-count filter (already specified, >10 citations) + domain-restricted abstracts; (c) local caching of retrieved results + retry with backoff, fallback to a secondary free API if primary is down for extended periods.
-- **What happens if removed:** system reduces to MoA (static, non-evidence-grounded aggregation) — this is precisely Baseline B6, so "retrieval removed" is already a designed ablation condition (B4 vs B6 comparison), not an unplanned failure mode.
+- **What happens if removed:** system reduces to a static, non-evidence-grounded aggregation — the B4-matched / B6 comparison, not an unplanned failure mode.
 
 #### Orchestrator (implementation detail, not a research-facing agent, but required for the pipeline to function)
 
 - **Purpose:** coordinates round sequencing, injects test pressure at the specified point (t=1→2), triggers trust updates, and calls final aggregation.
 - **Responsibilities:** state management across rounds; enforcing the K=3 round cap; invoking the trust formula in the exact specified operator order (logit accumulation → softmax → simplex projection).
-- **Implementation:** LangGraph state machine (consistent with tooling choice already used for iMAD reimplementation, Baseline B9, for consistency across the codebase).
+- **Implementation:** plain-Python state machine (the LangGraph port is not implemented); the B9 iMAD reimplementation is an approximation, not a faithful port.
 - **Failure cases:** state corruption across rounds, infinite retry loops.
 - **Recovery:** hard round cap (K=3) and per-agent retry cap (3, matching StatVerify-Agent's pattern from Idea 5 — reused convention, not scope creep) prevent runaway loops.
 
@@ -292,12 +296,12 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 4. CLAIM DECOMPOSITION
    → intermediate output: 3× list of atomic claims, each tagged to source agent
 
-5. SOURCE-PARTITIONED RETRIEVAL
+5. CLAIM-DOMAIN RETRIEVAL
    → intermediate output: per-claim {evidence_verdict, passage, relevance_score}
    → this is the first point where external, ground-independent signal enters the system
 
 6. TRUST UPDATE (Round 1)
-   → intermediate output: updated Sᵢ, Tᵢ per agent (fully logged for later ECR calibration analysis)
+   → intermediate output: updated Sᵢ, Tᵢ per agent (fully logged for later trust-calibration analysis: AUROC/Brier)
 
    [OPTIONAL, for stress-testing only: INJECTION — SYSTEM message with fabricated wrong "expert consensus" inserted here, per §5.4 protocol]
 
@@ -308,10 +312,10 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
    → intermediate output: final answer = argmax over Σ(Tᵢ × positionᵢ) at round K
 
 9. FINAL RESULT PACKAGE
-   → answer, full evidence citations, trust trajectory chart data, per-round reasoning traces, CCR/MPR/ECR-relevant flags (for eval harness) or plain answer+citations (for real deployment use)
+   → answer, full evidence citations, trust trajectory chart data, per-round reasoning traces, accuracy/CMR/trust-calibration flags (for eval harness; ECR deprecated) or plain answer+citations (for real deployment use)
 ```
 
-**Why every intermediate output is logged, not just discarded:** the trust trajectory (step 7) is required to empirically verify Propositions 2–3 aren't just theoretically bounded but observably behave as claimed; the per-claim evidence verdicts (step 5) are required for the ECR calibration metric; none of this logging is optional instrumentation — it's load-bearing for the evaluation plan.
+**Why every intermediate output is logged, not just discarded:** the trust trajectory (step 7) is required to empirically verify Propositions 2–3 aren't just theoretically bounded but observably behave as claimed; the per-claim evidence verdicts (step 5) are required for the trust-calibration analysis (AUROC/Brier) and the verifier audit; none of this logging is optional instrumentation — it's load-bearing for the evaluation plan.
 
 ---
 
@@ -319,34 +323,32 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 
 | Component           | Dev (Ph 0–2)               | Final (Ph 3–5)              | Why Selected                                                                                                                   | Limitations & Upgrade Path                                       |
 | ------------------- | -------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| **Agent 1**         | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B)                 | [Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B)                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | FP8 ~27 GB (final); validated on dev models before the Final run |
-| **Agent 2**         | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B)                | [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B)             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 26B requires all params in memory despite 3.8B active per token  |
-| **Agent 3**         | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) (FP8)        | [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)      | Dev: Mistral-family 14B with official FP8 weights (~14GB, near-lossless) — same lineage as Final Agent 3. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | FP8 needs vLLM with FP8 support (Ampere+); Q4 Reasoning variant is the fallback if deeper traces needed |
-| **Oracle (B7)**     | Gemini 3.1 Pro Preview     | Gemini 3.1 Pro Preview      | Upper-bound ceiling reference only, not part of the core mechanism. One API call per question — ~$5–7 total for the oracle pass | API cost (~$150–200 budgeted) is far more than needed             |
-| **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is domain-partitioned upstream. Upgrade to SciBERT-based if evidence quality issues arise |
+| **Agent 1**         | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B)                 | Qwen3.6-27B-FP8                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | FP8 ~26.0 GB (final); validated on dev models before the Final run |
+| **Agent 2**         | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B)                | Gemma-4-26B-A4B-FP8             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 28.67 GB FP8; 26B requires all params in memory despite 3.8B active per token  |
+| **Agent 3**         | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) (FP8)        | Mistral-24B-AWQ      | Dev: Mistral-family 14B with official FP8 weights (~14GB, near-lossless) — same lineage as Final Agent 3. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | 15.06 GB AWQ; FP8 public repos push the stack over 80 GB, so AWQ is the pinned Final artifact |
+| **Oracle (B7)**     | Gemini 3.1 Pro Preview     | Gemini 3.1 Pro Preview      | Upper-bound ceiling reference only, not part of the core mechanism. One API call per question — ~$5–7 total for the oracle pass | B8-oracle (gold-answer trust, or gold-evidence-only on EG-SSS) is a separate pending arm under WP-18             |
+| **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is claim-domain routed upstream. Upgrade to SciBERT-based if evidence quality issues arise |
 | **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for both Dev (A6000) and Final (RTX PRO 6000)                  | Setup complexity on first use only                                                                                                |
-| **Orchestration**  | LangGraph                      | LangGraph                      | State-machine model fits round-based debate + injection point control precisely; reused for B9 (iMAD) for codebase consistency | Learning curve if unfamiliar                                                                                                      |
-| **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar| PubMed, ArXiv, Semantic Scholar| Domain coverage matches scientific QA target; free academic access                                                             | Rate limits, coverage gaps in niche subfields — caching layer already planned                                                      |
+| **Orchestration**  | plain Python                   | plain Python                   | Round-based state machine fits debate and injection-point control; the LangGraph port is not implemented | No external graph runtime to debug |
+| **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar| PubMed, ArXiv, Semantic Scholar| Domain coverage matches scientific QA target; free academic access                                                             | Rate limits, coverage gaps in niche subfields — caching layer implemented                                                      |
 
 #### GPU Budget & Cost Breakdown
 
 The two-phase strategy keeps compute costs manageable for a student team. All pipeline code is model-agnostic, so no engineering time is spent reconfiguring between Dev and Final — only the model names in a config file change.
 
-| Item | Dev (Ph 0–2) | Final (Ph 3–5) | Notes |
-|------|-------------|----------------|-------|
-| **GPU** | RTX A6000 48GB | RTX PRO 6000 Blackwell 96GB | Ampere workstation vs Blackwell datacenter-class |
-| **Provider** | Vast.ai spot | Vast.ai spot | CLI `vastai 1.7.0`, 8 Nov 2026; prices volatile |
-| **Rate** | **$0.16–0.37/hr** (median **$0.263** at 80 GiB) | **Max-Q $0.74–1.02/hr**; **S $1.432/hr**; WS $1.245/hr | On-demand S ~$1.79/hr; spot is 20–40% cheaper |
-| **Est. GPU hours** | C+ 1,160; TACL 2,460-2,700; full 3,813 at 8 min (2,860 at 6 min) | 60-100 | See `docs/agent/08_COMPUTE_COST.md` |
-| **Subtotal** | **C+ $350; TACL $690-790; full $1,105 at 8 min** | **$61-102** | GPU only, before bandwidth/storage/overhead |
-| **Bandwidth** | $0.004–0.033/GB; avoid $0.026–0.049/GB | same | 22 GB Dev cache; 100–160 GB Final cache |
-| **Storage** | **$0.20/GB-month** median on a Vast volume; instance disk $0.20–0.40 | same | 80 GiB Dev; 200 GiB Final; volumes local-only |
-| **Oracle API (B7)** | — | $5–7 | Gemini 3.1 Pro Preview, ~1,000 questions × 1,000 tokens |
-| **Total budget** | | | **C+ ~$420-580; TACL ~$900-1,200; full ~$1,100 (6 min) / $1,400-1,900 (8 min); high ~$2,450** |
+| Stage | When | GPU-h | Cash | Notes |
+|------|------|------:|------:|-------|
+| **Final-stack smoke** | Nov 2026 | 60–100 | $80–120 | 96 GB RTX PRO 6000; **NOT RUN** — offline 69.73 GB check only |
+| **Pilot** | Dec 2026 | ~112 | $50–100 | 100–150 questions, Dev stack |
+| **Core run** | Jan 2027 | 1,280 cap (planned ~1,067) | $420–580 | 24 runs; 8,000 planned debates; Dev stack |
+| **Full run** | Feb 2027 | 1,440 envelope (conditional) | $900–1,200 envelope | 36-run target if B8-oracle uses gold-answer trust; 32-run gold-evidence-only variant must be recomputed; separate Final-stack matrix |
+| **Law-testing** | Apr 2027 | ~3,913 at 8 min | $1,400–1,900 | only if the effect is real |
 
-> **Cost update (8 Nov 2026):** this table supersedes the old `$500–1,200` estimate. It includes bandwidth and storage, not just GPU. The full source table, formulas, and scenario ranges are in [`docs/agent/08_COMPUTE_COST.md`](agent/08_COMPUTE_COST.md).
+**Hard stop: $1,350 before law-testing.** GPU rates: A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Full is a separate Final-stack matrix; Core cells are not assumed reusable unless the stack and model revisions match.
 
-**Why this works:** The Dev models (9B–14B) run at 4-bit quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, LangGraph state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B, ~77B parameters combined) run in FP8 on an RTX PRO 6000 Blackwell 96GB, which has native FP8 support; the code is identical, only the model checkpoints change. See §13 for the exact build sequence.
+**Pinned Final stack (69.73 GB):** Qwen3.6-27B-FP8 (26.0 GB), Gemma-4-26B-A4B-FP8 (28.67 GB), Mistral-24B-AWQ (15.06 GB); utilization sum 0.90, 10.3 GB under the 80 GB weight budget. The offline check passes; the hardware smoke is the remaining gate. Full source table and formulas: [`docs/agent/08_COMPUTE_COST.md`](agent/08_COMPUTE_COST.md).
+
+**Why this works:** The Dev models (9B–14B) run at 4-bit quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B, ~77B parameters combined) run in FP8/AWQ on an RTX PRO 6000 Blackwell 96GB, which has native FP8 support; the code is identical, only the model checkpoints change. See §13 for the exact build sequence.
 
 > **Empirical note (2026-09, Phase 0/1):** on the RTX A6000 the official Ministral FP8 checkpoint cannot be served — vLLM's W8A8 FP8 kernel fails on Ampere (`cutlass_scaled_mm_sm80_epilogue`). The Dev stack therefore uses an **AWQ-4bit quantisation of the same Ministral-3-14B-Instruct-2512 model** (with AWQ Qwen and QAT-4bit Gemma), pinned in `trustcal/configs/models.yaml`. Model identities are unchanged; only the quantisation artifacts differ. Measured Dev behaviour, environment versions and costs: `experiments/gate0/README.md`.
 
@@ -357,7 +359,7 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 1. Basic vLLM multi-model serving — low difficulty, well-documented.
 2. Retrieval integration + reranking — moderate, mostly API/plumbing work.
 3. Claim decomposition + tagging — moderate, needs careful prompt engineering + fallback extraction.
-4. Trust update math + LangGraph state machine — moderate-high, needs careful operator-order implementation (logit accumulation→softmax→simplex projection) to enforce the floor/ceiling bound.
+4. Trust update math + state machine — moderate-high, needs careful operator-order implementation (logit accumulation→softmax→simplex projection) to enforce the floor/ceiling bound.
 5. iMAD reimplementation (B9) — highest difficulty of any single component, ~10 working days per original estimate, because it requires faithfully reconstructing a method from a paper description rather than using existing code.
 
 ---
@@ -366,18 +368,28 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 
 | Dataset         | Role                              | Source                         | License/Access                          | Preprocessing Needed                                                        | Known Limitations                                                                                      |
 | --------------- | --------------------------------- | ------------------------------ | --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **BrokenMath**  | Primary adversarial stress test   | `INSAIT-Institute/BrokenMath` (HuggingFace); arXiv:2510.04721 | Public; **CC BY-NC-SA 4.0** (non-commercial, attribution + share-alike) | Filter per §5.4 Step 1 (≈60–70% retention after divergent-answer filtering) | Math-focused, may not generalize claims to broader science                                             |
-| **BrokenArXiv** | Adversarial, monthly-refreshed    | `MathArena/brokenarxiv` (HuggingFace); matharena.ai; arXiv:2605.00674 | Public; **CC BY-SA 4.0**                | Same filtering as above                                                     | Monthly versioning means results must cite the exact snapshot used (0226–0526 range already specified) |
+| **BrokenMath**  | Appendix-only adversarial stress test | `INSAIT-Institute/BrokenMath` (HuggingFace); arXiv:2510.04721 | Public; **CC BY-NC-SA 4.0** (non-commercial, attribution + share-alike) | Filter per §5.4 Step 1 (≈60–70% retention after divergent-answer filtering) | Math-focused; not used for evidence grounding or CCR |
+| **BrokenArXiv** | Appendix-only adversarial, monthly-refreshed | `MathArena/brokenarxiv` (HuggingFace); matharena.ai; arXiv:2605.00674 | Public; **CC BY-SA 4.0**                | Same filtering as above                                                     | Monthly versioning means results must cite the exact snapshot used; not used for evidence grounding |
 | **HLE**         | Hard scientific reasoning ceiling | `cais/hle` (HuggingFace); Nature 649, 1139–1146 (2026); arXiv:2501.14249 | Public with click-through approval; **MIT**; do not redistribute samples | Same filtering                                                              | Access approval adds a small lead-time risk — apply in Phase 0, not Phase 2                            |
-| **GPQA**        | Stable comparison baseline        | `Idavidrein/gpqa` (HuggingFace); COLM 2024; arXiv:2311.12022 | Public after agreeing to terms; **CC BY 4.0** | Standard eval split                                                         | Well-known, not adversarial — used for accuracy comparability, not sycophancy measurement              |
-| **MMLU-Pro**    | Stable comparison baseline        | `TIGER-Lab/MMLU-Pro` (HuggingFace); NeurIPS 2024 (D&B); arXiv:2406.01574 | Public; **MIT**                         | Standard eval split                                                         | Same role as GPQA                                                                                      |
+| **GPQA**        | Core stable comparison (GPQA-Main) | `Idavidrein/gpqa` (HuggingFace); COLM 2024; arXiv:2311.12022 | Public after agreeing to terms; **CC BY 4.0** | Standard eval split                                                         | Not adversarial — used for accuracy comparability, not sycophancy measurement              |
+| **MMLU-Pro**    | Core stable comparison | `TIGER-Lab/MMLU-Pro` (HuggingFace); NeurIPS 2024 (D&B); arXiv:2406.01574 | Public; **MIT**                         | Standard eval split                                                         | Same role as GPQA                                                                                      |
 
 **Provenance note:** all five datasets are the official releases from their authors (HuggingFace organization pages or the project site). None are taken from Kaggle. GPQA and HLE need a free click-through agreement before download. Licenses verified 2026-09-15; cite the dataset papers in any report or paper that uses them.
 
 > [!WARNING]
 > **Access and license reality check:** BrokenMath is **CC BY-NC-SA 4.0 (non-commercial)** · HLE needs a click-through approval, so apply in **Phase 0** · BrokenArXiv snapshots rotate, so always record the exact snapshot used. All of these are already reflected in the table above — treat them as triggering conditions, not trivia.
 
-**Data quality/bias considerations:** BrokenMath/BrokenArXiv are specifically constructed to induce false consensus, so results on these datasets should be explicitly framed as _adversarial/worst-case_ performance, not representative of average-case deployment — this framing is already present in the original proposal's "domain-of-applicability boundary" language and should be preserved.
+**Data quality/bias considerations:** BrokenMath/BrokenArXiv are appendix-only stress sets, not evidence-grounding corpora. Results on them should be framed as adversarial/worst-case behaviour, not representative of average-case deployment — this framing is already present in the original proposal's "domain-of-applicability boundary" language and should be preserved.
+
+**EG-SSS benchmark ladder.** EG-SSS is the team-built gold-evidence benchmark, not a Core v1.0 dataset. Core v1.0 runs GPQA-Main + MMLU-Pro + HLE. EG-SSS freezes at **180 items** under v1.2 (60 biomed, 60 phys/chem, 60 math/CS), scales to the **300-item Full target**, and has 600/stretch and 800/no-go rungs that are not built.
+
+| Size | Role | Decision |
+|---:|---|---|
+| **24** | Calibration batch | Start here; if `H_attempt > 2.0` or defect >15%, cut to 120 |
+| **180** | EG-SSS v1.2 freeze | Freeze by Jan 2027; not in the v1.0 Core matrix |
+| **300** | Full-run benchmark target | Target by Feb 2027 |
+| **600** | Stretch | Only with 2–3 dedicated annotators |
+| **800** | No-go | Do not build |
 
 **What if a dataset becomes unavailable?**
 
@@ -387,7 +399,7 @@ The two-phase strategy keeps compute costs manageable for a student team. All pi
 
 ---
 
-**Confirming before continuing:** Sections 5–8 are consistent with all previously validated design decisions (trust formula, N=3 primary config, B1–B9 baseline set, dataset selections, publication-status corrections for iMAD/MoA/Yao et al./Minority Sentinel). No architecture changes — only added implementation-level detail, failure/recovery specs, and one new contingency (OpenAlex fallback) not previously discussed.
+**Confirming before continuing:** Sections 5–8 reflect the P0 design — claim-domain retrieval, the 4-condition Core matrix, the 6-arm Full target (WP-18 conditional), and the 24 → 180 → 300 → 600 → 800 benchmark ladder.
 
 Proceeding to **Phase 3 (Sections 9–12)**.
 
@@ -401,29 +413,32 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 **Evaluation pipeline (end-to-end):**
 
-1. Run all 9 baseline conditions (B1–B9, per original spec) + main system (B8) on each primary dataset.
-2. Apply injection protocol (§5.4, unchanged) to adversarial datasets.
-3. Compute CCR/MPR/ECR per condition per dataset.
-4. Run 4 ablations (no trust calibration / no progressive retrieval / no source partitioning / no adaptive triggering).
+1. Run the Core matrix: 4 conditions (B3, B4-matched, B8-no-trust, B8) × GPQA-Main + MMLU-Pro + HLE × 2 seeds = 24 runs. The Full target adds B8-placebo and B8-oracle (WP-18).
+2. Apply the injection protocol (§5.4, unchanged) to pressure-eligible items.
+3. Compute accuracy and CMR (primary/co-primary), plus ARR and trust AUROC/Brier (secondary). CCR and MPR remain diagnostics; ECR is deprecated.
+4. Run 4 ablations (no trust calibration / no progressive retrieval / no claim-domain routing / no adaptive triggering).
 5. Run N-scaling (N∈{2,3,5}) on 100-question subset.
-6. Run human evaluation (n=60, κ-validated).
-7. Apply statistical testing (3 seeds, 95% CI, paired bootstrap, Cohen's d) across all comparisons.
+6. Run human evaluation (150–200 paired items, 3 raters, κ-validated).
+7. Apply statistical testing (2 seeds, 95% CI, paired bootstrap, McNemar/Holm, Cohen's d) across all comparisons.
 
 **Metrics and why each is selected:**
 
-| Metric                               | What it measures                                                                          | Why selected                                                                                                                                                                      |
-| ------------------------------------ | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **CCR** (Collapse Rate)              | % of correct agents who abandon their answer under injected pressure without new evidence | Primary metric — directly operationalizes "sycophantic collapse," the phenomenon under study                                                                                      |
-| **MPR** (Minority Preservation Rate) | % of debates where a correct minority survives to the final output                        | Complements CCR by measuring _outcome_, not just individual agent behavior — a debate can have collapse events but still recover the right answer at aggregation                  |
-| **ECR** (Evidence Calibration Rate)  | How well trust scores track actual correctness probability                                | Validates that the mechanism's internal signal (trust) means what it claims to mean — this is what makes Proposition claims empirically checkable, not just theoretically bounded |
-| **Accuracy**                         | Standard correctness on GPQA/MMLU-Pro                                                     | Ensures the mechanism doesn't sacrifice baseline performance to achieve anti-sycophancy gains — a necessary sanity check reviewers will demand                                    |
-| **Human Eval (Likert, κ)**           | Factual grounding and hallucination severity, human-judged                                | Automated metrics can't fully capture reasoning quality; this is the check against metric-gaming                                                                                  |
+| Metric | What it measures | Why selected |
+| --- | --- | --- |
+| **Accuracy** | Correctness of the aggregated final answer on pressure-eligible items | Primary decision endpoint; ensures the mechanism does not sacrifice correctness |
+| **CMR** (Correct-Minority Retention) | Whether a round-0 correct minority still holds gold at round K | Co-primary mechanism endpoint; directly tests the retention claim |
+| **ARR** (Appropriate Revision Rate) | Whether agents revise in the evidence-supported direction | Secondary; separates useful revision from collapse |
+| **Trust AUROC** | Within-debate ranking of trust against correctness | Secondary calibration; replaces ECR for ranking |
+| **Trust Brier** | Squared error of trust against correctness | Secondary calibration; penalizes overconfidence |
+| **CCR / MPR** | Collapse and minority survival under injection | Diagnostics and manipulation checks; not primary endpoints |
+| **ECR** | Historical 1 − ECE calibration score | Deprecated; retained only as a historical note |
+| **Human Eval (Likert, κ)** | Factual grounding and hallucination severity, human-judged | Automated metrics cannot fully capture reasoning quality |
 
-**Baselines:** B1–B9 exactly as specified in the original proposal — Single-Agent CoT, Single-Agent+RAG, MAD, MAD+RAG, Self-Consistency, MoA, Oracle, Ours, iMAD. This set directly answers the two most likely reviewer objections ("why not self-consistency" and "why not just use iMAD/MoA directly"). **New addition — B10 (ConsensAgent, Findings of ACL 2025):** because ConsensAgent is now the closest _published_ mitigation, a comparison is mandatory. Preferred: a lightweight reimplementation (~1 week, budgeted in Phase 2 alongside the iMAD effort); minimum acceptable: a comparison against its published numbers plus an explicit mechanism-level differentiation paragraph (prompt-refinement vs. evidence-grounded numeric trust) in the related-work section. If full reimplementation is infeasible, the written comparison is non-optional.
+**Registry:** B1–B10 — Single-Agent CoT, Single-Agent+RAG, MAD, MAD+retrieval (B4-matched), Self-Consistency, MoA, Oracle, Ours (B8), iMAD, ConsensAgent. The Core matrix is exactly B3, B4-matched, B8-no-trust and B8; the Full target adds B8-placebo and B8-oracle. B1/B2/B5–B7/B9/B10 are comparison and appendix arms, not Core cells.
 
-**Ablation studies:** the 4 conditions (no trust / no progressive retrieval / no source partitioning / no adaptive triggering) isolate exactly which architectural component drives any observed gain — required for a credible "systems" contribution, not just a black-box result.
+**Ablation studies:** the 4 conditions (no trust / no progressive retrieval / no claim-domain routing / no adaptive triggering) isolate which architectural component drives any observed gain — required for a credible "systems" contribution, not just a black-box result.
 
-**Statistical validation:** 3 seeds + 95% CI + paired bootstrap + Cohen's d — chosen because single-run comparisons in MAD literature are a common and valid reviewer criticism; this design preempts it.
+**Statistical validation:** 2 seeds + 95% CI + paired bootstrap + McNemar/Holm + Cohen's d — chosen because single-run comparisons in MAD literature are a common and valid reviewer criticism; this design preempts it. Three seeds are not used: more questions at two seeds is the better trade for this design (`PRE_REGISTRATION.md` §3).
 
 **Error analysis:** conducted via the Phase 4 failure taxonomy (Section 10.1 of original proposal, unchanged) — correlated hallucination, evidence sparsity, trust collapse, adversarial 2-vs-1 consensus.
 
@@ -450,41 +465,42 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 
 | Risk Category      | Specific Risk                                                                                                               | Likelihood                                   | Impact                               | Mitigation                                                                                                                                                                                                                                                              |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Technical**      | Trust signal doesn't behaviorally change output (Challenge C)                                                               | Medium                                       | **Critical — undermines core claim** | Month 1 pilot (Section 0) — validate early, cheaply, before full build                                                                                                                                                                                                  |
+| **Technical**      | Trust signal doesn't behaviorally change output (Challenge C)                                                               | Medium                                       | **Critical — undermines core claim** | Pilot run (Section 0/12) — validate early, cheaply, before the Core matrix                                                                                                                                                                                              |
 | **Technical**      | Retrieval noise degrades evidence quality                                                                                   | Medium                                       | Moderate                             | Cross-encoder reranker + citation filter (already specified)                                                                                                                                                                                                            |
-| **Research**       | Reviewers see this as incremental over MoA/iMAD                                                                             | Low-Medium                                   | Moderate                             | B6/B9 comparisons directly designed to preempt this; "+X% CCR over iMAD" framed as headline result                                                                                                                                                                      |
+| **Research**       | Reviewers see this as incremental over MoA/iMAD                                                                             | Low-Medium                                   | Moderate                             | B4-matched and B8-no-trust comparisons directly designed to preempt this; the planned headline is the B8 vs B8-no-trust accuracy/CMR contrast, not a CCR delta over iMAD                                                                                                  |
 | **Research**       | Novelty erosion — a _published_ mitigation (ConsensAgent, Findings of ACL 2025) now exists where none was assumed at outset | Medium                                       | Moderate                             | Sharpen the differentiation: we are the only evidence-grounded, numeric, formally bounded, adversarially-injection-tested approach vs. ConsensAgent's textual prompt refinement. Add B10 comparison (§9) + explicit mechanism-differentiation paragraph in related work |
 | **Research**       | Propositions 2–3 don't hold empirically even though bounded theoretically                                                   | Medium                                       | Moderate                             | Already framed honestly as "design properties," not global theorems — reduces reviewer risk if they don't fully hold                                                                                                                                                    |
 | **Dataset**        | HLE access approval delayed                                                                                                 | Low-Medium                                   | Low-Moderate                         | Apply Phase 0; GPQA-Diamond fallback pre-identified (Section 8)                                                                                                                                                                                                         |
 | **Dataset**        | BrokenArXiv snapshot changes/discontinues                                                                                   | Low                                          | Low                                  | Freeze-and-document fallback (Section 8)                                                                                                                                                                                                                                |
-| **Timeline**       | Phase 2 (Sep–Oct) overloaded — new mechanism + 3 baselines + replication                                                    | **High**                                     | High                                 | Previously flagged; mitigation: use iMAD's own published numbers for easy-question conditions where directly comparable, reserve full reimplementation effort for adversarial conditions where it matters most                                                          |
+| **Timeline**       | Nov 2026–Jan 2027 overloaded — smoke + WP-18 + calibration + verifier audit + pilot + Core                                              | **High**                                     | High                                 | Keep the order; do not start Core before G2. WP-18 is the only pre-run design addition; freeze the oracle scope before the Full config.                                                                                                                          |
 | **Publication**    | Two of four core related-work citations are preprint/workshop-tier, not main-conference                                     | Medium (perception risk, not technical risk) | Moderate                             | Disclose proactively and precisely (see prior meeting-prep guidance) — actually strengthens credibility if handled this way                                                                                                                                             |
 | **Implementation** | iMAD reimplementation fidelity to original paper                                                                            | Medium                                       | Moderate                             | ~10-day dedicated estimate already budgeted; explicit divergence documentation required                                                                                                                                                                                 |
-| **Implementation** | Single 96GB GPU compute ceiling under full 9-baseline × multi-dataset × 3-seed matrix                                 | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX A6000 48GB (spot $0.16-0.37/hr, median $0.263 at 80 GiB), Final on RTX PRO 6000 Blackwell 96GB (Max-Q $0.74-1.02/hr; S $1.43; WS $1.25). Core replication ~60-100 Final-GPU-hrs; C+ ~$420-580; TACL ~$900-1,200; full ~$1,100 (6 min) / $1,400-1,900 (8 min) including bandwidth/storage             |
+| **Implementation** | Single 96GB GPU compute ceiling under the 4-condition Core / 6-arm Full × multi-dataset × 2-seed matrix                         | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX A6000 48GB (spot $0.16-0.37/hr, median $0.263 at 80 GiB), Final on RTX PRO 6000 Blackwell 96GB (Max-Q $0.74-1.02/hr; S $1.43; WS $1.25). Core $420–580; Full run $900–1,200 as a separate Final-stack matrix; hard stop $1,350 before law-testing. |
 
 ---
 
-### Section 12 — Month-by-Month Roadmap (July 2026 – April 2027)
+### Section 12 — Month-by-Month Roadmap (November 2026 – December 2027)
 
-_(Carries forward the original 10-month Gantt structure exactly, with the Month 1 behavioral-effectiveness pilot inserted as an explicit new deliverable — this is the one substantive timeline change from the original plan, justified in Section 0.)_
+_Post-P0 calendar. The July–October 2026 record — Gate 0, the trust operator, claim-domain routing, and P0 hardening — lives in `experiments/p0/` and is not repeated here._
 
 > [!IMPORTANT]
-> **Aug 2026 — the Month-1 behavioral-effectiveness pilot is the one must-hold deliverable.** Gate 1 does not pass until the pilot confirms that trust weights measurably shift the aggregation output on ~20–30 toy questions.
+> **Order: Final-stack smoke → WP-18 → 24-item calibration → verifier audit → pilot (G2) → Core (G3) → Full (G4/G5).** The pilot and Core run are gates, not optional warm-ups.
 
-**GPU economics:** Development (Ph 0-2) runs on a rented RTX A6000 48GB (Vast.ai spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) using the Dev model stack ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) at 4-bit quantisation (~28GB total). The final experiment matrix (Ph 3) runs on an RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**; on-demand ~$1.79/hr) using the Final model stack ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)) in FP8. **Total budget: C+ ~$420-580; TACL ~$900-1,200; full ~$1,100 (6 min) / $1,400-1,900 (8 min)**, including bandwidth ($0.004-0.033/GB) and storage (**$0.20/GB-month**). See `docs/agent/08_COMPUTE_COST.md`.
+**GPU economics:** Development runs on a rented RTX A6000 48GB (Vast.ai spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) with the Dev stack at 4-bit quantisation (~28GB total). The Final stack is Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, pinned at **69.73 GB**, on an RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**). Stage costs: smoke **$80–120**, pilot **$50–100**, Core **$420–580**, Full run **$900–1,200** (separate Final-stack matrix, not a Core reuse), law-testing **$1,400–1,900**; **hard stop $1,350 before law-testing**. See `docs/agent/08_COMPUTE_COST.md`.
 
-| Month                   | Objectives                                               | Development                                                           | Experiments                                                    | Deliverables                                                                                                                                                                       |
-| ----------------------- | -------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Jul 2026 (Ph 0)**     | Literature freeze, env setup, reproduce vanilla MAD      | vLLM + LangGraph setup, model ID verification                         | Reproduce Du et al. 2023 MAD on GPQA slice                     | Gate 0: base loop reproduces; references.bib; **NEW: Month-1 behavioral-effectiveness pilot design finalized**                                                                     |
-| **Aug 2026 (Ph 1)**     | Injection protocol, baselines B1–B4, Proposition 1 proof | Implement §5.4 injection steps 1–6; 50-Q pilot                        | κ check; baseline CCR ≥0.30 confirmation                       | Gate 1 (Go/No-Go); **NEW: behavioral-effectiveness pilot executed — confirm trust weight measurably shifts aggregation output on ~20–30 toy questions before full build proceeds** |
-| **Sep–Oct 2026 (Ph 2)** | Trust mechanism, B5/B6/B9, competitor replication        | Atomic-claim decomposition, source-partitioned RAG, trust function v1 | First CCR/MPR measurement + competitor comparison              | Gate 2: prototype + measurement; if behind schedule, apply Section 11's mitigation (use iMAD published numbers for easy-question conditions)                                       |
-| **Nov 2026 (Ph 2→3)**   | Mid-project report, design freeze                        | Dry-run matrix on one dataset                                         | —                                                              | 📌 FYDP-1 defence                                                                                                                                                                  |
-| **Dec 2026 (Ph 3a)**    | Main experiment matrix                                   | —                                                                     | Core conditions × primary datasets × 3 seeds                   | Primary results table                                                                                                                                                              |
-| **Jan 2027 (Ph 3b)**    | Ablations, sweeps, scaling                               | —                                                                     | 4 ablations, α/β sweep, N∈{2,3,5}, V1–V3 validity checks       | Gate 3: results freeze with CIs + effect sizes                                                                                                                                     |
-| **Feb 2027 (Ph 4)**     | Human eval, calibration, failure analysis                | —                                                                     | n=60 human eval, ECR vs ground truth, trust-trajectory figures | Complete ablation + human eval package; buffer month                                                                                                                               |
-| **Mar–Apr 2027 (Ph 5)** | Writing, submission                                      | Thesis + paper drafting                                               | Reproducibility package assembly                               | 📌 Submitted paper + FYDP-2 final defence                                                                                                                                          |
+| Month | Objectives | Development | Experiments | Deliverables |
+| --- | --- | --- | --- | --- |
+| **Nov 2026** | Final-stack readiness, WP-18, calibration, verifier audit start | 96 GB smoke (**NOT RUN**; offline 69.73 GB check only); B8-placebo/B8-oracle switches | 24-item calibration | smoke PASS; 6-arm support; calibration report |
+| **Dec 2026** | Verifier audit; pilot run | 150–200 claim–passage pairs; 100–150 pilot questions | Injection κ; baseline collapse check | **G2**; verifier report |
+| **Jan 2027** | Core run | 4-condition matrix, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds | 24 runs; 1,280 GPU-h cap | **G3**; EG-SSS-180 freeze (v1.2) |
+| **Feb 2027** | Full run | 6-arm config; 300-item benchmark target | 36-run target (32 if B8-oracle is EG-SSS-only); human eval starts | **G4/G5** |
+| **Mar 2027** | Human evaluation and SDT | 150–200 paired items, 3 raters, expert ceiling | κ/ICC; SDT axes | Analysis freeze |
+| **Apr 2027** | Law-testing and ablations | q sweep, ρ, granularity, shared-error floor | Only if the effect is real | Results freeze |
+| **May–Jun 2027** | Thesis | Chapters, internal review, reproducibility package | — | Thesis submission June 2027 |
+| **Jun–Jul 2027** | Defence | — | — | Defence June/July 2027 |
+| **Aug–Dec 2027** | Paper | TACL rolling, EMNLP 2028, or Q1 journal | — | Submission after the defence |
 
-**Why the Month-1 pilot addition doesn't disrupt the original schedule:** it reuses infrastructure already being built in Phase 1 (injection protocol, basic debate loop) and only requires a small (~20–30 question) toy run — estimated 3–4 days of work absorbed within the existing Phase 1 window, not an added phase.
+**No paper deadline before the defence.** The old 1 February 2027 target is retired; the paper window is August–December 2027.
 
 ## Phase 4 of 5 — Sections 13–15
 
@@ -494,29 +510,29 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 **Exact build sequence, with dependency reasoning:**
 
-1. **vLLM multi-model serving setup** — nothing else can be tested without this. Start with the Dev models ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) on an RTX A6000 48GB; verify all three load and generate correctly before writing any orchestration code. The Final models ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)) are validated on the RTX PRO 6000 Blackwell 96GB only once the pipeline is stable.
+1. **vLLM multi-model serving setup** — nothing else can be tested without this. Start with the Dev models ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) on an RTX A6000 48GB; verify all three load and generate correctly before writing any orchestration code. The Final models (Qwen3.6-27B-FP8, Gemma-4-26B-A4B-FP8, Mistral-24B-AWQ) are validated on the RTX PRO 6000 Blackwell 96GB only once the pipeline is stable.
 
 2. **Vanilla MAD reproduction (Du et al. 2023)** — must come before any of our own additions. This is Gate 0. It validates the base debate loop works at all, independent of our contribution, so any later bugs can be isolated to _our_ additions rather than the underlying framework.
 
 3. **Injection protocol (§5.4, Steps 1–6)** — must exist before the trust mechanism, because trust calibration can only be evaluated against a working, validated stress test. Building trust math without a working injection protocol means you can't tell if the mechanism works until much later — this ordering catches protocol problems (e.g., low κ) early and cheaply.
 
-4. **Month-1 behavioral-effectiveness pilot** (Section 12) — must run before full trust-mechanism build-out. This is the highest-risk assumption in the whole project (Section 0); testing it on a toy scale first prevents months of engineering on a mechanism that might not behaviorally matter.
+4. **Pilot run** (Section 12, Dec 2026) — must run before the Core matrix. This is the highest-risk assumption in the whole project (Section 0); testing it on 100–150 questions first prevents spending Core-run money on a mechanism that might not behaviorally matter.
 
-5. **Claim decomposition + source-partitioned retrieval** — must come before the trust update function, since the trust formula's inputs (Vᵢ, Hᵢ) are _outputs_ of retrieval and evidence scoring. Building trust math before retrieval exists means it can only be tested against mocked data — acceptable for unit tests, not for validation.
+5. **Claim decomposition + claim-domain retrieval** — must come before the trust update function, since the trust formula's inputs (Vᵢ, Hᵢ) are _outputs_ of retrieval and evidence scoring. Building trust math before retrieval exists means it can only be tested against mocked data — acceptable for unit tests, not for validation.
 
 6. **Trust update function (logit accumulation → softmax → simplex projection)** — implement and unit-test the exact operator order in isolation before wiring it into the full debate loop. This is where Proposition 1's boundedness must be verified computationally (write a test that runs thousands of synthetic score sequences and confirms min ≥ floor, sum = 1, and max ≤ effective ceiling) before it's trusted inside the larger system.
 
-7. **Full debate loop integration** (LangGraph state machine) — only after steps 1–6 are each independently validated. Integration bugs are far easier to isolate when every component has already been unit-verified alone.
+7. **Full debate loop integration** (plain-Python state machine; LangGraph is not implemented) — only after steps 1–6 are each independently validated. Integration bugs are far easier to isolate when every component has already been unit-verified alone.
 
-8. **Baselines B1–B4** (single-agent, single-agent+RAG, MAD, MAD+RAG) — these reuse components already built (steps 1, 5) and establish the comparison floor before adding the more complex baselines.
+8. **Baselines B1–B4** (single-agent, single-agent+RAG, MAD, MAD+retrieval matched) — these reuse components already built (steps 1, 5) and establish the comparison floor before adding the more complex baselines.
 
 9. **Baselines B5–B6** (Self-Consistency, MoA) — independent of our core mechanism, can be built in parallel with step 10 if team capacity allows (both use the same 3 models, different aggregation logic).
 
-10. **Baseline B9 (iMAD reimplementation)** — deliberately sequenced _last_ among baselines because it's the highest-difficulty component (Section 7's difficulty ranking) and benefits from the team having already built confidence-scoring-adjacent code (the confidence estimator, step 1 of the pipeline) that shares some logic.
+10. **Baselines B9–B10 (iMAD and ConsensAgent reimplementations)** — deliberately sequenced _last_ among baselines because they are the highest-difficulty components (Section 7's difficulty ranking) and benefit from the team having already built confidence-scoring-adjacent code that shares some logic.
 
-11. **Model-swap smoke test (NEW — critical two-phase gate)** — before committing to the expensive Final experiment matrix, rent an RTX PRO 6000 Blackwell 96GB for ~2 hours (~$3). Load all three Final models ([Qwen3.6-27B](https://huggingface.co/Qwen/Qwen3.6-27B), [Gemma 4 26B A4B](https://huggingface.co/google/gemma-4-26B-A4B), [Mistral-Small-3.2-24B-Instruct-2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506)). Run a 20-question smoke test from each dataset — verify (a) claim tags parse correctly for every model, (b) injection protocol affects all three as expected, (c) trust math runs without NaNs, (d) the LangGraph state machine completes K=3 rounds for every model combination. Fix any model-specific issues found. This step is cheap insurance against discovering at full scale that e.g. Gemma's output format differs from Qwen's in a way the claim extractor doesn't handle.
+11. **Final-stack smoke (critical two-phase gate)** — before committing to the expensive Final experiment matrix, rent an RTX PRO 6000 Blackwell 96GB for **60–100 GPU-h (~$80–120)**. From `trustcal/`, run `PHASE=final bash setup.sh`, `python scripts/check_stack.py --phase final`, `python scripts/preflight.py --phase final --offline`, `python scripts/verify_env.py --check-servers`, then `python scripts/smoke_test.py --phase final --limit 20`. Load all three Final models and verify (a) claim tags parse correctly for every model, (b) injection affects all three as expected, (c) trust math runs without NaNs, (d) the state machine completes K=3 rounds for every model combination. **Status: NOT RUN**; only the offline 69.73 GB check passes.
 
-12. **Full experiment matrix execution** — only after step 11 passes.
+12. **Core and Full experiment matrix execution** — Core only after the pilot (G2) and step 11 pass; Full only after Core (G3) and WP-18.
 
 13. **Human evaluation + failure analysis** — last, since it requires completed experimental results to annotate against.
 
@@ -527,9 +543,9 @@ _(Carries forward the original 10-month Gantt structure exactly, with the Month 
 
 - Never build the trust update function before retrieval exists (step 6 before step 5) — it would have nothing real to operate on.
 - Never build B9 (iMAD) before the core system (steps 1–7) — B9 reuses debate-loop infrastructure; building it first means duplicating work.
-- Never run the full experiment matrix (step 11) before the Month-1 pilot (step 4) confirms the core assumption — this is the single most important ordering constraint in the whole roadmap, because it's the one place where skipping ahead risks months of wasted engineering.
+- Never run the full experiment matrix (step 12) before the pilot (step 4) confirms the core assumption — this is the single most important ordering constraint in the whole roadmap, because it's the one place where skipping ahead risks months of wasted engineering.
 
-**Critical milestones (mapped to Section 12's Gates):** Gate 0 = step 2 complete; Gate 1 = step 3 complete + pilot validated; the new Month-1 pilot = step 4; Gate 2 = steps 5–10 complete.
+**Critical milestones (mapped to Section 12's Gates):** Gate 0 = step 2 complete (passed 2026-09-16); P0 = engineering release (passed 2026-11-09); G2 = pilot after steps 3–11; G3 = Core after G2; G4/G5 = Full after WP-18.
 
 ---
 
@@ -635,11 +651,11 @@ Question → [3 AI opinions] → [fact-check each claim] → [adjust trust]
 1. The plain-English workflow (Section 14/15 above) — everyone, regardless of role.
 2. The trust formula and why logit accumulation→softmax→simplex projection is the specified order (Section 4.4 of original design) — whoever implements the orchestrator.
 3. The injection protocol and why it exists (§5.4) — whoever builds/runs experiments.
-4. The baseline set B1–B9 and what each one isolates — whoever writes the results/paper sections.
+4. The baseline registry B1–B10 and which four conditions form the Core matrix — whoever writes the results/paper sections.
 
 ---
 
-**Confirming before continuing:** Sections 13–15 build directly on the architecture and terminology established in Phases 1–3 with no contradictions — implementation order respects the Month-1 pilot placement from Section 12, and the supervisor/team explanations reuse the exact worked example already validated in earlier discussion rather than introducing a new one.
+**Confirming before continuing:** Sections 13–15 reflect the post-P0 build order and stage names; the current dates and gates are in `roadmap.md`.
 
 Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
@@ -651,27 +667,28 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 ### Section 16 — Expected Research Outcome
 
-**Expected technical improvements:** 20–30% CCR reduction vs. standard MAD; ECR >0.80 on HLE; substantial MPR improvement; competitive-or-better accuracy on GPQA/MMLU-Pro (i.e., anti-sycophancy gains should not come at the cost of baseline correctness).
+**Expected technical improvements (all projections, not measured):** 20–30% collapse reduction vs. standard MAD; trust AUROC above chance and a lower Brier score than the control; higher CMR; competitive-or-better accuracy on GPQA-Main/MMLU-Pro (i.e., anti-sycophancy gains should not come at the cost of baseline correctness). No efficacy number is a result until the Core run.
 
 **Expected experimental results pattern:**
 
-- Largest gains on adversarial datasets (BrokenMath, BrokenArXiv, HLE) where baseline sycophancy is highest.
+- Largest gains on pressure-eligible items (GPQA-Main, MMLU-Pro) and the EG-SSS benchmark, where the mechanism is targeted.
 - Near-zero gain on easy/agreed-upon questions — reported honestly as a domain-of-applicability boundary, not hidden.
-- "+X% CCR over iMAD" as the paper's single strongest result sentence (per original B9 framing).
+- The planned strongest result sentence is the B8 vs B8-no-trust accuracy/CMR contrast; B4-matched is the evidence-information control.
 
-**Expected contribution:** C1 (trust-calibrated evidence-grounded aggregation mechanism) + C2 (open CCR/MPR/ECR evaluation harness) — both independently reusable and citable, which strengthens impact beyond a single result table.
+**Expected contribution:** C1 (trust-calibrated evidence-grounded aggregation mechanism) + C2 (open accuracy/CMR/trust-calibration evaluation harness; ECR deprecated) — both independently reusable and citable, which strengthens impact beyond a single result table.
 
 **Novelty:** genuine and verified — no existing published or preprint work combines in-session, evidence-grounded, dynamically-updating trust with formal boundedness guarantees. Confirmed via extensive literature checks against Minority Sentinel, iMAD, MoA, DebUnc, ConsensAgent, and Wynn et al. Note that ConsensAgent (Findings of ACL 2025) is now a _published_ mitigation for the same problem; our novelty is therefore stated precisely as the _mechanism_ — external, evidence-grounded, numeric, formally bounded trust — not as "first to mitigate sycophancy."
 
-**Publication potential:** realistic primary target EMNLP Findings / TMLR; ACL/EMNLP Main as a stretch conditional on clear, statistically significant gains over the published competitors (MoA — ICLR 2025 Poster; iMAD — AAAI 2026 Oral; ConsensAgent — Findings of ACL 2025); ACL/NeurIPS workshop as the safe floor.
+**Publication potential:** realistic primary target TACL rolling (2028), EMNLP 2028, or a Q1 journal after the defence; ACL/EMNLP Main remains a stretch conditional on clear, statistically significant gains over the published competitors (MoA — ICLR 2025 Poster; iMAD — AAAI 2026 Oral; ConsensAgent — Findings of ACL 2025). A workshop submission is the safe floor.
 
 **Success criteria (concrete, falsifiable):**
 
-- Statistically significant CCR reduction over iMAD, MoA, and ConsensAgent on adversarial benchmarks, with 95% CIs not overlapping zero.
-- ECR >0.80 achieved on at least the primary evaluation dataset (HLE is the primary target; GPQA is an acceptable substitute if HLE access is delayed — both are named consistently across §9 and §16).
-- Month-1 pilot confirms trust weight causally affects aggregation output (necessary condition — if this fails, the whole mechanism's premise needs re-examination, per Section 0's risk framing).
+- Statistically significant accuracy and/or CMR improvement for B8 over B8-no-trust on pressure-eligible items, with 95% CIs not overlapping zero.
+- Trust AUROC above chance and trust Brier better than the constant 1/3 predictor on the primary datasets.
+- Pilot (G2) confirms trust weights causally affect aggregation output; Core (G3) measures the primary endpoints.
+- Full (G4/G5): placebo does not match B8 and oracle separates — contingent on WP-18 and on the oracle scope (36-run gold-answer vs 32-run gold-evidence-only design).
 
-**Graduation outcome:** completed FYDP thesis + submitted paper (minimum: workshop submission; target: Findings-tier), fully reproducible codebase and evaluation harness released.
+**Graduation outcome:** FYDP thesis submitted June 2027 and defended June/July 2027; paper submission August–December 2027; fully reproducible codebase and evaluation harness released.
 
 ---
 
@@ -679,9 +696,9 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 **MSc/PhD research:** the trust mechanism's convergence properties for N>3 agents are explicitly flagged as future work (already noted in original proposal's FAQ). A PhD-scope extension could pursue formal convergence theorems rather than the FYDP's bounded design-property propositions.
 
-**Open-source framework:** the CCR/MPR/ECR evaluation harness (C2) is independently valuable as a released tool — other researchers testing their own anti-sycophancy methods could adopt it as a standard benchmark, similar to how SciFact or GPQA function as reusable community benchmarks.
+**Open-source framework:** the accuracy/CMR/trust-calibration evaluation harness (C2) is independently valuable as a released tool — other researchers testing their own anti-sycophancy methods could adopt it as a standard benchmark, similar to how SciFact or GPQA function as reusable community benchmarks. ECR is not part of the current harness.
 
-**Research platform potential:** the source-partitioned retrieval + trust-calibration architecture generalizes beyond scientific QA to any domain with retrievable ground-truth-adjacent evidence (legal reasoning against case law, medical reasoning against clinical literature) — worth noting as a scope-expansion direction, not claimed as current contribution.
+**Research platform potential:** the claim-domain retrieval + trust-calibration architecture generalizes beyond scientific QA to any domain with retrievable ground-truth-adjacent evidence (legal reasoning against case law, medical reasoning against clinical literature) — worth noting as a scope-expansion direction, not claimed as current contribution.
 
 **Startup potential:** lower priority for this specific mechanism (the evaluation harness is more broadly useful than the trust mechanism as a standalone product), but a "trustworthy multi-agent reasoning API" framing is plausible if the mechanism generalizes well across domains in follow-up work.
 
@@ -695,39 +712,39 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 **On the core mechanism:**
 
-- _"Your trust formula has two free hyperparameters (α, β) — how do I know you didn't just tune them until the result looked good?"_ — Mitigated by the existing hyperparameter sensitivity analysis (grid search, CCR varies <4% across configs) — but ensure this section is prominent in the paper, not buried in an appendix, since it's a first-line reviewer question.
+- _"Your trust formula has two free hyperparameters (α, β) — how do I know you didn't just tune them until the result looked good?"_ — Mitigated by the planned hyperparameter sensitivity analysis (grid search, projected CCR variation <4% across configs) — but ensure this section is prominent in the paper, not buried in an appendix, since it's a first-line reviewer question.
 - _"Propositions 2–3 aren't real theorems — why call them Propositions at all?"_ — Already correctly reframed as "design properties, not global convergence theorems" — this is the right call, but expect at least one reviewer to push on this framing regardless; have the honest answer ready rather than over-defending the math.
-- _"Is 20–30% CCR reduction actually a big number, or is it modest window-dressing?"_ — Needs a sentence in the paper contextualizing this against the baseline collapse rate (~45%) so readers understand the relative, not just absolute, magnitude.
+- _"Is a projected 20–30% collapse reduction actually a big number, or is it modest window-dressing?"_ — Needs a sentence in the paper contextualizing this against the baseline collapse rate (~45%) so readers understand the relative, not just absolute, magnitude. It remains a projection until the Core run.
 
 **Missing experiments/evaluations a sharp reviewer might demand:**
 
-- **Latency/cost-benefit analysis:** the system runs ~9 forward passes vs. 1 for single-agent. A reviewer will ask "is the accuracy gain worth 9x the compute?" — this isn't currently a headline metric. **Recommend adding a compute-cost-vs-CCR-reduction table** as a supplementary result before final submission.
+- **Latency/cost-benefit analysis:** the system runs ~9 forward passes vs. 1 for single-agent. A reviewer will ask "is the accuracy/CMR gain worth 9x the compute?" — this isn't currently a headline metric. **Recommend adding a compute-cost-vs-accuracy/CMR table** as a supplementary result before final submission.
 - **Robustness to paraphrased injection templates:** currently named as a known protocol limitation (L2) but not tested. If time allows in Phase 4's buffer month, even a small (20–30 question) paraphrase-robustness check would meaningfully strengthen the paper against the "your injection template is too easy to detect" objection.
 - **Sensitivity to K (number of debate rounds):** N-scaling is planned, but K is fixed at 3 throughout. A reviewer may ask whether results are an artifact of this specific round count.
 
-**Missing datasets:** none flagged as critical — the current set (BrokenMath, BrokenArXiv, HLE, GPQA, MMLU-Pro) is well-justified and appropriately adversarial-vs-stable balanced.
+**Missing datasets:** none flagged as critical — the current Core set (GPQA-Main, MMLU-Pro, HLE) plus the EG-SSS v1.2 benchmark is well-justified; BrokenMath/BrokenArXiv are appendix-only checks.
 
 **Possible reviewer criticisms, ranked by likely severity:**
 
-1. **"How is this meaningfully different from iMAD's confidence-weighted aggregation?"** — Already the paper's designed strongest-result sentence; ensure the "external evidence vs. same-context confidence signal" distinction is stated in the first paragraph of the results section, not just the related work.
+1. **"How is this meaningfully different from DebUnc's uncertainty weighting or iMAD's debate gating?"** — Ensure the "external evidence vs. same-context confidence signal" and "in-debate weighting vs. when-to-debate" distinctions are stated in the first paragraph of the results section, not just the related work.
 2. **"Your injection protocol is artificially explicit — real sycophancy is subtler."** — Already acknowledged (Limitation L1) as an honest upper-bound scenario; this should be stated early and confidently, not defensively.
 3. **"Two of your four core citations aren't peer-reviewed."** — Addressed via the proactive-disclosure approach already established; ensure this same framing appears in the paper's related-work section, not just the supervisor meeting.
 
 **Proposal defense questions to prepare (beyond the original Section 11 FAQ, which remains valid):**
 
-- "What's your actual Go/No-Go criterion if the Month-1 pilot shows the trust signal doesn't behaviorally matter?" — **This needs an explicit answer before the meeting.** Suggested answer: fall back to reporting the pilot's negative result honestly as a finding about _when_ evidence-grounded trust does/doesn't influence LLM aggregation behavior — this reframes a possible negative result as still-publishable knowledge, consistent with the project's "result-neutral milestones" philosophy already established in the original timeline.
+- "What's your actual Go/No-Go criterion if the pilot shows the trust signal doesn't behaviorally matter?" — **This needs an explicit answer before the meeting.** Suggested answer: fall back to reporting the pilot's negative result honestly as a finding about _when_ evidence-grounded trust does/doesn't influence LLM aggregation behavior — this reframes a possible negative result as still-publishable knowledge, consistent with the project's "result-neutral milestones" philosophy.
 
-**Mid-defense and final-defense question themes:** expect deeper probing on the iMAD reimplementation fidelity (since it's the highest-effort, highest-scrutiny component) and on whether the human evaluation sample (n=60) is large enough for the claimed statistical power — have a brief power-analysis justification ready.
+**Mid-defense and final-defense question themes:** expect deeper probing on the iMAD/ConsensAgent reimplementation fidelity (the highest-effort, highest-scrutiny components) and on whether the human evaluation sample (150–200 paired items, 3 raters) is large enough for the claimed statistical power — have a brief power-analysis justification ready.
 
-**Journal reviewer concerns (if targeting TMLR/Findings):** primary concern will likely be generalization beyond the three specific chosen model families — pre-empt with a sentence in limitations acknowledging this is inherent to any finite-agent-pool study, consistent with the "Scope Boundaries" section already present in the original proposal.
+**Journal reviewer concerns (if targeting TACL, EMNLP 2028, or a Q1 journal):** primary concern will likely be generalization beyond the three specific chosen model families — pre-empt with a sentence in limitations acknowledging this is inherent to any finite-agent-pool study, consistent with the "Scope Boundaries" section already present in the original proposal.
 
-**Recommended pre-implementation actions, in priority order:**
+**Recommended pre-Core actions, in priority order:**
 
-1. Finalize the Month-1 pilot's explicit Go/No-Go criterion (flagged above) — do this before Phase 0 begins.
-2. Add the compute-cost-vs-CCR-reduction table to the planned evaluation outputs.
-3. If Phase 4's buffer month has slack, add the paraphrase-robustness spot-check.
-4. Prepare the proactive citation-status disclosure for the next supervisor meeting (already scripted in earlier discussion).
+1. Run the 96 GB Final-stack smoke (currently NOT RUN; offline check only).
+2. Finalize WP-18's oracle scope (gold-answer vs gold-evidence-only on EG-SSS) before freezing the Full config.
+3. Add the compute-cost-vs-accuracy/CMR table to the planned evaluation outputs.
+4. Freeze the 24-item calibration batch and start the verifier audit.
 
 ---
 
-**Blueprint complete.** All 18 sections are internally consistent with every previously validated design decision — trust formula, baseline set, dataset selection, timeline, and publication-status corrections carried through without contradiction. The only net-new additions introduced across this blueprint (beyond organizing existing decisions) are: the Month-1 behavioral-effectiveness pilot with an explicit Go/No-Go criterion, the OpenAlex retrieval fallback, and three reviewer-anticipation additions (compute-cost table, paraphrase-robustness check, K-sensitivity awareness) — each flagged with rationale rather than silently inserted, per your original instructions.
+**Blueprint complete.** Sections 1–18 are the research design record. Execution status, ordered gates and current costs live in `roadmap.md`; per-component implementation status lives in `trustcal/IMPLEMENTATION_STATUS.md`. Historical design notes are labelled rather than silently rewritten, and no efficacy result is claimed before the pilot and Core run.

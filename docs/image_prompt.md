@@ -5,7 +5,7 @@ Copy each prompt below into Gemini image generation. One figure per prompt. The 
 ## How to use
 
 1. Open Gemini and paste one prompt block at a time.
-2. Generate at the stated aspect ratio and size. Export the result as PNG at high resolution (ideally 300 dpi, at least 1920 px on the long side).
+2. Generate at the stated aspect ratio and size. Export the result as PNG at 6000 × 3375 (600+ DPI) for 16:9 figures; use the matching pixel size for 4:3.
 3. Check every label spelling. Fix one label with: `Keep everything else the same. Only fix the label "WRONG TEXT" to "RIGHT TEXT".`
 4. Remove unwanted extra elements with: `Remove everything that is not listed in the prompt. Keep the layout and labels unchanged.`
 5. Save files with the names below and send them for insertion into the paper.
@@ -25,7 +25,7 @@ Suggested file names:
 
 - Describe one flat vector infographic. Do not use photorealistic words (`photo`, `realistic`, `3D`, `render`).
 - Put every label in double quotes exactly as it must appear. Keep each label to 1 to 4 words.
-- Always state the aspect ratio and pixel size in the prompt, for example `16:9 landscape, 1920x1080 pixels`.
+- Always state the aspect ratio and pixel size in the prompt, for example `16:9 landscape, 6000x3375 pixels`.
 - Give hex color codes instead of color names. Gemini follows hex codes more reliably.
 - State the reading order (left to right, top to bottom, clockwise) and the arrow directions.
 - State the background (`pure white`) and the outline style (`uniform 2 px navy outlines`).
@@ -54,7 +54,7 @@ Suggested file names:
 
 Purpose: replaces `data-flow.png` in the paper; shows the seven processes, the external entities, and the three data stores.
 
-Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 6000x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a level-one data flow diagram for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded rectangles with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF for process cards in the top row, teal #0F766E for process cards in the bottom row, light gray #F8FAFC for card bodies, near-black #0A0A0A for text, gray #475569 for data stores. Draw the flow in an S-shape: the top row reads left to right, the thick curved connector from the end of the top row (P4) down to the start of the bottom row (P5) is labeled "verdicts", and the bottom row reads left to right.
@@ -114,7 +114,7 @@ Closing constraints:
 
 Purpose: shows one debate round as a cycle and where the injection point sits.
 
-Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 6000x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a circular process loop for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, and thick navy arrows that bend along a circle. Use the palette: navy blue #1E40AF, teal #0F766E, amber #B45309, green #15803D, red #B91C1C, light gray #F8FAFC, near-black #0A0A0A.
@@ -144,7 +144,7 @@ If the "Trust update" card needs the formula, add this line inside the card: `S(
 
 Purpose: shows the system boundary and the external actors of the framework.
 
-Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 6000x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a system context diagram for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded rectangles with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF, teal #0F766E, amber #B45309, light blue #EEF2FF, light gray #F8FAFC, near-black #0A0A0A.
@@ -174,7 +174,7 @@ Keep the layout symmetric with even spacing and no overlapping shapes. Do not ad
 
 Purpose: cleaner rebuild of the current Figure 1 (`methodology-flow.jpg`) with the same content and a more consistent look.
 
-Aspect ratio and size: `16:9 landscape, 2000x1125 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 6000x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of an eight-stage pipeline for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, numbered dark-navy circles, and thick navy arrows. Follow this palette: navy blue #1E40AF for stages 1 to 4 headers and arrows, teal #0F766E for stages 5 to 8 headers, light gray #F8FAFC for card bodies, amber #B45309 for the injection point box, green #15803D for a supported pill, red #B91C1C for a contradicted pill, gray #475569 for an unverifiable pill, near-black #0A0A0A for text.
@@ -199,7 +199,7 @@ Below stage 3, place one dashed amber rounded rectangle labeled "Injection point
 
 The thick curved arrow from stage 4 to stage 5 must not touch the Injection point box anywhere. Route it from stage 4's bottom edge downward to the right of the box, then leftward underneath the box, then down into stage 5.
 
-At the bottom of the image, place one wide horizontal strip. This is the only strip in the image. The left tab of the strip is teal #0F766E with white text "Evaluation". The rest of the strip is light teal #ECFDF5 with the text "GPQA · MMLU-Pro" followed by four outlined pills labeled "Accuracy", "Consensus-Collapse Rate", "Minority-Preservation Rate", "Evidence-Calibration Rate", and the last text "No model fine-tuning".
+At the bottom of the image, place one wide horizontal strip. This is the only strip in the image. The left tab of the strip is teal #0F766E with white text "Evaluation". The rest of the strip is light teal #ECFDF5 with the text "GPQA · MMLU-Pro" followed by four outlined pills labeled "Accuracy", "Consensus-Collapse Rate", "Minority-Preservation Rate", "Trust AUROC/Brier", and the last text "No model fine-tuning".
 
 Keep labels short and correctly spelled. Do not add any other strip, bar, or banner. Do not add extra icons, people, robots, shadows, gradients, textures, watermarks, or any text that is not listed above.
 ```
@@ -210,7 +210,7 @@ Keep labels short and correctly spelled. Do not add any other strip, bar, or ban
 
 Purpose: one small figure that explains the bounded trust update step by step. Useful if a reviewer asks how the weights are computed. This chain reflects the P0 operator: logit accumulation, one softmax, then a floor/ceiling simplex projection. There is no clamp-then-renormalize step.
 
-Aspect ratio and size: `4:3 landscape, 1600x1200 pixels`, pure white background.
+Aspect ratio and size: `4:3 landscape, 4500x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a five-step computation chain for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF, teal #0F766E, light blue #EEF2FF, light gray #F8FAFC, near-black #0A0A0A, green #15803D, red #B91C1C.
@@ -233,7 +233,7 @@ Keep labels short and correctly spelled. Do not add extra icons, people, robots,
 
 Purpose: one small example figure for the Proposed Method section showing how a single claim is checked.
 
-Aspect ratio and size: `16:9 landscape, 1920x1080 pixels`, pure white background.
+Aspect ratio and size: `16:9 landscape, 6000x3375 pixels`, pure white background.
 
 ```
 Create a flat vector infographic of a single claim verification example for an academic paper. Use a pure white background, bold clean sans-serif labels, rounded cards with 2 px outlines, and thick navy arrows. Use the palette: navy blue #1E40AF, teal #0F766E, green #15803D, red #B91C1C, amber #B45309, light gray #F8FAFC, near-black #0A0A0A.

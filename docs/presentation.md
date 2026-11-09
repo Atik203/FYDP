@@ -30,15 +30,15 @@ Four studies show why. Over twenty percent of wrong answers ignored the correct 
 
 ### Slide 4 — Objective
 
-We set four goals. First, design a bounded trust score from retrieved evidence. Second, build a repeatable stress test that measures collapse, with annotation agreement of at least zero point seven five. Third, compare against ten baselines — including MoA, iMAD and ConsensAgent — on four metrics. Fourth, prove the trust score changes decisions, not just the prompt.
+We set four goals. First, design a bounded trust score from retrieved evidence. Second, build a repeatable stress test that measures collapse, with annotation agreement of at least zero point seven five. Third, compare against the B1 to B10 registry — including MoA, iMAD and ConsensAgent — with accuracy and CMR primary. Fourth, prove the trust score changes decisions, not just the prompt.
 
 ### Slide 5 — Dataset
 
-To test those goals, we use five sets. GPQA and MMLU-Pro are stable, HLE is the ceiling, and BrokenMath and BrokenArXiv are adversarial. Two filters keep only checkable, divergent questions — about sixty to seventy percent pass. The matrix caps GPQA and MMLU-Pro at four hundred each and HLE at two hundred; the pilot, twenty-five. Atik will present our method.
+To test those goals, we use five sets. GPQA and MMLU-Pro are stable, HLE is the ceiling, and BrokenMath and BrokenArXiv are appendix-only adversarial checks. Two filters keep only checkable, divergent questions — about sixty to seventy percent pass. The matrix caps GPQA and MMLU-Pro at four hundred each and HLE at two hundred; the pilot, one hundred to one hundred fifty. Atik will present our method.
 
 ### Slide 6 — Conventional Method
 
-Today, systems decide in different ways: majority voting with equal weight, self-reported confidence, prompt rewriting, one-pass merging — and iMAD predicts when to debate. We test ten approaches, B1 to B10. None ties an agent's influence to outside evidence during the debate.
+Today, systems decide in different ways: majority voting with equal weight, self-reported confidence, prompt rewriting, one-pass merging — and iMAD predicts when to debate. The registry runs B1 to B10; the Core matrix uses four conditions, and the Full target adds two. None ties an agent's influence to outside evidence during the debate.
 
 ### Slide 7 — Proposed Method
 
@@ -54,7 +54,7 @@ To run this, we use two stacks: a four-bit dev stack on one RTX A6000, and an FP
 
 ### Slide 10 — Project Results
 
-Expected results: collapse should drop by twenty to thirty percent, the correct minority should survive more often, calibration should pass zero point eight, and accuracy should hold. The pipeline already works: ten GPQA questions, three rounds each — ten of ten debates finished, ninety of ninety positions filled, about six minutes per debate.
+Expected results: collapse should drop by twenty to thirty percent, the correct minority should survive more often, trust calibration should rank correct agents higher, and accuracy should hold. The pipeline already works: ten GPQA questions, three rounds each — ten of ten debates finished, ninety of ninety positions filled, about six minutes per debate.
 
 ### Slide 11 — Why Complex Engineering
 
@@ -66,7 +66,7 @@ Here is the map. PO1 and PO2 need K1 to K4; P1 needs K3 to K6 and K8. We cover s
 
 ### Slide 13 — Conclusion · Application
 
-To conclude: a wrong majority can push a correct agent into sycophantic consensus. Our fix is a bounded trust score from retrieved evidence, measured with final-answer accuracy, CCR, MPR and trust calibration. The design fits scientific QA, research assistants, and law or medicine. Next: the matrix, ablations, a human study, and an open-source release.
+To conclude: a wrong majority can push a correct agent into sycophantic consensus. Our fix is a bounded trust score from retrieved evidence, measured with final-answer accuracy, CMR, and trust calibration (AUROC and Brier). The design fits scientific QA, research assistants, and law or medicine. Next: the matrix, ablations, a human study, and an open-source release.
 
 ### Slide 14 — Thank You
 
@@ -92,7 +92,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Who is the supervisor?**
   **A:** Dr. Mohammad Nurul Huda, Professor at UIU. We also thank our FYDP instructor, Dr. Ohidujjaman.
 - **Q: What is the project timeline?**
-  **A:** FYDP I covers the design and the first working phase. The full experiment matrix, the ablations and the human study come in FYDP II and FYDP III.
+  **A:** FYDP I covers the design and the first working phase. The full experiment matrix, the ablations, the human study, the thesis and the paper follow in 2027.
 
 **Slide 2 — Introduction**
 
@@ -134,10 +134,10 @@ Thank you for your attention. We are happy to take your questions.
   **A:** Kappa measures how much two human annotators agree beyond chance. Zero point seven five is our quality gate; below it we fix the rubric and re-label.
 - **Q: Who annotates, and on what?**
   **A:** Two human annotators label the same shuffled forty-item set: thirty divergent questions plus ten controls.
-- **Q: Why ten baselines?**
-  **A:** B1 to B4 isolate debate and retrieval, and B5 to B10 cover the published competitors. That shows exactly what our trust layer adds.
-- **Q: What are the four metrics?**
-  **A:** Accuracy, CCR for collapse, MPR for minority survival, and ECR for evidence calibration.
+- **Q: Why B1 to B10?**
+  **A:** B1 to B4 isolate debate and retrieval, and B5 to B10 cover the published competitors and controls. The Core matrix runs four conditions; the Full target adds placebo and oracle.
+- **Q: What are the primary metrics?**
+  **A:** Final-answer accuracy and CMR, correct-minority retention. ARR and trust AUROC/Brier are secondary, and ECR is deprecated.
 - **Q: What does "changes decisions, not just the prompt" mean?**
   **A:** We must show the trust score changes the final answer. If it only changes the wording, the mechanism adds nothing.
 - **Q: What happens if the pilot gives a negative result?**
@@ -146,15 +146,15 @@ Thank you for your attention. We are happy to take your questions.
 **Slide 5 — Dataset**
 
 - **Q: Why these five sets?**
-  **A:** GPQA and MMLU-Pro give stable accuracy numbers. HLE is the expert ceiling. BrokenMath and BrokenArXiv are adversarial sets built to provoke sycophancy.
+  **A:** GPQA and MMLU-Pro give stable accuracy numbers. HLE is the expert ceiling. BrokenMath and BrokenArXiv are appendix-only adversarial checks, not evidence-grounding sets.
 - **Q: What is BrokenMath?**
   **A:** Math problems with perturbed false premises. The question looks normal, but the setup is wrong.
 - **Q: What is BrokenArXiv?**
   **A:** Statements taken from deliberately flawed papers, refreshed monthly. Every result cites the snapshot it used.
 - **Q: What do the two filters do?**
   **A:** The first keeps only divergent questions where the agents disagree. The second keeps only MCQ or numeric answers, so correctness can be checked. About sixty to seventy percent pass.
-- **Q: Why one thousand questions per set?**
-  **A:** One thousand gives stable paired statistics in the main matrix. The pilot runs fifty for speed.
+- **Q: How many questions per set?**
+  **A:** The Core plan is GPQA four hundred, MMLU-Pro four hundred and HLE two hundred per seed; the pilot runs one hundred to one hundred fifty.
 - **Q: Do the agents ever see the gold answer?**
   **A:** Never. Gold answers are used only to select questions and to score results.
 - **Q: Why are some datasets gated?**
@@ -167,15 +167,15 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What is the Oracle model in the baselines?**
   **A:** B7 sends each question to a large commercial model, Gemini 3.1 Pro, as a ceiling reference. One call per question, about five to seven dollars in total. It is not part of our mechanism and never sees the gold answer.
 - **Q: Why is B8 inside the B1 to B10 list if it is yours?**
-  **A:** B8 is the proposed trust-calibrated system, placed in the same comparison set. B1 to B9 are the baselines; B8 is ours.
+  **A:** B8 is the proposed trust-calibrated system, placed in the same registry. The Core matrix runs B3, B4-matched, B8-no-trust and B8; the Full target adds placebo and oracle.
 - **Q: What is static aggregation?**
   **A:** MoA merges the model outputs once, in layers. After the merge there is no per-agent trust and no way to revisit it.
 - **Q: What does iMAD do?**
   **A:** It predicts when a debate is worth starting, using hesitation cues from a self-critique. It cuts token costs by up to ninety-two percent, but once triggered it still uses majority voting.
 - **Q: What does ConsensAgent do?**
   **A:** It detects stalling or copy-paste behaviour and rewrites the prompt. The final choice still comes from self-reported confidence.
-- **Q: Are all ten baselines running today?**
-  **A:** Not yet. B1 and B3 are implemented; B9 and B10, the reimplementations, are Phase 3 work.
+- **Q: Are all B1 to B10 arms running today?**
+  **A:** All B1 to B10 arms are implemented and mock-tested; B9 and B10 are labelled approximations. The paid matrix has not run.
 - **Q: What is the gap in one line?**
   **A:** No existing method ties an agent's influence to external evidence while the debate is running.
 
@@ -250,7 +250,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What are the generation settings?**
   **A:** Temperature zero point seven, one thousand and twenty-four output tokens, four thousand and ninety-six context on dev, and three retries per agent.
 - **Q: How much compute does this need?**
-  **A:** About one thousand two hundred eighty GPU-hours for the current matrix, budgeted around three hundred forty to eight hundred twenty US dollars depending on GPU rates.
+  **A:** About one thousand two hundred eighty GPU-hours for the Core matrix at the conservative cap. Core is budgeted at four hundred twenty to five hundred eighty dollars; the Full run is nine hundred to one thousand two hundred dollars as a separate Final-stack matrix, with a hard stop of one thousand three hundred fifty before law-testing.
 
 ### M5 — Md. Salman Rohoman Nayeem · Slides 10–11
 
@@ -262,14 +262,14 @@ Thank you for your attention. We are happy to take your questions.
   **A:** Ten GPQA questions, three rounds each: ten out of ten debates completed, ninety out of ninety positions non-empty, and three hundred seventy point eight seconds per debate on average.
 - **Q: Why do you expect collapse to drop by twenty to thirty percent?**
   **A:** Because unsupported claims lose weight, the fabricated majority loses influence and the correct minority keeps its answer. The exact number is what the matrix will measure.
-- **Q: What is ECR, and why above zero point eight?**
-  **A:** ECR is evidence calibration, defined as one minus expected calibration error. Our design target is above zero point eight on the expert set.
+- **Q: What happened to ECR?**
+  **A:** ECR was an evidence-calibration score, defined as one minus expected calibration error. It is deprecated; trust AUROC and the Brier score now carry that analysis, and there is no zero point eight gate.
 - **Q: What failed in the pilot?**
   **A:** One model missed its claim tags in five of thirty generations. The fallback parser handled them, so no position was empty.
 - **Q: Why six minutes per debate?**
   **A:** Three models, three rounds, retrieval and four-bit inference on one GPU. That is the current cost; batching and caching will reduce it.
 - **Q: When will the full matrix run?**
-  **A:** After retrieval and trust pass their gates. The full matrix, the ablations and the human study are the remaining work.
+  **A:** After the gates: Final-stack smoke, WP-18 placebo/oracle, 24-item calibration, verifier audit, pilot, then Core and Full.
 
 **Slide 11 — Why Complex Engineering**
 
@@ -300,7 +300,7 @@ Thank you for your attention. We are happy to take your questions.
   **A:** K3 to K6 and K8. This is the exact Washington Accord wording.
 - **Q: Which POs do the P attributes relate to, and which POs need K7?**
   **A:** The P attributes map to PO1 to PO8. K7 supports PO6, PO7 and PO8 — society, environment and ethics. The activities map to PO10, communication.
-- **Q: What carries into FYDP II and FYDP III?**
+- **Q: What carries into the later phases?**
   **A:** P6 stakeholder engagement, A3 innovation, and the remaining programme outcomes.
 
 **Slide 13 — Conclusion · Application**
@@ -314,7 +314,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Where does the design apply?**
   **A:** Scientific question answering, research assistants, and any evidence-rich domain such as law or medicine.
 - **Q: What comes next?**
-  **A:** The full experiment matrix, ablation studies, a human study, and an open-source release.
+  **A:** Final-stack smoke, WP-18 placebo/oracle, calibration, the verifier audit, the pilot, then Core and Full, followed by the thesis and paper.
 
 **Slide 14 — Thank You**
 
@@ -346,7 +346,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What about ethics and bias?**
   **A:** Answers carry citations a reader can check. The adversarial sets test manipulation, and the human study will follow consent rules.
 - **Q: How much does the full study cost?**
-  **A:** About one thousand two hundred eighty GPU-hours for the current matrix. The deck estimate is three hundred forty to eight hundred twenty US dollars depending on GPU rates.
+  **A:** About one thousand two hundred eighty GPU-hours for the Core matrix at the conservative cap. Core costs four hundred twenty to five hundred eighty dollars; the Full run is nine hundred to one thousand two hundred dollars as a separate Final-stack matrix, with a hard stop of one thousand three hundred fifty before law-testing.
 - **Q: What is the most important measured result so far?**
   **A:** Gate 0: the three-model debate loop runs end to end — ten of ten debates, ninety of ninety positions, about three hundred seventy seconds per debate.
 

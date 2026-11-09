@@ -1,5 +1,7 @@
 # Consistency Audit — P0 State Reconciliation
 
+> **Historical snapshot (9 Nov 2026, pre-release).** This file records the pre-release reconciliation and is superseded by the P0 release at `2ae56a3` (13/13 gate, 514 tests; WP-09 complete; WP-18 placebo/oracle pending; only `main` and `dev`). The body's **11/13 gate**, **478-test count**, **`feat/*` branch model**, **WP-13 placebo/oracle naming**, and **Core-prefix/top-up cost note** are all superseded. In this historical text, `WP-13` was used for the placebo/oracle slice; current WP-13 is the landed B8-no-trust split. Full is a separate Final-stack matrix, not a reuse of Core cells. The comparison body below is preserved as history, not current status.
+
 **Date:** 9 November 2026  
 **Branch:** `docs/repo-consistency`  
 **Mode:** Mode 1 (edit/polish) for the current-state corrections; Mode 4 (audit) for this report. **Authorship rung B:** the author wrote the source text; this pass edits for accuracy and clarity.

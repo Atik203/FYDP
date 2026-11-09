@@ -12,17 +12,18 @@
 | Item | Value |
 |---|---|
 | Branches | `main` = release/deployed frontend; `dev` = development |
-| Release commit | `7f2c11f` on both `main` and `dev` |
+| Release tip | `2ae56a3` on both `main` and `dev`; `p0-release` tag = `7f2c11f`. |
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **514 passed** |
-| Report | `FYDP_Summer/out/fydp.pdf` — 58 pages, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` — 57 pages, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 18 pages, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 |
 | Final stack | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **69.73 GB** pinned |
+| Final-stack smoke | **NOT RUN** — offline budget check only (69.73 GB < 80 GB); the 96 GB hardware smoke is the next gate |
 
-**P0 is engineering readiness, not efficacy evidence.** No accuracy, CCR, or sign-reversal claim exists yet.
+**P0 is engineering readiness, not efficacy evidence.** No accuracy, CMR, or sign-reversal claim exists yet.
 
 ---
 
@@ -67,9 +68,9 @@ The manuscript is now honest and internally consistent, but it is **not a result
 
 | When | Work | Gate / output |
 |---|---|---|
-| **Nov 2026** | Final-stack 96 GB smoke; WP-13 placebo/oracle; 24-item calibration; verifier audit start | smoke PASS; 6-arm support; calibration report |
-| **Dec 2026** | Pilot run 100–150 questions; 180-item benchmark v1; injection κ | **G2** |
-| **Jan 2027** | Core run: 4 arms + oracle, 400/dataset × 2 seeds; 180 benchmark freeze | **G3** |
+| **Nov 2026** | Final-stack 96 GB smoke (NOT RUN); WP-18 placebo/oracle; 24-item calibration; verifier audit start | smoke PASS; 6-arm support; calibration report |
+| **Dec 2026** | Pilot run 100–150 questions; injection κ | **G2** |
+| **Jan 2027** | Core run: 4 arms, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds; 1,280 GPU-h cap; EG-SSS-180 freeze (v1.2) | **G3** |
 | **Feb 2027** | Full run: 6 arms; 300 benchmark; human eval start | **G4/G5** |
 | **Mar 2027** | Human eval 150–200; SDT; expert ceiling | analysis freeze |
 | **Apr 2027** | q/ρ sweeps, granularity, shared-error floor, ablations | results freeze |
@@ -77,7 +78,7 @@ The manuscript is now honest and internally consistent, but it is **not a result
 | **Jun–Jul 2027** | Defence | defence |
 | **Aug–Dec 2027** | Paper | TACL / EMNLP 2028 / Q1 journal |
 
-**Order:** Final smoke → WP-13 → pilot → Core → Full. Do not run the matrix before the pilot.
+**Order:** Final smoke → WP-18 → pilot → Core → Full. Do not run the matrix before the pilot.
 
 ---
 
@@ -86,8 +87,8 @@ The manuscript is now honest and internally consistent, but it is **not a result
 | Size | Role | Annotation | Decision |
 |---:|---|---:|---|
 | **24** | Calibration batch | ~1 week | Start now; if `H_attempt > 2.0` or defect >15%, cut to 120 |
-| **180** | Core-run benchmark | ~410 h | Freeze January 2027 |
-| **300** | Full-run benchmark | ~684 h | Target February 2027 |
+| **180** | EG-SSS v1.2 freeze (not in the v1.0 Core matrix) | ~410 h | Freeze January 2027 |
+| **300** | Full-run benchmark target | ~684 h | Target February 2027 |
 | **600** | Stretch | ~1,368 h | Only with 2–3 dedicated annotators |
 | **800** | No-go | ~1,824 h | Do not build |
 
@@ -102,7 +103,7 @@ A 300-item set with clean gold is better than a 600-item set with bad gold.
 | Final-stack smoke | $80–120 |
 | Pilot | $50–100 |
 | Core run | **$420–580** |
-| Full-run top-up | **$900–1,200** |
+| Full run (separate Final-stack matrix; not a reuse of Core cells) | **$900–1,200** |
 | Law-testing | $1,400–1,900 (only if effect) |
 
 **Hard stop: $1,350 before law-testing.** A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Persist the cache; batch sessions; copy results; destroy instances.
