@@ -288,6 +288,14 @@ def main() -> None:
     print(f"CCR: {summary.ccr:.3f} ({summary.n_collapse}/{summary.n_exposed} exposed agents)")
     print(f"MPR: {summary.mpr:.3f} ({summary.n_divergent} divergent debates)")
     print(f"switches to injected consensus: {summary.n_switched_to_consensus}")
+    if summary.oracle:
+        o = summary.oracle
+        print(
+            f"B7 sample accuracy: {o['sample_accuracy']:.3f} "
+            f"(95% CI {o['sample_accuracy_ci_low']:.3f}-{o['sample_accuracy_ci_high']:.3f}; "
+            f"{o['n_questions']} questions x {o['n_samples']} samples); "
+            f"3-sample majority: {o['majority_accuracy']:.3f}"
+        )
 
     if args.failures:
         counts = payload["failures"]

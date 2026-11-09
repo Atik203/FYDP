@@ -34,9 +34,12 @@ class OpenAIOracle:
     model: str = DEFAULT_MODEL
     timeout: float = 60.0
     client: Any | None = None
+    samples: int = int(os.getenv("OPENAI_ORACLE_SAMPLES", "3"))
     last_metadata: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        if self.samples < 1:
+            raise OracleError("OPENAI_ORACLE_SAMPLES must be >= 1")
         if self.client is not None:
             return
         self.api_key = self.api_key or get_key("OPENAI_API_KEY")
@@ -60,7 +63,6 @@ class OpenAIOracle:
                         "content": ORACLE_PROMPT.format(question=question),
                     }
                 ],
-                temperature=0.0,
             )
         except Exception as exc:
             raise OracleError(f"OpenAI oracle request failed: {exc}") from exc
@@ -80,3 +82,7 @@ class OpenAIOracle:
             "created": getattr(response, "created", None),
         }
         return text
+
+    def answer_samples(self, question: str) -> list[str]:
+        """Return ``samples`` independent calls for the same question."""
+        return [self.answer(question) for _ in range(self.samples)]

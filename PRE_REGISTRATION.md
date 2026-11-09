@@ -498,22 +498,30 @@ misroute the remaining work.
 
 ### v1.4 erratum — 9 November 2026
 
-This erratum records a provider change for B7 only. It does not change an
-endpoint, an arm, a dataset, a seed, or a run count.
+This erratum records the B7 provider and sampling protocol. It does not change a
+pre-registered matrix endpoint, an arm, a dataset, a seed, or a run count.
 
 - **Provider.** B7 moves from Gemini 3.1 Pro Preview to OpenAI `gpt-6-luna`
   (released 22 September 2026). The model is pinned by name; each B7 record
   stores `provider`, `model`, `response_id`, and `system_fingerprint` alongside
   the answer. `OPENAI_API_KEY` is the only B7 key; the Gemini runtime path is
   retired.
-- **Status unchanged.** B7 remains an optional external-answer ceiling, not
-  B8-oracle, and it is not in the four-condition Core matrix or the six-arm
-  Full target. B8-oracle semantics remain pending WP-18 as recorded in v1.1;
-  this erratum does not decide them. No endpoint, arm, seed, or run count
-  changes.
-- **Cost.** B7 costs roughly $1–3 per 1,000 questions, dominated by output
-  tokens; recompute from the actual prompt/output tokens before quoting a
-  total. This replaces the earlier side estimate for the Gemini path.
+- **Protocol.** B7 draws three independent samples per question
+  (`OPENAI_ORACLE_SAMPLES=3`) with default reasoning and no `temperature`
+  (GPT-6 Luna supports only its default value). Per-sample answers and
+  correctness are stored in the record.
+- **B7 reporting endpoints.** The B7 report gives (a) mean single-call accuracy
+  with a question-level bootstrap CI and (b) 3-sample majority accuracy. Ties
+  in the majority resolve to the first sample.
+- **Status unchanged.** B7 remains an optional, appendix-only external-answer
+  ceiling, not B8-oracle, and it is not in the four-condition Core matrix or the
+  six-arm Full target. B8-oracle semantics remain pending WP-18 as recorded in
+  v1.1; this erratum does not decide them.
+- **Smoke.** A live 3-sample smoke passed on 9 November 2026 (`B/B/B` for 2+2);
+  the single-call smoke also passed.
+- **Cost.** Three samples cost roughly $3–9 per 1,000 questions at $0.10/M
+  input and $0.50/M output, dominated by output tokens; recompute from the
+  actual prompt/output tokens before quoting a total.
 
 ---
 

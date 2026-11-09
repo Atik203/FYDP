@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import time
+from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -476,6 +477,16 @@ def debate_record(
     return record
 
 
+def _majority_value(values: list[str]) -> str:
+    """First value with the highest count; ties resolve to the first sample."""
+    counts = Counter(values)
+    best = max(counts.values())
+    for value in values:
+        if counts[value] == best:
+            return value
+    return values[0]
+
+
 def oracle_record(
     qid: str,
     question: dict,
@@ -485,26 +496,57 @@ def oracle_record(
     *,
     manifest_hash_value: str | None = None,
 ) -> dict:
-    """B7 — external oracle answer, no panel."""
+    """B7 — external oracle answer, no panel.
+
+    The oracle may return several independent samples. The record keeps every
+    sample and reports the mean single-call accuracy; the final answer uses the
+    sample majority so the record stays compatible with the common schema.
+    """
     rendered = build_options(question, seed, qid)
     record = _base_record(qid, question, arm, seed, rendered=rendered, manifest_hash_value=manifest_hash_value)
     t0 = time.perf_counter()
-    text = oracle.answer(question["question"] + "\n\n" + rendered.block)
+    prompt = question["question"] + "\n\n" + rendered.block
+    if hasattr(oracle, "answer_samples"):
+        texts = list(oracle.answer_samples(prompt))
+    else:
+        texts = [oracle.answer(prompt)]
+    if not texts:
+        raise ValueError(f"oracle returned no samples for {qid}")
     record["elapsed_s"] = round(time.perf_counter() - t0, 2)
-    record["transcript"] = [{"round": 1, "positions": [text]}]
-    parsed = parse_position(text)
-    record["rounds"] = [{"answers": [parsed], "inconclusive": [not bool(parsed)]}]
-    oracle_meta = {"model": getattr(oracle, "model", None)}
+    record["transcript"] = [{"round": 1, "positions": texts}]
+
+    scores = [score_answer(text, question.get("answer") or "", rendered) for text in texts]
+    parsed_samples = [score.parsed for score in scores]
+    correct_samples = [score.correct for score in scores]
+    majority = _majority_value(parsed_samples)
+    majority_index = parsed_samples.index(majority)
+    majority_text = texts[majority_index]
+    majority_score = scores[majority_index]
+    sample_accuracy = sum(correct_samples) / len(correct_samples)
+
+    record["rounds"] = [{"answers": [majority], "inconclusive": [not bool(majority)]}]
+    oracle_meta = {
+        "model": getattr(oracle, "model", None),
+        "n_samples": len(texts),
+        "sample_accuracy": round(sample_accuracy, 6),
+        "sample_correct": correct_samples,
+        "sample_answers": parsed_samples,
+        "samples": [
+            {"raw": text, "parsed": parsed, "correct": correct}
+            for text, parsed, correct in zip(texts, parsed_samples, correct_samples)
+        ],
+        "majority_answer": majority,
+        "majority_correct": majority_score.correct,
+    }
     last_meta = getattr(oracle, "last_metadata", None)
     if isinstance(last_meta, dict):
         oracle_meta.update(last_meta)
     record["oracle"] = oracle_meta
-    score = score_answer(text, question.get("answer") or "", rendered)
-    record["raw_answer"] = text
-    record["parsed_answer"] = score.parsed
+    record["raw_answer"] = majority_text
+    record["parsed_answer"] = majority_score.parsed
     record["parser_version"] = "p0-1"
-    record["final_answer"] = score.parsed
-    record["final_answer_correct"] = score.correct
+    record["final_answer"] = majority_score.parsed
+    record["final_answer_correct"] = majority_score.correct
     record["final_answer_source"] = "oracle"
     record["evidence_introduced"] = False
     return record
@@ -695,6 +737,15 @@ def _write_summary(
             f"| {i} | {d.question_id} | {'yes' if d.divergent else 'no'} | "
             f"{len(d.exposed)} | {len(d.abandoned)} | {'yes' if d.preserved else 'no'} |"
         )
+    oracle = payload.get("oracle")
+    if oracle:
+        lines += [
+            "",
+            f"- B7 sample accuracy: {oracle['sample_accuracy']:.3f} "
+            f"(95% CI {oracle['sample_accuracy_ci_low']:.3f}–{oracle['sample_accuracy_ci_high']:.3f}; "
+            f"{oracle['n_questions']} questions × {oracle['n_samples']} samples)",
+            f"- B7 3-sample majority accuracy: {oracle['majority_accuracy']:.3f}",
+        ]
     if "pilot" in payload:
         pilot = payload["pilot"]
         lines += [

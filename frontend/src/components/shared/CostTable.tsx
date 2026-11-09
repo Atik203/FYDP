@@ -184,8 +184,9 @@ export function CostTable() {
       </p>
 
       <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-        B7 external-answer ceiling (optional): OpenAI GPT-6 Luna, $0.10/M input
-        · $0.50/M output; not a Core arm and outside the GPU envelope.
+        B7 external-answer ceiling (optional): OpenAI GPT-6 Luna — 3
+        samples/question; ~$3–9 per 1,000; mean single-call accuracy + CI +
+        3-sample majority. Not a Core arm; outside the GPU envelope.
       </p>
     </div>
   );

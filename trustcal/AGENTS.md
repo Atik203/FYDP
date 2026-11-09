@@ -58,7 +58,7 @@ The released Core matrix runs four conditions:
 | `B8-no-trust` | B8 (`use_trust: false`) | primary control; same retriever/prompts/partition as B8, majority aggregation |
 | `B8` | B8 | treatment; evidence-grounded trust during debate |
 
-The **six-arm target** adds `B8-placebo` (shuffled verdicts, trust-weighted) and `B8-oracle` (gold evidence, trust-weighted). It is **not** in `experiments.yaml`. WP-18 owns the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is a GPT-6 Luna external-answer ceiling (optional), not `B8-oracle`. The B1–B10 appendix grid stays out of the pre-registered matrix.
+The **six-arm target** adds `B8-placebo` (shuffled verdicts, trust-weighted) and `B8-oracle` (gold evidence, trust-weighted). It is **not** in `experiments.yaml`. WP-18 owns the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is an optional 3-sample GPT-6 Luna external-answer ceiling, not `B8-oracle`. The B1–B10 appendix grid stays out of the pre-registered matrix.
 
 `python scripts/run_matrix.py --dry-run` shows the 24 Core rows. After WP-18, `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` shows the Full plan: 36 rows at 300 items/dataset if `B8-oracle` uses gold-answer trust, or 32 if it is gold-evidence-only on EG-SSS. The Core matrix's gate cap stays 1,280 GPU-h.
 

@@ -41,6 +41,7 @@ from dataclasses import dataclass, field
 
 from .answers import distinct_answers, is_correct, majority_answer, same_answer
 from .endpoints import summarize_endpoints
+from .stats import bootstrap_ci
 
 
 def ccr(collapse_events: int, correct_agents_exposed: int) -> float:
@@ -118,6 +119,48 @@ class DebateMetrics:
         return ccr(len(self.abandoned), len(self.exposed))
 
 
+def oracle_summary(records: list[dict]) -> dict | None:
+    """B7 sample-level summary: mean single-call accuracy with a bootstrap CI.
+
+    Returns ``None`` for runs without ``oracle.sample_accuracy`` records.
+    """
+    sample_values: list[float] = []
+    majority_values: list[float] = []
+    n_samples: list[int] = []
+    for record in records:
+        oracle = record.get("oracle")
+        if not isinstance(oracle, dict):
+            continue
+        value = oracle.get("sample_accuracy")
+        if isinstance(value, (int, float)):
+            sample_values.append(float(value))
+        n = oracle.get("n_samples")
+        if isinstance(n, int) and n > 0:
+            n_samples.append(n)
+        correct = record.get("final_answer_correct")
+        if isinstance(correct, bool):
+            majority_values.append(1.0 if correct else 0.0)
+    if not sample_values:
+        return None
+    ci = (
+        bootstrap_ci(sample_values)
+        if len(sample_values) > 1
+        else (sample_values[0], sample_values[0])
+    )
+    return {
+        "n_questions": len(sample_values),
+        "n_samples": max(n_samples) if n_samples else None,
+        "sample_accuracy": round(sum(sample_values) / len(sample_values), 4),
+        "sample_accuracy_ci_low": round(ci[0], 4),
+        "sample_accuracy_ci_high": round(ci[1], 4),
+        "majority_accuracy": (
+            round(sum(majority_values) / len(majority_values), 4)
+            if majority_values
+            else None
+        ),
+    }
+
+
 @dataclass
 class MetricSummary:
     """Pooled summary over a run.
@@ -143,6 +186,7 @@ class MetricSummary:
     accuracy_ci: tuple[float, float] | None = None
     accuracy_status: str = "not_applicable"
     endpoints: dict = field(default_factory=dict)
+    oracle: dict | None = None
 
     def as_dict(self) -> dict:
         ci_low, ci_high = self.accuracy_ci if self.accuracy_ci else (None, None)
@@ -161,6 +205,7 @@ class MetricSummary:
             "accuracy_ci_high": None if ci_high is None else round(ci_high, 4),
             "accuracy_status": self.accuracy_status,
             "endpoints": self.endpoints,
+            "oracle": self.oracle,
         }
 
 
@@ -256,4 +301,5 @@ def summarize(records: list[dict], *, n_boot: int = 1000) -> MetricSummary:
         accuracy_ci=ci,
         accuracy_status=accuracy["status"],
         endpoints=endpoints["endpoints"],
+        oracle=oracle_summary(records),
     )

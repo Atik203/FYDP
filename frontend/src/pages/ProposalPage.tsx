@@ -718,7 +718,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
               <td style={tdStyle}>GPT-6 Luna (OpenAI)</td>
-              <td style={tdStyle}>Optional external-answer ceiling; not a Core arm. $0.10/M input · $0.50/M output; 1.05M context / 128K output</td>
+              <td style={tdStyle}>Optional external-answer ceiling; not a Core arm. 3 samples/question: mean single-call accuracy + bootstrap CI + 3-sample majority (ties → first sample). ~$3–9 per 1,000; 1.05M context / 128K output</td>
             </tr>
             <tr>
               <td style={tdStyle}>Reranker</td>
