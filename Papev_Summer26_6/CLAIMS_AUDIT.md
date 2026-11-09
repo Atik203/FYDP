@@ -170,7 +170,7 @@ pdflatex -interaction=nonstopmode -halt-on-error cas-sc-template.tex
 pdflatex -interaction=nonstopmode -halt-on-error cas-sc-template.tex
 ```
 
-Result: all four commands exited 0. Final output: **17 pages**, **no LaTeX errors**, **no undefined citations**, **no undefined references**, and no missing figures. BibTeX reported 20 warnings, all of the form `empty pages in <key>`; page numbers are omitted for several entries.
+Result: all four commands exited 0. Final output: **19 pages with 71 cited works**, **no LaTeX errors**, **no undefined citations**, **no undefined references**, and no missing figures. BibTeX reported 20 warnings, all of the form `empty pages in <key>`; page numbers are omitted for several entries.
 
 Overfull/underfull boxes in the final log:
 

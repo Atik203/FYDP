@@ -100,6 +100,29 @@ D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng,
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
   48(3):3335--3354, 2026.
 
+\bibitem{wang2023selfconsistency}
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc~V. Le, Ed~H. Chi, Sharan Narang,
+  Aakanksha Chowdhery, and Denny Zhou.
+\newblock Self-consistency improves chain of thought reasoning in language
+  models.
+\newblock In {\em The Eleventh International Conference on Learning
+  Representations}, 2023.
+
+\bibitem{liang2024divergent}
+Tian Liang, Zhiwei He, Wenxiang Jiao, Xing Wang, Yan Wang, Rui Wang, Yujiu
+  Yang, Shuming Shi, and Zhaopeng Tu.
+\newblock Encouraging divergent thinking in large language models through
+  multi-agent debate.
+\newblock In {\em Proceedings of the 2024 Conference on Empirical Methods in
+  Natural Language Processing}, pages 17889--17904, 2024.
+
+\bibitem{pham2024cipher}
+Chau Pham, Boyi Liu, Yingxiang Yang, Zhengyu Chen, Tianyi Liu, Jianbo Yuan,
+  Bryan~A. Plummer, Zhaoran Wang, and Hongxia Yang.
+\newblock Let models speak ciphers: Multiagent debate through embeddings.
+\newblock In {\em The Twelfth International Conference on Learning
+  Representations}, 2024.
+
 \bibitem{estornell2024multillm}
 Andrew Estornell and Yang Liu.
 \newblock Multi-{LLM} debate: Framework, principals, and interventions.
@@ -113,6 +136,65 @@ Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
 \newblock In {\em The Twelfth International Conference on Learning
   Representations}, 2024.
 \newblock arXiv:2310.13548.
+
+\bibitem{yao2025peacemaker}
+Binwei Yao, Chao Shang, Wanyu Du, Jianfeng He, Ruixue Lian, Yi~Zhang, Hang Su,
+  Sandesh Swamy, and Yanjun Qi.
+\newblock Peacemaker or troublemaker: How sycophancy shapes multi-agent debate.
+\newblock {\em arXiv preprint arXiv:2509.23055}, 2025.
+
+\bibitem{petrov2025brokenmath}
+Ivo Petrov, Jasper Dekoninck, and Martin Vechev.
+\newblock {BrokenMath}: A benchmark for sycophancy in theorem proving with
+  {LLM}s.
+\newblock {\em arXiv preprint arXiv:2510.04721}, 2025.
+
+\bibitem{perez2023discovering}
+Ethan Perez, Sam Ringer, Kamile Lukosiute, Karina Nguyen, Edwin Chen, Scott
+  Heiner, Craig Pettit, Catherine Olsson, Sandipan Kundu, Saurav Kadavath,
+  et~al.
+\newblock Discovering language model behaviors with model-written evaluations.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2023}, pages 13387--13434. Association for Computational Linguistics,
+  2023.
+
+\bibitem{wei2023simple}
+Jerry Wei, Da~Huang, Yifeng Lu, Denny Zhou, and Quoc~V. Le.
+\newblock Simple synthetic data reduces sycophancy in large language models,
+  2023.
+
+\bibitem{chen2024reconcile}
+Justin Chih-Yao Chen, Swarnadeep Saha, and Mohit Bansal.
+\newblock {R}e{C}oncile: Round-table conference improves reasoning via
+  consensus among diverse {LLM}s.
+\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em
+  Proceedings of the 62nd Annual Meeting of the Association for Computational
+  Linguistics (Volume 1: Long Papers)}, pages 7066--7085, Bangkok, Thailand,
+  August 2024. Association for Computational Linguistics.
+
+\bibitem{guo2017calibration}
+Chuan Guo, Geoff Pleiss, Yu~Sun, and Kilian~Q. Weinberger.
+\newblock On calibration of modern neural networks.
+\newblock In {\em Proceedings of the 34th International Conference on Machine
+  Learning}, volume~70 of {\em Proceedings of Machine Learning Research}, pages
+  1321--1330, 2017.
+
+\bibitem{zhu2026demystifying}
+Xiaochen Zhu, Caiqi Zhang, Yizhou Chi, Tom Stafford, Nigel Collier, and Andreas
+  Vlachos.
+\newblock Demystifying multi-agent debate: The role of confidence and
+  diversity.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2026}, pages 33909--33930, San Diego, California, United States, 2026.
+  Association for Computational Linguistics.
+
+\bibitem{lewis2020retrieval}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive {NLP} tasks.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~33, pages 9459--9474, 2020.
 
 \bibitem{li2024survey}
 Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.
@@ -147,6 +229,51 @@ Yuru Wang, Kaiyan Zhang, Kai Tian, Sihang Zeng, Xingtai Lv, Ning Ding, Biqing
   Language Processing (MathNLP 2025)}, pages 50--61, Suzhou, China, 2025.
   Association for Computational Linguistics.
 
+\bibitem{li-etal-2024-improving-multi}
+Yunxuan Li, Yibing Du, Jiageng Zhang, Le~Hou, Peter Grabowski, Yeqing Li, and
+  Eugene Ie.
+\newblock Improving multi-agent debate with sparse communication topology.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2024}, pages 7281--7294, Miami, Florida, USA, November 2024.
+  Association for Computational Linguistics.
+
+\bibitem{zeng2025s2mad}
+Yuting Zeng, Weizhe Huang, Lei Jiang, Tongxuan Liu, XiTai Jin, Tianying Chen,
+  Jing Li, and Xiaohua Xu.
+\newblock {S$^2$-MAD}: Breaking the token barrier to enhance multi-agent debate
+  efficiency.
+\newblock In {\em Proceedings of the 2025 Conference of the Nations of the
+  Americas Chapter of the Association for Computational Linguistics: Human
+  Language Technologies (Volume 1: Long Papers)}, pages 9393--9408, 2025.
+
+\bibitem{subramaniam2025multiagent}
+Vighnesh Subramaniam, Yilun Du, Joshua~B. Tenenbaum, Antonio Torralba, Shuang
+  Li, and Igor Mordatch.
+\newblock Multiagent finetuning: Self improvement with diverse reasoning
+  chains.
+\newblock In {\em The Thirteenth International Conference on Learning
+  Representations}, 2025.
+
+\bibitem{wang2025learning}
+Haotian Wang, Xiyuan Du, Weijiang Yu, Qianglong Chen, Kun Zhu, Zheng Chu, Lian
+  Yan, and Yi~Guan.
+\newblock Learning to break: Knowledge-enhanced reasoning in multi-agent debate
+  system.
+\newblock {\em Neurocomputing}, 618:129063, 2025.
+
+\bibitem{gomez2026multiagent}
+Susana G\'{o}mez~\'{A}lvarez, Alejandro Mozo~Quesada, Tom\'{a}s Navarro, Sergio
+  G\'{a}lvez~Rojas, and Francisco L\'{o}pez~Valverde.
+\newblock Multi-agent debate system based on large language models: structured
+  deliberation and validation in satellite communications.
+\newblock {\em Journal of Intelligent Information Systems}, August 2026.
+
+\bibitem{yang2025comprehensive}
+Wenli Yang, Lilian Some, Michael Bain, and Byeong Kang.
+\newblock A comprehensive survey on integrating large language models with
+  knowledge-based methods.
+\newblock {\em Knowledge-Based Systems}, 318:113503, 2025.
+
 \bibitem{gou2024critic}
 Zhibin Gou, Zhihong Shao, Yeyun Gong, Yelong Shen, Yujiu Yang, Nan Duan, and
   Weizhu Chen.
@@ -168,12 +295,78 @@ Xian~Yeow Lee, Shunichi Akatsuka, Lasitha Vidyaratne, Aman Kumar, Ahmed
 \newblock In {\em Workshop on Advancing LLM-Based Multi-Agent Collaboration at
   AAAI 2025}, 2025.
 
+\bibitem{wynn2025talk}
+Andrea Wynn, Harsh Satija, and Gillian~K. Hadfield.
+\newblock Talk isn't always cheap: Understanding failure modes in multi-agent
+  debate.
+\newblock {\em arXiv preprint arXiv:2509.05396}, 2025.
+
+\bibitem{cemri2025why}
+Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra,
+  Rishabh Tiwari, Kurt Keutzer, Aditya Parameswaran, Dan Klein, Kannan
+  Ramchandran, Matei Zaharia, Joseph~E. Gonzalez, and Ion Stoica.
+\newblock Why do multi-agent {LLM} systems fail?
+\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
+\newblock Datasets and Benchmarks Track.
+
+\bibitem{campedelli2025breakfree}
+Gian~Maria Campedelli, Nicol\`{o} Penzo, Massimo Stefan, Roberto Dessi, Marco
+  Guerini, Bruno Lepri, and Jacopo Staiano.
+\newblock I want to break free! {P}ersuasion and anti-social behavior of {LLM}s
+  in multi-agent settings with social hierarchy.
+\newblock {\em Transactions on Machine Learning Research}, 2025.
+
+\bibitem{choi2025group}
+Min Choi, Keonwoo Kim, Sungwon Chae, and Sangyeop Baek.
+\newblock An empirical study of group conformity in multi-agent systems.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2025}, pages 5123--5139. Association for Computational Linguistics, 2025.
+
+\bibitem{ma2026sycophancy}
+Huanhuan Ma, Henry~Peng Zou, Chengze Li, Enze Ma, Yunyue Su, and Philip~S. Yu.
+\newblock Sycophancy suppression can impair rational updating: Anti-sycophancy
+  should preserve the ability to update.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2026}, pages 25499--25515. Association for Computational Linguistics,
+  2026.
+
 \bibitem{cui2026freemad}
 Yu~Cui, Hang Fu, Haibin Zhang, Licheng Wang, and Cong Zuo.
 \newblock {FREE-MAD}: Consensus-free multi-agent debate.
 \newblock In {\em Findings of the Association for Computational Linguistics:
   ACL 2026}, pages 31977--31997, San Diego, California, United States, July
   2026. Association for Computational Linguistics.
+
+\bibitem{liu2025breaking}
+Yexiang Liu, Jie Cao, Zekun Li, Ran He, and Tieniu Tan.
+\newblock Breaking mental set to improve reasoning through diverse multi-agent
+  debate.
+\newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em
+  International Conference on Learning Representations}, 2025.
+
+\bibitem{smit2024mad}
+Andries~Petrus Smit, Nathan Grinsztajn, Paul Duckworth, Thomas~D. Barrett, and
+  Arnu Pretorius.
+\newblock Should we be going {MAD}? {A} look at multi-agent debate strategies
+  for {LLM}s.
+\newblock In {\em Proceedings of the 41st International Conference on Machine
+  Learning}, volume 235 of {\em Proceedings of Machine Learning Research},
+  pages 45883--45905. PMLR, 2024.
+
+\bibitem{chan2024chateval}
+Chi-Min Chan, Weize Chen, Yusheng Su, Jianxuan Yu, Wei Xue, Shanghang Zhang,
+  Jie Fu, and Zhiyuan Liu.
+\newblock {ChatEval}: Towards better {LLM}-based evaluators through multi-agent
+  debate.
+\newblock In {\em The Twelfth International Conference on Learning
+  Representations}, 2024.
+
+\bibitem{koehn2004statistical}
+Philipp Koehn.
+\newblock Statistical significance tests for machine translation evaluation.
+\newblock In {\em Proceedings of the 2004 Conference on Empirical Methods in
+  Natural Language Processing}, pages 388--395, Barcelona, Spain, July 2004.
+  Association for Computational Linguistics.
 
 \bibitem{chen2025self}
 Chien-Hung Chen, Hen-Hsen Huang, and Hsin-Hsi Chen.
@@ -189,6 +382,103 @@ Priya Pitre, Gaurav Srivastava, Lu~Zhang, Le~Wang, Naren Ramakrishnan, and Xuan
 \newblock A diagnostic study of multi-agent llms for real-world debates.
 \newblock In {\em Proceedings of the 43rd International Conference on Machine
   Learning}, volume 306 of {\em PMLR}, Seoul, South Korea, 2026.
+
+\bibitem{jin2026r2mad}
+Xuanfa Jin, Zhijian Ma, Yongcheng Zeng, Xinyu Cui, Haifeng Zhang, and Jun Wang.
+\newblock Remember and reweight: Enhancing multi-agent debate with experience
+  memory and confidence estimation.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2026}, 2026.
+\newblock arXiv:2609.03619.
+
+\bibitem{he2026trust}
+Pengfei He, Zhenwei Dai, Xianfeng Tang, Yue Xing, Hui Liu, Jingying Zeng,
+  Qiankun Peng, Shrivats Agrawal, Samarth Varshney, Suhang Wang, Jiliang Tang,
+  and Qi~He.
+\newblock To trust or not to trust: Attention-based trust management for {LLM}
+  multi-agent systems.
+\newblock In {\em Proceedings of the 64th Annual Meeting of the Association for
+  Computational Linguistics}, 2026.
+\newblock Main conference; arXiv:2506.02546.
+
+\bibitem{kasprova2026polite}
+Vira Kasprova, Amruta Parulekar, Abdulrahman AlRabah, Krishna Agaram, Ritwik
+  Garg, Sagar Jha, Nimet~Beyza Bozdag, and Dilek Hakkani-T{\"u}r.
+\newblock Too polite to disagree: Understanding sycophancy propagation in
+  multi-agent systems.
+\newblock In {\em Proceedings of the 27th Annual Meeting of the Special
+  Interest Group on Discourse and Dialogue}, pages 795--814, Atlanta, Georgia,
+  USA, 2026. Association for Computational Linguistics.
+
+\bibitem{ebrahimi2025adversary}
+Sana Ebrahimi, Mohsen Dehghankar, and Abolfazl Asudeh.
+\newblock An adversary-resistant multi-agent {LLM} system via credibility
+  scoring.
+\newblock In {\em Proceedings of the 14th International Joint Conference on
+  Natural Language Processing and the 4th Conference of the Asia-Pacific
+  Chapter of the Association for Computational Linguistics}, pages 1676--1693.
+  The Asian Federation of Natural Language Processing and the Association for
+  Computational Linguistics, 2025.
+
+\bibitem{xu2026gavel}
+Ruoyu Xu, Gaoxiang Li, and Victor~S. Sheng.
+\newblock {GAVEL}: Evidence-contract debate with mechanized scrutiny for
+  provenance-grounded fact-checking.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  ACL 2026}, 2026.
+
+\bibitem{he2026debatecv}
+Haorui He, Yupeng Li, Dacheng Wen, Yang Chen, Reynold Cheng, Donglong Chen, and
+  Francis C.~M. Lau.
+\newblock Debating truth: Debate-driven claim verification with multiple large
+  language model agents.
+\newblock In {\em Proceedings of the ACM Web Conference 2026}, 2026.
+\newblock arXiv:2507.19090.
+
+\bibitem{truong2026terarag}
+Huyen~Ngoc Truong, Thien Le~Truong Nguyen, Quang Van~Huy Nguyen, Truc
+  Pham~Thanh Tran, Minh~Anh Hoang, and Tran~Khanh Dang.
+\newblock {TERA-RAG}: Temporal and epistemic reliability for multi-agent
+  debate.
+\newblock In {\em 2026 23rd International Joint Conference on Computer Science
+  and Software Engineering (JCSSE)}, 2026.
+
+\bibitem{ai2026beyond}
+Rui Ai, Yuqi Pan, David Simchi-Levi, Milind Tambe, and Haifeng Xu.
+\newblock Beyond majority voting: {LLM} aggregation by leveraging higher-order
+  information.
+\newblock In {\em Proceedings of the 43rd International Conference on Machine
+  Learning (ICML 2026)}, 2026.
+
+\bibitem{zheng2024mcqbias}
+Chujie Zheng, Hao Zhou, Fandong Meng, Jie Zhou, and Minlie Huang.
+\newblock Large language models are not robust multiple choice selectors.
+\newblock In {\em The Twelfth International Conference on Learning
+  Representations (ICLR 2024)}, 2024.
+
+\bibitem{min2023factscore}
+Sewon Min, Kalpesh Krishna, Xinxi Lyu, Mike Lewis, Wen-tau Yih, Pang Koh, Mohit
+  Iyyer, Luke Zettlemoyer, and Hannaneh Hajishirzi.
+\newblock {FActScore}: Fine-grained atomic evaluation of factual precision in
+  long form text generation.
+\newblock In {\em Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing}, pages 12076--12100. Association for
+  Computational Linguistics, 2023.
+
+\bibitem{sarrouti2021healthver}
+Mourad Sarrouti, Asma Ben~Abacha, Yassine Mrabet, and Dina Demner-Fushman.
+\newblock Evidence-based fact-checking of health-related claims.
+\newblock In {\em Findings of the Association for Computational Linguistics:
+  EMNLP 2021}, pages 3499--3512, Punta Cana, Dominican Republic, 2021.
+  Association for Computational Linguistics.
+
+\bibitem{wadden2020fact}
+David Wadden, Shanchuan Lin, Kyle Lo, Lucy~Lu Wang, Madeleine van Zuylen, Arman
+  Cohan, and Hannaneh Hajishirzi.
+\newblock Fact or fiction: Verifying scientific claims.
+\newblock In {\em Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 7534--7550. Association for
+  Computational Linguistics, 2020.
 
 \bibitem{rein2024gpqa}
 David Rein, Betty~Li Hou, Asa~Cooper Stickland, Jackson Petty, Richard~Yuanzhe
@@ -213,5 +503,101 @@ Long Phan, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, et~al.
   capabilities.
 \newblock {\em Nature}, 649:1139--1146, 2026.
 \newblock arXiv:2501.14249; Humanity's Last Exam.
+
+\bibitem{dekoninck2026matharena}
+Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K\'{a}ri R\"{o}gnvaldsson,
+  Ivo Petrov, Chenhao Sun, and Martin~T. Vechev.
+\newblock Beyond benchmarks: {MathArena} as an evaluation platform for
+  mathematics with {LLM}s.
+\newblock {\em arXiv preprint arXiv:2605.00674}, 2026.
+
+\bibitem{gao2023enabling}
+Tianyu Gao, Howard Yen, Jiatong Yu, and Danqi Chen.
+\newblock Enabling large language models to generate text with citations.
+\newblock In {\em Proceedings of the 2023 Conference on Empirical Methods in
+  Natural Language Processing}, pages 6465--6488. Association for Computational
+  Linguistics, 2023.
+
+\bibitem{cohen1960coefficient}
+Jacob Cohen.
+\newblock A coefficient of agreement for nominal scales.
+\newblock {\em Educational and Psychological Measurement}, 20(1):37--46, 1960.
+
+\bibitem{krippendorff2004reliability}
+Klaus Krippendorff.
+\newblock Reliability in content analysis: Some common misconceptions and
+  recommendations.
+\newblock {\em Human Communication Research}, 30(3):411--433, 2004.
+
+\bibitem{nosek2018preregistration}
+Brian~A. Nosek, Charles~R. Ebersole, Alexander~C. DeHaven, and David~T. Mellor.
+\newblock The preregistration revolution.
+\newblock {\em Proceedings of the National Academy of Sciences},
+  115(11):2600--2606, 2018.
+
+\bibitem{holm1979simple}
+Sture Holm.
+\newblock A simple sequentially rejective multiple test procedure.
+\newblock {\em Scandinavian Journal of Statistics}, 6(2):65--70, 1979.
+
+\bibitem{mcnemar1947note}
+Quinn McNemar.
+\newblock Note on the sampling error of the difference between correlated
+  proportions or percentages.
+\newblock {\em Psychometrika}, 12(2):153--157, 1947.
+
+\bibitem{efron1993introduction}
+Bradley Efron and Robert~J. Tibshirani.
+\newblock {\em An Introduction to the Bootstrap}.
+\newblock Chapman \& Hall/CRC, New York, 1993.
+
+\bibitem{card2020little}
+Dallas Card, Peter Henderson, Urvashi Khandelwal, Robin Jia, Kyle Mahowald, and
+  Dan Jurafsky.
+\newblock With little power comes great responsibility.
+\newblock In {\em Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 9263--9274, Online, 2020.
+  Association for Computational Linguistics.
+
+\bibitem{pineau2021improving}
+Joelle Pineau, Philippe Vincent-Lamarre, Koustuv Sinha, Vincent Larivi{\`e}re,
+  Alina Beygelzimer, Florence d'Alch{\'e} Buc, Emily Fox, and Hugo Larochelle.
+\newblock Improving reproducibility in machine learning research (a report from
+  the {NeurIPS} 2019 reproducibility program).
+\newblock {\em Journal of Machine Learning Research}, 22(164):1--20, 2021.
+
+\bibitem{zheng2023judging}
+Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao
+  Zhuang, Zi~Lin, Zhuohan Li, Dacheng Li, Eric~P. Xing, Hao Zhang, Joseph~E.
+  Gonzalez, and Ion Stoica.
+\newblock Judging {LLM}-as-a-judge with {MT-Bench} and {Chatbot Arena}.
+\newblock In {\em NeurIPS 2023 Datasets and Benchmarks Track}, 2023.
+
+\bibitem{wang2024large}
+Peiyi Wang, Lei Li, Liang Chen, Zefan Cai, Dawei Zhu, Binghuai Lin, Yunbo Cao,
+  Lingpeng Kong, Qi~Liu, Tianyu Liu, and Zhifang Sui.
+\newblock Large language models are not fair evaluators.
+\newblock In {\em Proceedings of the 62nd Annual Meeting of the Association for
+  Computational Linguistics (Volume 1: Long Papers)}, pages 9440--9450,
+  Bangkok, Thailand, 2024. Association for Computational Linguistics.
+
+\bibitem{gema2025mmulredux}
+Aryo~Pradipta Gema, Joshua Ong~Jun Leang, Giwon Hong, Alessio Devoto, Alberto
+  Carlo~Maria Mancino, Rohit Saxena, Xuanli He, Yu~Zhao, Xiaotang Du,
+  Mohammad~Reza Ghasemi~Madani, Claire Barale, Robert McHardy, Joshua Harris,
+  Jean Kaddour, Emile Van~Krieken, and Pasquale Minervini.
+\newblock Are we done with {MMLU}?
+\newblock In {\em Proceedings of the 2025 Conference of the Nations of the
+  Americas Chapter of the Association for Computational Linguistics: Human
+  Language Technologies (Volume 1: Long Papers)}, pages 5069--5096,
+  Albuquerque, New Mexico, 2025. Association for Computational Linguistics.
+
+\bibitem{plank2022labelvariation}
+Barbara Plank.
+\newblock The ``problem'' of human label variation: On ground truth in data,
+  modeling and evaluation.
+\newblock In {\em Proceedings of the 2022 Conference on Empirical Methods in
+  Natural Language Processing}, pages 10671--10682, Abu Dhabi, United Arab
+  Emirates, 2022. Association for Computational Linguistics.
 
 \end{thebibliography}

@@ -2,10 +2,10 @@
 \contentsline {figure}{\numberline {1.1}{\ignorespaces End-to-end flow: seeded option rendering, three-round debate, claim decomposition, claim-domain retrieval, verifier labels, logit accumulation with one softmax and a simplex projection, one-shot injection during revision, and trust-weighted aggregation using the final trust vector.}}{3}{figure.1.1}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector.}}{11}{figure.3.1}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation.}}{12}{figure.3.2}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Mock-up of the command-line interface for running experiments and writing JSON result packages.}}{13}{figure.3.3}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}}{13}{figure.3.4}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector.}}{13}{figure.3.1}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation.}}{14}{figure.3.2}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Mock-up of the command-line interface for running experiments and writing JSON result packages.}}{15}{figure.3.3}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}}{15}{figure.3.4}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

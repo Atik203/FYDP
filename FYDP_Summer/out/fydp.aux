@@ -43,10 +43,21 @@
 \newlabel{fig:methodology-flow}{{1.1}{3}{End-to-end flow: seeded option rendering, three-round debate, claim decomposition, claim-domain retrieval, verifier labels, logit accumulation with one softmax and a simplex projection, one-shot injection during revision, and trust-weighted aggregation using the final trust vector}{figure.1.1}{}}
 \citation{wei2022chain,zhang2025from}
 \citation{du2024improving}
+\citation{wang2023selfconsistency}
+\citation{liang2024divergent}
+\citation{pham2024cipher}
 \citation{wang-etal-2024-rethinking-bounds,estornell2024multillm}
 \citation{pitre-etal-2025-consensagent,sharma2024sycophancy}
+\citation{yao2025peacemaker}
+\citation{petrov2025brokenmath}
+\citation{perez2023discovering}
+\citation{wei2023simple}
 \citation{yoffe-etal-2025-debunc}
+\citation{chen2024reconcile}
+\citation{guo2017calibration}
+\citation{zhu2026demystifying}
 \citation{yoffe-etal-2025-debunc}
+\citation{lewis2020retrieval}
 \@writefile{toc}{\contentsline {chapter}{\numberline {2}Background}{4}{chapter.2}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -65,10 +76,14 @@
 \citation{kushwaha2026agentbased}
 \citation{ueda2025exploring}
 \citation{wang2025scalability}
+\citation{li-etal-2024-improving-multi}
+\citation{zeng2025s2mad}
+\citation{subramaniam2025multiagent}
+\citation{wang2025learning}
+\citation{gomez2026multiagent}
+\citation{yang2025comprehensive}
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}Literature Review}{5}{section.2.2}\protected@file@percent }
 \newlabel{sec:literature-review}{{2.2}{5}{Literature Review}{section.2.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Similar Applications}{5}{subsection.2.2.1}\protected@file@percent }
-\newlabel{subsec:similar-applications}{{2.2.1}{5}{Similar Applications}{subsection.2.2.1}{}}
 \citation{wei2022chain}
 \citation{du2024improving}
 \citation{gou2024critic}
@@ -79,16 +94,43 @@
 \citation{kushwaha2026agentbased}
 \citation{cau2025selective}
 \citation{yeow2025reliable}
+\citation{wynn2025talk}
+\citation{cemri2025why}
+\citation{campedelli2025breakfree}
+\citation{choi2025group}
+\citation{ma2026sycophancy}
 \citation{wang-etal-2024-rethinking-bounds}
 \citation{choi2025debate}
 \citation{cui2026freemad}
 \citation{zhou2025reso}
+\citation{liu2025breaking}
+\citation{smit2024mad}
+\citation{chan2024chateval}
+\citation{koehn2004statistical}
+\citation{wang2023selfconsistency}
 \citation{ibrahim2026training}
 \citation{chen2025self}
 \citation{pitre2026diagnostic}
 \citation{pitre2026diagnostic}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.1}Similar Applications}{6}{subsection.2.2.1}\protected@file@percent }
+\newlabel{subsec:similar-applications}{{2.2.1}{6}{Similar Applications}{subsection.2.2.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2.2}Related Research}{6}{subsection.2.2.2}\protected@file@percent }
 \newlabel{subsec:related-research}{{2.2.2}{6}{Related Research}{subsection.2.2.2}{}}
+\citation{yoffe-etal-2025-debunc}
+\citation{jin2026r2mad}
+\citation{he2026trust}
+\citation{kasprova2026polite}
+\citation{ebrahimi2025adversary}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2.3}Positioning against Recent Systems}{8}{subsection.2.2.3}\protected@file@percent }
+\newlabel{subsec:positioning}{{2.2.3}{8}{Positioning against Recent Systems}{subsection.2.2.3}{}}
+\citation{xu2026gavel}
+\citation{he2026debatecv}
+\citation{truong2026terarag}
+\citation{kushwaha2026agentbased}
+\citation{pitre-etal-2025-consensagent}
+\citation{he2026minority}
+\citation{yao2025peacemaker}
+\citation{ai2026beyond}
 \citation{fan2026imad}
 \citation{pitre-etal-2025-consensagent}
 \citation{yoffe-etal-2025-debunc}
@@ -96,155 +138,171 @@
 \citation{wang-etal-2024-rethinking-bounds}
 \citation{gou2024critic}
 \citation{zhou2025reso}
-\@writefile{toc}{\contentsline {section}{\numberline {2.3}Gap Analysis}{7}{section.2.3}\protected@file@percent }
-\newlabel{sec:gap-analysis}{{2.3}{7}{Gap Analysis}{section.2.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2.4}Summary}{8}{section.2.4}\protected@file@percent }
-\newlabel{sec:background-summary}{{2.4}{8}{Summary}{section.2.4}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}Project Design}{9}{chapter.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2.3}Gap Analysis}{9}{section.2.3}\protected@file@percent }
+\newlabel{sec:gap-analysis}{{2.3}{9}{Gap Analysis}{section.2.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2.4}Summary}{10}{section.2.4}\protected@file@percent }
+\newlabel{sec:background-summary}{{2.4}{10}{Summary}{section.2.4}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Project Design}{11}{chapter.3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{chapter:design}{{3}{9}{Project Design}{chapter.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Requirement Analysis}{9}{section.3.1}\protected@file@percent }
-\newlabel{sec:requirement-analysis}{{3.1}{9}{Requirement Analysis}{section.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Functional and Nonfunctional Requirements}{9}{subsection.3.1.1}\protected@file@percent }
-\newlabel{subsec:requirements}{{3.1.1}{9}{Functional and Nonfunctional Requirements}{subsection.3.1.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Functional requirements and their verification. Gate-tested means the path runs without a GPU; paid-run evidence is still outstanding where marked.}}{10}{table.3.1}\protected@file@percent }
-\newlabel{tab:functional-requirements}{{3.1}{10}{Functional requirements and their verification. Gate-tested means the path runs without a GPU; paid-run evidence is still outstanding where marked}{table.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Context Diagram}{11}{subsection.3.1.2}\protected@file@percent }
-\newlabel{subsec:context-diagram}{{3.1.2}{11}{Context Diagram}{subsection.3.1.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector.}}{11}{figure.3.1}\protected@file@percent }
-\newlabel{fig:context-diagram}{{3.1}{11}{Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector}{figure.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Data Flow Diagram Level 1}{12}{subsection.3.1.3}\protected@file@percent }
-\newlabel{subsec:dfd-level1}{{3.1.3}{12}{Data Flow Diagram Level 1}{subsection.3.1.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation.}}{12}{figure.3.2}\protected@file@percent }
-\newlabel{fig:dfd-level1}{{3.2}{12}{Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation}{figure.3.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}UI Design}{12}{subsection.3.1.4}\protected@file@percent }
-\newlabel{subsec:ui-design}{{3.1.4}{12}{UI Design}{subsection.3.1.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Mock-up of the command-line interface for running experiments and writing JSON result packages.}}{13}{figure.3.3}\protected@file@percent }
-\newlabel{fig:cli}{{3.3}{13}{Mock-up of the command-line interface for running experiments and writing JSON result packages}{figure.3.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}}{13}{figure.3.4}\protected@file@percent }
-\newlabel{fig:dashboard}{{3.4}{13}{Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts}{figure.3.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Detailed Methodology and Design}{13}{section.3.2}\protected@file@percent }
-\newlabel{sec:detailed-methodology}{{3.2}{13}{Detailed Methodology and Design}{section.3.2}{}}
-\newlabel{eq:trust-update}{{3.1}{15}{Trust operator}{equation.3.1}{}}
-\newlabel{eq:trust-simplex}{{3.2}{15}{Trust operator}{equation.3.2}{}}
-\newlabel{eq:weighted-aggregation}{{3.3}{16}{Weighted aggregation}{equation.3.3}{}}
+\newlabel{chapter:design}{{3}{11}{Project Design}{chapter.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Requirement Analysis}{11}{section.3.1}\protected@file@percent }
+\newlabel{sec:requirement-analysis}{{3.1}{11}{Requirement Analysis}{section.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Functional and Nonfunctional Requirements}{11}{subsection.3.1.1}\protected@file@percent }
+\newlabel{subsec:requirements}{{3.1.1}{11}{Functional and Nonfunctional Requirements}{subsection.3.1.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.1}{\ignorespaces Functional requirements and their verification. Gate-tested means the path runs without a GPU; paid-run evidence is still outstanding where marked.}}{12}{table.3.1}\protected@file@percent }
+\newlabel{tab:functional-requirements}{{3.1}{12}{Functional requirements and their verification. Gate-tested means the path runs without a GPU; paid-run evidence is still outstanding where marked}{table.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Context Diagram}{13}{subsection.3.1.2}\protected@file@percent }
+\newlabel{subsec:context-diagram}{{3.1.2}{13}{Context Diagram}{subsection.3.1.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector.}}{13}{figure.3.1}\protected@file@percent }
+\newlabel{fig:context-diagram}{{3.1}{13}{Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector}{figure.3.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Data Flow Diagram Level 1}{14}{subsection.3.1.3}\protected@file@percent }
+\newlabel{subsec:dfd-level1}{{3.1.3}{14}{Data Flow Diagram Level 1}{subsection.3.1.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation.}}{14}{figure.3.2}\protected@file@percent }
+\newlabel{fig:dfd-level1}{{3.2}{14}{Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation}{figure.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}UI Design}{14}{subsection.3.1.4}\protected@file@percent }
+\newlabel{subsec:ui-design}{{3.1.4}{14}{UI Design}{subsection.3.1.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces Mock-up of the command-line interface for running experiments and writing JSON result packages.}}{15}{figure.3.3}\protected@file@percent }
+\newlabel{fig:cli}{{3.3}{15}{Mock-up of the command-line interface for running experiments and writing JSON result packages}{figure.3.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}}{15}{figure.3.4}\protected@file@percent }
+\newlabel{fig:dashboard}{{3.4}{15}{Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts}{figure.3.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Detailed Methodology and Design}{15}{section.3.2}\protected@file@percent }
+\newlabel{sec:detailed-methodology}{{3.2}{15}{Detailed Methodology and Design}{section.3.2}{}}
+\citation{zheng2024mcqbias}
+\citation{min2023factscore}
+\newlabel{eq:trust-update}{{3.1}{17}{Trust operator}{equation.3.1}{}}
+\newlabel{eq:trust-simplex}{{3.2}{17}{Trust operator}{equation.3.2}{}}
+\newlabel{eq:weighted-aggregation}{{3.3}{18}{Weighted aggregation}{equation.3.3}{}}
+\citation{sarrouti2021healthver}
+\citation{wadden2020fact}
+\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18.}}{20}{table.3.2}\protected@file@percent }
+\newlabel{tab:arms}{{3.2}{20}{Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18}{table.3.2}{}}
 \citation{rein2024gpqa}
 \citation{wang2024mmlupro}
 \citation{phan2026hle}
-\@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18.}}{18}{table.3.2}\protected@file@percent }
-\newlabel{tab:arms}{{3.2}{18}{Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18}{table.3.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset.}}{18}{table.3.3}\protected@file@percent }
-\newlabel{tab:datasets}{{3.3}{18}{Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset}{table.3.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Project Plan}{20}{section.3.3}\protected@file@percent }
-\newlabel{sec:project-plan}{{3.3}{20}{Project Plan}{section.3.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Project phases, dates, deliverables, and gates.}}{20}{table.3.4}\protected@file@percent }
-\newlabel{tab:phases}{{3.4}{20}{Project phases, dates, deliverables, and gates}{table.3.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells.}}{21}{table.3.5}\protected@file@percent }
-\newlabel{tab:budget}{{3.5}{21}{Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells}{table.3.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Task Allocation}{21}{section.3.4}\protected@file@percent }
-\newlabel{sec:task-allocation}{{3.4}{21}{Task Allocation}{section.3.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Module ownership across the six team members.}}{21}{table.3.6}\protected@file@percent }
-\newlabel{tab:tasks}{{3.6}{21}{Module ownership across the six team members}{table.3.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.5}Summary}{22}{section.3.5}\protected@file@percent }
-\newlabel{sec:design-summary}{{3.5}{22}{Summary}{section.3.5}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Implementation and Results}{23}{chapter.4}\protected@file@percent }
+\citation{petrov2025brokenmath,dekoninck2026matharena}
+\citation{gao2023enabling}
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset.}}{21}{table.3.3}\protected@file@percent }
+\newlabel{tab:datasets}{{3.3}{21}{Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset}{table.3.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}Project Plan}{22}{section.3.3}\protected@file@percent }
+\newlabel{sec:project-plan}{{3.3}{22}{Project Plan}{section.3.3}{}}
+\citation{cohen1960coefficient}
+\citation{krippendorff2004reliability}
+\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Project phases, dates, deliverables, and gates.}}{23}{table.3.4}\protected@file@percent }
+\newlabel{tab:phases}{{3.4}{23}{Project phases, dates, deliverables, and gates}{table.3.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.5}{\ignorespaces Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells.}}{23}{table.3.5}\protected@file@percent }
+\newlabel{tab:budget}{{3.5}{23}{Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells}{table.3.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}Task Allocation}{24}{section.3.4}\protected@file@percent }
+\newlabel{sec:task-allocation}{{3.4}{24}{Task Allocation}{section.3.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.6}{\ignorespaces Module ownership across the six team members.}}{24}{table.3.6}\protected@file@percent }
+\newlabel{tab:tasks}{{3.6}{24}{Module ownership across the six team members}{table.3.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Summary}{24}{section.3.5}\protected@file@percent }
+\newlabel{sec:design-summary}{{3.5}{24}{Summary}{section.3.5}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Implementation and Results}{25}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{chapter:implementation}{{4}{23}{Implementation and Results}{chapter.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Environment Setup}{23}{section.4.1}\protected@file@percent }
-\newlabel{sec:environment-setup}{{4.1}{23}{Environment Setup}{section.4.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Development and final serving configurations. The final stack is pinned but was not smoke-tested at the time of this report.}}{24}{table.4.1}\protected@file@percent }
-\newlabel{tab:stack}{{4.1}{24}{Development and final serving configurations. The final stack is pinned but was not smoke-tested at the time of this report}{table.4.1}{}}
-\newlabel{eq:impl-trust-update}{{4.1}{26}{Implementation architecture}{equation.4.1}{}}
-\newlabel{eq:impl-trust-simplex}{{4.2}{26}{Implementation architecture}{equation.4.2}{}}
-\newlabel{eq:impl-aggregation}{{4.3}{26}{Implementation architecture}{equation.4.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces P0 changes present in the implementation. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run.}}{28}{table.4.2}\protected@file@percent }
-\newlabel{tab:p0-changes}{{4.2}{28}{P0 changes present in the implementation. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run}{table.4.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Testing and Evaluation}{29}{section.4.2}\protected@file@percent }
-\newlabel{sec:testing-evaluation}{{4.2}{29}{Testing and Evaluation}{section.4.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Gate~0 measurements for the vanilla debate loop. These values validate serving, orchestration, and parsing; they do not measure trust or collapse.}}{30}{table.4.3}\protected@file@percent }
-\newlabel{tab:gate0}{{4.3}{30}{Gate~0 measurements for the vanilla debate loop. These values validate serving, orchestration, and parsing; they do not measure trust or collapse}{table.4.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Results and Discussion}{31}{section.4.3}\protected@file@percent }
-\newlabel{sec:results-discussion}{{4.3}{31}{Results and Discussion}{section.4.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Measured engineering results at the time of writing. None of these is an efficacy result.}}{32}{table.4.4}\protected@file@percent }
-\newlabel{tab:engineering-results}{{4.4}{32}{Measured engineering results at the time of writing. None of these is an efficacy result}{table.4.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Projected and target values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE; the AUROC, $\kappa $, verifier, and citation rows are gate thresholds or sample plans, not effect estimates.}}{33}{table.4.5}\protected@file@percent }
-\newlabel{tab:expected-results}{{4.5}{33}{Projected and target values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE; the AUROC, $\kappa $, verifier, and citation rows are gate thresholds or sample plans, not effect estimates}{table.4.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Summary}{34}{section.4.4}\protected@file@percent }
-\newlabel{sec:implementation-summary}{{4.4}{34}{Summary}{section.4.4}{}}
+\newlabel{chapter:implementation}{{4}{25}{Implementation and Results}{chapter.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Environment Setup}{25}{section.4.1}\protected@file@percent }
+\newlabel{sec:environment-setup}{{4.1}{25}{Environment Setup}{section.4.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Development and final serving configurations. The final stack is pinned but was not smoke-tested at the time of this report.}}{26}{table.4.1}\protected@file@percent }
+\newlabel{tab:stack}{{4.1}{26}{Development and final serving configurations. The final stack is pinned but was not smoke-tested at the time of this report}{table.4.1}{}}
+\newlabel{eq:impl-trust-update}{{4.1}{28}{Implementation architecture}{equation.4.1}{}}
+\newlabel{eq:impl-trust-simplex}{{4.2}{28}{Implementation architecture}{equation.4.2}{}}
+\newlabel{eq:impl-aggregation}{{4.3}{28}{Implementation architecture}{equation.4.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.2}{\ignorespaces P0 changes present in the implementation. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run.}}{30}{table.4.2}\protected@file@percent }
+\newlabel{tab:p0-changes}{{4.2}{30}{P0 changes present in the implementation. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run}{table.4.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Testing and Evaluation}{31}{section.4.2}\protected@file@percent }
+\newlabel{sec:testing-evaluation}{{4.2}{31}{Testing and Evaluation}{section.4.2}{}}
+\citation{nosek2018preregistration}
+\citation{holm1979simple}
+\citation{mcnemar1947note}
+\citation{efron1993introduction,koehn2004statistical}
+\citation{card2020little}
+\@writefile{lot}{\contentsline {table}{\numberline {4.3}{\ignorespaces Gate~0 measurements for the vanilla debate loop. These values validate serving, orchestration, and parsing; they do not measure trust or collapse.}}{32}{table.4.3}\protected@file@percent }
+\newlabel{tab:gate0}{{4.3}{32}{Gate~0 measurements for the vanilla debate loop. These values validate serving, orchestration, and parsing; they do not measure trust or collapse}{table.4.3}{}}
+\citation{pineau2021improving}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Results and Discussion}{33}{section.4.3}\protected@file@percent }
+\newlabel{sec:results-discussion}{{4.3}{33}{Results and Discussion}{section.4.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.4}{\ignorespaces Measured engineering results at the time of writing. None of these is an efficacy result.}}{34}{table.4.4}\protected@file@percent }
+\newlabel{tab:engineering-results}{{4.4}{34}{Measured engineering results at the time of writing. None of these is an efficacy result}{table.4.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.5}{\ignorespaces Projected and target values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE; the AUROC, $\kappa $, verifier, and citation rows are gate thresholds or sample plans, not effect estimates.}}{35}{table.4.5}\protected@file@percent }
+\newlabel{tab:expected-results}{{4.5}{35}{Projected and target values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE; the AUROC, $\kappa $, verifier, and citation rows are gate thresholds or sample plans, not effect estimates}{table.4.5}{}}
+\citation{zheng2023judging,wang2024large}
+\citation{gema2025mmulredux,plank2022labelvariation}
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Summary}{36}{section.4.4}\protected@file@percent }
+\newlabel{sec:implementation-summary}{{4.4}{36}{Summary}{section.4.4}{}}
 \citation{li2024survey}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Standards and Design Constraints}{35}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Standards and Design Constraints}{37}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Compliance with the Standards}{35}{section.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Software Standards}{35}{subsection.5.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{36}{subsection.5.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{36}{subsection.5.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Design Constraints}{37}{section.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Economic Constraint}{37}{subsection.5.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{37}{subsection.5.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{37}{subsection.5.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{37}{subsection.5.2.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{37}{subsection.5.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Compliance with the Standards}{37}{section.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Software Standards}{37}{subsection.5.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{38}{subsection.5.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{38}{subsection.5.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Design Constraints}{39}{section.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Economic Constraint}{39}{subsection.5.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{39}{subsection.5.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{39}{subsection.5.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{39}{subsection.5.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{39}{subsection.5.2.5}\protected@file@percent }
 \citation{wang2024mmlupro}
 \citation{rein2024gpqa}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{38}{subsection.5.2.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.7}Sustainability}{38}{subsection.5.2.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Cost Analysis}{38}{section.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Planning envelope for the project.}}{39}{table.5.1}\protected@file@percent }
-\newlabel{tab:budget}{{5.1}{39}{Planning envelope for the project}{table.5.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{39}{section.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{39}{subsection.5.4.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Compute plan and the one completed GPU run.}}{40}{table.5.2}\protected@file@percent }
-\newlabel{tab:budget-phase}{{5.2}{40}{Compute plan and the one completed GPU run}{table.5.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack).}}{40}{table.5.3}\protected@file@percent }
-\newlabel{tab:budget-alt}{{5.3}{40}{Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack)}{table.5.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Mapping with complex problem solving (Washington Accord P1--P7).}}{40}{table.5.4}\protected@file@percent }
-\newlabel{tab:p_solve}{{5.4}{40}{Mapping with complex problem solving (Washington Accord P1--P7)}{table.5.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{P1: Depth of Knowledge Required}{40}{section*.42}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P2: Range of Conflicting Requirements}{41}{section*.43}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P3: Depth of Analysis}{41}{section*.44}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P4: Familiarity of Issues}{41}{section*.45}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P5: Extent of Applicable Codes}{41}{section*.46}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P6: Extent of Stakeholder Involvement}{41}{section*.47}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{P7: Interdependence}{42}{section*.48}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Knowledge profile mapping for P1 (K1--K8).}}{42}{table.5.5}\protected@file@percent }
-\newlabel{tab:knowledge}{{5.5}{42}{Knowledge profile mapping for P1 (K1--K8)}{table.5.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{K1: Natural sciences}{43}{section*.49}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K2: Mathematics}{43}{section*.50}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K3: Engineering fundamentals}{43}{section*.51}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K4: Specialist knowledge}{43}{section*.52}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K5: Engineering methods}{43}{section*.53}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K6: Computational methods}{43}{section*.54}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K7: Codes and practices}{43}{section*.55}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{K8: Research and context}{43}{section*.56}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{44}{subsection.5.4.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Mapping with complex engineering activities (A1--A5).}}{44}{table.5.6}\protected@file@percent }
-\newlabel{tab:e_act}{{5.6}{44}{Mapping with complex engineering activities (A1--A5)}{table.5.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{A1: Range of Resources}{44}{section*.57}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{A2: Level of Interaction}{44}{section*.58}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{A3: Innovation}{44}{section*.59}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{A4: Consequences for Society and Environment}{44}{section*.60}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{A5: Familiarity}{45}{section*.61}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Program Outcomes}{45}{subsection.5.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces Mapping with program outcomes (PO1--PO12).}}{45}{table.5.7}\protected@file@percent }
-\newlabel{tab:po_map}{{5.7}{45}{Mapping with program outcomes (PO1--PO12)}{table.5.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.5}Summary}{45}{section.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusion}{47}{chapter.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{40}{subsection.5.2.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.7}Sustainability}{40}{subsection.5.2.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Cost Analysis}{40}{section.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Planning envelope for the project.}}{41}{table.5.1}\protected@file@percent }
+\newlabel{tab:budget}{{5.1}{41}{Planning envelope for the project}{table.5.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{41}{section.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{41}{subsection.5.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Compute plan and the one completed GPU run.}}{42}{table.5.2}\protected@file@percent }
+\newlabel{tab:budget-phase}{{5.2}{42}{Compute plan and the one completed GPU run}{table.5.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack).}}{42}{table.5.3}\protected@file@percent }
+\newlabel{tab:budget-alt}{{5.3}{42}{Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack)}{table.5.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Mapping with complex problem solving (Washington Accord P1--P7).}}{42}{table.5.4}\protected@file@percent }
+\newlabel{tab:p_solve}{{5.4}{42}{Mapping with complex problem solving (Washington Accord P1--P7)}{table.5.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{P1: Depth of Knowledge Required}{42}{section*.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P2: Range of Conflicting Requirements}{43}{section*.43}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P3: Depth of Analysis}{43}{section*.44}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P4: Familiarity of Issues}{43}{section*.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P5: Extent of Applicable Codes}{43}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P6: Extent of Stakeholder Involvement}{43}{section*.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{P7: Interdependence}{44}{section*.48}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Knowledge profile mapping for P1 (K1--K8).}}{44}{table.5.5}\protected@file@percent }
+\newlabel{tab:knowledge}{{5.5}{44}{Knowledge profile mapping for P1 (K1--K8)}{table.5.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{K1: Natural sciences}{45}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K2: Mathematics}{45}{section*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K3: Engineering fundamentals}{45}{section*.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K4: Specialist knowledge}{45}{section*.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K5: Engineering methods}{45}{section*.53}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K6: Computational methods}{45}{section*.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K7: Codes and practices}{45}{section*.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{K8: Research and context}{45}{section*.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{46}{subsection.5.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Mapping with complex engineering activities (A1--A5).}}{46}{table.5.6}\protected@file@percent }
+\newlabel{tab:e_act}{{5.6}{46}{Mapping with complex engineering activities (A1--A5)}{table.5.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{A1: Range of Resources}{46}{section*.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{A2: Level of Interaction}{46}{section*.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{A3: Innovation}{46}{section*.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{A4: Consequences for Society and Environment}{46}{section*.60}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{A5: Familiarity}{47}{section*.61}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Program Outcomes}{47}{subsection.5.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces Mapping with program outcomes (PO1--PO12).}}{47}{table.5.7}\protected@file@percent }
+\newlabel{tab:po_map}{{5.7}{47}{Mapping with program outcomes (PO1--PO12)}{table.5.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Summary}{47}{section.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusion}{49}{chapter.6}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{loa}{\addvspace {10\p@ }}
-\newlabel{chapter:conclusion}{{6}{47}{Conclusion}{chapter.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Summary}{47}{section.6.1}\protected@file@percent }
-\newlabel{sec:conclusion-summary}{{6.1}{47}{Summary}{section.6.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{47}{section.6.2}\protected@file@percent }
-\newlabel{sec:conclusion-limitations}{{6.2}{47}{Limitations}{section.6.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.3}Future Work}{48}{section.6.3}\protected@file@percent }
-\newlabel{sec:conclusion-future}{{6.3}{48}{Future Work}{section.6.3}{}}
+\newlabel{chapter:conclusion}{{6}{49}{Conclusion}{chapter.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Summary}{49}{section.6.1}\protected@file@percent }
+\newlabel{sec:conclusion-summary}{{6.1}{49}{Summary}{section.6.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Limitations}{49}{section.6.2}\protected@file@percent }
+\newlabel{sec:conclusion-limitations}{{6.2}{49}{Limitations}{section.6.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Future Work}{50}{section.6.3}\protected@file@percent }
+\newlabel{sec:conclusion-future}{{6.3}{50}{Future Work}{section.6.3}{}}
 \bibstyle{unsrt}
 \bibdata{fydp}
 \bibcite{du2024improving}{{1}{}{{}}{{}}}
@@ -260,21 +318,73 @@
 \bibcite{karpukhin2020dense}{{11}{}{{}}{{}}}
 \bibcite{kushwaha2026agentbased}{{12}{}{{}}{{}}}
 \bibcite{zhang2025from}{{13}{}{{}}{{}}}
-\bibcite{estornell2024multillm}{{14}{}{{}}{{}}}
-\bibcite{sharma2024sycophancy}{{15}{}{{}}{{}}}
-\bibcite{li2024survey}{{16}{}{{}}{{}}}
-\bibcite{zhou2025reso}{{17}{}{{}}{{}}}
-\bibcite{ueda2025exploring}{{18}{}{{}}{{}}}
-\bibcite{wang2025scalability}{{19}{}{{}}{{}}}
-\bibcite{gou2024critic}{{20}{}{{}}{{}}}
-\bibcite{cau2025selective}{{21}{}{{}}{{}}}
-\bibcite{yeow2025reliable}{{22}{}{{}}{{}}}
-\bibcite{cui2026freemad}{{23}{}{{}}{{}}}
-\bibcite{chen2025self}{{24}{}{{}}{{}}}
-\bibcite{pitre2026diagnostic}{{25}{}{{}}{{}}}
-\bibcite{rein2024gpqa}{{26}{}{{}}{{}}}
-\bibcite{wang2024mmlupro}{{27}{}{{}}{{}}}
-\bibcite{phan2026hle}{{28}{}{{}}{{}}}
-\@writefile{toc}{\contentsline {chapter}{References}{53}{chapter*.62}\protected@file@percent }
+\bibcite{wang2023selfconsistency}{{14}{}{{}}{{}}}
+\bibcite{liang2024divergent}{{15}{}{{}}{{}}}
+\bibcite{pham2024cipher}{{16}{}{{}}{{}}}
+\bibcite{estornell2024multillm}{{17}{}{{}}{{}}}
+\bibcite{sharma2024sycophancy}{{18}{}{{}}{{}}}
+\bibcite{yao2025peacemaker}{{19}{}{{}}{{}}}
+\bibcite{petrov2025brokenmath}{{20}{}{{}}{{}}}
+\bibcite{perez2023discovering}{{21}{}{{}}{{}}}
+\bibcite{wei2023simple}{{22}{}{{}}{{}}}
+\bibcite{chen2024reconcile}{{23}{}{{}}{{}}}
+\bibcite{guo2017calibration}{{24}{}{{}}{{}}}
+\bibcite{zhu2026demystifying}{{25}{}{{}}{{}}}
+\bibcite{lewis2020retrieval}{{26}{}{{}}{{}}}
+\bibcite{li2024survey}{{27}{}{{}}{{}}}
+\bibcite{zhou2025reso}{{28}{}{{}}{{}}}
+\bibcite{ueda2025exploring}{{29}{}{{}}{{}}}
+\bibcite{wang2025scalability}{{30}{}{{}}{{}}}
+\bibcite{li-etal-2024-improving-multi}{{31}{}{{}}{{}}}
+\bibcite{zeng2025s2mad}{{32}{}{{}}{{}}}
+\bibcite{subramaniam2025multiagent}{{33}{}{{}}{{}}}
+\bibcite{wang2025learning}{{34}{}{{}}{{}}}
+\bibcite{gomez2026multiagent}{{35}{}{{}}{{}}}
+\bibcite{yang2025comprehensive}{{36}{}{{}}{{}}}
+\bibcite{gou2024critic}{{37}{}{{}}{{}}}
+\bibcite{cau2025selective}{{38}{}{{}}{{}}}
+\bibcite{yeow2025reliable}{{39}{}{{}}{{}}}
+\bibcite{wynn2025talk}{{40}{}{{}}{{}}}
+\bibcite{cemri2025why}{{41}{}{{}}{{}}}
+\bibcite{campedelli2025breakfree}{{42}{}{{}}{{}}}
+\bibcite{choi2025group}{{43}{}{{}}{{}}}
+\bibcite{ma2026sycophancy}{{44}{}{{}}{{}}}
+\bibcite{cui2026freemad}{{45}{}{{}}{{}}}
+\bibcite{liu2025breaking}{{46}{}{{}}{{}}}
+\bibcite{smit2024mad}{{47}{}{{}}{{}}}
+\bibcite{chan2024chateval}{{48}{}{{}}{{}}}
+\bibcite{koehn2004statistical}{{49}{}{{}}{{}}}
+\bibcite{chen2025self}{{50}{}{{}}{{}}}
+\bibcite{pitre2026diagnostic}{{51}{}{{}}{{}}}
+\bibcite{jin2026r2mad}{{52}{}{{}}{{}}}
+\bibcite{he2026trust}{{53}{}{{}}{{}}}
+\bibcite{kasprova2026polite}{{54}{}{{}}{{}}}
+\bibcite{ebrahimi2025adversary}{{55}{}{{}}{{}}}
+\bibcite{xu2026gavel}{{56}{}{{}}{{}}}
+\bibcite{he2026debatecv}{{57}{}{{}}{{}}}
+\bibcite{truong2026terarag}{{58}{}{{}}{{}}}
+\bibcite{ai2026beyond}{{59}{}{{}}{{}}}
+\bibcite{zheng2024mcqbias}{{60}{}{{}}{{}}}
+\bibcite{min2023factscore}{{61}{}{{}}{{}}}
+\bibcite{sarrouti2021healthver}{{62}{}{{}}{{}}}
+\bibcite{wadden2020fact}{{63}{}{{}}{{}}}
+\bibcite{rein2024gpqa}{{64}{}{{}}{{}}}
+\bibcite{wang2024mmlupro}{{65}{}{{}}{{}}}
+\bibcite{phan2026hle}{{66}{}{{}}{{}}}
+\bibcite{dekoninck2026matharena}{{67}{}{{}}{{}}}
+\bibcite{gao2023enabling}{{68}{}{{}}{{}}}
+\bibcite{cohen1960coefficient}{{69}{}{{}}{{}}}
+\bibcite{krippendorff2004reliability}{{70}{}{{}}{{}}}
+\bibcite{nosek2018preregistration}{{71}{}{{}}{{}}}
+\bibcite{holm1979simple}{{72}{}{{}}{{}}}
+\bibcite{mcnemar1947note}{{73}{}{{}}{{}}}
+\bibcite{efron1993introduction}{{74}{}{{}}{{}}}
+\bibcite{card2020little}{{75}{}{{}}{{}}}
+\bibcite{pineau2021improving}{{76}{}{{}}{{}}}
+\bibcite{zheng2023judging}{{77}{}{{}}{{}}}
+\bibcite{wang2024large}{{78}{}{{}}{{}}}
+\bibcite{gema2025mmulredux}{{79}{}{{}}{{}}}
+\bibcite{plank2022labelvariation}{{80}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {chapter}{References}{60}{chapter*.62}\protected@file@percent }
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\gdef \@abspage@last{61}
+\gdef \@abspage@last{68}

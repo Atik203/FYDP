@@ -706,7 +706,7 @@ function FinalResultsSlide() {
               ],
               [
                 "Project report",
-                "61 pp · 17 pp",
+                "68 pp · 19 pp",
                 "report + journal, 0 undefined references",
               ],
               [
