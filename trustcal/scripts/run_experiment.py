@@ -38,6 +38,24 @@ def main() -> None:
     parser.add_argument("--no-progressive", action="store_true", help="ablation: full retrieval depth from round 1")
     parser.add_argument("--no-adaptive", action="store_true", help="ablation: update trust every round, even on unanimous panels")
     parser.add_argument(
+        "--placebo-mode",
+        choices=["off", "shuffle_verdicts"],
+        default="off",
+        help="WP-18: shuffle verdicts within each agent-round unit (requires --arm B8 and trust)",
+    )
+    parser.add_argument(
+        "--placebo-unit",
+        choices=["round_pool", "agent_round"],
+        default="round_pool",
+        help="WP-18 placebo unit: cross-agent round pool (Full default) or per-agent manipulation check",
+    )
+    parser.add_argument(
+        "--oracle-mode",
+        choices=["off", "gold_answer", "gold_evidence"],
+        default="off",
+        help="WP-18: gold-answer trust or gold-evidence substitution (requires --arm B8 and trust)",
+    )
+    parser.add_argument(
         "--inject",
         action="store_true",
         help="deliver fabricated-consensus pressure (B8+injection; B3+injection is the no-retrieval baseline)",
@@ -74,6 +92,9 @@ def main() -> None:
         adaptive_triggering=not args.no_adaptive,
         inject=args.inject,
         injection_scope=args.injection_scope,
+        placebo_mode=args.placebo_mode,
+        placebo_unit=args.placebo_unit,
+        oracle_mode=args.oracle_mode,
     )
     summary = run(cfg)
     print(summary.as_dict())

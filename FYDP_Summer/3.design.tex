@@ -35,7 +35,7 @@ Table~\ref{tab:functional-requirements} lists the functional requirements. Each 
     \hline
     FR8 & Deliver one fabricated wrong consensus to targeted agents between rounds, and record the manipulation & Injection protocol & Mock-tested; real-model run pending \\
     \hline
-    FR9 & Write one schema-valid record per question with answers, claims, evidence, verdicts, trust, injection, timing, and manifest hash & Runner and records & Gate-tested; 523-test suite \\
+    FR9 & Write one schema-valid record per question with answers, claims, evidence, verdicts, trust, injection, timing, and manifest hash & Runner and records & Gate-tested; 602-test suite \\
     \hline
     FR10 & Resume a run without duplicating completed questions, and refuse a changed manifest & Manifest and resume guard & Gate-tested; mismatch refused \\
     \hline
@@ -212,7 +212,7 @@ Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the prim
     \hline
     GPQA-Main & 400 & Primary evidence-grounded set & Pinned revision \\
     \hline
-    MMLU-Pro (STEM-intended) & 400 & Primary scale and robustness set; STEM filter pending & Pinned revision \\
+    MMLU-Pro (STEM, 7 categories) & 400 & Primary scale and robustness set; STEM filter implemented & Pinned revision \\
     \hline
     HLE & 200 & Ceiling control; abstention planned; not pooled & Pinned revision \\
     \hline
@@ -224,7 +224,7 @@ Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the prim
   \label{tab:datasets}
 \end{table}
 
-GPQA-Main is a gated CC BY 4.0 set of 448 graduate-level questions~\cite{rein2024gpqa}; the loader samples at most 400, and the usable pressure-eligible count is estimated at 270--360, so 400 is a cap rather than the analysable $n$. MMLU-Pro is a public MIT-licensed test set~\cite{wang2024mmlupro}; the current loader samples the full test split, and a STEM category filter is a pre-run requirement (the intended STEM subset is 6,696 questions). HLE is a gated MIT-licensed 200-item ceiling control~\cite{phan2026hle}; abstention is planned but not implemented. The released \texttt{configs/datasets.yaml} pins the 40-character revisions and the sampling seed, and gated text is not redistributed. BrokenMath, a sycophancy benchmark for theorem proving, and MathArena, a competition-mathematics evaluation platform, are excluded because their released splits are proof- or competition-only and do not match the multiple-choice endpoint~\cite{petrov2025brokenmath,dekoninck2026matharena}.
+GPQA-Main is a gated CC BY 4.0 set of 448 graduate-level questions~\cite{rein2024gpqa}; the loader samples at most 400, and the usable pressure-eligible count is estimated at 270--360, so 400 is a cap rather than the analysable $n$. MMLU-Pro is a public MIT-licensed test set~\cite{wang2024mmlupro}; the loader restricts it to the seven-category STEM subset used here (biology, chemistry, computer science, engineering, health sciences, mathematics, and physics), which is 6,696 questions at the pinned revision. The eligible-count record captures the pre-filter and post-filter totals, the realised category mix, and the excluded categories. HLE is a gated MIT-licensed 200-item ceiling control~\cite{phan2026hle}; abstention is planned but not implemented. The released \texttt{configs/datasets.yaml} pins the 40-character revisions and the sampling seed, and gated text is not redistributed. BrokenMath, a sycophancy benchmark for theorem proving, and MathArena, a competition-mathematics evaluation platform, are excluded because their released splits are proof- or competition-only and do not match the multiple-choice endpoint~\cite{petrov2025brokenmath,dekoninck2026matharena}.
 
 The benchmark ladder is 24 calibration items, 180 items for the Core floor, 300 items for the Full target, 600 as a stretch, and 800 as a no-go. A 300-item set with clean gold is better than a 600-item set with unreliable gold. The calibration batch is the first decision point: if the estimated annotation effort or defect rate is too high, the set is cut to 120 items rather than allowing the benchmark to delay the matrix.
 

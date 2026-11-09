@@ -1,0 +1,39 @@
+{
+  "snapshot": "2026-11-09",
+  "gate": "Phase N4 verifier audit",
+  "source": "scifact_dev",
+  "source_archive_sha256": "11c621288d41ac144d29b13b0f8503b3820b7d6e8b1f6ff24dff335c196d76be",
+  "candidates_sha256": "109a86e9472ea26f28b2b81baa88e67a3adca8ae484bf91f8101796f48ef41cf",
+  "seed": 0,
+  "target_pairs": 180,
+  "real_pairs": 180,
+  "placeholders": 0,
+  "source_gold_labels": {
+    "supported": 60,
+    "contradicted": 60,
+    "unverifiable": 60
+  },
+  "verifier_labels": {
+    "supported": 29,
+    "contradicted": 33,
+    "unverifiable": 118
+  },
+  "human_labels": 0,
+  "rater1_labels": 0,
+  "rater2_labels": 0,
+  "note": "Verifier label counts are diagnostic only; no human audit has run.",
+  "blocked": true,
+  "blocked_on": [
+    "two human annotators have not labelled the 180 blind pairs",
+    "an adjudicator has not filled human_label",
+    "the pipeline-pair branch needs a B8 retrieval run; the B7 smoke has no verdicts"
+  ],
+  "files": {
+    "protocol": "experiments/verifier_audit/README.md",
+    "builder": "experiments/verifier_audit/build_audit.py",
+    "private_seed": "experiments/verifier_audit/private/scifact/",
+    "blind_sheets": "experiments/verifier_audit/private/scifact/sheets/rater1.csv, rater2.csv",
+    "master_sheet": "experiments/verifier_audit/private/scifact/audit_sheet.csv"
+  },
+  "next_command": "python experiments/verifier_audit/build_audit.py status --dir experiments/verifier_audit/private/scifact"
+}

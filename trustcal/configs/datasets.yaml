@@ -96,8 +96,24 @@ datasets:
     homepage: "https://github.com/TIGER-AI-Lab/MMLU-Pro"
     paper: "MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, arXiv:2406.01574"
     license: "MIT"
-    role: "primary scale/robustness set (6,696 STEM; 1,000 stratified for the matrix)"
+    role: "primary scale/robustness set (6,696 STEM, 7 categories incl. health; 1,000 stratified for the matrix)"
     split: "test"
+    # STEM-intended allow-list, applied before sampling and before the cap.
+    # Counted from data/test-00000-of-00001.parquet at the pinned revision
+    # (12,032 test rows): the six core STEM categories total 5,878; adding
+    # `health` (818, clinical/medical science) gives exactly the 6,696 questions
+    # recorded in the thesis. Category matching is case/space/underscore/
+    # hyphen-insensitive in the loader; `eligible_n.json` records the realised
+    # mix, the pre/post counts, and every excluded category.
+    stem_only: true
+    stem_categories:
+      - biology
+      - chemistry
+      - computer science
+      - engineering
+      - health
+      - math
+      - physics
     revision: "b189ec765aa7ed75c8acfea42df31fdae71f97be"
 
 # Loader defaults, NOT the matrix plan. `run_matrix.py` reads the seed list and

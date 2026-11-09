@@ -17,7 +17,7 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 | Item | Value | Source |
 |---|---|---|
 | Gate 0 | 10/10 debates, 3/3 rounds each, 90/90 non-empty positions, 370.8 s mean, 3,708.1 s total | `experiments/gate0/README.md` |
-| Tests | 523 current (514 at the P0 release) | `pytest`; `experiments/p0/WAVE2.md` |
+| Tests | 602 current (514 at the P0 release) | `pytest`; `experiments/p0/WAVE2.md` |
 | P0 gate | 13 passed, 0 failed, 0 pending | `p0_gate.py` strict run, 2026-11-09 |
 | Matrix | 24 rows, 4 arms x 3 datasets x 2 seeds | `trustcal/configs/experiments.yaml` |
 | Budget | 1,280 GPU-h conservative gate (9,600 debates x 8 min) | `PRE_REGISTRATION.md`, gate check 13 |

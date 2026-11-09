@@ -36,6 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from trustcal.config import PHASES, agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.eval.stats import summarize as summarize_values  # noqa: E402
+from trustcal.orchestrator import GOLD_EVIDENCE_DATASETS  # noqa: E402
 from trustcal.runner import ARMS, RunConfig, run  # noqa: E402
 
 
@@ -92,6 +93,9 @@ _OVERRIDE_KEYS = (
     "layers",
     "agents",
     "rounds",
+    "placebo_mode",
+    "placebo_unit",
+    "oracle_mode",
 )
 
 
@@ -212,7 +216,18 @@ def _build_plan(matrix: Matrix, out_root: Path) -> list[tuple[dict, RunConfig]]:
     for condition in matrix.conditions:
         # Ablation conditions share an arm but must not share records.jsonl.
         condition_root = out_root if condition["key"] == condition["arm"] else out_root / condition["key"]
+        overrides = condition.get("overrides", {})
         for dataset in matrix.datasets:
+            # WP-18 conditional Full count: gold-evidence oracle only runs on a
+            # dataset that carries gold evidence (EG-SSS), so 36 rows drop to 32
+            # without changing the config's condition list. The skip happens
+            # before RunConfig because that class rejects gold_evidence on any
+            # other dataset.
+            if (
+                overrides.get("oracle_mode") == "gold_evidence"
+                and dataset not in GOLD_EVIDENCE_DATASETS
+            ):
+                continue
             for seed in matrix.seeds:
                 cfg = RunConfig(
                     arm=condition["arm"],
@@ -221,7 +236,7 @@ def _build_plan(matrix: Matrix, out_root: Path) -> list[tuple[dict, RunConfig]]:
                     seed=seed,
                     out_root=condition_root,
                     phase=matrix.phase,
-                    **condition.get("overrides", {}),
+                    **overrides,
                 )
                 plan.append((condition, cfg))
     return plan

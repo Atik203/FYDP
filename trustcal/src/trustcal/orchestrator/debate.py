@@ -48,6 +48,19 @@ from ..retrieval.verdicts import count_verdicts
 from ..retrieval.verifier import LexicalVerifier, Verifier
 from ..trust import TrustConfig, TrustState, aggregate
 from .injection import build_injection
+from .interventions import (
+    DEFAULT_PLACEBO_UNIT,
+    GOLD_SOURCE_ANSWER,
+    GOLD_SOURCE_EVIDENCE,
+    ORACLE_MODES,
+    ORACLE_SCHEDULE,
+    PLACEBO_MODES,
+    PLACEBO_UNITS,
+    PlaceboRecorder,
+    gold_evidence_passages,
+    oracle_correctness,
+    oracle_trust,
+)
 
 #: Per-round trust telemetry values (docs/agent/09_P0_INTERFACES.md §1).
 TRUST_UPDATED = "updated"
@@ -80,10 +93,52 @@ class DebateRunner:
     seed: int = 0
     question_id: str | None = None
     gold: str | None = None
+    # WP-18 causal controls. Both default off so every released arm is unchanged.
+    placebo_mode: str = "off"
+    placebo_unit: str = DEFAULT_PLACEBO_UNIT
+    oracle_mode: str = "off"
+    gold_evidence: list[str] | dict | None = None
 
     def __post_init__(self) -> None:
         if self.verifier is None:
             self.verifier = LexicalVerifier()
+        if self.placebo_mode not in PLACEBO_MODES:
+            raise ValueError(
+                f"unknown placebo_mode {self.placebo_mode!r}; expected {PLACEBO_MODES}"
+            )
+        if self.placebo_unit not in PLACEBO_UNITS:
+            raise ValueError(
+                f"unknown placebo_unit {self.placebo_unit!r}; expected {PLACEBO_UNITS}"
+            )
+        if self.placebo_mode == "off" and self.placebo_unit != DEFAULT_PLACEBO_UNIT:
+            raise ValueError(
+                "placebo_unit requires placebo_mode='shuffle_verdicts'"
+            )
+        if self.oracle_mode not in ORACLE_MODES:
+            raise ValueError(
+                f"unknown oracle_mode {self.oracle_mode!r}; expected {ORACLE_MODES}"
+            )
+        if self.placebo_mode != "off" and self.oracle_mode != "off":
+            raise ValueError("placebo_mode and oracle_mode are mutually exclusive")
+        if self.placebo_mode != "off" and not self.trust_config.use_trust:
+            raise ValueError("placebo_mode requires use_trust=True")
+        if self.oracle_mode != "off" and not self.trust_config.use_trust:
+            raise ValueError("oracle_mode requires use_trust=True")
+        if self.oracle_mode == "gold_answer" and not (self.gold or "").strip():
+            raise ValueError(
+                "oracle_mode='gold_answer' requires a non-empty gold answer"
+            )
+        if self.oracle_mode == "gold_evidence":
+            missing = [
+                index
+                for index in range(len(self.clients))
+                if not gold_evidence_passages(self.gold_evidence, index)
+            ]
+            if missing:
+                raise ValueError(
+                    "oracle_mode='gold_evidence' requires non-empty gold evidence "
+                    f"for every agent (missing for {missing})"
+                )
 
     def _prompt_passages(self) -> int:
         """Passages the revision prompt can show (P0-6 alignment)."""
@@ -104,12 +159,13 @@ class DebateRunner:
 
     def run(self, question: str, options: list[str] | None = None) -> dict:
         """Run one debate; returns positions, transcript, verdicts, trust, aggregation."""
+        question_key = self.question_id or _question_key(question)
         rendered = build_options(
             {"question": question, "answer": self.gold, "options": options},
             self.seed,
-            self.question_id or _question_key(question),
+            question_key,
         )
-        return self._run_debate(question, options, rendered)
+        return self._run_debate(question, options, rendered, question_key=question_key)
 
     def _passages(self, agent_index: int, claim: str, round_number: int) -> list[str]:
         if self.retriever is not None:
@@ -119,7 +175,10 @@ class DebateRunner:
         return []
 
     def _evidence_for(
-        self, positions: list[str], round_number: int
+        self,
+        positions: list[str],
+        round_number: int,
+        placebo_recorder: PlaceboRecorder | None = None,
     ) -> tuple[list[list[str]], list[list[str]], list[dict]]:
         """Shown passages, per-agent labels, and per-claim records for one round.
 
@@ -129,6 +188,9 @@ class DebateRunner:
         evidence, not whatever the search backend happened to return.
         P0-5: repeated claims are dropped before classification, so verbosity
         cannot inflate support or harm.
+        WP-18: ``gold_evidence`` substitutes the dataset's passages for retrieval;
+        ``placebo_recorder`` permutes only the verdict labels in the configured
+        unit (cross-agent round pool by default, per-agent optional).
         """
         evidence: list[list[str]] = []
         verdicts: list[list[str]] = []
@@ -140,15 +202,22 @@ class DebateRunner:
                 )
             )
             candidates: list[str] = []
-            for claim in claims:
-                candidates.extend(self._passages(i, claim, round_number))
+            if self.oracle_mode == "gold_evidence":
+                # WP-18: same prompts and verifier, gold passages instead of
+                # retrieved ones. Never fall back to retrieval on a missing
+                # passage: __post_init__ rejects that configuration.
+                candidates.extend(gold_evidence_passages(self.gold_evidence, i))
+            else:
+                for claim in claims:
+                    candidates.extend(self._passages(i, claim, round_number))
             shown = self._select_passages(candidates)
             agent_verdicts: list[str] = []
+            agent_records: list[dict] = []
             for claim in claims:
                 verdict = self.verifier.verdict(claim, shown)  # type: ignore[union-attr]
                 agent_verdicts.append(verdict.label)
                 if shown:
-                    verdict_records.append(
+                    agent_records.append(
                         {
                             "agent": i,
                             "round": round_number,
@@ -162,6 +231,12 @@ class DebateRunner:
                     )
             evidence.append(shown)
             verdicts.append(agent_verdicts)
+            verdict_records.extend(agent_records)
+
+        if placebo_recorder is not None:
+            verdicts, verdict_records = placebo_recorder.apply_round(
+                verdicts, verdict_records, round_number
+            )
         return evidence, verdicts, verdict_records
 
     def _trust_round(
@@ -185,6 +260,22 @@ class DebateRunner:
         support = [entry[0] for entry in counts]
         harm = [entry[1] for entry in counts]
         n_claims = [len(labels) for labels in verdicts]
+
+        # WP-18 oracle schedule: recompute trust every round, never once at
+        # round 0 and never abstain on a unanimous panel. gold_answer bypasses
+        # the verifier; gold_evidence keeps the normal update operator over the
+        # substituted gold passages.
+        if self.oracle_mode == "gold_answer":
+            trust.scores = oracle_trust(
+                positions, self.gold, options, self.trust_config
+            )
+            trust.trajectory.append(trust.scores.tolist())
+            return TRUST_UPDATED, support, harm, n_claims
+
+        if self.oracle_mode == "gold_evidence":
+            trust.update(support, harm, n_claims=n_claims)
+            return TRUST_UPDATED, support, harm, n_claims
+
         if not has_evidence:
             trust.trajectory.append(trust.scores.tolist())
             return TRUST_ABSTAINED_NO_EVIDENCE, support, harm, n_claims
@@ -203,7 +294,11 @@ class DebateRunner:
         return TRUST_UPDATED, support, harm, n_claims
 
     def _run_debate(
-        self, question: str, options: list[str] | None, rendered: RenderedOptions
+        self,
+        question: str,
+        options: list[str] | None,
+        rendered: RenderedOptions,
+        question_key: str | None = None,
     ) -> dict:
         systems = [AGENT_SYSTEM] * len(self.clients)
         transcript: list[dict] = []
@@ -212,6 +307,17 @@ class DebateRunner:
         trust_round_log: list[dict] = []
         evidence_log: list[dict] = []
         rendered_options = rendered.options or None
+        placebo_recorder = (
+            PlaceboRecorder(
+                self.seed,
+                question_key or _question_key(question),
+                unit=self.placebo_unit,
+            )
+            if self.placebo_mode == "shuffle_verdicts"
+            else None
+        )
+        oracle_rounds: list[int] = []
+        oracle_correct_by_round: list[list[bool]] = []
 
         # The trust switch is a prompt slot (P0-13). The initial round has no
         # score yet, so it carries only the policy line when trust is enabled.
@@ -253,7 +359,9 @@ class DebateRunner:
         trust_used = False
 
         for r in range(2, self.rounds + 1):
-            evidence, verdicts, verdict_records = self._evidence_for(positions, r)
+            evidence, verdicts, verdict_records = self._evidence_for(
+                positions, r, placebo_recorder=placebo_recorder
+            )
             has_evidence = any(evidence)
             if has_evidence:
                 evidence_log.append({"round": r, "passages": evidence, "verdicts": verdicts})
@@ -265,6 +373,12 @@ class DebateRunner:
                 )
                 trust_status.append(status)
                 trust_used = trust_used or status == TRUST_UPDATED
+                if self.oracle_mode != "off":
+                    oracle_rounds.append(r)
+                    if self.oracle_mode == "gold_answer":
+                        oracle_correct_by_round.append(
+                            oracle_correctness(positions, self.gold, rendered_options)
+                        )
                 if has_evidence:
                     trust_round_log.append(
                         {
@@ -336,7 +450,7 @@ class DebateRunner:
         # positions once more; this is the vector the weighted vote uses.
         if self.trust_config.use_trust:
             final_evidence, final_verdicts, final_verdict_records = self._evidence_for(
-                positions, self.rounds + 1
+                positions, self.rounds + 1, placebo_recorder=placebo_recorder
             )
             has_final_evidence = any(final_evidence)
             if has_final_evidence:
@@ -353,6 +467,12 @@ class DebateRunner:
             )
             trust_status.append(status)
             trust_used = trust_used or status == TRUST_UPDATED
+            if self.oracle_mode != "off":
+                oracle_rounds.append(self.rounds + 1)
+                if self.oracle_mode == "gold_answer":
+                    oracle_correct_by_round.append(
+                        oracle_correctness(positions, self.gold, rendered_options)
+                    )
             if has_final_evidence:
                 trust_round_log.append(
                     {
@@ -383,6 +503,40 @@ class DebateRunner:
             "option_permutation": rendered.permutation or None,
             "gold_letter_rendered": rendered.gold_letter,
         }
+        if placebo_recorder is not None:
+            block = placebo_recorder.as_dict()
+            result.update(
+                {
+                    "placebo_mode": self.placebo_mode,
+                    "placebo_unit": self.placebo_unit,
+                    "placebo_seed": block["seed"],
+                    "placebo_permutation_hash": block["permutation_hash"],
+                    "placebo_noop_reason": block["noop_reason"],
+                    "placebo": block,
+                }
+            )
+        if self.oracle_mode != "off":
+            source = (
+                GOLD_SOURCE_ANSWER
+                if self.oracle_mode == "gold_answer"
+                else GOLD_SOURCE_EVIDENCE
+            )
+            block = {
+                "mode": self.oracle_mode,
+                "gold_source": source,
+                "rounds_applied": list(oracle_rounds),
+                "schedule": ORACLE_SCHEDULE,
+            }
+            if self.oracle_mode == "gold_answer":
+                block["correct_by_round"] = oracle_correct_by_round
+            result.update(
+                {
+                    "oracle_mode": self.oracle_mode,
+                    "oracle_gold_source": source,
+                    "oracle_rounds_applied": list(oracle_rounds),
+                    "oracle": block,
+                }
+            )
         if self.aggregate_final:
             result["aggregation"] = aggregate(
                 trust.scores, [parse_position(p) for p in positions], rendered_options

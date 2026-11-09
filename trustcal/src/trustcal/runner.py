@@ -37,7 +37,14 @@ from .eval.pilot import score_pilot
 from .eval.records import validate_record
 from .inference import VLLMClient, vllm_clients
 from .manifest import ManifestMismatch, build_manifest, check_resume, manifest_hash, write_manifest
-from .orchestrator import DebateRunner
+from .orchestrator import (
+    DEFAULT_PLACEBO_UNIT,
+    GOLD_EVIDENCE_DATASETS,
+    ORACLE_MODES,
+    PLACEBO_MODES,
+    PLACEBO_UNITS,
+    DebateRunner,
+)
 from .orchestrator.strategies import (
     run_b4_rag_mad,
     run_consensagent,
@@ -89,6 +96,11 @@ class RunConfig:
     samples: int = 5  # B5
     layers: int = 2  # B6
     agents: int = 3  # N-scaling (Phase 3b): 2, 3, or 5
+    # WP-18 causal controls (six-arm Full target); defaults keep every released
+    # arm byte-compatible with the four-condition Core matrix.
+    placebo_mode: str = "off"  # off | shuffle_verdicts
+    placebo_unit: str = DEFAULT_PLACEBO_UNIT  # round_pool (Full) | agent_round
+    oracle_mode: str = "off"  # off | gold_answer | gold_evidence
 
     def __post_init__(self) -> None:
         if self.arm not in ARMS:
@@ -109,6 +121,39 @@ class RunConfig:
             raise ValueError("injection_source must be None, 'external', or 'panel'")
         if not 0 <= self.injection_template <= 2:
             raise ValueError("injection_template must be 0, 1, or 2")
+        if self.placebo_mode not in PLACEBO_MODES:
+            raise ValueError(
+                f"unknown placebo_mode {self.placebo_mode!r}; expected one of {PLACEBO_MODES}"
+            )
+        if self.placebo_unit not in PLACEBO_UNITS:
+            raise ValueError(
+                f"unknown placebo_unit {self.placebo_unit!r}; expected one of {PLACEBO_UNITS}"
+            )
+        if self.placebo_mode == "off" and self.placebo_unit != DEFAULT_PLACEBO_UNIT:
+            raise ValueError(
+                "placebo_unit requires placebo_mode='shuffle_verdicts'"
+            )
+        if self.oracle_mode not in ORACLE_MODES:
+            raise ValueError(
+                f"unknown oracle_mode {self.oracle_mode!r}; expected one of {ORACLE_MODES}"
+            )
+        if self.placebo_mode != "off":
+            if self.arm != "B8":
+                raise ValueError("placebo_mode requires arm 'B8'")
+            if not self.use_trust:
+                raise ValueError("placebo_mode requires use_trust=True")
+        if self.oracle_mode != "off":
+            if self.arm != "B8":
+                raise ValueError("oracle_mode requires arm 'B8'")
+            if not self.use_trust:
+                raise ValueError("oracle_mode requires use_trust=True")
+        if self.placebo_mode != "off" and self.oracle_mode != "off":
+            raise ValueError("placebo_mode and oracle_mode are mutually exclusive")
+        if self.oracle_mode == "gold_evidence" and self.dataset not in GOLD_EVIDENCE_DATASETS:
+            raise ValueError(
+                "oracle_mode='gold_evidence' requires an EG-SSS dataset "
+                f"(one of {sorted(GOLD_EVIDENCE_DATASETS)}); got {self.dataset!r}"
+            )
         self.out_root = Path(self.out_root)
         self.questions_file = Path(self.questions_file) if self.questions_file else None
 
@@ -199,6 +244,9 @@ def _run_config_dict(cfg: RunConfig, rounds: int) -> dict:
         "samples": cfg.samples,
         "layers": cfg.layers,
         "agents": cfg.agents,
+        "placebo_mode": cfg.placebo_mode,
+        "placebo_unit": cfg.placebo_unit,
+        "oracle_mode": cfg.oracle_mode,
         "sample_seed": sampling_seed(),
         "questions_file": Path(cfg.questions_file).name if cfg.questions_file else None,
     }
@@ -454,6 +502,22 @@ def debate_record(
     for key in ("imad", "consensagent"):
         if key in result:
             record[key] = result[key]
+    # WP-18 causal-control audit: the top-level fields are the contract; the
+    # nested block carries the reconstructable permutation / oracle details.
+    for key in (
+        "placebo",
+        "placebo_mode",
+        "placebo_unit",
+        "placebo_seed",
+        "placebo_permutation_hash",
+        "placebo_noop_reason",
+        "oracle",
+        "oracle_mode",
+        "oracle_gold_source",
+        "oracle_rounds_applied",
+    ):
+        if key in result:
+            record[key] = result[key]
 
     final_answer, source = _aggregation_answer(result)
     raw_final = next(
@@ -663,6 +727,11 @@ def _make_runner(
     question: dict | None = None,
     qid: str = "",
 ) -> DebateRunner:
+    gold_evidence = (
+        (question or {}).get("gold_evidence")
+        if cfg.oracle_mode == "gold_evidence"
+        else None
+    )
     return DebateRunner(
         clients=clients,
         rounds=rounds,
@@ -676,6 +745,10 @@ def _make_runner(
         seed=cfg.seed,
         question_id=qid or None,
         gold=(question or {}).get("answer"),
+        placebo_mode=cfg.placebo_mode,
+        placebo_unit=cfg.placebo_unit,
+        oracle_mode=cfg.oracle_mode,
+        gold_evidence=gold_evidence,
     )
 
 
@@ -975,6 +1048,9 @@ def run(
                 record["parsed_answer"] = score.parsed
                 record["trust_for_positions"] = block["trust"]
 
+        record.setdefault("placebo_mode", cfg.placebo_mode)
+        record.setdefault("placebo_unit", cfg.placebo_unit)
+        record.setdefault("oracle_mode", cfg.oracle_mode)
         errors = validate_record(record)
         if errors:
             raise ValueError(f"{qid}: invalid schema-v2 record: {'; '.join(errors)}")

@@ -1,0 +1,37 @@
+{
+  "snapshot": "2026-11-09",
+  "gate": "EG-SSS 24-item calibration",
+  "target_items": 24,
+  "strata": {
+    "biomedical": 8,
+    "physics_chemistry": 8,
+    "math_cs": 8
+  },
+  "items_authored": 0,
+  "items_unfilled": 24,
+  "claims_authored": 0,
+  "evidence_passages": 0,
+  "human_label_rows": 0,
+  "real_items": 0,
+  "placeholders": 24,
+  "note": "The 24 slots are unfilled; no item text, evidence, or human label exists.",
+  "target_kappa": 0.75,
+  "max_defect_rate": 0.15,
+  "max_unresolved_rate": 0.05,
+  "max_h_attempt_hours": 2.0,
+  "blocked": true,
+  "blocked_on": [
+    "24 item stems, three positions, 3-6 atomic claims per position, and cited gold evidence must be authored by the team",
+    "two annotators have not labelled the claims",
+    "no adjudicator has filled adjudication.csv"
+  ],
+  "files": {
+    "protocol": "experiments/calibration/README.md",
+    "schema": "experiments/calibration/schema.md",
+    "template": "experiments/calibration/item.template.json",
+    "seed_batch": "experiments/calibration/items.seed.jsonl",
+    "validator": "experiments/calibration/validate_items.py",
+    "sheet_templates": "experiments/calibration/annotation/"
+  },
+  "next_command": "python experiments/calibration/validate_items.py check --items experiments/calibration/items.seed.jsonl --strict"
+}

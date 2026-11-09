@@ -10,6 +10,7 @@ from types import SimpleNamespace
 import pytest
 import yaml
 
+from . import datasets as datasets_module
 from .datasets import (
     DATASETS,
     EmptyAnswerError,
@@ -249,3 +250,118 @@ def test_primary_matrix_excludes_appendix_datasets() -> None:
     assert "gpqa_main" in config["datasets"]
     assert "mmlu_pro" in config["datasets"]
     assert "hle" in config["datasets"]
+
+
+def test_mmlu_pro_config_declares_the_stem_allow_list() -> None:
+    entry = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))["datasets"]["mmlu_pro"]
+    assert entry["stem_only"] is True
+    assert entry["stem_categories"] == [
+        "biology",
+        "chemistry",
+        "computer science",
+        "engineering",
+        "health",
+        "math",
+        "physics",
+    ]
+
+
+MMLU_PRO_STEM = (
+    "biology",
+    "chemistry",
+    "computer science",
+    "engineering",
+    "health",
+    "math",
+    "physics",
+)
+
+
+def _mmlu_stem_rows() -> list[dict]:
+    """One row per configured STEM category; the real split has all seven."""
+    return [
+        {"question": f"{category}?", "answer": "A", "category": category}
+        for category in MMLU_PRO_STEM
+    ]
+
+
+def test_mmlu_pro_stem_filter_excludes_non_stem_categories(fake_hf) -> None:
+    fake_hf(
+        _mmlu_stem_rows()
+        + [
+            {"question": "law?", "answer": "B", "category": "law"},
+            {"question": "sociology?", "answer": "C", "category": "sociology"},
+        ]
+    )
+    rows = load_dataset("mmlu_pro")
+    assert {row["stratum"] for row in rows} == set(MMLU_PRO_STEM)
+    assert all(row["stratum"] not in {"law", "sociology"} for row in rows)
+
+
+def test_mmlu_pro_stem_category_matching_is_normalized(fake_hf) -> None:
+    rows = [row for row in _mmlu_stem_rows() if row["category"] != "computer science"]
+    rows += [
+        {"question": "Q1?", "answer": "A", "category": " Computer_Science "},
+        {"question": "Q2?", "answer": "B", "category": "computer-science"},
+        {"question": "Q3?", "answer": "C", "category": "COMPUTER   SCIENCE"},
+        {"question": "Q4?", "answer": "D", "category": "Law"},
+    ]
+    fake_hf(rows)
+    out = load_dataset("mmlu_pro")
+    assert [row["question"] for row in out if row["question"].startswith("Q")] == ["Q1?", "Q2?", "Q3?"]
+    assert len(out) == len(MMLU_PRO_STEM) + 2
+
+
+def test_mmlu_pro_cap_is_applied_after_the_stem_filter(fake_hf) -> None:
+    fake_hf(
+        [{"question": f"law{i}", "answer": "A", "category": "law"} for i in range(10)]
+        + _mmlu_stem_rows()
+    )
+    # A cap applied before filtering would spend all four seats on law rows.
+    sampled = load_dataset("mmlu_pro", sample_cap=4)
+    assert len(sampled) == 4
+    assert {row["stratum"] for row in sampled} <= set(MMLU_PRO_STEM)
+
+
+def test_mmlu_pro_eligible_n_records_the_stem_filter(fake_hf, tmp_path) -> None:
+    fake_hf(
+        _mmlu_stem_rows()
+        + [
+            {"question": "L?", "answer": "B", "category": "law"},
+            {"question": "H?", "answer": "C", "category": "history"},
+            {"question": "X?", "answer": "D", "category": "other"},
+        ]
+    )
+    load_dataset("mmlu_pro", sample_cap=10, eligible_path=tmp_path)
+    payload = json.loads((tmp_path / "eligible_n.json").read_text(encoding="utf-8"))
+    stem = payload["stem_filter"]
+    assert stem["n_pre_filter"] == 10
+    assert stem["n_post_filter"] == 7
+    assert stem["category_mix"] == {category: 1 for category in MMLU_PRO_STEM}
+    assert stem["excluded_categories"] == {"history": 1, "law": 1, "other": 1}
+    assert payload["n_available"] == 7
+    assert payload["n_eligible"] == 7
+
+
+def test_stem_filter_does_not_apply_to_non_mmlu_datasets(fake_hf, tmp_path) -> None:
+    fake_hf(
+        [
+            {"question": "Q1?", "answer": "A", "category": "law"},
+            {"question": "Q2?", "answer": "B", "category": "history"},
+        ]
+    )
+    rows = load_dataset("hle", eligible_path=tmp_path)
+    assert len(rows) == 2
+    payload = json.loads((tmp_path / "eligible_n.json").read_text(encoding="utf-8"))
+    assert "stem_filter" not in payload
+
+
+def test_absent_configured_stem_category_raises(fake_hf, tmp_path, monkeypatch) -> None:
+    config = yaml.safe_load(CONFIG.read_text(encoding="utf-8"))
+    config["datasets"]["mmlu_pro"]["stem_categories"] = ["biology", "astrology"]
+    patched = tmp_path / "datasets.yaml"
+    patched.write_text(yaml.safe_dump(config), encoding="utf-8")
+    monkeypatch.setattr(datasets_module, "DATASET_CONFIG", patched)
+    fake_hf([{"question": "Q?", "answer": "A", "category": "biology"}])
+    with pytest.raises(ValueError, match="astrology"):
+        load_dataset("mmlu_pro")

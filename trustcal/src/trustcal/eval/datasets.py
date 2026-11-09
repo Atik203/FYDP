@@ -20,6 +20,9 @@ P0-8 rules encoded here:
   silently scored against a proof.
 * Sampling is deterministic and stratified, never ``rows[:cap]``.
 * ``eligible_n.json`` reports the sampled/eligible counts per stratum.
+* A config ``stem_only`` allow-list (MMLU-Pro) filters rows by normalized
+  category *before* sampling or capping, and records pre/post counts, the
+  realised category mix and the excluded categories.
 """
 
 from __future__ import annotations
@@ -117,6 +120,10 @@ class EmptyAnswerError(ValueError):
     """The row has a question and an answer column, but the value is empty."""
 
 
+class MissingStemCategoryError(ValueError):
+    """A configured STEM category matched no rows: config and data disagree."""
+
+
 def _first(row: dict, keys: tuple[str, ...]) -> Any:
     for key in keys:
         value = row.get(key)
@@ -144,6 +151,21 @@ def _stratum(row: dict) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+
+_CATEGORY_WS = re.compile(r"\s+")
+
+
+def normalize_category(value: Any) -> str:
+    """Lowercase and collapse underscores/hyphens/whitespace to single spaces.
+
+    ``" Computer_Science "``, ``"computer-science"`` and ``"COMPUTER   SCIENCE"``
+    all normalize to ``"computer science"`` so the allow-list is not sensitive
+    to the spelling variants found across releases.
+    """
+    text = str(value).strip().lower() if value is not None else ""
+    text = text.replace("_", " ").replace("-", " ")
+    return _CATEGORY_WS.sub(" ", text).strip()
 
 
 def _row_to_question(row: dict, name: str) -> dict:
@@ -206,6 +228,15 @@ def _config_entry(name: str) -> dict:
     return {}
 
 
+def _stem_spec(name: str) -> tuple[bool, list[str]]:
+    """``(stem_only, stem_categories)`` from ``configs/datasets.yaml``."""
+    entry = _config_entry(name)
+    categories = entry.get("stem_categories") or []
+    if isinstance(categories, str):
+        categories = [categories]
+    return bool(entry.get("stem_only", False)), [str(item) for item in categories]
+
+
 def revision_status(name: str) -> str:
     """``pinned`` (40-hex commit) | ``unpinned`` (explicitly allowed) | ``invalid``."""
     entry = _config_entry(name)
@@ -256,6 +287,51 @@ def sampling_seed(override: int | None = None) -> int:
         return int(raw["sample_seed"])
     seeds = raw.get("seeds") or [1]
     return int(seeds[0])
+
+
+def apply_category_filter(
+    rows: list[dict], categories: Iterable[str], *, dataset: str = "dataset"
+) -> tuple[list[dict], dict]:
+    """Keep rows whose stratum is in the allow-list; return rows and audit stats.
+
+    Matching uses :func:`normalize_category`, so case, whitespace, underscore and
+    hyphen variants of a category are equivalent. A configured category that
+    matches no row raises ``MissingStemCategoryError`` rather than silently
+    shrinking the pool to zero (config/data drift is a pre-run failure).
+    """
+    allowed: dict[str, str] = {}
+    for category in categories:
+        key = normalize_category(category)
+        if key:
+            allowed.setdefault(key, str(category).strip())
+    if not allowed:
+        raise ValueError(f"{dataset}: stem_only is set but stem_categories is empty")
+
+    kept: list[dict] = []
+    mix: Counter[str] = Counter()
+    excluded: Counter[str] = Counter()
+    for row in rows:
+        key = normalize_category(row.get("stratum"))
+        if key in allowed:
+            kept.append(row)
+            mix[key] += 1
+        else:
+            excluded[key or "unstratified"] += 1
+
+    missing = sorted(set(allowed) - set(mix))
+    if missing:
+        raise MissingStemCategoryError(
+            f"{dataset}: configured STEM categories absent from the data: {missing}; "
+            f"observed categories: {sorted(excluded)}"
+        )
+
+    return kept, {
+        "categories": [allowed[key] for key in sorted(allowed)],
+        "n_pre_filter": len(rows),
+        "n_post_filter": len(kept),
+        "category_mix": dict(sorted(mix.items())),
+        "excluded_categories": dict(sorted(excluded.items())),
+    }
 
 
 def stratified_sample(rows: list[dict], cap: int | None, *, seed: int = 1) -> list[dict]:
@@ -381,6 +457,10 @@ def load_dataset(
     When ``eligible_path`` is given, or ``TRUSTCAL_ELIGIBLE_DIR`` is set in the
     environment (written as ``<dir>/<dataset>/eligible_n.json``), the eligible
     counts are persisted for the P0-8 gate.
+
+    A dataset whose YAML entry sets ``stem_only: true`` (MMLU-Pro) is filtered to
+    its ``stem_categories`` allow-list after normalization and before sampling or
+    the cap; the audit block lands in ``eligible_n.json`` under ``stem_filter``.
     """
     if name not in DATASETS:
         raise NotImplementedError(f"unknown dataset {name!r}; known: {sorted(DATASETS)}")
@@ -417,6 +497,13 @@ def load_dataset(
         requested = spec["split"]
 
     rows, skipped = _normalize_rows([dict(row) for row in ds], name)
+
+    # STEM allow-list first: the cap must never be spent on excluded categories.
+    stem_only, categories = _stem_spec(name)
+    filter_stats: dict | None = None
+    if stem_only:
+        rows, filter_stats = apply_category_filter(rows, categories, dataset=name)
+
     used_seed = sampling_seed(seed)
     sampled = stratified_sample(rows, sample_cap, seed=used_seed) if stratify else (
         rows[:sample_cap] if sample_cap else rows
@@ -438,5 +525,6 @@ def load_dataset(
             available=len(rows),
             skipped=skipped,
             seed=used_seed,
+            extra={"stem_filter": filter_stats} if filter_stats is not None else None,
         )
     return sampled

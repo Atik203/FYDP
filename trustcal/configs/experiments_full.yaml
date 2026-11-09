@@ -1,0 +1,67 @@
+# Full matrix — six-arm causal design (WP-18). This file is deliberately
+# separate from configs/experiments.yaml (the released 24-row Core matrix); do
+# not merge the six-arm target into the Core config.
+#
+# Default Full plan (pre-registration-aligned, cheaper):
+#   five arms x 3 datasets x 2 seeds = 30 rows
+#   + B8-oracle on EG-SSS (gold evidence exists there) x 2 seeds = 2 rows
+#   = 32 rows / 9,600 debates / 1,280 GPU-h at 300 items/dataset.
+# B8-placebo uses the cross-agent round pool (unit B): verdict labels move
+# across all agents' claims in one round, so per-agent support/harm counts and
+# the trust trajectory can change. This is the Full default; `agent_round`
+# remains an optional per-agent manipulation check.
+#
+# Alternate (36-row) plan: set B8-oracle `oracle_mode: gold_answer`. The
+# gold-answer oracle is meaningful on every dataset, so it runs on all three
+# and the plan becomes 6 arms x 3 datasets x 2 seeds = 36 rows / 10,800
+# debates / 1,440 GPU-h. That path is tested from a temporary config, not the
+# default Full config.
+#
+# `eg_sss_180` is the v1.2 EG-SSS key. The dataset loader entry is owned by the
+# v1.2 benchmark freeze; a dry run does not load datasets, but a real Full run
+# fails clearly until the key exists in configs/datasets.yaml. The 300-item cap
+# is the pre-registered Full target; if the v1.2 freeze remains 180 items, set
+# dataset_caps.eg_sss_180: 180 and recompute the debate/GPU envelope.
+
+phase: final
+
+datasets:
+  - gpqa_main
+  - mmlu_pro
+  - eg_sss_180
+
+seeds: [1, 2]
+
+sample_caps:
+  pilot: 50
+  main: 300
+
+dataset_caps:
+  gpqa_main: 300
+  mmlu_pro: 300
+  eg_sss_180: 300
+
+conditions:
+  B3:
+    arm: B3
+    description: "MAD (Du et al. 2023) — unweighted multi-agent debate."
+  B4-matched:
+    arm: B4
+    source_partitioning: true
+    description: "MAD + RAG, same source partition as B8 — evidence-information control."
+  B8-no-trust:
+    arm: B8
+    use_trust: false
+    description: "Primary control: same retriever/prompts/partition as B8 without trust re-weighting (majority aggregation)."
+  B8:
+    arm: B8
+    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."
+  B8-placebo:
+    arm: B8
+    placebo_mode: shuffle_verdicts
+    placebo_unit: round_pool
+    description: "Causal control: verdict labels shuffled across the whole debate-round claim pool; same evidence, prompts and trust weighting as B8."
+  B8-oracle:
+    arm: B8
+    oracle_mode: gold_evidence
+    description: "Evidence/verifier upper bound: normal trust path over gold evidence; EG-SSS only; not deployable, not B7."

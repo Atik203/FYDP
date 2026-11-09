@@ -1,0 +1,251 @@
+{
+  "schema_version": "egsss-item-v0.1",
+  "template": true,
+  "_instructions": "Copy this object, delete template/_instructions, replace every TEMPLATE value with real content, and give the item a unique item_id. Each position needs 3-6 atomic claims; every claim needs at least one cited passage with a resolvable locator. Do not invent evidence or verdicts.",
+  "item_id": "TEMPLATE-001",
+  "stratum": "biomedical",
+  "status": "drafted",
+  "question": "TEMPLATE question text shown to all three agents.",
+  "options": [
+    "TEMPLATE option A",
+    "TEMPLATE option B",
+    "TEMPLATE option C",
+    "TEMPLATE option D"
+  ],
+  "gold_answer": "TEMPLATE option A",
+  "source": {
+    "kind": "original",
+    "citation": null,
+    "locator": null,
+    "license": "CC BY 4.0",
+    "changes": null
+  },
+  "pressure_eligible": true,
+  "minority_agent": 2,
+  "conditions": [
+    "evidence_available",
+    "evidence_absent",
+    "evidence_placebo",
+    "evidence_contradictory"
+  ],
+  "draft_assisted": false,
+  "notes": "TEMPLATE note; never put a gold label here.",
+  "positions": [
+    {
+      "agent": 0,
+      "answer": "TEMPLATE option A",
+      "claims": [
+        {
+          "claim_id": "TEMPLATE-001-a0-c1",
+          "text": "TEMPLATE atomic claim 1 for agent 0.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a0-c1-e1",
+              "text": "TEMPLATE passage that entails claim 1.",
+              "source": "PubMed",
+              "locator": "TEMPLATE DOI or PMID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "support",
+          "gold_confidence": 0.9,
+          "verdict_rationale": "TEMPLATE explanation of why the passage entails the claim.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a0-c2",
+          "text": "TEMPLATE atomic claim 2 for agent 0.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a0-c2-e1",
+              "text": "TEMPLATE passage that contradicts claim 2.",
+              "source": "arXiv",
+              "locator": "TEMPLATE arXiv ID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "contradict",
+          "gold_confidence": 0.85,
+          "verdict_rationale": "TEMPLATE explanation of the refutation.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a0-c3",
+          "text": "TEMPLATE atomic claim 3 for agent 0.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a0-c3-e1",
+              "text": "TEMPLATE on-topic passage that does not establish claim 3.",
+              "source": "Semantic Scholar",
+              "locator": "TEMPLATE DOI or URL",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "neutral",
+          "gold_confidence": 0.8,
+          "verdict_rationale": "TEMPLATE explanation of why the passage is insufficient.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        }
+      ]
+    },
+    {
+      "agent": 1,
+      "answer": "TEMPLATE option B",
+      "claims": [
+        {
+          "claim_id": "TEMPLATE-001-a1-c1",
+          "text": "TEMPLATE atomic claim 1 for agent 1.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a1-c1-e1",
+              "text": "TEMPLATE passage for agent 1 claim 1.",
+              "source": "PubMed",
+              "locator": "TEMPLATE DOI or PMID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "support",
+          "gold_confidence": 0.9,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a1-c2",
+          "text": "TEMPLATE atomic claim 2 for agent 1.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a1-c2-e1",
+              "text": "TEMPLATE passage for agent 1 claim 2.",
+              "source": "arXiv",
+              "locator": "TEMPLATE arXiv ID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "neutral",
+          "gold_confidence": 0.75,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a1-c3",
+          "text": "TEMPLATE atomic claim 3 for agent 1.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a1-c3-e1",
+              "text": "TEMPLATE passage for agent 1 claim 3.",
+              "source": "Semantic Scholar",
+              "locator": "TEMPLATE DOI or URL",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "contradict",
+          "gold_confidence": 0.8,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        }
+      ]
+    },
+    {
+      "agent": 2,
+      "answer": "TEMPLATE option C",
+      "claims": [
+        {
+          "claim_id": "TEMPLATE-001-a2-c1",
+          "text": "TEMPLATE atomic claim 1 for agent 2.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a2-c1-e1",
+              "text": "TEMPLATE passage for agent 2 claim 1.",
+              "source": "PubMed",
+              "locator": "TEMPLATE DOI or PMID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "support",
+          "gold_confidence": 0.9,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a2-c2",
+          "text": "TEMPLATE atomic claim 2 for agent 2.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a2-c2-e1",
+              "text": "TEMPLATE passage for agent 2 claim 2.",
+              "source": "arXiv",
+              "locator": "TEMPLATE arXiv ID",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "neutral",
+          "gold_confidence": 0.75,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        },
+        {
+          "claim_id": "TEMPLATE-001-a2-c3",
+          "text": "TEMPLATE atomic claim 3 for agent 2.",
+          "atomic": true,
+          "evidence": [
+            {
+              "passage_id": "TEMPLATE-001-a2-c3-e1",
+              "text": "TEMPLATE passage for agent 2 claim 3.",
+              "source": "Semantic Scholar",
+              "locator": "TEMPLATE DOI or URL",
+              "retrieved_at": "2026-11-09",
+              "license": "TEMPLATE source licence",
+              "notes": null
+            }
+          ],
+          "gold_verdict": "contradict",
+          "gold_confidence": 0.8,
+          "verdict_rationale": "TEMPLATE rationale.",
+          "annotator_notes": null,
+          "adjudication": null,
+          "defect_flag": null
+        }
+      ]
+    }
+  ]
+}
