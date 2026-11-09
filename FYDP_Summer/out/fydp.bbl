@@ -238,8 +238,8 @@ Yunxuan Li, Yibing Du, Jiageng Zhang, Le~Hou, Peter Grabowski, Yeqing Li, and
   Association for Computational Linguistics.
 
 \bibitem{zeng2025s2mad}
-Yuting Zeng, Weizhe Huang, Lei Jiang, Tongxuan Liu, XiTai Jin, Tianying Chen,
-  Jing Li, and Xiaohua Xu.
+Yuting Zeng, Weizhe Huang, Lei Jiang, Tongxuan Liu, XiTai Jin, Tianying~Tiana
+  Chen, Jing Li, and Xiaohua Xu.
 \newblock {S$^2$-MAD}: Breaking the token barrier to enhance multi-agent debate
   efficiency.
 \newblock In {\em Proceedings of the 2025 Conference of the Nations of the
@@ -310,8 +310,8 @@ Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra,
 \newblock Datasets and Benchmarks Track.
 
 \bibitem{campedelli2025breakfree}
-Gian~Maria Campedelli, Nicol\`{o} Penzo, Massimo Stefan, Roberto Dessi, Marco
-  Guerini, Bruno Lepri, and Jacopo Staiano.
+Gian~Maria Campedelli, Nicol\`{o} Penzo, Massimo Stefan, Roberto Dess{\`i},
+  Marco Guerini, Bruno Lepri, and Jacopo Staiano.
 \newblock I want to break free! {P}ersuasion and anti-social behavior of {LLM}s
   in multi-agent settings with social hierarchy.
 \newblock {\em Transactions on Machine Learning Research}, 2025.

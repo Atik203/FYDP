@@ -4,10 +4,12 @@
 ![Role](https://img.shields.io/badge/Role-Context%20(persuasion%20%E2%89%A0%20correctness)-6e40c9?style=for-the-badge)
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-TMLR%202025-6e40c9?style=for-the-badge)
-![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--11--09-8957e5?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-read%20and%20verified-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the published TMLR paper (arXiv v3); not yet read by the team. Update after reading.*
+> *Status: read and verified against the published PDF on 2026-11-09. The summary and claims below were checked against the full text.*
+
+**Verification note (2026-11-09):** Targeted full-text read (abstract, method, results, limitations; arXiv v3). Confirmed 2,400 conversations, 240 scenarios, six models, and 1,600 usable conversations; goal framing affects persuasion but not anti-social behavior; persona affects both. Correction: the paper does not measure factual correctness, so “persuasion and correctness are separate axes” is an interpretation, not a measured result. The manuscript now states that the study does not measure correctness.
 
 Paper Title:
 I Want to Break Free! Persuasion and Anti-Social Behavior of LLMs in Multi-Agent Settings with Social Hierarchy
@@ -23,7 +25,7 @@ Summary:
 Using a Stanford-Prison-Experiment-inspired environment (the zAImbardo platform), the authors study 2,400 guard–prisoner LLM conversations across 240 scenarios and six models (Llama3, Orca2, Command-r, Mixtral, Mistral2, gpt4.1; four models produced usable conversations, narrowing the analytic sample to 1,600). Four research questions cover persuasion success, its enabling conditions, prevalence of toxic/anti-social behavior, and its drivers. Findings: goal framing significantly influences persuasiveness but not anti-social behavior; personas — especially the guard's — strongly affect both successful persuasion by the prisoner and the emergence of anti-social actions; and anti-social conduct appears even without explicit negative personality prompts, purely from the hierarchical structure.
 
 Relevant to Our Idea:
-This is direct empirical evidence that persuasive success and correctness are separate axes in multi-agent LLM interaction: an agent can win arguments through persona or positional power alone, independent of truth. That is precisely the mechanism our proposal argues underlies sycophantic collapse in debate — a confident, persuasively-framed majority prevails regardless of correctness — here demonstrated in a social-hierarchy setting instead of scientific QA. It broadens our motivation beyond accuracy benchmarks into emergent multi-agent risk, and supports why trust must be tied to external evidence rather than to how convincing an agent sounds.
+This is direct empirical evidence that persuasive success in multi-agent LLM interaction is shaped by goal framing and persona: an agent can win arguments through persona or positional power. The study does not measure factual correctness, so it motivates but does not establish a persuasion–correctness gap. That is still relevant to the mechanism our proposal argues underlies sycophantic collapse — a confidently framed majority can prevail — here demonstrated in a social-hierarchy setting instead of scientific QA. It broadens our motivation beyond accuracy benchmarks into emergent multi-agent risk, and supports why trust must be tied to external evidence rather than to how convincing an agent sounds.
 
 Gap / Limitation Noted in Paper:
 The study is a social simulation, not factual/scientific QA: no ground truth, no evidence retrieval, no correct answer to converge on. It measures behavioral dynamics, not accuracy or trust calibration, and proposes no mechanism to bound a dominant agent's persuasive advantage.
@@ -75,7 +77,7 @@ The study is a social simulation, not factual/scientific QA: no ground truth, no
 4. **Four RQs** — persuasion extent, enabling conditions, prevalence of toxic behavior, drivers.
 5. **Findings** — persona and goal framing as the main drivers; anti-social behavior emerges without explicit negative prompting.
 
-*For us, the load-bearing result is the decoupling: persuasiveness is driven by persona/power, not correctness — the social-pressure mechanism behind sycophantic collapse, demonstrated outside a QA benchmark.*
+*For us, the load-bearing result is that persuasiveness is driven by persona and framing; the study does not measure correctness, so it supplies the social-pressure mechanism but not a correctness decoupling.*
 
 ### 3. Key Results (Extracted)
 
@@ -103,13 +105,13 @@ The study is a social simulation, not factual/scientific QA: no ground truth, no
 | **Measured** | Persuasion success, toxicity, anti-social behavior | Sycophantic collapse (CCR), minority preservation (MPR), calibration (ECR) |
 | **Correctness** | No ground truth | External evidence verification |
 | **Mechanism** | None proposed | Evidence-grounded trust re-weighting |
-| **Use to us** | Motivation: persuasiveness ≠ correctness | Correction: trust tied to evidence, not rhetoric |
+| **Use to us** | Motivation: persona/framing drive persuasion; correctness not measured | Correction: trust tied to evidence, not rhetoric |
 
 ### 6. Our Positioning Strategy
 
 - **In our paper:** motivation-section citation broadening the stakes beyond accuracy — persuasion/persona effects are a general multi-agent failure surface, of which scientific-QA sycophantic collapse is one measurable instance.
-- **How we cite:** "Persuasiveness in LLM interaction tracks persona and framing rather than correctness (Campedelli et al., 2025); our mechanism therefore grounds influence in retrieved evidence rather than argumentative force."
-- **Pre-emptive rebuttal:** "isn't this about social simulation, not reasoning?" — yes; we use it only to establish that persuasive success is decoupled from truth, which is exactly the lever our trust weighting removes.
+- **How we cite:** "Persuasiveness in LLM interaction is shaped by persona and framing (Campedelli et al., 2025); the study does not measure factual correctness. Our mechanism therefore grounds influence in retrieved evidence rather than argumentative force."
+- **Pre-emptive rebuttal:** "isn't this about social simulation, not reasoning?" — yes; we use it only to show that persuasive success is driven by persona and framing, not to claim a measured correctness gap.
 
 ### 7. Code & Reproducibility
 
@@ -133,11 +135,11 @@ The study is a social simulation, not factual/scientific QA: no ground truth, no
 
 ★★★☆☆
 
-**Justification:** Good motivational breadth — evidence that persuasion and correctness are separate axes, which is the core premise our trust calibration rests on. Not technically adjacent (no QA, no mechanism), so low effort: read for the motivation framing and the persona/goal findings.
+**Justification:** Good motivational breadth — evidence that persona and goal framing drive persuasion; the study does not measure correctness, so it motivates but does not establish the persuasion–correctness gap. Not technically adjacent (no QA, no mechanism), so low effort: read for the motivation framing and the persona/goal findings.
 
-### 10. Reading Checklist (fill after team read)
+### 10. Reading Checklist (verified 2026-11-09)
 
-- [ ] Extract persuasion and toxicity effect sizes per model/persona
-- [ ] Read Limitations section fully (p. 15) for honest scope statements
-- [ ] Note zAImbardo architecture (reusable simulation patterns?)
-- [ ] Confirm TMLR citation details (no volume; OpenReview URL format)
+- [ ] Per-model/persona effect-size tables not fully extracted; abstract-level findings checked
+- [x] Limitations and scope checked — no factual-correctness measure
+- [x] zAImbardo architecture noted
+- [x] TMLR citation details checked (no volume; OpenReview URL format)

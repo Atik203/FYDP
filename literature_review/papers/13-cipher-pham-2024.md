@@ -4,10 +4,12 @@
 ![Role](https://img.shields.io/badge/Role-Context%20(communication%20channel)-6e40c9?style=for-the-badge)
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-ICLR%202024-6e40c9?style=for-the-badge)
-![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--11--09-8957e5?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-read%20and%20verified-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the ICLR 2024 paper (arXiv v2); not yet read by the team. Update after reading.*
+> *Status: read and verified against the published PDF on 2026-11-09. The summary and claims below were checked against the full text.*
+
+**Verification note (2026-11-09):** Targeted full-text read (abstract, method, results, limitations; arXiv v2). Confirmed token-sampling information loss, embedding exchange, and the white-box requirement. The paper addresses communication fidelity, not factual truth; the “does not verify truth” sentence is a scope statement, not a tested negative result.
 
 Paper Title:
 Let Models Speak Ciphers: Multiagent Debate through Embeddings
@@ -130,9 +132,9 @@ CIPHER requires white-box access to token probability distributions and raw embe
 
 **Justification:** Strong supporting citation for why we source trust externally instead of from the agents' own text/uncertainty signals; also a clear white-box/heterogeneity constraint that separates our design space. Low implementation relevance.
 
-### 10. Reading Checklist (fill after team read)
+### 10. Reading Checklist (verified 2026-11-09)
 
-- [ ] Extract per-task accuracy tables
-- [ ] Confirm code release + license
-- [ ] Note exact temperature-tuning protocol (fairness claims)
-- [ ] Check whether any black-box proxy variant is discussed
+- [x] Per-task accuracy tables checked (0.5–5.0% over natural-language debate)
+- [ ] Code release and license not checked (reuse check, not a claim)
+- [ ] Exact temperature-tuning protocol not checked
+- [x] Black-box proxy: the paper requires white-box token distributions/embeddings; no black-box variant is claimed

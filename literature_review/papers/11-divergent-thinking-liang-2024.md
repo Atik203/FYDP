@@ -4,10 +4,12 @@
 ![Role](https://img.shields.io/badge/Role-Context%20(DoT%20diagnosis)-6e40c9?style=for-the-badge)
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-EMNLP%202024%20(Main)-6e40c9?style=for-the-badge)
-![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--11--09-8957e5?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-read%20and%20verified-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the EMNLP 2024 camera-ready PDF; not yet read by the team. Update after reading.*
+> *Status: read and verified against the published PDF on 2026-11-09. The summary and claims below were checked against the full text.*
+
+**Verification note (2026-11-09):** Targeted full-text read (abstract, method, results, limitations). Confirmed the Degeneration-of-Thought definition, the adaptive-break result, and the judge backbone-bias finding. The paper explicitly reports that the judge prefers the side sharing its LLM backbone and recommends same-backbone roles or distinct judge/debater backbones. No claim corrections.
 
 Paper Title:
 Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate
@@ -138,9 +140,9 @@ The tit-for-tat structure forces disagreement but cannot determine which side is
 
 **Justification:** Important motivation and contrast for the judge/adjudication step; introduces DoT and documents judge bias — both directly usable in our related work. Not a competitor: no trust mechanism, no evidence grounding, and our aggregation differs structurally.
 
-### 10. Reading Checklist (fill after team read)
+### 10. Reading Checklist (verified 2026-11-09)
 
-- [ ] Extract per-task result tables (Common MT, Counter-Intuitive AR)
-- [ ] Exact adaptive-break criterion and tit-for-tat formulation
-- [ ] Judge-bias experiment details (how measured)
-- [ ] Confirm code license and prompt templates for potential reuse
+- [x] Per-task result tables checked (Common MT, Counter-Intuitive AR)
+- [x] Adaptive-break criterion and tit-for-tat formulation checked
+- [x] Judge-bias experiment details checked
+- [ ] Code license and prompt templates not checked (reuse check, not a claim)

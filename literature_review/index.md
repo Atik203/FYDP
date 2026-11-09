@@ -6,7 +6,7 @@
 
 **Last updated:** 2026-11-09
 
-> **Status note (2026-11-09):** the matrix and gap map below record the September 2026 review state. Papers #11–#15 remain unread. The 2025–26 trust/debate frontier in `docs/agent/04_LITERATURE_AND_GAPS.md` is tracked there but has no detailed review file here; no rows are added until that review exists.
+> **Status note (2026-11-09):** the matrix and gap map below record the September 2026 review state. Papers #11–#15 were read and verified against their published PDFs on 2026-11-09. The 2025–26 trust/debate frontier in `docs/agent/04_LITERATURE_AND_GAPS.md` is tracked there but has no detailed review file here; no rows are added until that review exists.
 
 ---
 
@@ -24,11 +24,11 @@
 | 8   | FREE-MAD (Cui et al.)                                          | 2026 | Findings of ACL     | **Competitor (consensus-free)**       | Medium            | 2026-09-05    | [papers/08-freemad-cui-2026.md](papers/08-freemad-cui-2026.md)                                             |
 | 9   | Why Do Multi-Agent LLM Systems Fail? (Cemri et al.)            | 2025 | NeurIPS (D&B Track) | **Context (failure taxonomy)**        | Low               | 2026-09-12    | [papers/09-mast-cemri-2025.md](papers/09-mast-cemri-2025.md)                                               |
 | 10  | Multiagent Finetuning (Subramaniam et al.)                     | 2025 | ICLR                | Context (training-time diversity)     | Low               | 2026-09-12    | [papers/10-multiagent-finetuning-subramaniam-2025.md](papers/10-multiagent-finetuning-subramaniam-2025.md) |
-| 11  | Encouraging Divergent Thinking (Liang et al.) **(not read)**   | 2024 | EMNLP (Main)        | Context (DoT diagnosis)               | Low               | 2026-09-12    | [papers/11-divergent-thinking-liang-2024.md](papers/11-divergent-thinking-liang-2024.md)                   |
-| 12  | ChatEval (Chan et al.) **(not read)**                          | 2024 | ICLR                | Context (multi-agent judge)           | Low               | 2026-09-12    | [papers/12-chateval-chan-2024.md](papers/12-chateval-chan-2024.md)                                         |
-| 13  | Let Models Speak Ciphers / CIPHER (Pham et al.) **(not read)** | 2024 | ICLR                | Context (communication channel)       | Low               | 2026-09-12    | [papers/13-cipher-pham-2024.md](papers/13-cipher-pham-2024.md)                                             |
-| 14  | S2-MAD (Zeng et al.) **(not read)**                            | 2025 | NAACL (Long)        | Context (efficiency)                  | Low               | 2026-09-12    | [papers/14-s2mad-zeng-2025.md](papers/14-s2mad-zeng-2025.md)                                               |
-| 15  | I Want to Break Free! (Campedelli et al.) **(not read)**       | 2025 | TMLR                | Context (persuasion ≠ correctness)    | Low               | 2026-09-12    | [papers/15-breakfree-campedelli-2025.md](papers/15-breakfree-campedelli-2025.md)                           |
+| 11  | Encouraging Divergent Thinking (Liang et al.)                  | 2024 | EMNLP (Main)        | Context (DoT diagnosis)               | Low               | 2026-11-09    | [papers/11-divergent-thinking-liang-2024.md](papers/11-divergent-thinking-liang-2024.md)                   |
+| 12  | ChatEval (Chan et al.)                                         | 2024 | ICLR                | Context (multi-agent judge)           | Low               | 2026-11-09    | [papers/12-chateval-chan-2024.md](papers/12-chateval-chan-2024.md)                                         |
+| 13  | Let Models Speak Ciphers / CIPHER (Pham et al.)                | 2024 | ICLR                | Context (communication channel)       | Low               | 2026-11-09    | [papers/13-cipher-pham-2024.md](papers/13-cipher-pham-2024.md)                                             |
+| 14  | S2-MAD (Zeng et al.)                                           | 2025 | NAACL (Long)        | Context (efficiency)                  | Low               | 2026-11-09    | [papers/14-s2mad-zeng-2025.md](papers/14-s2mad-zeng-2025.md)                                               |
+| 15  | I Want to Break Free! (Campedelli et al.)                      | 2025 | TMLR                | Context (persona/framing drive persuasion) | Low          | 2026-11-09    | [papers/15-breakfree-campedelli-2025.md](papers/15-breakfree-campedelli-2025.md)                           |
 
 ### Legend
 
@@ -45,7 +45,7 @@
 | **Medium**        | Adjacent solution — needs explicit differentiation paragraph                         |
 | **Low**           | Different subproblem — cite as complementary or contextual                           |
 
-`**(not read)**` = draft review created from the published paper; confirm it, then remove the mark after the team reads it.
+All 15 tracked papers have now been read; #11–#15 were verified on 2026-11-09. The `(not read)` marker is retired.
 
 ---
 
@@ -69,7 +69,7 @@
 
 - [Pending: Yao et al.]
 
-**Added 2026-09-12 — reading in progress (marked `(not read)` above; bib entries withheld until each is finished):**
+**Added 2026-09-12 — all five read and verified 2026-11-09:**
 
 - Encouraging Divergent Thinking (Liang et al., 2024) — Degeneration-of-Thought diagnosis; judge has no evidence grounding
 - ChatEval (Chan et al., 2024) — multi-agent judge precedent; contrast: no retrieval/verification
@@ -134,5 +134,9 @@
 | 2026-09-12 | Estornell & Liu (NeurIPS 2024)                | **Restored to `fydp.bib`** (`estornell2024multillm`, 35 → 36) — paper #6 was tracked and read but had been dropped from the updated bib; cross-checked against the 6-member assignments                                                                                                                                                                     | Member list + `papers/06-estornell-liu-2024.md` BibTeX           |
 | 2026-09-16 | Multiagent Finetuning (Subramaniam et al.)    | **Read by team** — `(not read)` mark removed from #10; bib entry `subramaniam2025multiagent` added to `FYDP_Summer/fydp.bib` (41 → 42), `trustcal/references.bib` synced (41 → 42)                                                                                                                                                                          | Team read + `papers/10-multiagent-finetuning-subramaniam-2025.md` BibTeX |
 | 2026-09-17 | Papers #11–#15                                | Reading in progress — `(not read)` marks retained; bib entries withheld until each paper is finished (team decision 2026-09-17). Read count stays at 42 on this date (historical); 5 unread     | Team status check |
-| 2026-11-09 | Status check                                  | No new paper reviews. Papers #11–#15 (`liang2024divergent`, `chan2024chateval`, `pham2024cipher`, `zeng2025s2mad`, `campedelli2025breakfree`) remain unread; bib entries still withheld. The 2025–26 trust/debate papers listed in `docs/agent/04_LITERATURE_AND_GAPS.md` are not yet reviewed here, so the matrix has no new entries. | `docs/agent/04_LITERATURE_AND_GAPS.md`; this index |
-| 2026-11-09 | Bibliography                                  | `FYDP_Summer/fydp.bib` and `trustcal/references.bib` each hold 44 entries; the 42-entry count is the historical 2026-09-12 record. | `Select-String '^@'` file counts |
+| 2026-11-09 | Encouraging Divergent Thinking (Liang et al.) | **Read and verified.** Confirmed the Degeneration-of-Thought definition, adaptive-break result, and judge backbone-bias finding. No claim corrections. | ACL Anthology 2024.emnlp-main.992 PDF full text |
+| 2026-11-09 | ChatEval (Chan et al.)                        | **Read and verified.** Confirmed multi-agent referee team, gains over a single-agent judge, and the necessity of diverse role prompts. The “no external evidence channel” contrast is an inference from the method, not a measured result. | arXiv 2308.07201 full text |
+| 2026-11-09 | CIPHER (Pham et al.)                          | **Read and verified.** Confirmed token-sampling information loss, embedding exchange, and the white-box requirement. The paper addresses communication fidelity, not factual truth. | arXiv 2310.06272 full text |
+| 2026-11-09 | S2-MAD (Zeng et al.)                          | **Read and verified.** Corrected the fourth author to Chen Tianying Tiana. Confirmed up to 94.5% token reduction vs MAD, 90.2% vs MAD-Sparse, and 87.0% vs GroupDebate with competitive accuracy; removed the unsupported uniform “<2% degradation” wording. The method has no correctness check. | ACL Anthology 2025.naacl-long.475 PDF full text |
+| 2026-11-09 | I Want to Break Free! (Campedelli et al.)     | **Read and verified.** Confirmed 2,400 conversations, 240 scenarios, six models, and 1,600 usable; goal framing affects persuasion but not anti-social behavior; persona affects both. Corrected the claim that persuasion and correctness are separate axes: the study does not measure factual correctness. | arXiv 2410.07109 full text |
+| 2026-11-09 | Bibliography                                  | `FYDP_Summer/fydp.bib` holds 83 entries (80 cited); `Papev_Summer26_6/cas-refs.bib` holds 72 entries (71 cited); `trustcal/references.bib` remains at 44. The 42-entry count is the historical 2026-09-12 record. | `Select-String '^@'` file counts |

@@ -4,10 +4,12 @@
 ![Role](https://img.shields.io/badge/Role-Context%20(multi--agent%20judge)-6e40c9?style=for-the-badge)
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-ICLR%202024-6e40c9?style=for-the-badge)
-![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--11--09-8957e5?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-read%20and%20verified-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the ICLR 2024 paper (arXiv v1); not yet read by the team. Update after reading.*
+> *Status: read and verified against the published PDF on 2026-11-09. The summary and claims below were checked against the full text.*
+
+**Verification note (2026-11-09):** Targeted full-text read (abstract, method, results, limitations; arXiv v1). Confirmed the multi-agent referee team, the gains over a single-agent judge, and the necessity of diverse role prompts. The paper evaluates text quality with LLM judges and does not retrieve external evidence; the “no external evidence channel” contrast is an inference from the method, not a measured result.
 
 Paper Title:
 ChatEval: Towards Better LLM-based Evaluators through Multi-Agent Debate
@@ -131,9 +133,9 @@ Evaluation quality depends entirely on the panel agents' internal knowledge and 
 
 **Justification:** Foundational citation for multi-agent evaluation/judging and persona diversity; useful to justify and then contrast our adjudication step. Lower threat than the debate-mechanism papers, but high citation value in related work.
 
-### 10. Reading Checklist (fill after team read)
+### 10. Reading Checklist (verified 2026-11-09)
 
-- [ ] Exact benchmark names and human-agreement numbers
-- [ ] Communication strategy definitions (reusable in our prompt design?)
-- [ ] Role-prompt templates from appendix
-- [ ] Cost analysis vs single judge
+- [x] Benchmark names and human-agreement numbers checked
+- [x] Communication strategy definitions checked
+- [ ] Role-prompt templates not checked (reuse check, not a claim)
+- [ ] Cost analysis vs single judge not checked

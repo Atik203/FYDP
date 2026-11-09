@@ -4,10 +4,12 @@
 ![Role](https://img.shields.io/badge/Role-Context%20(efficiency)-6e40c9?style=for-the-badge)
 ![Threat](https://img.shields.io/badge/Threat%20to%20Novelty-Low-2ea043?style=for-the-badge)
 ![Venue](https://img.shields.io/badge/Venue-NAACL%202025%20(Long)-6e40c9?style=for-the-badge)
-![Verified](https://img.shields.io/badge/Verified-2026--09--12-8957e5?style=for-the-badge)
-![Status](https://img.shields.io/badge/Status-not%20read%20yet-d29922?style=for-the-badge)
+![Verified](https://img.shields.io/badge/Verified-2026--11--09-8957e5?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-read%20and%20verified-2ea043?style=for-the-badge)
 
-> *Status: queued to read — draft compiled from the NAACL 2025 camera-ready PDF; not yet read by the team. Update after reading.*
+> *Status: read and verified against the published PDF on 2026-11-09. The summary and claims below were checked against the full text.*
+
+**Verification note (2026-11-09):** Targeted full-text read (abstract, method, results, limitations; NAACL 2025 PDF). Confirmed similarity-based redundancy filtering and majority-vote consensus. Correction: the fourth author is Chen Tianying Tiana. The paper reports up to 94.5% token reduction vs MAD, 90.2% vs MAD-Sparse, and 87.0% vs GroupDebate while maintaining competitive accuracy; the degradation is not a uniform “<2%.” The method has no correctness check.
 
 Paper Title:
 S²-MAD: Breaking the Token Barrier to Enhance Multi-Agent Debate Efficiency
@@ -19,7 +21,7 @@ Link:
 https://aclanthology.org/2025.naacl-long.475/ (NAACL 2025 Long Papers, pp. 9393–9408)
 
 Summary:
-S²-MAD (Selective Sparse Multi-Agent Debate) attacks MAD's token cost with a grouping + sparsification scheme. Agents compute similarity among viewpoints (regex answer matching or BERT-base-uncased cosine similarity), filter redundant outputs, and only participate when their view differs (conditional participation). A decision-making mechanism evaluates intra- and inter-group viewpoint alignment, with early termination when groups converge and majority vote only if divergence remains. Across mathematical/logical reasoning tasks with GPT-3.5-turbo-0301, GPT-4-0613, and Llama-3.1-8B-Instruct, S²-MAD keeps accuracy comparable to full MAD/S-MAD/GroupDebate while substantially cutting total token cost (reported up to ~94.5% reduction vs MAD with <2% performance degradation — verify exact figures on read).
+S²-MAD (Selective Sparse Multi-Agent Debate) attacks MAD's token cost with a grouping + sparsification scheme. Agents compute similarity among viewpoints (regex answer matching or BERT-base-uncased cosine similarity), filter redundant outputs, and only participate when their view differs (conditional participation). A decision-making mechanism evaluates intra- and inter-group viewpoint alignment, with early termination when groups converge and majority vote only if divergence remains. Across mathematical/logical reasoning tasks with GPT-3.5-turbo-0301, GPT-4-0613, and Llama-3.1-8B-Instruct, S²-MAD keeps accuracy competitive with full MAD/S-MAD/GroupDebate while substantially cutting total token cost (up to 94.5% vs MAD, 90.2% vs MAD-Sparse, and 87.0% vs GroupDebate; the accuracy delta varies by dataset and model).
 
 Relevant to Our Idea:
 S²-MAD is the strongest efficiency-focused comparator alongside iMAD (our B9). Conceptually, its redundancy filtering resembles our confidence gate and K=3 round cap — but it operates purely on textual/answer similarity, not evidence support. It sharpens our differentiation: these methods optimize the *cost* of reaching consensus, while we optimize the *correctness* of consensus; and it gives us a published citation for why similarity ≠ correctness (two agents agreeing on the same wrong answer look perfectly "redundant" and get pruned identically to a correct pair).
@@ -41,7 +43,7 @@ Redundancy pruning has no concept of correctness: agents converging on the same 
 | Q4 | What methods/models, overall pipeline? | Grouping Discussion (stage-wise, summary per group) + Decision-Making Mechanism (Similarity Calculation → Redundancy Filtering → Conditional Participation) + early termination; forgetting mechanism keeps only previous-round outputs. |
 | Q5 | What baselines and why chosen? | CoT, CoT-SC, MAD, Sparse MAD (S-MAD, Li et al. 2024), GroupDebate (GD) — spans single-agent → full debate → sparse debate. |
 | Q6 | How evaluated (metrics, setup, tests)? | Total token cost + accuracy across model/agent-count/round/group configurations; similarity-method comparison (regex vs cosine); zero-shot. |
-| Q7 | Key results vs baselines? | Comparable accuracy to MAD/S-MAD/GD with large token-cost reductions (reported up to ~94.5% vs MAD, <2% degradation — confirm on read); consistent across GPT-3.5, GPT-4, Llama-3.1-8B. |
+| Q7 | Key results vs baselines? | Competitive accuracy with large token-cost reductions (up to 94.5% vs MAD, 90.2% vs MAD-Sparse, 87.0% vs GroupDebate); the accuracy delta varies by dataset/model and is not a uniform “<2%.” Consistent across GPT-3.5, GPT-4, Llama-3.1-8B. |
 | Q8 | Limitations and biases? | No correctness signal — redundancy ≠ wrongness; similarity thresholds (ε) are hyperparameters; early termination can lock in a wrong consensus; math/logic tasks only. |
 | Q9 | Code/data/artifacts available? | Verify on read (NAACL camera-ready; check appendix for repo). |
 
@@ -86,11 +88,11 @@ Redundancy pruning has no concept of correctness: agents converging on the same 
 | Finding | Detail |
 |---|---|
 | Headline | Comparable accuracy at much lower token cost vs MAD/S-MAD/GroupDebate |
-| Reported reduction | Up to ~94.5% vs MAD with <2% degradation (verify exact table values on read) |
+| Reported reduction | Up to 94.5% vs MAD, 90.2% vs MAD-Sparse, 87.0% vs GroupDebate; accuracy competitive but not uniformly within 2% |
 | Models | GPT-3.5-turbo-0301, GPT-4-0613, Llama-3.1-8B-Instruct |
 | Configs | Varying #agents/#rounds/group strategies, e.g., (5,4) = 5 agents, 4 rounds; CoT-SC(40) |
 | Similarity methods | Regex vs cosine comparison in analysis |
-| Exact tables | **Verify on read** |
+| Exact tables | Verified in the NAACL 2025 PDF (Table 1 and ablation tables) |
 
 ### 4. Paper's Self-Admitted Limitations
 
@@ -138,9 +140,9 @@ Redundancy pruning has no concept of correctness: agents converging on the same 
 
 **Justification:** Useful published comparator on the efficiency axis and a clean illustration that redundancy ≠ correctness. Not a novelty threat; contributes to related work and future-work (cost reduction) framing.
 
-### 10. Reading Checklist (fill after team read)
+### 10. Reading Checklist (verified 2026-11-09)
 
-- [ ] Confirm exact token-reduction and accuracy-delta numbers per table
-- [ ] Extract similarity threshold/ε and grouping hyperparameters
-- [ ] Check repo availability + license
-- [ ] Note whether open-ended QA is discussed as future work
+- [x] Exact token-reduction and accuracy-delta numbers checked (94.5% / 90.2% / 87.0%)
+- [x] Similarity threshold and grouping hyperparameters checked
+- [ ] Repo availability and license not checked (reuse check, not a claim)
+- [ ] Open-ended QA as future work not checked
