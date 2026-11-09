@@ -23,7 +23,9 @@
 # is the pre-registered Full target; if the v1.2 freeze remains 180 items, set
 # dataset_caps.eg_sss_180: 180 and recompute the debate/GPU envelope.
 
-phase: final
+# The Full matrix runs on the 80GB four-bit stack; check the budget with
+# `python scripts/check_stack.py --phase fourbit` before the session.
+phase: fourbit
 
 datasets:
   - gpqa_main

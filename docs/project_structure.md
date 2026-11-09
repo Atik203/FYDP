@@ -1,6 +1,6 @@
 # Project Structure — Runtime Implementation
 
-Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on a rented Vast.ai GPU instance (RTX A6000 48GB for Dev; RTX PRO 6000 96GB for Final) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU. Execution order is in `roadmap.md`; per-component status is in `trustcal/IMPLEMENTATION_STATUS.md`.
+Reference layout for the Python codebase that implements the debate pipeline described in `docs/blueprint.md`. This is the repo you build on a rented Vast.ai GPU instance (RTX A6000 48GB for Dev; 80 GB A100 PCIe for the Core/Full main matrix; 96 GB RTX PRO 6000 only for the N1 FP8 smoke and precision replication) and push to GitHub; see "Pod workflow" at the bottom for how it interacts with the rented GPU. Execution order is in `roadmap.md`; per-component status is in `trustcal/IMPLEMENTATION_STATUS.md`.
 
 > **Status note (2026-11-09):** this is the reference layout, not a status report. The current implementation uses a plain-Python debate runner, claim-domain retrieval routing, and the P0 trust operator (logit accumulation → one softmax → floor/ceiling simplex projection). `trustcal/IMPLEMENTATION_STATUS.md` is the status source.
 
@@ -87,7 +87,7 @@ Quantized variants of the roadmap's model trio: the official Ministral FP8 check
 
 ## Pod workflow
 
-1. `setup.sh` on a fresh Vast.ai instance: `git clone` the repo, install pinned deps + vLLM, pre-download the three quantized checkpoints, then start `serve.sh` in the background. The Final path is `PHASE=final bash setup.sh` on the 96 GB RTX PRO 6000.
+1. `setup.sh` on a fresh Vast.ai instance: `git clone` the repo, install pinned deps + vLLM, pre-download the three quantized checkpoints, then start `serve.sh` in the background. The FP8 check path is `PHASE=final bash setup.sh` on the 96 GB RTX PRO 6000; the main Core/Full matrix uses the 4-bit stack on the 80 GB A100.
 2. Vast.ai is the primary provider: work via SSH/VS Code Remote in `/workspace`; persist the repo, `HF_HOME` cache, and `results/` on a Vast.ai volume so a stop/start does not re-download weights.
 3. GitHub is the safety net (spot instances get reclaimed). Push code; copy `results/` out before destroying an instance. Run `check_stack.py`, `preflight.py`, and the smoke test before any paid matrix session.
 

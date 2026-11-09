@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from trustcal.config import PHASES
 from trustcal.eval.smoke import check_records
 from trustcal.orchestrator import (
     DEFAULT_PLACEBO_UNIT,
@@ -71,7 +72,7 @@ def _resolve_modes(arm: str, placebo_mode: str, oracle_mode: str) -> tuple[str, 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Model-swap smoke test on a small subset")
     parser.add_argument("--config", default="configs/models.yaml")
-    parser.add_argument("--phase", choices=["dev", "final"], default="final")
+    parser.add_argument("--phase", choices=PHASES, default="final")
     parser.add_argument("--dataset", default="gpqa")
     parser.add_argument("--limit", type=int, default=20)
     parser.add_argument("--rounds", type=int, default=3)

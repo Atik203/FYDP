@@ -22,9 +22,9 @@ Cross-encoders rerank passages returned by retrieval. The implementation uses a 
 
 \subsection{Hardware Standards}
 
-The final experiments are planned for a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory; Gate~0 ran on the 48 GB RTX A6000 development card. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned final checkpoints are two FP8 models and one AWQ model, totalling 69.73GB. The offline budget check passes, but the 96 GB hardware smoke has not run, so the final stack has not been validated on the card.
+The Core and Full matrices are planned for a single 80 GB A100 PCIe spot running the 4-bit 24--27B stack: Qwen3.8-27B-AWQ-INT4, Gemma 4 26B-A4B AWQ, and Mistral 24B AWQ, at about 53.3GB of weights in total. Gate~0 ran on the 48 GB RTX A6000 development card, and the 96 GB RTX PRO 6000 Blackwell FP8 stack is retained for the N1 smoke and a small GPQA precision replication (B3, B8-no-trust, B8; 150--200 questions; one seed), not for the main matrix. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The full-size models (Qwen3.8-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned FP8 checkpoints are two FP8 models and one AWQ model, totalling 73.68GB. The offline budget check passes, but the 96 GB hardware smoke has not run, so the precision stack has not been validated on the card.
 
-An initial alternative was the RTX A6000 80GB. It has enough memory for the development stack at 4-bit precision and rents at about \$0.263 per hour, but it is an Ampere card: it cannot run the FP8 final checkpoints and would require a fully 4-bit final stack. Faster still is the H100 80GB; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 provides enough memory for the pinned stack, supports FP8, and can be rented within the student budget. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
+An initial alternative was the RTX A6000 80GB. It has enough memory for the 4-bit stack, but it is an Ampere card and cannot run the FP8 precision checkpoints; the default matrix card is the 80 GB A100 PCIe spot at \$0.136 per GPU-hour. The 96 GB RTX PRO 6000 Blackwell at \$0.336 per GPU-hour is the fallback if the A100 spot is unavailable; it raises the envelope to about \$1,050--1,150 and requires explicit re-approval. The H100 80GB adds cost without adding memory capacity, and the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the 24--27B trio. Thus the 80 GB A100 is the default matrix card, and the 96 GB card is kept for the precision work. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
 
 \subsection{Communication Standards}
 
@@ -36,7 +36,7 @@ Each source of evidence is accessed through its public REST interface: PubMed E-
 
 \subsection{Economic Constraint}
 
-The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in; the pilot is a separate USD 50--100. The Full run has a separate Final-stack budget envelope of USD 900--1,200. Retrieval APIs are free at their public tiers; MMLU-Pro is public, while GPQA and HLE are gated and not redistributed. The code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
+The matrix is budgeted at 1,067 GPU-h planned, or 1,280 GPU-h under the gate's conservative cap, on one 80 GB A100 spot at USD 0.136 per GPU-hour. The Core run is USD 175--210 including a 20\% contingency, the pilot is USD 15--20, the 32-row Full target is USD 210, and the 36-row gold-answer alternate is USD 235. The 96 GB N1 smoke and GPQA precision replication add USD 25--40 at USD 0.336 per GPU-hour, and storage and bandwidth add USD 40--80. The confirmatory envelope is USD 500--600 with a USD 600 hard stop. Retrieval APIs are free at their public tiers; MMLU-Pro is public, while GPQA and HLE are gated and not redistributed. The code is inference-only, so no training compute is required. The main economic risk is that the 80 GB A100 spot is unavailable; running the main matrix on the 96 GB card would raise the envelope to about USD 1,050--1,150 and requires explicit re-approval.
 
 \subsection{Environmental Constraint}
 
@@ -65,7 +65,7 @@ The main sustainability choice is inference-only operation on quantized checkpoi
 
 \section{Cost Analysis}
 
-The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run at USD 420--580 all-in; the pilot is a separate USD 50--100. The Full run has a separate Final-stack budget envelope of USD 900--1,200. The Full run is the six-arm target: 36 runs at 300 questions per dataset, or 10,800 debates, under a 1,440 GPU-h envelope if B8-oracle is defined as gold-answer trust; the count is recomputed if WP-18 defines it as gold-evidence-only on EG-SSS. The Core run is a prefix of the Full run only if the model stack matches. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
+The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. Core and Full are planned on the same 4-bit 24--27B stack (Qwen3.8-27B-AWQ-INT4, Gemma 4 26B-A4B AWQ, Mistral 24B AWQ) on one 80 GB A100 PCIe spot at USD 0.136 per GPU-hour, so Core cells are reusable in Full where the stack and model revisions match. The Full target is 32 rows: the 24 Core rows, six placebo rows, and a two-seed gold-evidence oracle on EG-SSS, at 1,280 GPU-h and about USD 210 including 20\% contingency. The 36-row gold-answer alternate, which runs the gold-answer oracle on all three datasets (six rows), is 1,440 GPU-h and about USD 235; it is not the default. The 96 GB FP8 stack is used only for the N1 smoke and a small GPQA precision replication (B3, B8-no-trust, B8; 150--200 questions; one seed), costed at 60--100 GPU-h and USD 25--40 at USD 0.336 per GPU-hour. The pilot is 112 GPU-h and USD 15--20. Storage and bandwidth add USD 40--80. The confirmatory envelope is USD 500--600 with a USD 600 hard stop. If the 80 GB A100 spot is unavailable and the main runs must use the 96 GB card, the cost rises to about USD 1,050--1,150 and requires explicit re-approval. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget-sic} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
 
 \begin{center}
     \begin{table}[ht]
@@ -76,22 +76,28 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Item                                                & Basis                            & Cost (USD)          \\
             \hline
-            Executable matrix GPU time                         & 1,067--1,280 GPU-h               & within Core-run envelope  \\
+            Core run (matrix)                                    & 1,067 planned; 1,280 cap         & 175--210            \\
             \hline
-            Core run (matrix)                                    & 1,280 GPU-h cap; 1,067 planned   & 420--580 all-in     \\
+            Full target (32 rows, gold-evidence oracle)          & 1,280 GPU-h                      & 210                 \\
             \hline
-            Full run (six arms, 300 per dataset)          & 36 runs; 1,440 GPU-h envelope    & 900--1,200 envelope \\
+            Full alternate (36 rows, gold-answer oracle)         & 1,440 GPU-h                      & 235                 \\
+            \hline
+            Pilot                                                & ~112 GPU-h                       & 15--20              \\
+            \hline
+            N1 smoke + GPQA precision replication                & 60--100 GPU-h at 0.336/h         & 25--40              \\
             \hline
             Retrieval APIs (PubMed, arXiv, S2, OpenAlex)        & public tiers                     & 0                   \\
             \hline
             Datasets (GPQA, MMLU-Pro, HLE)                      & public or gated                  & 0                   \\
             \hline
-            Storage and bandwidth                               & included in the envelopes        & included            \\
+            Storage and bandwidth                               & ---                              & 40--80              \\
             \hline
-            \textbf{Planning range (Core + Full)}               &                                  & \textbf{1,320--1,780} \\
+            \textbf{Confirmatory envelope}                      &                                  & \textbf{500--600; hard stop 600} \\
+            \hline
+            Fallback (main runs on 96 GB)                       & re-approval required             & 1,050--1,150        \\
             \hline
         \end{tabular}
-        \label{tab:budget}
+        \label{tab:budget-sic}
     \end{table}
 \end{center}
 
@@ -106,49 +112,30 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Gate~0 (completed)                     & $\approx 1.0$      & 3,708.1~s total; invoice USD 4.29 including ingress \\
             \hline
-            Executable P0 matrix                   & 1,067--1,280       & 24 runs; gate cap or per-dataset caps \\
+            Executable P0 matrix                   & 1,067--1,280       & 24 runs; 4-bit matrix stack on 80 GB A100 \\
             \hline
-            Core run (matrix)                      & 1,280 cap; 1,067 planned & 24 runs; gate cap or per-dataset caps \\
+            Core run (matrix)                      & 1,280 cap; 1,067 planned & 24 runs; USD 175--210 \\
             \hline
-            Full run                         & 1,440 (36 runs)       & USD 900--1,200 envelope; separate Final stack \\
+            Full target                      & 1,280 (32 rows)       & gold-evidence oracle on EG-SSS; USD 210 \\
+            \hline
+            Full alternate                   & 1,440 (36 rows)       & gold-answer oracle; USD 235 \\
+            \hline
+            N1 smoke + precision replication & 60--100              & 96 GB FP8; USD 25--40 \\
+            \hline
+            Pilot                            & ~112                  & G2; USD 15--20 \\
             \hline
         \end{tabular}
         \label{tab:budget-phase}
     \end{table}
 \end{center}
 
-Storage and bandwidth are included in the scenario envelopes rather than billed separately. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. MMLU-Pro~\cite{wang2024mmlupro} is public (MIT); GPQA~\cite{rein2024gpqa} is gated (CC BY 4.0) and HLE is gated (MIT). Neither gated set is redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
+Storage and bandwidth add USD 40--80 within the envelope. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. MMLU-Pro~\cite{wang2024mmlupro} is public (MIT); GPQA~\cite{rein2024gpqa} is gated (CC BY 4.0) and HLE is gated (MIT). Neither gated set is redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
 
-An alternative budget using the RTX A6000 80GB was also considered. At about \$0.263 per hour, the same 1,280 GPU-h matrix would cost about \$337 in GPU time, before storage and overhead. The A6000 is cheaper but has no FP8 path, so the final stack would have to be fully 4-bit and the final-stack replication would not exercise the pinned FP8 checkpoints. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids tighter quantization or sequential model loading.
+The default budget uses one 80 GB A100 PCIe spot at \$0.136 per GPU-hour. The 96 GB RTX PRO 6000 Blackwell at \$0.336 per GPU-hour is the fallback, not the planning case: it is about 2.5 times the hourly rate, and running the main matrix on it raises the envelope to about \$1,050--1,150, so it requires explicit re-approval. The 80 GB A100 is sufficient for the 4-bit 24--27B trio, and the 96 GB card is retained for the N1 smoke and the precision replication.
 
-There is no revenue stream anticipated for this project. The project is an academic deliverable produced by a university team with funding provided through grants awarded to the university and team. The expected products are a written report and an open-source framework. The alternate A100 budget is shown in Table~\ref{tab:budget-alt}.
+There is no revenue stream anticipated for this project. The project is an academic deliverable produced by a university team with funding provided through grants awarded to the university and team. The expected products are a written report and an open-source framework.
 
-
-\begin{center}
-    \begin{table}[ht]
-        \centering
-        \caption{Alternate Core/Full budget on the RTX A6000 80GB (4-bit Dev stack).}
-        \renewcommand{\arraystretch}{1.6}
-        \begin{tabular}{|p{0.32\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|}
-            \hline
-            Item             & Quantity  & Unit Cost (USD)   & Total (USD)       \\
-            \hline
-            RTX A6000 80GB rental & 1,280 hours & 0.263 / hour & 337             \\
-            \hline
-            Retrieval APIs   & ---       & 0 (free tier)     & 0                 \\
-            \hline
-            Datasets         & ---       & 0 (public)        & 0                 \\
-            \hline
-            Storage          & 200 GB    & 0.20 / GB-month   & 40                \\
-            \hline
-            \textbf{Total}   &           &                   & \textbf{377}       \\
-            \hline
-        \end{tabular}
-        \label{tab:budget-alt}
-    \end{table}
-\end{center}
-
-A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run budget envelope about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
+The ranges include a 20\% contingency: about USD 29--35 on the Core run, USD 35 on the 32-row Full target, and USD 39 on the 36-row alternate. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
 
 
 \section{Complex Engineering Problem}
@@ -281,7 +268,7 @@ A1--A5, with rationales below.
 
 \subsubsection{A1: Range of Resources}
 
-A1 is covered. Three model family sources; Four Literature API's; Six team members; Rented Blackwell GPU. Coordinating these resources clearly has to be part of the work. The plan in Chapter 3 assigns each task to a specific team member and tracks weeks/deliverables. That is why A1 is labeled as covered.
+A1 is covered. Three model family sources; Four Literature API's; Six team members; Rented 80 GB A100 GPU. Coordinating these resources clearly has to be part of the work. The plan in Chapter 3 assigns each task to a specific team member and tracks weeks/deliverables. That is why A1 is labeled as covered.
 
 \subsubsection{A2: Level of Interaction}
 
@@ -293,7 +280,7 @@ A3 is not covered. The framework combines existing concepts: multi-agent debate,
 
 \subsubsection{A4: Consequences for Society and Environment}
 
-A4 is covered. The work targets a social problem: unreliable and sycophantic answers from AI systems in scientific question answering. Even though the framework is a lab prototype rather than a production-deployed product, the consequences of the problem and of the solution were both considered during design. The environmental impact was assessed qualitatively: the pre-registered matrix is 1,067--1,280 GPU-h on a single rented GPU, the project does no training, and the models run as quantized checkpoints. Energy use was not metered, so no quantitative energy claim is made. These social and environmental considerations shaped the ethical constraints and the inference-only design documented in this chapter.
+A4 is covered. The work targets a social problem: unreliable and sycophantic answers from AI systems in scientific question answering. Even though the framework is a lab prototype rather than a production-deployed product, the consequences of the problem and of the solution were both considered during design. The environmental impact was assessed qualitatively: the pre-registered matrix is 1,067--1,280 GPU-h on a single rented 80 GB A100, the project does no training, and the models run as quantized checkpoints. Energy use was not metered, so no quantitative energy claim is made. These social and environmental considerations shaped the ethical constraints and the inference-only design documented in this chapter.
 
 \subsubsection{A5: Familiarity}
 
@@ -330,4 +317,4 @@ Table~\ref{tab:po_map} maps the project against the twelve program outcomes.
 The real-life problem in Chapter~1 and the work in this report address six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12. Literature review and gap analysis (Chapter~2) cover PO4. PO2 is covered by the requirements work in Chapter~3. PO10 is addressed in this report and in the oral presentation. The timeline and budget cover PO11. The journal writing and the independent learning record cover PO12. The remaining six outcomes are outside the scope of this report and are marked as not covered in Table~\ref{tab:po_map}.
 
 \section{Summary}
-The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run budget envelope of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, this report covers PO1, PO2, PO4, PO10, PO11, and PO12.
+The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h on the 4-bit 24--27B stack on one 80 GB A100 spot, with a Core envelope of USD 175--210, a 32-row Full target at USD 210 (36-row gold-answer alternate at USD 235), and a total confirmatory envelope of USD 500--600 under a USD 600 hard stop. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, this report covers PO1, PO2, PO4, PO10, PO11, and PO12.

@@ -87,10 +87,10 @@ The Full target adds B8-placebo and B8-oracle:
 
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
-| **B8-placebo** | retrieved, labels/verdicts shuffled within debate | trust-weighted | Tests whether evidence calibration matters vs any reweighting |
-| **B8-oracle** | gold evidence or gold-answer trust (definition to freeze) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
+| **B8-placebo** | retrieved, labels/verdicts **cross-agent round-pooled** | trust-weighted | Tests whether evidence calibration matters vs any reweighting |
+| **B8-oracle** | gold evidence on EG-SSS (default) or gold-answer trust (alternate) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
 
-**Conditional Full count:** 6 arms × 3 datasets × 2 seeds = **36 runs** if B8-oracle uses **gold-answer trust**, at **300 items/dataset** = 10,800 debates / **1,440 GPU-h envelope**. If B8-oracle is **gold-evidence-only on EG-SSS**, the target is **32 runs** and the envelope must be recomputed. **WP-18 freezes the definition and the row count.** Do not assert either count as final before WP-18.
+**Full count:** the default is **32 rows** with **gold-evidence oracle on EG-SSS** (1,280 GPU-h, **$210**); the alternate is **36 rows** with **gold-answer trust** at 300 items/dataset (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** **WP-18 freezes the definition and the row count.** Do not assert either count as final before WP-18.
 
 ### 3.4 Targeted additions (subset; not Core v1.0)
 
@@ -239,14 +239,15 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 | Plan | Arms | Datasets | Seeds | Items | Debates | GPU-h | Cash |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Old blueprint (do not run) | 15 | 5 | 3 | 1,000 | 225,000 | ~30,000 | $8,000+ |
-| **Core v1.0** | 4 | GPQA 400 + MMLU-Pro 400 + HLE 200 | 2 | 1,000/cell | **8,000** | **~1,067 planned; 1,280 cap** | **$420–580** |
-| **Full target A** (B8-oracle = gold-answer trust) | 6 | 300/dataset | 2 | 900/cell | **10,800** | **1,440 envelope** | **$900–1,200 envelope** |
-| **Full target B** (B8-oracle = gold-evidence on EG-SSS) | 6 | recompute | 2 | recompute | **32 runs; recompute** | **not frozen** | **not frozen** |
-| Pilot (N5) | 3–4 | pilot subset | 1–2 | 100–150 | — | ~112 | $50–100 |
-| Final-stack smoke (N1) | — | — | — | — | — | 60–100 | $80–120 |
-| Law-testing (N9) | sweeps | — | — | — | — | 8-min basis | $1,400–1,900 only if effect |
+| **Core v1.0** | 4 | GPQA 400 + MMLU-Pro 400 + HLE 200 | 2 | 1,000/cell | **8,000** | **~1,067 planned; 1,280 cap** | **$175–210** |
+| **Full default** (B8-oracle = gold-evidence on EG-SSS) | 6 | 300/dataset; oracle on EG-SSS | 2 | 900/cell | **9,600** (32 rows) | **1,280** | **$210** |
+| **Full alternate** (B8-oracle = gold-answer trust) | 6 | 300/dataset | 2 | 900/cell | **10,800** (36 rows) | **1,440** | **$235** |
+| Pilot (N5) | 3–4 | pilot subset | 1–2 | 100–150 | — | ~112 | $15–20 |
+| FP8 precision replication + N1 smoke | — | GPQA subset | 1 | 150–200 | — | 60–100 | $25–40 |
+| Storage and bandwidth | — | — | — | — | — | — | $40–80 |
+| **Total plan** | — | — | — | — | — | — | **$500–600** |
 
-**Budget rules:** Core and Full are different stacks (Dev vs Final); do not assume Core cells are reusable. The **$900–1,200 is the Full-run budget envelope**; compute a true top-up only if the stack and model revisions match. **Hard stop: $1,350 before law-testing.** If the Core/Full effect is absent, do not start law-testing. The exact Full caps are **not frozen** until WP-18.
+**Budget rules:** The main matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h** with the **4-bit 24–27B final families**. Core and Full use the same stack, so cells are reusable only where model revisions, prompts, and configs match. The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed). The Full default is 32 rows (gold-evidence oracle on EG-SSS); 36 rows is the gold-answer alternate. **Hard stop: $600.** If the 80 GB A100 spot is unavailable and the main runs use 96 GB at $0.336/h, the plan is **$1,050–1,150** and requires re-approval; that fallback is not the default. Law-testing is outside this envelope. The exact Full caps are **not frozen** until WP-18.
 
 Full price table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
@@ -290,7 +291,7 @@ Full price table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 | **G0 — Wiring** | Done 2026-09-16 | 10/10 vanilla MAD debates; 90/90 positions | — |
 | **P0 — Engineering** | Done 2026-11-09 | 13/13 checks; 514 tests; 0 undefined refs; 600 DPI figures | — |
 | **N1 — Final-stack smoke** | Nov 2026 | `check_stack.py --phase final`; `preflight.py --phase final --offline`; three `server OK`; `smoke_test.py --phase final` PASS | Do not start Full; fix `gpu_memory_utilization` or quantization and re-run |
-| **N2 — WP-18** | Nov–Dec 2026 | Mock B8-placebo/B8-oracle validate; placebo ≠ B8; oracle ≥ B8; dry-run shows 24 Core rows; **Full count (36 or 32) frozen** | Do not start Full |
+| **N2 — WP-18** | Nov–Dec 2026 | Mock B8-placebo/B8-oracle validate; placebo ≠ B8; oracle ≥ B8; dry-run shows 24 Core rows; **Full count (32 default or 36 alternate) frozen** | Do not start Full |
 | **N3 — Benchmark calibration** | Nov 2026–Feb 2027 | 24-item report; 180-item freeze with κ and defect rate; 300 only if clean | Cut to 120; do not build 600/800 |
 | **N4 — Verifier audit** | Nov–Dec 2026 | 150–200 pairs, 2 annotators; balanced accuracy ≥0.75; κ ≥0.60 | 0.60–0.75: swap to NLI/LLM judge and re-audit. <0.60: measurement/negative paper; do not claim a high-q result |
 | **G2 — Pilot** | Dec 2026 | Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records | Pivot to descriptive/diagnostic paper; do not run Core |

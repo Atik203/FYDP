@@ -2,6 +2,7 @@
 
     python scripts/run_matrix.py --dry-run                     # 24 Core rows, 2 seeds
     python scripts/run_matrix.py --limit 10 --datasets gpqa_main,mmlu_pro --arms B3,B8
+    python scripts/run_matrix.py --config configs/experiments_fourbit.yaml --dry-run
     python scripts/run_matrix.py --phase final --out results/matrix-final
     # after WP-18 (conditional Full plan):
     python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run

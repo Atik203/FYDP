@@ -14,7 +14,7 @@
 > **Canonical source of truth.** Every research decision in this repository traces back to this file. If a decision changes, change it here first — the report, the journal, and the roadmap follow this blueprint.
 
 > [!NOTE]
-> **P0 release (2026-11-09).** `main` = `dev` = `2ae56a3`; P0 gate 13/13; 514 tests; tags `p0-gate` = `055a244`, `p0-release` = `7f2c11f`. P0 is engineering readiness, not efficacy evidence. The 96 GB Final-stack hardware smoke has **not run**; only the offline 69.73 GB budget check passes. Execution order, costs and dates live in `roadmap.md`; per-component status lives in `trustcal/IMPLEMENTATION_STATUS.md`.
+> **P0 release (2026-11-09).** `main` = `dev` = `2ae56a3`; P0 gate 13/13; 514 tests; tags `p0-gate` = `055a244`, `p0-release` = `7f2c11f`. P0 is engineering readiness, not efficacy evidence. The 96 GB Final-stack hardware smoke has **not run**; only the offline 73.68 GB budget check passes. Execution order, costs and dates live in `roadmap.md`; per-component status lives in `trustcal/IMPLEMENTATION_STATUS.md`. **Historical design; current compute budget and execution stack are in `docs/agent/08_COMPUTE_COST.md`.**
 >
 > Two parts of the original design below are superseded. The trust operator is logit accumulation → one softmax → floor/ceiling simplex projection (`trust/update.py`), not clamp-then-renormalize. Retrieval routes by claim domain, not by agent identity; the source-per-agent diagram in §5 is the original design and is retained as history.
 
@@ -39,7 +39,7 @@
 | --- | --- | --- |
 | 5 | [Detailed Multi-Agent Pipeline](#section-5--detailed-multi-agent-pipeline) | Component specs: [gate](#agent-0--confidence-estimator-gatekeeper-not-a-debate-participant), [debate agents](#agents-13--debate-agents-two-phase-model-strategy), [retrieval](#retrieval-sub-system-claim-domain-routed-rag-shared-infrastructure-not-an-agent-per-se), [orchestrator](#orchestrator-implementation-detail-not-a-research-facing-agent-but-required-for-the-pipeline-to-function) |
 | 6 | [Complete Data Flow](#section-6--complete-data-flow) | The nine-step trace with every intermediate output |
-| 7 | [Models & Tools](#section-7--models--tools) | Dev vs Final model stack, [GPU budget](#gpu-budget--cost-breakdown), build difficulty ranking |
+| 7 | [Models & Tools](#section-7--models--tools) | Dev, main-matrix and FP8 precision stacks, [GPU budget](#gpu-budget--cost-breakdown), build difficulty ranking |
 | 8 | [Dataset Plan](#section-8--dataset-plan) | Five datasets, licenses, access risks, contingency fallbacks |
 
 **Phase 3 of 5 — Evaluation and Planning (Sections 9–12)**
@@ -240,10 +240,11 @@ Empirically, the debate pipeline behaves identically regardless of which models 
 
 | Phase | Agent 1 | Agent 2 | Agent 3 | GPU | Est. Cost |
 |-------|---------|---------|---------|-----|-----------|
-| **Dev** (Ph 0-2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB (spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) | Dev iteration |
-| **Final** (Ph 3-5) | Qwen3.6-27B-FP8 | Gemma-4-26B-A4B-FP8 | Mistral-24B-AWQ | RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**) | Final-stack smoke 60–100 GPU-h, **$80–120** |
+| **Dev** (Ph 0-2) | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B) | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B) | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) | RTX A6000 48GB (P0 engineering; not the main causal budget) | Gate 0 actual ≈$4.29 |
+| **Main matrix** (Ph 3-5) | Qwen3.8-27B (4-bit) | Gemma-4-26B-A4B (4-bit) | Mistral-24B (4-bit) | A100 PCIe 80GB (spot **$0.136/GPU-h**) | Core **$175–210**; Full **$210/$235** |
+| **Precision check** (Ph 3-5) | Qwen3.8-27B-FP8 | Gemma-4-26B-A4B-FP8 | Mistral-24B-AWQ | RTX PRO 6000 96GB (spot **$0.336/GPU-h**) | N1 smoke + replication **$25–40** |
 
-During development, all pipeline code (claim decomposition, retrieval, trust update, state machine, injection protocol) is written and debugged using the smaller Dev models (at 4-bit quantisation, ~28GB total) on a cheap RTX A6000 48GB. The Final-stack runs then use the full-scale models (FP8/AWQ, native on Blackwell) on an RTX PRO 6000 Blackwell 96GB — no code changes needed, only a model-name swap in the config. The Core run is planned on the Dev stack; the Full run is a separate Final-stack matrix.
+During development, all pipeline code (claim decomposition, retrieval, trust update, state machine, injection protocol) is written and debugged using the smaller Dev models (at 4-bit quantisation, ~28GB total) on a cheap RTX A6000 48GB. The Core and Full runs then use the **4-bit 24–27B final families on one 80 GB A100 PCIe** (Qwen3.8-27B-AWQ-INT4 ~21.0 GB, Gemma-4-26B-A4B AWQ ~17.2 GB, Mistral-24B-AWQ 15.06 GB; ~53.3 GB total) — no code changes needed, only a model-name/config swap. The **96 GB FP8 stack** is only the N1 hardware smoke plus a small GPQA precision replication; it is not the matrix host.
 
 - **Purpose:** independently reason about the question, then defend or revise positions across rounds based on evidence and each other's arguments.
 - **Responsibilities:** (1) produce an initial answer + reasoning trace, (2) decompose own claims into atomic propositions for retrieval, (3) revise position in light of evidence and peer arguments, (4) maintain awareness of own accumulating trust score.
@@ -323,36 +324,39 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 
 | Component           | Dev (Ph 0–2)               | Final (Ph 3–5)              | Why Selected                                                                                                                   | Limitations & Upgrade Path                                       |
 | ------------------- | -------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| **Agent 1**         | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B)                 | Qwen3.6-27B-FP8                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | FP8 ~26.0 GB (final); validated on dev models before the Final run |
+| **Agent 1**         | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B)                 | Qwen3.8-27B-FP8                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | FP8 ~29.95 GB (final); validated on dev models before the Final run |
 | **Agent 2**         | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B)                | Gemma-4-26B-A4B-FP8             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 28.67 GB FP8; 26B requires all params in memory despite 3.8B active per token  |
 | **Agent 3**         | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) (FP8)        | Mistral-24B-AWQ      | Dev: Mistral-family 14B with official FP8 weights (~14GB, near-lossless) — same lineage as Final Agent 3. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | 15.06 GB AWQ; FP8 public repos push the stack over 80 GB, so AWQ is the pinned Final artifact |
 | **External-answer ceiling (B7)** | OpenAI GPT-6 Luna (gpt-6-luna) | OpenAI GPT-6 Luna (gpt-6-luna) | Optional, appendix-only external-answer ceiling reference only; not part of the core mechanism and not in the Core or Full matrix. Three independent calls per question; mean single-call accuracy with CI + 3-sample majority (ties to the first sample); ~$3–9 per 1,000 (recompute from actual tokens; $0.10/M input + $0.50/M output) | B8-oracle (gold-answer trust, or gold-evidence-only on EG-SSS) is a separate pending arm under WP-18             |
 | **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is claim-domain routed upstream. Upgrade to SciBERT-based if evidence quality issues arise |
-| **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for both Dev (A6000) and Final (RTX PRO 6000)                  | Setup complexity on first use only                                                                                                |
+| **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for the Dev, main-matrix (A100), and FP8 precision paths                  | Setup complexity on first use only                                                                                                |
 | **Orchestration**  | plain Python                   | plain Python                   | Round-based state machine fits debate and injection-point control; the LangGraph port is not implemented | No external graph runtime to debug |
 | **Retrieval APIs** | PubMed, ArXiv, Semantic Scholar| PubMed, ArXiv, Semantic Scholar| Domain coverage matches scientific QA target; free academic access                                                             | Rate limits, coverage gaps in niche subfields — caching layer implemented                                                      |
 
 #### GPU Budget & Cost Breakdown
 
-The two-phase strategy keeps compute costs manageable for a student team. All pipeline code is model-agnostic, so no engineering time is spent reconfiguring between Dev and Final — only the model names in a config file change.
+The staged strategy keeps compute costs manageable for a student team. All pipeline code is model-agnostic, so no engineering time is spent reconfiguring between stages — only the model names in a config file change.
 
 | Stage | When | GPU-h | Cash | Notes |
 |------|------|------:|------:|-------|
-| **Final-stack smoke** | Nov 2026 | 60–100 | $80–120 | 96 GB RTX PRO 6000; **NOT RUN** — offline 69.73 GB check only |
-| **Pilot** | Dec 2026 | ~112 | $50–100 | 100–150 questions, Dev stack |
-| **Core run** | Jan 2027 | 1,280 cap (planned ~1,067) | $420–580 | 24 runs; 8,000 planned debates; Dev stack |
-| **Full run** | Feb 2027 | 1,440 envelope (conditional) | $900–1,200 envelope | 36-run target if B8-oracle uses gold-answer trust; 32-run gold-evidence-only variant must be recomputed; separate Final-stack matrix |
-| **Law-testing** | Apr 2027 | ~3,913 at 8 min | $1,400–1,900 | only if the effect is real |
+| **FP8 precision replication + 96 GB N1 smoke** | Nov 2026 | 60–100 | $25–40 | 96 GB RTX PRO 6000 at $0.336/GPU-h; **NOT RUN** — offline 73.68 GB check only |
+| **Pilot** | Dec 2026 | ~112 | $15–20 | 100–150 questions; 4-bit 24–27B on the 80 GB A100 |
+| **Core run** | Jan 2027 | 1,280 cap (planned ~1,067) | $175–210 | 24 runs; 8,000 planned debates; 4-bit 24–27B on the 80 GB A100 |
+| **Full run, default** | Feb 2027 | 1,280 | $210 | 32 rows; gold-evidence oracle on EG-SSS; B8-placebo is a cross-agent round-pool |
+| **Full run, alternate** | Feb 2027 | 1,440 | $235 | 36 rows; gold-answer oracle |
+| **Storage and bandwidth** | — | — | $40–80 | Persist the cache; copy results; destroy instances |
+| **Total plan** | — | — | **$500–600** | — |
+| **Law-testing** | Apr 2027 | — | outside the $600 hard stop; separate approval | only if the effect is real |
 
-**Hard stop: $1,350 before law-testing.** GPU rates: A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Full is a separate Final-stack matrix; Core cells are not assumed reusable unless the stack and model revisions match.
+**Hard stop: $600.** The Full default and alternate are alternatives; the total counts one Full run. The main causal matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h** with the **4-bit 24–27B final families**. The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication. If the 80 GB A100 spot is unavailable and the main runs use 96 GB, the plan is **$1,050–1,150** and needs **re-approval**; it is not the default. Core and Full run on the same 4-bit stack, so cells are reusable only where model revisions, prompts, and configs match.
 
-**Pinned Final stack (69.73 GB):** Qwen3.6-27B-FP8 (26.0 GB), Gemma-4-26B-A4B-FP8 (28.67 GB), Mistral-24B-AWQ (15.06 GB); utilization sum 0.90, 10.3 GB under the 80 GB weight budget. The offline check passes; the hardware smoke is the remaining gate. Full source table and formulas: [`docs/agent/08_COMPUTE_COST.md`](agent/08_COMPUTE_COST.md).
+**Pinned 4-bit main stack (~53.3 GB):** Qwen3.8-27B-AWQ-INT4 (~21.0 GB), Gemma-4-26B-A4B AWQ (~17.2 GB), Mistral-24B-AWQ (15.06 GB); fits the 80 GB A100 with KV headroom. **Pinned FP8 stack (73.68 GB):** Qwen3.8-27B-FP8 (29.95 GB), Gemma-4-26B-A4B-FP8 (28.67 GB), Mistral-24B-AWQ (15.06 GB); utilization sum 0.90, leaving ~12.72 GB of the 96 GB card for KV cache. The FP8 stack is the **96 GB smoke/precision stack**, not the main matrix host; the offline check passes and the hardware smoke is the remaining gate. Full source table and formulas: [`docs/agent/08_COMPUTE_COST.md`](agent/08_COMPUTE_COST.md).
 
-**Why this works:** The Dev models (9B–14B) run at 4-bit quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference. All code — claim decomposition, retrieval, trust update, state machine, injection protocol — is written and debugged at this tier. The Final models (24B–27B, ~77B parameters combined) run in FP8/AWQ on an RTX PRO 6000 Blackwell 96GB, which has native FP8 support; the code is identical, only the model checkpoints change. See §13 for the exact build sequence.
+**Why this works:** The Dev models (9B–14B) run at 4-bit quantisation (~28GB total) and fit on an RTX A6000 48GB with ample room for KV cache and batch inference; they are the P0 engineering stack. The Core and Full matrices use the **4-bit 24–27B final families on one 80 GB A100 PCIe**, which is the cost-efficient main path; the code is identical, only the checkpoints and config change. The FP8 stack on the 96 GB card exists to prove the full-precision checkpoints load and to supply a small GPQA precision replication. See §13 for the exact build sequence.
 
 > **Empirical note (2026-09, Phase 0/1):** on the RTX A6000 the official Ministral FP8 checkpoint cannot be served — vLLM's W8A8 FP8 kernel fails on Ampere (`cutlass_scaled_mm_sm80_epilogue`). The Dev stack therefore uses an **AWQ-4bit quantisation of the same Ministral-3-14B-Instruct-2512 model** (with AWQ Qwen and QAT-4bit Gemma), pinned in `trustcal/configs/models.yaml`. Model identities are unchanged; only the quantisation artifacts differ. Measured Dev behaviour, environment versions and costs: `experiments/gate0/README.md`.
 
-**Contingency:** If the 96GB card budget is tight, the Final experiment matrix can run sequentially on a single ≥48 GB card (e.g., RTX A6000, L40S) with FP8 loading one model at a time via model swaps, at a lower hourly rate but with much longer wall-clock time. If the A6000 budget is tight, Dev work can run sequentially on a single ≥32 GB VRAM GPU (e.g., RTX 4090 24GB loading one Dev model at a time via model swaps).
+**Contingency:** If the 80 GB A100 spot is unavailable, the fallback is to run the main matrix on the 96 GB card at **$0.336/GPU-h**; that plan is **$1,050–1,150** and requires re-approval. It is not the default. If the A6000 used for P0 engineering is unavailable, Dev work can run sequentially on a single ≥32 GB VRAM GPU (e.g., RTX 4090 24GB loading one Dev model at a time via model swaps).
 
 **Implementation difficulty ranking (easiest → hardest):**
 
@@ -475,7 +479,7 @@ Proceeding to **Phase 3 (Sections 9–12)**.
 | **Timeline**       | Nov 2026–Jan 2027 overloaded — smoke + WP-18 + calibration + verifier audit + pilot + Core                                              | **High**                                     | High                                 | Keep the order; do not start Core before G2. WP-18 is the only pre-run design addition; freeze the oracle scope before the Full config.                                                                                                                          |
 | **Publication**    | Two of four core related-work citations are preprint/workshop-tier, not main-conference                                     | Medium (perception risk, not technical risk) | Moderate                             | Disclose proactively and precisely (see prior meeting-prep guidance) — actually strengthens credibility if handled this way                                                                                                                                             |
 | **Implementation** | iMAD reimplementation fidelity to original paper                                                                            | Medium                                       | Moderate                             | ~10-day dedicated estimate already budgeted; explicit divergence documentation required                                                                                                                                                                                 |
-| **Implementation** | Single 96GB GPU compute ceiling under the 4-condition Core / 6-arm Full × multi-dataset × 2-seed matrix                         | Medium                                       | Moderate                             | Two-phase GPU strategy: Dev on RTX A6000 48GB (spot $0.16-0.37/hr, median $0.263 at 80 GiB), Final on RTX PRO 6000 Blackwell 96GB (Max-Q $0.74-1.02/hr; S $1.43; WS $1.25). Core $420–580; Full run $900–1,200 as a separate Final-stack matrix; hard stop $1,350 before law-testing. |
+| **Implementation** | Main-matrix compute ceiling under the 4-condition Core / 6-arm Full × multi-dataset × 2-seed matrix                         | Medium                                       | Moderate                             | Main matrix on one 80 GB A100 PCIe (spot $0.136/GPU-h) with the 4-bit 24–27B final families; the 96 GB FP8 stack ($0.336/GPU-h) is only the N1 smoke plus a small precision replication. Core $175–210; Full $210 (32-row gold-evidence default) or $235 (36-row gold-answer alternate); total $500–600; hard stop $600. The 96 GB main-run fallback is $1,050–1,150 and needs re-approval. |
 
 ---
 
@@ -486,14 +490,14 @@ _Post-P0 calendar. The July–October 2026 record — Gate 0, the trust operator
 > [!IMPORTANT]
 > **Order: Final-stack smoke → WP-18 → 24-item calibration → verifier audit → pilot (G2) → Core (G3) → Full (G4/G5).** The pilot and Core run are gates, not optional warm-ups.
 
-**GPU economics:** Development runs on a rented RTX A6000 48GB (Vast.ai spot **$0.16-0.37/hr**, median **$0.263** at 80 GiB) with the Dev stack at 4-bit quantisation (~28GB total). The Final stack is Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, pinned at **69.73 GB**, on an RTX PRO 6000 Blackwell 96GB (Max-Q **$0.74-1.02/hr**; S **$1.43**; WS **$1.25**). Stage costs: smoke **$80–120**, pilot **$50–100**, Core **$420–580**, Full run **$900–1,200** (separate Final-stack matrix, not a Core reuse), law-testing **$1,400–1,900**; **hard stop $1,350 before law-testing**. See `docs/agent/08_COMPUTE_COST.md`.
+**GPU economics:** The main matrix runs on one rented **80 GB A100 PCIe** (Vast.ai spot **$0.136/GPU-h**) with the **4-bit 24–27B final families**. The **96 GB FP8 stack** at **$0.336/GPU-h** is reserved for the N1 smoke plus a small GPQA precision replication. Stage costs: FP8 smoke/replication **$25–40**, pilot **$15–20**, Core **$175–210**, Full **$210** (32-row gold-evidence default) or **$235** (36-row gold-answer alternate), storage/bandwidth **$40–80**; **total $500–600**; **hard stop $600**. Law-testing is outside the envelope. The 96 GB main-run fallback is **$1,050–1,150** and needs re-approval. See `docs/agent/08_COMPUTE_COST.md`.
 
 | Month | Objectives | Development | Experiments | Deliverables |
 | --- | --- | --- | --- | --- |
-| **Nov 2026** | Final-stack readiness, WP-18, calibration, verifier audit start | 96 GB smoke (**NOT RUN**; offline 69.73 GB check only); B8-placebo/B8-oracle switches | 24-item calibration | smoke PASS; 6-arm support; calibration report |
+| **Nov 2026** | Final-stack readiness, WP-18, calibration, verifier audit start | 96 GB smoke (**NOT RUN**; offline 73.68 GB check only); B8-placebo/B8-oracle switches | 24-item calibration | smoke PASS; 6-arm support; calibration report |
 | **Dec 2026** | Verifier audit; pilot run | 150–200 claim–passage pairs; 100–150 pilot questions | Injection κ; baseline collapse check | **G2**; verifier report |
 | **Jan 2027** | Core run | 4-condition matrix, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds | 24 runs; 1,280 GPU-h cap | **G3**; EG-SSS-180 freeze (v1.2) |
-| **Feb 2027** | Full run | 6-arm config; 300-item benchmark target | 36-run target (32 if B8-oracle is EG-SSS-only); human eval starts | **G4/G5** |
+| **Feb 2027** | Full run | 6-arm config; 300-item benchmark target | 32-row gold-evidence default (36-row gold-answer alternate); human eval starts | **G4/G5** |
 | **Mar 2027** | Human evaluation and SDT | 150–200 paired items, 3 raters, expert ceiling | κ/ICC; SDT axes | Analysis freeze |
 | **Apr 2027** | Law-testing and ablations | q sweep, ρ, granularity, shared-error floor | Only if the effect is real | Results freeze |
 | **May–Jun 2027** | Thesis | Chapters, internal review, reproducibility package | — | Thesis submission June 2027 |
@@ -510,7 +514,7 @@ _Post-P0 calendar. The July–October 2026 record — Gate 0, the trust operator
 
 **Exact build sequence, with dependency reasoning:**
 
-1. **vLLM multi-model serving setup** — nothing else can be tested without this. Start with the Dev models ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) on an RTX A6000 48GB; verify all three load and generate correctly before writing any orchestration code. The Final models (Qwen3.6-27B-FP8, Gemma-4-26B-A4B-FP8, Mistral-24B-AWQ) are validated on the RTX PRO 6000 Blackwell 96GB only once the pipeline is stable.
+1. **vLLM multi-model serving setup** — nothing else can be tested without this. Start with the Dev models ([Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B), [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B), [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512)) on an RTX A6000 48GB; verify all three load and generate correctly before writing any orchestration code. The 4-bit 24–27B final families run the main matrix on the 80 GB A100; the FP8 checkpoints are validated on the RTX PRO 6000 Blackwell 96GB only once the pipeline is stable.
 
 2. **Vanilla MAD reproduction (Du et al. 2023)** — must come before any of our own additions. This is Gate 0. It validates the base debate loop works at all, independent of our contribution, so any later bugs can be isolated to _our_ additions rather than the underlying framework.
 
@@ -530,7 +534,7 @@ _Post-P0 calendar. The July–October 2026 record — Gate 0, the trust operator
 
 10. **Baselines B9–B10 (iMAD and ConsensAgent reimplementations)** — deliberately sequenced _last_ among baselines because they are the highest-difficulty components (Section 7's difficulty ranking) and benefit from the team having already built confidence-scoring-adjacent code that shares some logic.
 
-11. **Final-stack smoke (critical two-phase gate)** — before committing to the expensive Final experiment matrix, rent an RTX PRO 6000 Blackwell 96GB for **60–100 GPU-h (~$80–120)**. From `trustcal/`, run `PHASE=final bash setup.sh`, `python scripts/check_stack.py --phase final`, `python scripts/preflight.py --phase final --offline`, `python scripts/verify_env.py --check-servers`, then `python scripts/smoke_test.py --phase final --limit 20`. Load all three Final models and verify (a) claim tags parse correctly for every model, (b) injection affects all three as expected, (c) trust math runs without NaNs, (d) the state machine completes K=3 rounds for every model combination. **Status: NOT RUN**; only the offline 69.73 GB check passes.
+11. **Final-stack smoke (critical two-phase gate)** — before committing to the main matrix, rent an RTX PRO 6000 Blackwell 96GB for **60–100 GPU-h (~$25–40)**. From `trustcal/`, run `PHASE=final bash setup.sh`, `python scripts/check_stack.py --phase final`, `python scripts/preflight.py --phase final --offline`, `python scripts/verify_env.py --check-servers`, then `python scripts/smoke_test.py --phase final --limit 20`. Load all three Final models and verify (a) claim tags parse correctly for every model, (b) injection affects all three as expected, (c) trust math runs without NaNs, (d) the state machine completes K=3 rounds for every model combination. **Status: NOT RUN**; only the offline 73.68 GB check passes.
 
 12. **Core and Full experiment matrix execution** — Core only after the pilot (G2) and step 11 pass; Full only after Core (G3) and WP-18.
 
@@ -686,7 +690,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 - Statistically significant accuracy and/or CMR improvement for B8 over B8-no-trust on pressure-eligible items, with 95% CIs not overlapping zero.
 - Trust AUROC above chance and trust Brier better than the constant 1/3 predictor on the primary datasets.
 - Pilot (G2) confirms trust weights causally affect aggregation output; Core (G3) measures the primary endpoints.
-- Full (G4/G5): placebo does not match B8 and oracle separates — contingent on WP-18 and on the oracle scope (36-run gold-answer vs 32-run gold-evidence-only design).
+- Full (G4/G5): placebo does not match B8 and oracle separates — contingent on WP-18 and on the oracle scope (32-row gold-evidence default vs 36-row gold-answer alternate).
 
 **Graduation outcome:** FYDP thesis submitted June 2027 and defended June/July 2027; paper submission August–December 2027; fully reproducible codebase and evaluation harness released.
 

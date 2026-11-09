@@ -38,7 +38,7 @@ const INITIAL_AGENTS: AgentState[] = [
   {
     id: "a",
     name: "Agent A",
-    model: "Qwen3.6-27B",
+    model: "Qwen3.8-27B",
     position: "X",
     supported: 0.05,
     contradicted: 0.95,

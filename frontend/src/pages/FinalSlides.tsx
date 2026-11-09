@@ -335,7 +335,9 @@ function FinalDatasetSlide() {
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
               Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24
-              runs (Jan 2027); Full target: 36 runs at 300/dataset (Feb 2027).
+              runs (Jan 2027); Full primary: 32 rows at 300/dataset with the
+              gold-evidence oracle on EG-SSS (Feb 2027); 36-row gold-answer
+              alternate.
             </Bullet>
             <Bullet>
               Pilot: 50-question Month-1 pilot, then the 100–150-question G2
@@ -614,11 +616,11 @@ function FinalSetupSlide() {
         badgeBg="#e0e7ff"
         badgeColor={ACCENT}
         title="How the Experiments Run"
-        subtitle="Two model stacks, one code path: the swap is a config change."
+        subtitle="One code path across dev, the 4-bit main stack, and a 96 GB precision check."
       />
       <SlideTable
         head={["Stack", "Agents", "Hardware", "Precision"]}
-        colWidths={["10%", "44%", "22%", "24%"]}
+        colWidths={["12%", "42%", "22%", "24%"]}
         accent={ACCENT}
         rows={[
           [
@@ -628,10 +630,16 @@ function FinalSetupSlide() {
             "4-bit",
           ],
           [
-            "Final",
-            "Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B",
+            "Main",
+            "Qwen3.8-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B",
+            "80 GB A100",
+            "4-bit · ~53.3 GB",
+          ],
+          [
+            "FP8 check",
+            "Same three families",
             "RTX PRO 6000 96 GB",
-            "FP8 (Qwen/Gemma) · AWQ 4-bit (Mistral)",
+            "FP8 · N1 smoke + small GPQA replication",
           ],
         ]}
       />
@@ -664,8 +672,8 @@ function FinalSetupSlide() {
         </Card>
       </div>
       <NoteStrip color={ACCENT}>
-        Serving: vLLM, OpenAI-compatible, one server per agent · Final stack
-        69.73 GB / 96 GB · Core run 24 runs / 1,280 GPU-h (Jan 2027).
+        Main matrix: 4-bit stack (~53.3 GB) on one 80 GB A100 · FP8 check:
+        73.68 GB / 96 GB · Core run 24 runs / 1,280 GPU-h (Jan 2027).
       </NoteStrip>
     </div>
   );
@@ -706,7 +714,7 @@ function FinalResultsSlide() {
               ],
               [
                 "Project report",
-                "68 pp · 19 pp",
+                "69 pp · 19 pp",
                 "report + journal, 0 undefined references",
               ],
               [
@@ -715,9 +723,9 @@ function FinalResultsSlide() {
                 "4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 1,280 GPU-h · Jan 2027",
               ],
               [
-                "Final stack",
-                "69.73 GB / 96 GB",
-                "72.6% weights · 0.90 vLLM utilization",
+                "Main stack",
+                "4-bit · 80 GB A100",
+                "24–27B; 4-bit ~53.3 GB / 80 GB; FP8 check 73.68 GB / 96 GB",
               ],
               [
                 "Benchmark",
@@ -752,9 +760,10 @@ function FinalResultsSlide() {
         </Card>
       </div>
       <NoteStrip color={TEAL}>
-        Next: 96 GB final-stack smoke → WP-18 (placebo/oracle) → 24-item
-        calibration → verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027)
-        → G4/G5 Full (Feb 2027). No efficacy claim is made yet.
+        Next: N1 96 GB smoke + FP8 precision replication → WP-18
+        (placebo/oracle) → 24-item calibration → verifier audit → G2 pilot (Dec
+        2026) → G3 Core (Jan 2027) → G4/G5 Full (Feb 2027). No efficacy claim is
+        made yet.
       </NoteStrip>
     </div>
   );
@@ -931,10 +940,10 @@ function FinalConclusionSlide() {
               Applies to scientific QA, education and other evidence domains.
             </Bullet>
             <Bullet>
-              Remaining: 96 GB final-stack smoke → WP-18 → 24-item calibration →
-              verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027) → G4/G5
-              Full (Feb 2027), then ablations, human study and open-source
-              release.
+              Remaining: N1 96 GB smoke + FP8 precision replication → WP-18 →
+              24-item calibration → verifier audit → G2 pilot (Dec 2026) → G3
+              Core (Jan 2027) → G4/G5 Full (Feb 2027), then ablations, human
+              study and open-source release.
             </Bullet>
           </ul>
         </Card>
@@ -999,10 +1008,10 @@ function FinalCompactConclusionSlide() {
               measured.
             </Bullet>
             <Bullet>
-              Remaining: 96 GB final-stack smoke → WP-18 → 24-item calibration →
-              verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027) → G4/G5
-              Full (Feb 2027), then ablations, human study and open-source
-              release.
+              Remaining: N1 96 GB smoke + FP8 precision replication → WP-18 →
+              24-item calibration → verifier audit → G2 pilot (Dec 2026) → G3
+              Core (Jan 2027) → G4/G5 Full (Feb 2027), then ablations, human
+              study and open-source release.
             </Bullet>
           </ul>
         </Card>

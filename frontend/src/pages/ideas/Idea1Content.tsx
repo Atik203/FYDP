@@ -78,7 +78,7 @@ export function Idea1Content() {
             <strong>514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release).</strong> The core is wired:
             options in prompts, parser/scorer, trust simplex projection, verifier
             interface, claim-domain routing, endpoints, and manifest/resume.
-            Current report evidence: 68-pp report, 19-pp journal, 0 undefined
+            Current report evidence: 69-pp report, 19-pp journal, 0 undefined
             references. This is engineering readiness, <strong>not an efficacy result</strong>.
             Everything below is planned work unless it is explicitly dated as
             done.
@@ -530,7 +530,7 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-bold mb-2">4.2 Agent Pool (N=3)</h4>
             <p className="text-sm leading-relaxed mb-0">
-              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a>,{" "}
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.8-27B" target="_blank" rel="noopener noreferrer">Qwen3.8-27B-AWQ-INT4</a>,{" "}
               <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma 4 26B A4B</a>,{" "}
               <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral Small 3.2 24B</a> — three
               different families for genuine heterogeneity. Each tracks own
@@ -657,7 +657,7 @@ export function Idea1Content() {
           <ColBox>
             <h4 className="text-sm font-semibold mb-1">
               Dev: <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> → Final:{" "}
-              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B</a>
+              <a className="underline decoration-dotted underline-offset-2" href="https://huggingface.co/Qwen/Qwen3.8-27B" target="_blank" rel="noopener noreferrer">Qwen3.8-27B-AWQ-INT4</a>
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
               Dev: cheap iterative testing on RTX A6000 48GB. Final: 27B dense,
@@ -833,13 +833,18 @@ export function Idea1Content() {
         </p>
         <InfoGrid cards={resources} />
 
-        <h4 className="text-sm font-bold mt-5 mb-3">GPU Budget</h4>
+        <h4 className="text-sm font-bold mt-5 mb-3">GPU &amp; Storage Budget</h4>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-3">
-          Two-phase strategy: develop on RTX A6000 48GB (spot $0.16–0.37/hr on
-          Vast.ai) with the smaller models, then run the matrix on RTX PRO 6000
-          Blackwell 96GB (~$0.74–1.43/hr). The pinned Final stack (Qwen3.6-27B-FP8
-          / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ) is 69.73 GB and fits one card.
-          A 96 GB final-stack smoke ($80–120) is required before the pilot; the
+          Two-phase strategy: develop on an RTX A6000 48GB with the smaller
+          models, then run the main causal matrix
+          on one 80 GB A100 ($0.136/GPU-h) with the 24–27B stack served 4-bit
+          (Qwen3.8-27B-AWQ-INT4 ~21.0 GB / Gemma-4-26B-A4B AWQ ~17.2 GB /
+          Mistral-24B-AWQ 15.06 GB; ~53.3 GB total). The pinned 73.68 GB
+          FP8 stack (Qwen3.8-27B-FP8 29.95 GB / Gemma FP8 28.67 GB / Mistral
+          AWQ 15.06 GB) on a 96 GB card is only for the N1 smoke and a small GPQA
+          precision replication, not the main Full matrix. The plan totals
+          $500–600 with a $600 hard stop; if no 80 GB A100 is available, the
+          $1,050–1,150 fallback requires re-approval and is not the default. The
           offline check passes, but the hardware smoke has not been run. Use the
           table below to review the budget.
         </p>
@@ -970,10 +975,10 @@ export function Idea1Content() {
           <strong>Scale:</strong> 24-item calibration first; then the Core matrix
           is 4 arms × GPQA-Main 400 / MMLU-Pro STEM 400 / HLE 200 × 2 seeds =
           24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in
-          Core v1.0. The Full target is 36 runs at 300 items/dataset within a
-          1,440 GPU-h envelope (32 runs and recomputed GPU-h if B8-oracle is
-          gold-evidence-only on EG-SSS). Benchmark ladder: 180 floor, 300 target,
-          600 stretch, 800 no-go.
+          Core v1.0. The primary Full matrix is 32 rows at 300 items/dataset
+          with the gold-evidence oracle on EG-SSS (1,280 GPU-h); the 36-row
+          gold-answer alternate is 1,440 GPU-h. Benchmark ladder: 180 floor,
+          300 target, 600 stretch, 800 no-go.
           <br />
           <strong>Fallback:</strong> If HLE access is delayed, it stays an
           abstention control and is not replaced by a primary set. If the
@@ -1095,9 +1100,8 @@ export function Idea1Content() {
           (4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs,
           1,280 GPU-h). The 6-arm target adds B8-placebo and B8-oracle through
           WP-18; the pre-registration records both the target and the executable
-          subset. If B8-oracle uses gold-answer trust, the Full target is 36
-          runs; if it is gold-evidence-only on EG-SSS, 32 runs with recomputed
-          GPU-h.
+          subset. The primary Full matrix is 32 rows with the gold-evidence
+          oracle on EG-SSS; the 36-row alternate uses gold-answer trust.
         </p>
 
         <Callout
@@ -1247,8 +1251,9 @@ export function Idea1Content() {
           12. Month-by-Month Roadmap (Nov 2026 – Dec 2027)
         </SectionTitle>
         <p className="text-sm mb-4">
-          Per the execution plan: P0 released Nov 2026; final-stack smoke, WP-18,
-          24-item calibration and verifier audit precede the G2 pilot in Dec
+          Per the execution plan: P0 released Nov 2026; N1 96 GB smoke + FP8
+          precision replication, WP-18, 24-item calibration and verifier audit
+          precede the G2 pilot in Dec
           2026; G3 Core run Jan 2027; G4/G5 Full run plus the benchmark ladder
           Feb 2027; human eval/SDT Mar; results freeze Apr; thesis chapters May;
           thesis submit Jun; defence Jun/Jul; paper after defence Aug–Dec 2027.
@@ -1290,8 +1295,8 @@ export function Idea1Content() {
             },
             {
               step: 4,
-              title: "Final-stack smoke, calibration, verifier audit, then pilot (Nov–Dec 2026)",
-              desc: "Highest-risk assumption (Section 0). Run the 96 GB final-stack smoke ($80–120), WP-18 placebo/oracle, the 24-item calibration, and the verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) before the 50-question Month-1 pilot and 100–150-question G2 pilot.",
+              title: "N1 smoke + FP8 precision check, calibration, verifier audit, then pilot (Nov–Dec 2026)",
+              desc: "Highest-risk assumption (Section 0). Run the N1 96 GB smoke + FP8 precision replication ($25–40), WP-18 placebo/oracle, the 24-item calibration, and the verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) before the 50-question Month-1 pilot and 100–150-question G2 pilot.",
             },
             {
               step: 5,
@@ -1325,13 +1330,13 @@ export function Idea1Content() {
             },
             {
               step: 11,
-              title: "Final-stack 96 GB smoke test (two-phase gate)",
-              desc: "Costs $80–120. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. The offline check passes; the 96 GB hardware smoke has not yet been run. Fix any model-specific issues before the matrix.",
+              title: "N1 96 GB smoke + FP8 precision check (two-phase gate)",
+              desc: "Costs $25–40. Run 20 questions across the FP8 check stack — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. The offline check passes; the 96 GB hardware smoke has not yet been run. Fix any model-specific issues before the matrix.",
             },
             {
               step: 12,
               title: "Core run (24 runs) then Full run target",
-              desc: "G3 Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs at 1,280 GPU-h. G4/G5 Full target: 36 runs at 300 items/dataset within a 1,440 GPU-h envelope; B8-placebo/B8-oracle are WP-18, with the oracle definition conditional.",
+              desc: "G3 Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs at 1,280 GPU-h. G4/G5 Full primary: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h); the 36-row gold-answer alternate is 1,440 GPU-h. B8-placebo/B8-oracle are WP-18.",
             },
             {
               step: 13,
@@ -1375,7 +1380,7 @@ export function Idea1Content() {
               calibration + pilot (step 4) confirms the core assumption.
             </li>
             <li>
-              Never skip the final-stack smoke test (step 11) — an $80–120
+              Never skip the N1 smoke + FP8 precision check (step 11) — a $25–40
               check prevents discovering model-specific issues at full scale.
             </li>
           </ul>

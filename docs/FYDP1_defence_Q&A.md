@@ -451,7 +451,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 
 - B7 is the optional, appendix-only external-answer ceiling: it draws three independent samples per question from OpenAI GPT-6 Luna (`gpt-6-luna`) and reports mean single-call accuracy with a question-level bootstrap CI plus 3-sample majority accuracy. Ties resolve to the first sample. About $3–9 per 1,000 questions at three samples (recompute from actual prompt/output tokens).
 - It is a **ceiling reference**, not part of the mechanism; it never receives the gold answer (`blueprint.md:322,339`).
-- B8-oracle is different: it is an internal upper bound that uses gold information — gold-answer trust, or gold-evidence-only on EG-SSS — and it is not implemented yet (WP-18). If it is gold-evidence-only on EG-SSS, the Full target is 32 runs, not 36.
+- B8-oracle is different: it is an internal upper bound that uses gold information — gold-evidence-only on EG-SSS in the default 32-row Full, or gold-answer trust in the 36-row alternate — and it is not implemented yet (WP-18).
 - If asked "is that unfair, a bigger model?": yes, deliberately — it shows the best a strong commercial model achieves, so the panel can see where debate+trust lands relative to a frontier point.
 
 **Fair comparison notes:**
@@ -480,7 +480,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 - **Q: How is this a fair comparison?** B5/B6 run the same three models as ours, so differences come from aggregation logic, not model choice; B1–B4 use identical prompts and settings.
 - **Q: Why reimplement B9 and B10 instead of quoting their papers?** Published numbers use different models and datasets; a same-stack reimplementation is the only honest comparison.
 - **Q: What if the reimplementation underperforms the original?** We ship a differentiation paragraph documenting every deviation; underperformance of a reimplementation is reported, not hidden (blueprint `:415`).
-- **Q: Why an oracle baseline at all if it cannot be deployed?** It bounds the ceiling — if debate+trust approaches the oracle, that is a strong result; if not, the gap is informative. B8-oracle is pending WP-18, and its scope decides whether the Full target is 36 or 32 runs.
+- **Q: Why an oracle baseline at all if it cannot be deployed?** It bounds the ceiling — if debate+trust approaches the oracle, that is a strong result; if not, the gap is informative. B8-oracle is pending WP-18; the default is gold-evidence on EG-SSS (32-row Full), and the gold-answer alternate is 36 rows.
 - **Q: Which baseline is the most threatening to us?** B4-matched — debate plus retrieval without trust. If B4-matched matches our numbers, the trust layer adds nothing.
 
 ## 7. Injection Protocol Deep-Dive
@@ -660,7 +660,7 @@ Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has 
 **Configs (memorize for "show me"):**
 
 - Models: dev = Qwen3.5-9B (4-bit AWQ), Gemma 4 12B (QAT w4a16), Ministral-3-14B (AWQ), ports 8000/8001/8002, ctx 4096 (`configs/models.yaml`).
-- Final = Qwen3.6-27B-FP8, Gemma-4-26B-A4B-FP8, Mistral-24B-AWQ, 69.73 GB total, ctx 8192 (`configs/models.yaml`).
+- Final = Qwen3.8-27B-FP8, Gemma-4-26B-A4B-FP8, Mistral-24B-AWQ, 73.68 GB total, ctx 8192 (`configs/models.yaml`).
 - Generation: temperature 0.7, 1024 output tokens, 3 retries (`inference/client.py:30-46`).
 - Data: 3 Core datasets, seeds [1,2], rounds 3, caps 100–150 pilot / 400 GPQA / 400 MMLU-Pro / 200 HLE (`configs/datasets.yaml`; `PRE_REGISTRATION.md` §3).
 
@@ -806,12 +806,12 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 - **90/90 positions:** every generation parsed to a non-empty answer — the parser survives real, unstructured text.
 - **370.8 s mean, 21.5 s stdev (5.8%):** timing is stable enough to plan the matrix.
 - **5/30 Ministral fallback:** claim tags are not guaranteed by any model; the fallback path is load-bearing, not decorative.
-- **≈$4.29 for 10 questions:** about 43 cents per question at dev rates. Scaling crudely to the 8,000-debate Core plan would exceed the budget at dev rates — the Final stack, batching and caching are the plan.
+- **≈$4.29 for 10 questions:** about 43 cents per question at dev rates. Scaling crudely to the 8,000-debate Core plan would exceed the budget at dev rates — the 4-bit 24–27B stack, batching and caching are the plan.
 - **Trust trajectory null:** honest marker that Gate 0 tested the base loop only.
 
 **Likely questions:**
 
-- **Q: Is 370 seconds fast enough for 8,000 debates?** Not at dev speed; the Final stack plus optimizations is the plan, and the matrix runs unattended over days.
+- **Q: Is 370 seconds fast enough for 8,000 debates?** Not at dev speed; the 4-bit 24–27B stack plus optimizations is the plan, and the matrix runs unattended over days.
 - **Q: What does the 5.8% timing variance tell you?** The system is not thrashing; per-question cost is predictable.
 - **Q: What is the artifact a judge can inspect?** `experiments/gate0/artifacts/summary-20260916T193249Z.md` plus the raw transcript in `experiments/gate0/`.
 - **Q: How do you know the models actually debated?** The transcript shows three distinct agents with positions per round, and peer text visible in revisions (`debate.py:60`).
@@ -834,25 +834,28 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 ## 15. Compute, Cost & Feasibility
 
 - Current Core matrix: 1,280 GPU-h conservative cap, planned ~1,067 GPU-h (`PRE_REGISTRATION.md` §5). The earlier report figure was ≈300 GPU-h (`FYDP_Summer/3.design.tex:168`; `5.sic.tex:305`).
-- Stage costs: Final-stack smoke $80–120; pilot $50–100; Core $420–580 (Dev stack); Full run $900–1,200 (separate Final-stack matrix; not a Core reuse); law-testing $1,400–1,900.
-- **Hard stop: $1,350 before law-testing.** Full is a separate Final-stack matrix; Core cells are not assumed reusable unless the stack and model revisions match.
-- Feasibility: dev stack on one RTX A6000; final stack on one RTX PRO 6000 96 GB; inference-only, no training. The 96 GB smoke is **NOT RUN**; only the offline 69.73 GB check passes.
+- Stage costs: FP8 precision replication + 96 GB N1 smoke $25–40; pilot $15–20; Core $175–210; Full $210 (32-row gold-evidence default) or $235 (36-row gold-answer alternate); storage/bandwidth $40–80; total $500–600.
+- **Hard stop: $600.** The main matrix runs on one **80 GB A100 PCIe** at **$0.136/GPU-h** with the **4-bit 24–27B final families**. The 96 GB FP8 stack at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed; 60–100 GPU-h). If the A100 spot is unavailable and the main runs use 96 GB, the plan is **$1,050–1,150** and needs **re-approval**; it is not the default. Law-testing is outside this envelope.
+- Feasibility: main matrix on one 80 GB A100 PCIe; 96 GB FP8 stack only for N1 and the precision replication; inference-only, no training. The 96 GB smoke is **NOT RUN**; only the offline 73.68 GB check passes.
 - If GPUs are short: reduce seeds or questions per set for the pilot, never change the gate criteria.
 
 ### 15.1 Budget Table
 
 | Item | Estimate | Source |
 | --- | --- | --- |
-| Final-stack smoke (96 GB) | 60–100 GPU-h; $80–120 | `roadmap.md` §13; **NOT RUN** |
-| Pilot | ~112 GPU-h; $50–100 | `roadmap.md` §13 |
-| Core run | 1,280 GPU-h cap (planned ~1,067); $420–580 | `PRE_REGISTRATION.md` §5 |
-| Full run (separate Final-stack matrix) | 1,440 GPU-h envelope; $900–1,200 | `roadmap.md` §13; conditional on oracle scope (gold-answer vs gold-evidence-only on EG-SSS) |
-| Law-testing | ~3,913 GPU-h at 8 min; $1,400–1,900 | only if effect |
-| Hard stop | $1,350 before law-testing | `roadmap.md` §13 |
+| FP8 precision replication + 96 GB N1 smoke | 60–100 GPU-h; $25–40 | `roadmap.md` §13; **NOT RUN** |
+| Pilot | ~112 GPU-h; $15–20 | `roadmap.md` §13 |
+| Core run | 1,280 GPU-h cap (planned ~1,067); $175–210 | `PRE_REGISTRATION.md` §5 |
+| Full run, 32-row gold-evidence default | 1,280 GPU-h; $210 | `roadmap.md` §13; WP-18 freezes |
+| Full run, 36-row gold-answer alternate | 1,440 GPU-h; $235 | `roadmap.md` §13; WP-18 freezes |
+| Storage and bandwidth | —; $40–80 | `roadmap.md` §13 |
+| **Total plan** | **$500–600** | `roadmap.md` §13 |
+| **Hard stop** | **$600** | `roadmap.md` §13 |
+| Law-testing | outside the envelope; separate approval | `roadmap.md` §13 |
 | Gate 0 actual | ≈$4.29 | `experiments/gate0/README.md` |
 | External-answer ceiling B7 (optional, appendix-only) | ~$3–9 per 1,000 questions at 3 samples (mean single-call accuracy with CI + 3-sample majority; recompute from actual tokens) | blueprint §7 |
 
-**Honest line:** "The old deck and report figures are historical. The current stage split is smoke, pilot, Core, Full run and law-testing; the Gate 0 actual gives the per-question sanity check."
+**Honest line:** "The old deck and report figures are historical. The current stage split is FP8 smoke/precision replication, pilot, Core and Full; the total plan is $500–600 with a $600 hard stop, and law-testing is outside it." The Full default and alternate are alternatives; the total counts one Full run.
 
 **Cost Q&A:**
 
@@ -879,11 +882,11 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 | --- | --- |
 | Verifier accuracy is not yet human-validated | "The 150–200 pair audit is the next gate. The lexical baseline scores 0.58 balanced accuracy on the synthetic audit set, so it is a diagnostic, not a paper result." |
 | The effect has not been measured yet | "The Core run is the next gate. No efficacy claim is made before it; the P0 gate is engineering readiness, not evidence." |
-| Placebo/oracle arms are not implemented yet | "WP-18 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset. If B8-oracle is gold-evidence-only on EG-SSS, the Full target is 32 runs, not 36." |
+| Placebo/oracle arms are not implemented yet | "WP-18 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset. The Full default is 32 rows with a gold-evidence oracle on EG-SSS; the gold-answer alternate is 36 rows." |
 | `--rounds` ignored with real clients | "Rounds come from the config file; the flag is legacy for mocks. It is queued for cleanup." (`runner.py:161-166`) |
 | Empty constraints subsections in report | "The standards/constraints chapter is being completed for the thesis; the mapping exists in Ch5." (`FYDP_Summer/5.sic.tex:53-73`) |
 | Registry vs matrix | "B1–B10 are the registry; the Core matrix is exactly B3, B4-matched, B8-no-trust and B8. The Full target adds placebo and oracle." |
-| Costs are split by stage | "Smoke, pilot, Core, Full run and law-testing are separate rows; Full is a separate Final-stack matrix, not a Core reuse, and the hard stop is $1,350 before law-testing." |
+| Costs are split by stage | "FP8 smoke/precision replication, pilot, Core and Full are separate rows; the total plan is $500–600 with a $600 hard stop. Full default is 32 rows with a gold-evidence oracle; 36 rows is the gold-answer alternate. Law-testing is outside the envelope." |
 | α/β grid not yet run | "Defaults 0.5/0.3; a Phase-3b sweep is scheduled, with a planned sensitivity check." (`blueprint.md` §9) |
 | Pilot = 10 questions | "Gate 0 was 10; the pilot is 100–150. The Core plan is 8,000 debates under the 1,280 GPU-h cap." |
 | Confidence gate not invoked | "Prompt is ready; the runner skip is deliberate until the trust loop lands." |
@@ -1006,7 +1009,7 @@ The uncomfortable questions, with answers that hold up.
 - **If asked "what did you personally do?":** answer from Section 19.
 - **If asked "what are you most confident about?":** the debate loop runs end to end (Gate 0: 10/10, 90/90) and the trust math is bounded and tested; the remaining work is the paid matrix and the human verifier audit.
 - **If asked "what is the weakest part?":** retrieval coverage; unverifiable claims are excluded, so sparse fields weaken the signal. Say it before they do.
-- **If asked a budget question:** "Core is $420–580; the Full run is $900–1,200 as a separate Final-stack matrix, not a Core reuse; law-testing is $1,400–1,900 only if the effect is real, with a hard stop of $1,350 before law-testing."
+- **If asked a budget question:** "Core is $175–210; the Full run is $210 in the 32-row gold-evidence default or $235 in the 36-row gold-answer alternate; the total plan is $500–600 with a $600 hard stop. The main matrix runs on an 80 GB A100 at $0.136 per GPU-hour; the 96 GB FP8 path is only the smoke and precision replication."
 - **If asked "why should this project continue?"** Three reasons: the failure is documented in the literature (over 20% ignored-correct cases; 41–86.7% MAS failure rates), the fix is bounded and testable, and the harness is reusable across evidence domains.
 - **If a judge requests a specific file:** open `E:\FYDP` and show — `trustcal/src/trustcal/trust/update.py` (math), `orchestrator/injection.py` (stress test), `eval/metrics.py` (CCR/MPR), `experiments/gate0/` (evidence).
 - **If the demo laptop fails:** switch to the deck; the code map in Section 11 is on every member's copy, and the mock-server path can run anywhere.

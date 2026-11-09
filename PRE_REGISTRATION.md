@@ -1,13 +1,17 @@
 # Pre-registration — Trust-Calibrated Multi-Agent Scientific Deliberation (P0 matrix)
 
-**Version:** 1.0 (v1.1 and v1.4 errata appended in §12)
+**Version:** 1.0 frozen, with v1.1 and v1.4 errata and a
+**v1.3 draft (pending team sign-off)** appended in §12
 **Date:** 9 November 2026
-**Status:** frozen before any confirmatory matrix run; the executable matrix in
-`trustcal/configs/experiments.yaml` is cut to four conditions. The two remaining
-arms of the six-arm target are pending WP-18 and must be added, with a version
-bump, before unblinding. The v1.1 erratum records the released prompt hash and
-branch retirement and assigns the six-arm completion to WP-18; it changes no
-endpoint or analysis.
+**Status:** the operative pre-registration is v1.0 plus the frozen v1.1/v1.4
+errata; v1.2 remains pending the benchmark freeze. The executable Core matrix in
+`trustcal/configs/experiments.yaml` is cut to four conditions. The **v1.3 draft
+in §12 is not approved**: it records the proposed placebo/oracle semantics, the
+32-row Full plan, the 4-bit/80 GB execution stack, the FP8 precision replication,
+and a revised $500–600 budget with a $600 hard stop, for team sign-off. It
+changes no endpoint, hypothesis, test, exclusion, or analysis family. The v1.1
+erratum records the released prompt hash and branch retirement and assigns the
+six-arm completion to WP-18; the v1.4 erratum records the B7 provider.
 **Project:** FYDP research proposal, Group 6 · Team Phantom Devs.
 **Scope:** the P0 confirmatory matrix (WP-14). This document is the
 pre-registration for the primary and co-primary endpoints below. It does not
@@ -78,19 +82,18 @@ The six-arm target is the causal design in
 | 2 | **B4-matched** | retrieved; same source partition and prompts as B8 | majority | executable |
 | 3 | **B8-no-trust** | retrieved; same as B8 | majority (`use_trust: false`) | executable; primary control |
 | 4 | **B8** | retrieved | trust-weighted | executable; treatment |
-| 5 | **B8-placebo** | retrieved; verdicts shuffled within debate | trust-weighted | **pending WP-18**, added before unblinding |
-| 6 | **B8-oracle** | gold evidence (gold-evidence subset) | trust-weighted | **pending WP-18**, added before unblinding |
+| 5 | **B8-placebo** | retrieved; verdict labels shuffled across the debate-round claim pool (`placebo_unit: round_pool`) | trust-weighted | **v1.3 draft** — semantics recorded, pending sign-off; Full only |
+| 6 | **B8-oracle** | gold evidence (`oracle_mode: gold_evidence`) on EG-SSS only | trust-weighted | **v1.3 draft** — semantics recorded, pending sign-off; Full only |
 
-The executable matrix is exactly the four conditions above:
-4 conditions × 3 datasets × 2 seeds = 24 runs. `B8-placebo` and `B8-oracle`
-need RunConfig switches that do not exist until WP-18; they are documented here
-as the remaining two arms of the six-arm target and will be added as a later
-version before unblinding. Adding them is not optional and not result-dependent:
-the causal claim in the thesis requires the placebo contrast
-(evidence calibration vs any re-weighting) and the oracle upper bound
-(verifier bottleneck). If WP-18 misses the pre-run window, the matrix runs as
-version 1.0 and the thesis reports the six-arm design as incomplete rather
-than silently dropping the contrast.
+The released Core matrix is exactly the four conditions above:
+4 conditions × 3 datasets × 2 seeds = 24 runs. `B8-placebo` and `B8-oracle` are
+not in the Core matrix; the **v1.3 draft** (§12, pending team sign-off) records
+their semantics and the separate 32-row Full plan. Adding them is not optional
+and not result-dependent: the causal claim in the thesis requires the placebo
+contrast (evidence calibration vs any re-weighting) and the oracle upper bound
+(verifier bottleneck). If the v1.3 draft is not signed off before the pre-run
+window, the matrix runs under v1.0 and the thesis reports the six-arm design as
+incomplete rather than silently dropping the contrast.
 
 The primary causal contrast is **B8 vs B8-no-trust**. B3 and B4-matched are
 controls, not competitors: B3 is the vanilla debate baseline and B4-matched is
@@ -108,7 +111,7 @@ this pre-registration.
 | `gpqa_main` | 400 | `633f5ee89ab8ad4522a9f850766b73f62147ffdd` | primary evidence-grounded set |
 | `mmlu_pro` | 400 | `b189ec765aa7ed75c8acfea42df31fdae71f97be` | primary scale/robustness set (STEM) |
 | `hle` | 200 | `5a81a4c7271a2a2a312b9a690f0c2fde837e4c29` | ceiling/abstention control; never pooled with the primary tests |
-| `EG-SSS-180` | not in this matrix | benchmark freeze | mechanism test with gold evidence; added at benchmark freeze, before unblinding |
+| `EG-SSS-180` | 180 floor; 300 Full target (not in the 24-row Core matrix) | benchmark freeze | mechanism test with gold evidence; the only `B8-oracle` dataset in the v1.3 draft |
 
 **Sampling.** Samples are deterministic and stratified, not `rows[:cap]`
 (dataset loader policy, `trustcal/configs/datasets.yaml`). GPQA options are shuffled per
@@ -117,11 +120,12 @@ question with a seeded permutation; the correct answer is not always first.
 it is retrieval-resistant, so a trust gain there is not a positive-evidence
 claim; its accuracy and abstention behaviour are reported separately.
 
-**EG-SSS-180.** Not in this matrix. The 180-item gold-evidence set (60
-biomed, 60 phys/chem, 60 math/CS) is added at benchmark freeze as version 1.2,
-before unblinding. It becomes the third primary dataset for CMR and the only
-dataset where B8-oracle is fully meaningful. No EG-SSS results exist at the
-date of this version.
+**EG-SSS-180.** Not in the 24-row Core matrix. The 180-item gold-evidence set
+(60 biomed, 60 phys/chem, 60 math/CS) is added at benchmark freeze as version
+1.2, before unblinding. It becomes the third primary dataset for CMR and the
+only dataset where B8-oracle is fully meaningful. The v1.3 draft also uses
+`eg_sss_180` for the two gold-evidence oracle rows in the Full matrix at the
+300-item Full target. No EG-SSS results exist at the date of this draft.
 
 **Seeds.** `seeds: [1, 2]`. Seed is a technical replicate; the unit of
 analysis is the question. Seed 1 is the pre-registered primary replicate for
@@ -358,7 +362,8 @@ including `hle` (control, descriptive only).
 1. **No condition is added, removed, or redefined after seeing results.** The
    only pre-unblinding additions allowed are B8-placebo and B8-oracle (WP-18)
    and EG-SSS-180 (benchmark freeze), each with a new version and a new config
-   hash.
+   hash. The v1.3 draft in §12 is the proposed version for the first pair; its
+   Full config hash is recorded there and is not effective until sign-off.
 2. **No optional stopping and no interim analysis of the primary contrast.**
    Pipeline-health metrics (parse rate, evidence coverage, row failures) may be
    monitored; they cannot change an arm, an endpoint, or the analysis set.
@@ -398,7 +403,7 @@ the values below are the pre-run record. A manifest mismatch refuses resume
 | Trust configuration | alpha 0.5, beta 0.3, floor 0.1, ceiling 0.9, max_claims as recorded |
 | Prompt set | B8 and B8-no-trust must differ only in the trust line / aggregation switch; WP-13 enforces this with a prompt-diff test before the matrix |
 | Dataset revisions | `gpqa_main` `633f5ee89ab8ad4522a9f850766b73f62147ffdd`; `mmlu_pro` `b189ec765aa7ed75c8acfea42df31fdae71f97be`; `hle` `5a81a4c7271a2a2a312b9a690f0c2fde837e4c29` |
-| Model revisions (Final stack) | `Qwen/Qwen3.6-27B-FP8` `a56219b8202864dc6d3e565be5ff1eea01f54cb4`; `RedHatAI/gemma-4-26B-A4B-it-FP8-dynamic` `ed35d7abe5d940da41b4ff06eb482feb0be8cb44`; `jeffcookio/Mistral-Small-3.2-24B-Instruct-2506-awq-sym` `49ec31ec0975e46a1aeef24186a45f11be3042b8` |
+| Model revisions (Final stack) | `Qwen/Qwen3.8-27B-FP8` `c3a462cc3d38cf351f3b26cbd763469eeb74ef81`; `RedHatAI/gemma-4-26B-A4B-it-FP8-dynamic` `ed35d7abe5d940da41b4ff06eb482feb0be8cb44`; `jeffcookio/Mistral-Small-3.2-24B-Instruct-2506-awq-sym` `49ec31ec0975e46a1aeef24186a45f11be3042b8` |
 | Model revisions (Dev stack) | `QuantTrio/Qwen3.5-9B-AWQ`, `google/gemma-4-12B-it-qat-w4a16-ct`, `cyankiwi/Ministral-3-14B-Instruct-2512-AWQ-4bit`; resolved HF commit SHAs are recorded in `run_manifest.json` at launch |
 
 The file hashes above are sha256 of the committed git blobs, so a checkout with
@@ -410,6 +415,12 @@ The Dev stack is the P0 execution stack; the Final stack is listed because the
 freeze record must name both. If the Dev checkpoints cannot be resolved to a
 commit SHA at launch, the run is not started: an unpinned model is a freeze
 failure, not a warning.
+
+The v1.3 draft (§12) proposes a different execution stack for the main causal
+matrix and records a placeholder for the Full config hash. Those values are not
+part of this v1.0 freeze record; on sign-off they become the launch record for
+the Full matrix and supersede the Dev/Final split for the main matrix. The Final
+stack above remains the precision-replication stack.
 
 ---
 
@@ -454,7 +465,7 @@ failure, not a warning.
 | 1.0 | 9 November 2026 | Initial pre-registration; executable 4-condition matrix cut; six-arm target named | frozen |
 | 1.1 | 9 November 2026 | Erratum: released prompt hash `bc9c7b…`; `origin/feat/p0-hardening` retired; B8-placebo/B8-oracle assigned to WP-18; oracle semantics pending WP-18 | frozen |
 | 1.2 | benchmark freeze | Add EG-SSS-180 as the third primary dataset and the gold-evidence testbed | pending |
-| 1.3 | WP-18 freeze | Freeze placebo/oracle semantics, Full config hash, and row count (36 or 32) before unblinding | pending |
+| 1.3 | 9 November 2026 (draft) | **v1.3 draft — pending team sign-off.** Records placebo/oracle semantics, the 32-row Full default (36-row gold-answer alternate), the 4-bit/80 GB execution stack, the FP8 precision replication, and a $500–600 budget with a $600 hard stop. No endpoint, hypothesis, or analysis family changes. | draft — pending team sign-off |
 | 1.4 | 9 November 2026 | B7 provider: Gemini retired; OpenAI gpt-6-luna | frozen |
 
 Amendments are made only before unblinding. Once the first confirmatory row is
@@ -523,6 +534,174 @@ pre-registered matrix endpoint, an arm, a dataset, a seed, or a run count.
   input and $0.50/M output, dominated by output tokens; recompute from the
   actual prompt/output tokens before quoting a total.
 
+### v1.3 draft - pending team sign-off (9 November 2026)
+
+> **Draft only — not approved and not effective.** This is the proposed v1.3
+> amendment for team sign-off. It records the execution plan and budget only.
+> It changes no endpoint, hypothesis, test, exclusion, or analysis family in
+> §§1 and 4–7. Until it is signed, the operative pre-registration remains v1.0
+> plus the frozen v1.1/v1.4 errata, and the figures below are proposed, not
+> approved. On sign-off this section becomes v1.3; the v1.0 values above remain
+> the historical record.
+
+**Why this amendment exists.** v1.0 left the placebo/oracle semantics and the
+Full row count to WP-18, and its budget assumed the two-stack Dev/Final plan.
+This draft fills that placeholder: it records the execution plan the team
+intends to run — a 4-bit stack on one 80 GB A100 for the main causal matrix, a
+32-row Full default with a gold-evidence oracle on EG-SSS, a 96 GB FP8
+precision replication, and a $500–600 budget with a $600 hard stop. It is
+recorded before any confirmatory Full row so the plan cannot be adjusted after
+seeing outcomes. It supersedes the v1.1 framing that treated the 36-run
+gold-answer plan as the target and left the oracle definition pending: the
+32-row gold-evidence plan is the default and the 36-row gold-answer plan is the
+alternate.
+
+**1. Execution stack and hardware.**
+
+| Item | v1.3 draft value |
+|---|---|
+| Main causal matrix | 4-bit `Qwen3.8-27B-AWQ-INT4` (~21.0 GB), `Gemma 4 26B-A4B` AWQ (~17.2 GB), `Mistral 24B` AWQ (15.06 GB); ~53.3 GB total |
+| Main model revisions | `cyankiwi/Qwen3.8-27B-AWQ-INT4` `e3a700906e6a73ba4290b1873dc2ba8198527ab5`; `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit` `5c5db8a7aeabb70b27923ef56536aa5343ecbb5b`; `jeffcookio/Mistral-Small-3.2-24B-Instruct-2506-awq-sym` `49ec31ec0975e46a1aeef24186a45f11be3042b8` |
+| Main hardware | one 80 GB A100 PCIe spot at $0.136/GPU-h |
+| Core matrix | unchanged: 4 conditions × 3 datasets × 2 seeds = 24 rows; ~1,067 planned / 1,280 GPU-h cap |
+| Full datasets | `gpqa_main`, `mmlu_pro`, `eg_sss_180`; HLE remains a Core control and is not in the 32-row Full plan |
+| Full matrix, default | 32 rows: 24 rows for the four core arms (3 datasets × 2 seeds) + 6 `B8-placebo` rows (3 datasets × 2 seeds) + 2 `B8-oracle` rows (`eg_sss_180` × 2 seeds); 1,280 GPU-h |
+| Full matrix, alternate | 36 rows: 24 core-arm rows + 6 `B8-placebo` + 6 `B8-oracle` (`gold_answer`, 3 datasets × 2 seeds); 1,440 GPU-h |
+| Seeds | 1 and 2 in both matrices |
+| Full config hash | sha256 `40bef0f31b66953c4072dc2854e16c0396fbb7fd` (`experiments_full.yaml`) |
+| Core config hash | sha256 `722cf5b910beb9a162cab5ade81fa629ff3510be` (`experiments_fourbit.yaml`) |
+| Precision config hash | sha256 `fd34b51f393f3c76969345b53818fc63ec3008ef` (`experiments_precision.yaml`) |
+
+The hashes are sha256 of the committed blobs above. The Full config now pins
+`phase: fourbit`; the pre-pin value `F3C4904C…` is superseded. The 36-row
+variant is an alternate, not the default; it is not covered by this hash and
+requires its own config hash and version bump before execution. Full uses 300
+items per dataset (the 300-item EG-SSS Full target); the v1.2 freeze owns the
+180-item floor.
+Core and Full use the same 4-bit stack. Cell reuse is allowed only where model
+revisions, prompts, datasets, and caps match; the Full envelope below is costed
+as a full 32-row run and does not assume reuse.
+
+**2. Placebo: cross-agent round pool.**
+
+`B8-placebo` uses `placebo_unit: round_pool`. In each debate round, the verdict
+labels are shuffled across all agents' claims in that round. Claim text and the
+evidence attached to each claim stay with the claim; only the verdict-to-claim
+assignment moves, and the verdict-label multiset is preserved. The arm keeps
+B8's prompts, retrieved evidence, source partition, trust weighting, rounds, and
+compute. This breaks claim-level and
+agent-level alignment and is the stronger of the two implemented WP-18 units
+(the per-agent `agent_round` unit is not the Full default). It tests whether the
+effect comes from evidence calibration or from any re-weighting. The WP-18
+record fields (`placebo_mode`, `placebo_unit`, `placebo_seed`,
+`placebo_permutation_hash`, `placebo_noop_reason`) remain required; a round with
+fewer than two verdicts is recorded as a no-op, never silently replaced by B8.
+
+**3. Oracle: gold evidence on EG-SSS.**
+
+`B8-oracle` uses `oracle_mode: gold_evidence` and runs only on `eg_sss_180`.
+The normal verifier and trust path are kept; the dataset's gold evidence is
+substituted for retrieval, and trust is computed from the verifier's verdicts on
+that evidence. The oracle does not set trust from the gold answer and does not
+bypass the verifier. Its schedule recomputes trust every round and disables
+adaptive-triggering abstention, so a unanimous panel is updated rather than
+skipped. It is a non-deployable evidence/verifier upper bound, not B7, and it
+contributes 2 of the 32 Full rows. The 36-row alternate instead uses
+`gold_answer` on all three datasets; that is a different manipulation and is not
+the default.
+
+**4. Precision replication (FP8, 96 GB).**
+
+The FP8 Final stack runs on one 96 GB GPU, on GPQA only, with B3,
+B8-no-trust, and B8, 150–200 questions, and seed 1. The pinned stack is
+Qwen3.8-27B-FP8 (29.95 GB), Gemma 4 26B-A4B FP8 (28.67 GB), and Mistral 24B AWQ
+(15.06 GB), totalling 73.68 GB; the Qwen revision is
+`c3a462cc3d38cf351f3b26cbd763469eeb74ef81`, and the Gemma and Mistral
+revisions are unchanged from the v1.0 freeze record (§9). It also serves as the
+N1 Final-stack hardware smoke. It is a directional precision check on the
+higher-precision stack: not an equivalence test, not a powered replication, and
+not a confirmatory endpoint. It does not enter the Holm families or the decision
+rule. A failed hardware smoke stops the FP8 path; it does not authorize a 96 GB
+main run.
+
+**5. Budget.**
+
+| Stage | v1.3 draft (USD) | Basis |
+|---|---:|---|
+| Pilot | 15–20 | ~112 GPU-h on the 80 GB A100 |
+| Core matrix (24 rows) | 175–210 | 1,067 planned / 1,280 GPU-h cap, 20% overhead |
+| Full matrix, 32-row default | 210 | 1,280 GPU-h, 20% overhead |
+| Full matrix, 36-row alternate | 235 | 1,440 GPU-h, 20% overhead |
+| FP8 precision replication + N1 smoke | 25–40 | 60–100 GPU-h at $0.336/GPU-h |
+| Storage and bandwidth | 40–80 | persistent cache, ingress/egress |
+| **Total** | **500–600** | planning envelope |
+| **Hard stop** | **600** | no spend beyond without a new signed amendment |
+
+All amounts are planning envelopes in USD, not invoices. The total covers the
+pilot, Core, either Full variant (32-row $210 or 36-row $235), the precision
+replication, and storage/bandwidth, with contingency. The hard stop is a
+ceiling, not a target. The main matrix is budgeted at $0.136/GPU-h; the
+precision path at $0.336/GPU-h. The Full envelope is costed as a full 32-row
+run; any cell reuse where the stack and revisions match can only reduce actual
+spend, not raise it. Law-testing is outside this envelope and the $600 hard
+stop; it requires a separate cost model and approval.
+
+**6. Fallback if the 80 GB A100 spot is unavailable.**
+
+If the main runs move to a 96 GB GPU at $0.336/GPU-h, the planning total
+becomes $1,050–1,150. That path is not authorized by this draft: it requires
+explicit team re-approval and a new hard stop before any 96 GB main row starts.
+The $600 hard stop applies only to the 80 GB plan.
+
+**7. Superseded figures (historical).**
+
+The following v1.0-era figures are superseded by this draft and must not be
+quoted as current guidance:
+
+| Old guidance | Old value | Status |
+|---|---:|---|
+| Final-stack smoke | $80–120 | historical; replaced by the $25–40 FP8 precision replication / N1 smoke |
+| Pilot | $50–100 | historical; replaced by $15–20 |
+| Core run | $420–580 | historical; replaced by $175–210 |
+| Full run | $900–1,200 | historical; replaced by $210 (32-row) / $235 (36-row) |
+| Core + Full planning range | $1,320–1,780 | historical; replaced by the $500–600 total |
+| Hard stop | $1,350 | historical; replaced by $600 |
+
+These figures still appear in some planning documents; this pre-registration
+treats them as historical only. Those documents must be reconciled on sign-off,
+not by editing this record.
+
+**8. What does not change.**
+
+- Endpoints (§4), hypotheses (§1), power and MDE (§5), analysis (§6), decision
+  rule (§7), estimand and reporting (§10), exclusions (§6.4), and the
+  multiplicity families (§6.3) are unchanged.
+- The 24-row Core matrix remains the released matrix.
+- The Full matrix is the six-arm causal design; this draft does not add a
+  confirmatory family or a new Holm test.
+- v1.2 remains pending; this draft does not freeze the EG-SSS dataset revision.
+- B7 remains the optional external-answer ceiling from v1.4 and is not
+  B8-oracle.
+
+**9. Sign-off checks.**
+
+- **Model phase.** The committed `experiments_full.yaml` sets `phase: final`,
+  which resolves to the 96 GB FP8 stack in `configs/models.yaml`, and the Core
+  config falls back to `default_phase: dev`; neither resolves to the 4-bit 27B
+  stack. Before launch, pin the 4-bit stack as the matrix phase (or record the
+  equivalent serving configuration) and re-record the manifest. Do not run the
+  main matrix on the FP8 or Dev stack by default.
+- **EG-SSS cap.** The hashed config sets `dataset_caps.eg_sss_180: 300`. Confirm
+  that the v1.2 freeze is the 180-item floor and the Full target is 300; if the
+  Full cap changes, recompute the debate/GPU envelope and re-hash.
+- **Core hash.** §9 records the v1.0 `experiments.yaml` blob `d63ee9…`; the
+  current committed blob differs only in comments. Re-record or mark the v1.0
+  value historical at sign-off so the launch manifest does not refuse a
+  comment-only mismatch.
+
 ---
 
 **Signed:** Group 6 · Team Phantom Devs — 9 November 2026.
+
+**v1.3 draft status:** not signed. The v1.3 draft above is pending team
+sign-off and must not be cited as approved.

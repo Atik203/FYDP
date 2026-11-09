@@ -49,7 +49,7 @@ Table~\ref{tab:functional-requirements} lists the functional requirements. Each 
 
 The nonfunctional requirements follow from the research setting. Reproducibility is the first requirement: every result-affecting input, including the model checkpoint, prompt text, dataset revision, seed, option permutation, and code commit, must be recorded in a manifest. Auditability is the second: a reader must be able to trace a final answer back to the positions, claims, passages, and verdicts that produced it. Boundedness is the third: the trust vector must remain on the simplex, so no agent is silenced and no agent dominates. Portability is the fourth: the pipeline must run against local vLLM servers and against any OpenAI-compatible endpoint without changing the orchestration code.
 
-Latency and cost are operational constraints. The debate is fixed at three rounds and three agents, and each model call is retried at most three times. That cap keeps a single question within a predictable budget and prevents a failed server from holding a run indefinitely. The final stack is designed for one 96\,GB card, with a pinned 69.73\,GB weight total and a 0.90 utilization sum; the development stack runs on one 48\,GB A6000. The system is inference-only, so no training cost or model-update risk is introduced.
+Latency and cost are operational constraints. The debate is fixed at three rounds and three agents, and each model call is retried at most three times. That cap keeps a single question within a predictable budget and prevents a failed server from holding a run indefinitely. The matrix stack is planned for one 80\,GB A100 spot, with a 4-bit 24--27B trio; the development stack runs on one 48\,GB A6000, and the 96\,GB FP8 stack is reserved for the N1 smoke and the precision replication. The system is inference-only, so no training cost or model-update risk is introduced.
 
 Fault tolerance is local rather than global. A retrieval failure produces an unverifiable claim, a parser failure triggers the fallback extractor, and a model timeout produces an inconclusive position after the retry budget. None of these failures may silently fabricate a value. Security and privacy are handled by keeping API keys in the environment, never committing \texttt{.env}, and sharing gated dataset text only as identifiers and hashes.
 
@@ -103,7 +103,7 @@ The design keeps the debate fixed at $N=3$ agents and $K=3$ rounds. Round~0 is r
 \paragraph*{Debate loop.}
 The loop is a plain Python state machine. For each round it builds a prompt from the question, the rendered options, the agent's own previous position, its trust weight, and the peer positions truncated to 1{,}500 characters. The truncation keeps the three-agent transcript inside the 4{,}096-token development context. A model call is retried at most three times with exponential backoff; an empty completion or an unparseable position becomes an inconclusive position rather than a fabricated answer. The loop records every position, every prompt version, the retry count, and the elapsed time.
 
-The three agents are deliberately heterogeneous. The development stack uses Qwen3.5-9B-AWQ, Gemma~4 12B, and Ministral-3-14B-AWQ; the final stack replaces them with Qwen3.6-27B-FP8, Gemma~4 26B-A4B-FP8, and Mistral Small 3.2 24B-AWQ. The different pre-training pipelines are intended to reduce correlated errors, but that assumption is tested only by the planned model-family and shared-error analyses, not by Gate~0.
+The three agents are deliberately heterogeneous. The development stack uses Qwen3.5-9B-AWQ, Gemma~4 12B, and Ministral-3-14B-AWQ; the matrix stack replaces them with Qwen3.8-27B-AWQ-INT4 (21.0\,GB), Gemma~4 26B-A4B AWQ (17.2\,GB), and Mistral 24B AWQ (15.06\,GB; 53.3\,GB in total), and the 96\,GB precision stack uses Qwen3.8-27B-FP8 (29.95\,GB), Gemma~4 26B-A4B-FP8 (28.67\,GB), and Mistral Small 3.2 24B-AWQ (15.06\,GB; 73.68\,GB in total). The different pre-training pipelines are intended to reduce correlated errors, but that assumption is tested only by the planned model-family and shared-error analyses, not by Gate~0.
 
 \paragraph*{Options and answer parsing.}
 The GPQA loader stores the correct answer first, and MMLU-Pro stores the dataset order. Neither order may reach a prompt, because a model can learn a position shortcut~\cite{zheng2024mcqbias}. The renderer shuffles the choices with a per-question seed derived from a SHA-256 hash of the question identifier and the run seed. The permutation is stored in the record, so the rendered order is reproducible across processes and resumes. Free-form items receive the literal instruction ``Answer format: free text'' and no fabricated options.
@@ -171,7 +171,7 @@ Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable 
 
 \begin{table}[H]
   \centering
-  \caption{Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18.}
+  \caption{Arms and controls. Core v1.0 is the executable matrix; Full is the 32-row gold-evidence target (36-row gold-answer alternate) pending WP-18.}
   \renewcommand{\arraystretch}{1.25}
   \small
   \begin{tabular}{|p{0.14\textwidth}|p{0.30\textwidth}|p{0.28\textwidth}|p{0.18\textwidth}|}
@@ -186,9 +186,9 @@ Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable 
     \hline
     B8 & Retrieved & Trust-weighted & Core; treatment \\
     \hline
-    B8-placebo & Retrieved, verdicts shuffled within debate & Trust-weighted & Full; WP-18 pending \\
+    B8-placebo & Retrieved, verdicts shuffled across the cross-agent round pool & Trust-weighted & Full; WP-18 pending \\
     \hline
-    B8-oracle & Gold information (gold-answer or gold-evidence-only on EG-SSS) & Trust-weighted & Full; WP-18 pending \\
+    B8-oracle & Gold information; gold-evidence-only on EG-SSS for the 32-row target, gold-answer for the 36-row alternate & Trust-weighted & Full; WP-18 pending \\
     \hline
     B7 & External single-call ceiling; three GPT-6 Luna samples & Not applicable & Optional appendix \\
     \hline
@@ -196,7 +196,7 @@ Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable 
   \label{tab:arms}
 \end{table}
 
-The primary causal contrast is B8 versus B8-no-trust. B3 and B4-matched are controls, not competitors: B3 isolates debate without retrieval, and B4-matched provides an evidence-information control. The placebo contrast tests whether the effect comes from evidence calibration or from any re-weighting. The oracle contrast bounds the verifier bottleneck. The pre-registration names both the six-arm target and the four-arm executable subset.
+The primary causal contrast is B8 versus B8-no-trust. B3 and B4-matched are controls, not competitors: B3 isolates debate without retrieval, and B4-matched provides an evidence-information control. The placebo contrast tests whether the effect comes from evidence calibration or from any re-weighting. The oracle contrast bounds the verifier bottleneck. The pre-registration names both the Full target and the four-arm executable subset.
 
 \paragraph*{Datasets and benchmark ladder.}
 Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the primary sets; HLE is a ceiling control and is never pooled with the primary tests, and answer-level abstention is planned but not implemented. EG-SSS is the team-built gold-evidence benchmark: items are drawn from the same three domains and paired with 3--6 atomic claims per position, two annotators label claim-level support and verdicts, disagreements are adjudicated, the target agreement is Cohen's $\kappa \ge 0.75$, and the set is released under CC BY 4.0 when frozen. The claim-evidence-verdict schema follows health-claim verification datasets~\cite{sarrouti2021healthver}, and scientific claim verification datasets such as SciFact pair claims with evidence abstracts and rationale labels~\cite{wadden2020fact}. EG-SSS is not in Core v1.0; it joins at the v1.2 benchmark freeze as a 180-item set and scales to the 300-item Full target.
@@ -238,11 +238,11 @@ The unit of analysis is the question. Seed~1 is the pre-registered primary repli
 \paragraph*{Threats to validity.}
 The first threat is verifier quality. The default verifier is lexical, and the synthetic audit scores 0.58 balanced accuracy. A trust signal built on a weak verifier can amplify a confident wrong majority. The human audit of 150--200 pairs is the gate that must pass before the matrix can support a high-$q$ claim. The second threat is retrieval coverage. The routing and deduplication logic are tested, but the live APIs are not; rate limits, malformed responses, and sparse domains can turn claims into unverifiable ones. The third threat is shared error. Three heterogeneous models reduce but do not eliminate correlated mistakes, and the shared-error floor is a boundary on what any independent verifier can certify.
 
-The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 96\,GB serving stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains.
+The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 80\,GB matrix stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains.
 
 \section{Project Plan}\label{sec:project-plan}
 
-The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases} gives the phases, dates, deliverables, and gates. The order is deliberate: the final-stack smoke must pass before WP-18 and the pilot; the pilot must pass before the Core run; the Core run must pass before the Full run; and no paper deadline is allowed before the thesis defence.
+The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases} gives the phases, dates, deliverables, and gates. The order is deliberate: the precision-stack smoke must pass before WP-18 and the pilot; the pilot must pass before the Core run; the Core run must pass before the Full run; and no paper deadline is allowed before the thesis defence.
 
 \begin{table}[H]
   \centering
@@ -253,7 +253,7 @@ The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases
     \hline
     ID & Phase & Date & Deliverable & Gate \\
     \hline
-    N1 & Final-stack smoke & Nov 2026 & 96\,GB hardware smoke; 60--100 GPU-h & N1 \\
+    N1 & Precision-stack smoke & Nov 2026 & 96\,GB smoke and GPQA precision replication; 60--100 GPU-h & N1 \\
     \hline
     N2 & WP-18 placebo/oracle & Nov--Dec 2026 & \texttt{placebo\_mode}, \texttt{oracle\_mode}, Full config & N2 \\
     \hline
@@ -265,7 +265,7 @@ The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases
     \hline
     N6 & Core run & Jan 2027 & 24 runs, 1{,}280 GPU-h cap; 180-item benchmark & G3 \\
     \hline
-    N7 & Full run & Feb 2027 & 36-run target (32 if oracle is EG-SSS-only) & G4/G5 \\
+    N7 & Full run & Feb 2027 & 32-row target (36-row gold-answer alternate) & G4/G5 \\
     \hline
     N8 & Human evaluation and SDT & Mar 2027 & 150--200 paired items, 3 raters; expert ceiling & Analysis \\
     \hline
@@ -281,26 +281,32 @@ The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases
 
 Agreement is reported with Cohen's $\kappa$ for two annotators~\cite{cohen1960coefficient} and Krippendorff's $\alpha$ when three raters or missing labels are involved~\cite{krippendorff2004reliability}; both are reported with confidence intervals rather than as point estimates alone.
 
-Table~\ref{tab:budget} gives the budget envelope. The Core run is planned on the development stack; the Full run is a separate Final-stack matrix, so Core cells are not assumed reusable unless the stack and model revisions match. The hard stop is \$1{,}350 before law-testing; because the Core and Full envelopes together can exceed that figure, the team reviews the cumulative spend before starting the Full run and does not start law-testing unless the effect is real.
+Table~\ref{tab:budget} gives the budget envelope. Core and Full are both planned on the 4-bit 24--27B matrix stack (Qwen3.8-27B-AWQ-INT4, Gemma~4 26B-A4B AWQ, Mistral 24B AWQ; 53.3\,GB of weights) on one 80\,GB A100 PCIe spot at \$0.136 per GPU-hour, so Core cells are reusable in Full where the stack and model revisions match. The 96\,GB FP8 stack is used only for the N1 smoke and a small GPQA precision replication, not for the main matrix. The Full target is 32 rows with the gold-evidence oracle on EG-SSS; the 36-row gold-answer version is an alternate. The hard stop is \$600 for the confirmatory envelope. N9 law-testing is outside that cap and is commissioned only if the effect is real. If the 80\,GB A100 spot is unavailable and the main runs must use the 96\,GB card at \$0.336 per GPU-hour, the cost rises to about \$1{,}050--1{,}150 and requires explicit re-approval.
 
 \begin{table}[H]
   \centering
-  \caption{Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells.}
+  \caption{Budget envelope. Core and Full share the 4-bit 24--27B matrix stack on one 80\,GB A100 spot; the 96\,GB FP8 stack is limited to the N1 smoke and precision replication.}
   \renewcommand{\arraystretch}{1.25}
   \small
-  \begin{tabular}{|p{0.30\textwidth}|p{0.14\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|}
+  \begin{tabular}{|p{0.28\textwidth}|p{0.13\textwidth}|p{0.17\textwidth}|p{0.30\textwidth}|}
     \hline
     Stage & GPU-h & Cash & Note \\
     \hline
-    Final-stack smoke & 60--100 & \$80--120 & N1; not run \\
+    N1 smoke + precision replication & 60--100 & \$25--40 & 96\,GB FP8; 150--200 GPQA questions, 1 seed \\
     \hline
-    Pilot & ~112 & \$50--100 & G2; 100--150 questions \\
+    Pilot & ~112 & \$15--20 & G2; 100--150 questions \\
     \hline
-    Core run & 1{,}280 cap & \$420--580 & 24 runs; 8{,}000 planned debates \\
+    Core run & 1{,}067 planned; 1{,}280 cap & \$175--210 & 24 runs; 8{,}000 planned debates; 4-bit A100 \\
     \hline
-    Full run & ~1{,}440 envelope & \$900--1{,}200 & 36-run target; separate Final stack \\
+    Full target & 1{,}280 & \$210 & 32 rows; gold-evidence oracle on EG-SSS \\
     \hline
-    Law-testing & ~3{,}913 & \$1{,}400--1{,}900 & Only if the effect is real \\
+    Full alternate & 1{,}440 & \$235 & 36 rows; gold-answer oracle; not the default \\
+    \hline
+    Storage and bandwidth & --- & \$40--80 & Included in the envelope \\
+    \hline
+    \textbf{Confirmatory total} & --- & \textbf{\$500--600} & Hard stop \$600 \\
+    \hline
+    Fallback (96\,GB) & --- & \$1{,}050--1{,}150 & Re-approval required \\
     \hline
   \end{tabular}
   \label{tab:budget}
@@ -339,4 +345,4 @@ Table~\ref{tab:tasks} assigns the primary modules. One owner is accountable for 
 
 \section{Summary}\label{sec:design-summary}
 
-Chapter~\ref{chapter:design} fixed the requirements, the system boundary, and the data flow. It defined the debate loop, the claim-level evidence pipeline, the bounded trust operator, the weighted aggregation rule, the injection protocol, and the record contract. It then fixed the experimental design: four executable Core arms, a six-arm Full target, two primary datasets with an HLE ceiling control and the EG-SSS benchmark, final-answer accuracy as the primary endpoint with CMR as the co-primary endpoint, a paired two-seed analysis, and a pre-registered stopping rule. The project plan covers the full project from November 2026 to December 2027, with the final-stack smoke, WP-18, calibration, and verifier audit before the pilot, the Core run, and the Full run. Chapter~\ref{chapter:implementation} describes the implementation and the evidence available at the time of writing.
+Chapter~\ref{chapter:design} fixed the requirements, the system boundary, and the data flow. It defined the debate loop, the claim-level evidence pipeline, the bounded trust operator, the weighted aggregation rule, the injection protocol, and the record contract. It then fixed the experimental design: four executable Core arms, a 32-row Full target (36-row gold-answer alternate), two primary datasets with an HLE ceiling control and the EG-SSS benchmark, final-answer accuracy as the primary endpoint with CMR as the co-primary endpoint, a paired two-seed analysis, and a pre-registered stopping rule. The project plan covers the full project from November 2026 to December 2027, with the precision-stack smoke, WP-18, calibration, and verifier audit before the pilot, the Core run, and the Full run. Chapter~\ref{chapter:implementation} describes the implementation and the evidence available at the time of writing.

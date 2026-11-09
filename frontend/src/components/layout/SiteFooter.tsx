@@ -29,7 +29,7 @@ export function SiteFooter() {
               Jul 2026 – Dec 2027 &middot; Thesis Jun 2027 &middot; Defence Jun/Jul 2027 &middot; Paper Aug–Dec 2027
             </p>
             <p className="text-sm mt-1 text-[rgba(255,255,255,0.45)]">
-              Single RTX PRO 6000 &middot; Open-weight Models
+              Single 80 GB A100 &middot; Open-weight Models
             </p>
           </div>
 

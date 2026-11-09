@@ -49,7 +49,7 @@ def _write_variant(tmp_path: Path, oracle_mode: str) -> Path:
 def test_full_config_exists_and_is_separate_from_core() -> None:
     assert FULL.is_file(), "configs/experiments_full.yaml must exist"
     raw = yaml.safe_load(FULL.read_text(encoding="utf-8"))
-    assert raw["phase"] == "final"
+    assert raw["phase"] == "fourbit"
     assert raw["datasets"] == ["gpqa_main", "mmlu_pro", "eg_sss_180"]
     assert raw["seeds"] == [1, 2]
     assert raw["sample_caps"]["main"] == 300

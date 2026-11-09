@@ -45,7 +45,7 @@ Line numbers are the current lines after editing. Old text is quoted in short fo
 | 22 | `5.sic.tex:292` | "still within an incremental level of innovation" | "The contribution is the combination of claim-level external evidence with a bounded in-debate trust state and a controlled wrong-majority protocol... not a patentable or breakthrough innovation." | Removed the self-deprecating "incremental" label; states the contribution and its scope. | narrowed |
 | 23 | `5.sic.tex:296` | "300 GPU-hours... energy usage remains very-low" | "1,067--1,280 GPU-h... Energy use was not metered, so no quantitative energy claim is made." | No energy measurement; 300 hours was stale. | removed |
 | 24 | `5.sic.tex:330` | "six program outcomes... all of which are addressed in FYDP I" | "six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12... remaining six are scheduled for FYDP II and III..." | Reconciles the table and the text. | verified |
-| 25 | `5.sic.tex:68` | 300 GPU-h, USD 340--820, phase split of hours | 1,067--1,280 GPU-h; Core run USD 420--580; Full run USD 900--1,200. | Current matrix and current planning envelopes; the old phase split was not measured. | verified |
+| 25 | `5.sic.tex:68` | 300 GPU-h, USD 340--820, phase split of hours | 1,067--1,280 GPU-h; Core run USD 175--210; Full target USD 210 (36-row alternate USD 235); N1 smoke + precision replication USD 25--40. | Superseded by the v1.3 4-bit/80 GB plan; the old phase split was not measured. | verified |
 | 26 | `5.sic.tex:15` | "Python 3.11 was chosen..." | "The Gate 0 environment used Python 3.12.3; the repository requires Python 3.10 or newer." | Gate 0 actually used 3.12.3; the old text conflicted with the run record. | verified |
 | 27 | `5.sic.tex:22` | "FP8 support from PagedAttention" | "PagedAttention manages KV-cache memory... the Blackwell FP8 path supplies throughput..." | FP8 is a GPU/vLLM capability, not a PagedAttention feature. | verified |
 | 28 | `5.sic.tex:24` | "BM25... like sentence-transformer, it only uses surface features..." | "BM25 scores lexical overlap rather than semantic relevance; the cross-encoder is an optional reranker..." | The original conflated lexical and semantic scoring. | verified |
@@ -68,7 +68,7 @@ Line numbers are the current lines after editing. Old text is quoted in short fo
 | P0 gate 13 passed, 0 failed, 0 pending | `experiments/p0/WAVE2.md`; `p0_gate.py` strict run, 2026-11-09 | verified |
 | Matrix: 4 arms × 3 datasets × 2 seeds = 24 rows; 1,280 GPU-h conservative, 1,067 GPU-h per-dataset caps | `trustcal/configs/experiments.yaml`; `PRE_REGISTRATION.md` v1.0; P0 gate check 13 | verified |
 | Six-arm target adds B8-placebo and B8-oracle through WP-18 | `PRE_REGISTRATION.md` §2; roadmap WP-18 | verified |
-| Final stack: Qwen3.6-27B-FP8 26.0GB, Gemma 4 26B-A4B FP8 28.67GB, Mistral Small 3.2 24B AWQ 15.06GB; total 69.73GB | `trustcal/configs/models.yaml` final phase | verified (sum of pinned weights) |
+| 4-bit matrix: Qwen3.8-27B-AWQ-INT4 21.0GB, Gemma 4 26B-A4B AWQ 17.2GB, Mistral Small 3.2 24B AWQ 15.06GB; total 53.3GB. Final stack: Qwen3.8-27B-FP8 29.95GB, Gemma 4 26B-A4B FP8 28.67GB, Mistral 24B AWQ 15.06GB; total 73.68GB | `trustcal/configs/models.yaml` fourbit/final phases | verified (sum of pinned weights) |
 | Development stack: RTX A6000 48GB, Python 3.12.3, PyTorch 2.11.0, vLLM 0.29.1rc1.dev128 | `experiments/gate0/README.md` §3-4 | verified |
 | Trust guarantees: min ≥ floor, sum = 1, ceiling ≤ max(c,1/N), neutral identity, verbosity invariance | `trust/update.py`; P0 gate checks 5-6 | verified |
 | Final-position trust: closing pass and `trust_for_positions` / `trust_status` | `experiments/p0/WP-03b.md`; `orchestrator/debate.py` | verified |
@@ -83,7 +83,7 @@ Line numbers are the current lines after editing. Old text is quoted in short fo
 | Verifier human audit not done; lexical default | `trustcal/IMPLEMENTATION_STATUS.md` | verified status |
 | Live retrieval APIs not exercised by tests | `trustcal/IMPLEMENTATION_STATUS.md` | verified status |
 | Code MIT licence | `LICENSE` at the repository root (MIT, Copyright 2026 Team Phantom Devs) | verified |
-| Core run USD 420--580; Full-run top-up USD 900--1,200 | `docs/GLOSSARY.md`; `docs/agent/03_EXPERIMENT_PLAN.md` | verified planning values |
+| Core run USD 175--210; Full target USD 210 (36-row alternate USD 235); N1 smoke + precision replication USD 25--40; total USD 500--600; hard stop USD 600 | `docs/agent/08_COMPUTE_COST.md`; `docs/agent/03_EXPERIMENT_PLAN.md` | verified planning values |
 | A100 80GB at USD 1.78/hour | Earlier report text only; not re-verified | placeholder — author estimate |
 | "about 77 billion parameters" for the final trio | Approximate from model names (27 + 26 + 24) | placeholder — approximate, not independently verified |
 
@@ -154,7 +154,7 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 
 **Engine:** pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). No XeLaTeX, LuaLaTeX, `fontspec`, `unicode-math`, shell-escape, or engine-specific package was added.
 
-**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current full-project build is **68 pages with 80 cited works**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
+**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current full-project build is **69 pages with 80 cited works**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
 
 **Warnings:** the current build has 14 overfull `\hbox` warnings and 108 underfull `\hbox` warnings; the audit-time build had 6 and 84. The overfull boxes are mostly title, acknowledgement, and long table lines. The underfull boxes are mostly narrow table cells; none prevents compilation.
 

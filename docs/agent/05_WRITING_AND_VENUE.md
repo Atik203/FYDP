@@ -2,7 +2,7 @@
 
 **Status date:** 9 November 2026. **P0 engineering is released; there are no efficacy results.**
 
-**Readiness:** `FYDP_Summer/out/fydp.pdf` — **68 pages**, 80 cited works, 0 errors/undefined refs. `Papev_Summer26_6/out/cas-sc-template.pdf` — **19 pages**, 71 cited works, 0 errors/undefined refs. Implementation and conclusion are **written** for the full-project engineering release. Neither manuscript reports an efficacy result.
+**Readiness:** `FYDP_Summer/out/fydp.pdf` — **69 pages**, 80 cited works, 0 errors/undefined refs. `Papev_Summer26_6/out/cas-sc-template.pdf` — **19 pages**, 71 cited works, 0 errors/undefined refs. Implementation and conclusion are **written** for the full-project engineering release. Neither manuscript reports an efficacy result.
 
 **Title (fixed, no colon):** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
 
@@ -19,7 +19,7 @@ Choose one genre before further editing:
 - **FYDP report:** design + implementation + P0 engineering results + limitations. Keep the engineering chapters.
 - **Paper:** one claim, 8 pages, 4–6 experiments, related work, limitations, ethics. Move accreditation material to the thesis appendix.
 
-Do not mix them. The current 68-page artifact is the report; the 19-page artifact is the journal-style engineering paper.
+Do not mix them. The current 69-page artifact is the report; the 19-page artifact is the journal-style engineering paper.
 
 ---
 
@@ -27,7 +27,7 @@ Do not mix them. The current 68-page artifact is the report; the 19-page artifac
 
 | Item | State (9 Nov 2026) | Implication |
 |---|---|---|
-| Report | 68 pp; 80 cited works; 0 errors/undefined refs | Compiles; engineering report |
+| Report | 69 pp; 80 cited works; 0 errors/undefined refs | Compiles; engineering report |
 | Journal | 19 pp; 71 cited works; 0 errors/undefined refs | Compiles; engineering report |
 | P0 gate | 13/13 | Engineering readiness only |
 | Tests | 602 passed (514 at P0 release) | Code path is tested |

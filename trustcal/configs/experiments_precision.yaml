@@ -1,0 +1,39 @@
+# Precision replication / N=1 smoke on the 96GB Final stack (`phase: final`).
+#
+# Three runs x 200 GPQA-Main questions on the FP8 Qwen3.8 + Gemma FP8 + Mistral
+# AWQ stack. This is not a matrix: it is the first paid check that the 96GB
+# precision replication reproduces the four-bit direction before a larger run,
+# and it gives one seed of the B3 / B8-no-trust / B8 contrast at a small cap.
+#
+# 3 conditions x 1 dataset x 1 seed = 3 runs; 600 debates.
+#
+# Budget check before the session:
+#   python scripts/check_stack.py --phase final
+#   HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline
+#   python scripts/run_matrix.py --config configs/experiments_precision.yaml --dry-run
+
+phase: final
+
+datasets:
+  - gpqa_main
+
+seeds: [1]
+
+sample_caps:
+  pilot: 50
+  main: 200
+
+dataset_caps:
+  gpqa_main: 200
+
+conditions:
+  B3:
+    arm: B3
+    description: "MAD (Du et al. 2023) — unweighted multi-agent debate."
+  B8-no-trust:
+    arm: B8
+    use_trust: false
+    description: "Primary control: same retriever/prompts/partition as B8 without trust re-weighting (majority aggregation)."
+  B8:
+    arm: B8
+    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."

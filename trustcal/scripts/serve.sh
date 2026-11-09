@@ -32,10 +32,10 @@ trap 'rm -f "$CMD_FILE"' EXIT
 if [ -z "${PHASE:-}" ]; then
   PHASE="$("$PY_CMD" -c 'from trustcal.config import default_phase; print(default_phase())')"
 fi
-if [ "$PHASE" != "dev" ] && [ "$PHASE" != "final" ]; then
-  echo "PHASE must be 'dev' or 'final' (got '$PHASE')" >&2
-  exit 2
-fi
+case "$PHASE" in
+  dev|fourbit|final) ;;
+  *) echo "PHASE must be 'dev', 'fourbit' or 'final' (got '$PHASE')" >&2; exit 2 ;;
+esac
 "$PY_CMD" scripts/gen_serve_cmds.py --config configs/models.yaml --phase "$PHASE" > "$CMD_FILE"
 
 echo "── vLLM commands ──────────────────────────────────────────────"

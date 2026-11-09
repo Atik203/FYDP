@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trustcal.config import agents_for_phase, default_phase, load_models  # noqa: E402
+from trustcal.config import PHASES, agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.preflight import format_report, run_preflight  # noqa: E402
 
 
@@ -22,7 +22,7 @@ def main() -> None:
     parser.add_argument("--hf-home", default=None)
     parser.add_argument("--offline", action="store_true", help="require HF_HUB_OFFLINE=1 (cache must be complete)")
     parser.add_argument("--max-tokens", type=int, default=1024)
-    parser.add_argument("--phase", choices=["dev", "final"], default=None, help="default: configs/phase.yaml")
+    parser.add_argument("--phase", choices=PHASES, default=None, help="default: configs/phase.yaml")
     args = parser.parse_args()
 
     phase = args.phase or default_phase()

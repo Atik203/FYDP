@@ -14,7 +14,8 @@ Legend: ✅ real / tested / released; 🟡 implemented but partially wired, unva
 |---|---|---|---|
 | Gate 0 vanilla MAD | ✅ | `experiments/gate0/README.md` | 10/10 debates, 90/90 positions, 370.8 s/debate on Dev |
 | vLLM serving (Dev) | ✅ | Gate 0 | Three quantized models on one A6000 48 GB |
-| Final stack offline check | ✅ | `trustcal/scripts/check_stack.py --phase final` | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ = **69.73 GB** pinned |
+| 4-bit main stack offline check | ✅ | `trustcal/scripts/check_stack.py --phase fourbit` | Qwen3.8-27B-AWQ-INT4 / Gemma-4-26B-A4B-AWQ / Mistral-24B-AWQ = **53.26 GB** pinned |
+| Final stack offline check | ✅ | `trustcal/scripts/check_stack.py --phase final` | Qwen3.8-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ = **73.68 GB** pinned |
 | Final-stack 96 GB smoke | 🔴 | Not run | Hardware load/KV-cache/three-server test is **N1** |
 | Debate loop | ✅ | `orchestrator/debate.py`; tests | Runs with options, evidence, injection, and trust; no paid run yet |
 | Trust math | ✅ | `trust/update.py`; 10k-input tests | Simplex projection with floor/ceiling; neutral no-op; claim-count normalization |
@@ -32,7 +33,7 @@ Legend: ✅ real / tested / released; 🟡 implemented but partially wired, unva
 | Statistics | ✅ | `eval/stats.py` | Bootstrap/d/McNemar/Holm implemented; analysis waits for data |
 | Docs | ✅ | `docs/agent/` | This set refreshed 9 Nov 2026; `02`, `04`, `06`, `09` are explicitly historical |
 | Pre-registration | ✅ v1.0 + v1.1 erratum | `PRE_REGISTRATION.md` | Frozen. The v1.1 erratum records the released prompt hash `bc9c7b...`; `6cc9b0...` is pre-WP-13, not current |
-| Manuscripts | ✅ engineering | `FYDP_Summer/out/fydp.pdf`; `Papev_Summer26_6/out/cas-sc-template.pdf` | 68 pp and 19 pp; 80 and 71 cited works; 0 errors/undefined refs; implementation and conclusion written; **no efficacy results** |
+| Manuscripts | ✅ engineering | `FYDP_Summer/out/fydp.pdf`; `Papev_Summer26_6/out/cas-sc-template.pdf` | 69 pp and 19 pp; 80 and 71 cited works; 0 errors/undefined refs; implementation and conclusion written; **no efficacy results** |
 
 ---
 
@@ -94,7 +95,7 @@ The full fix record is `02_P0_FIXES.md` and `experiments/p0/WP-*.md`. Summary:
 | Item | Owner phase | Acceptance |
 |---|---|---|
 | Final-stack 96 GB smoke | **N1**, Nov 2026 | `check_stack.py --phase final`; `preflight.py --phase final --offline`; three `server OK`; `smoke_test.py --phase final` PASS. **Not run.** |
-| WP-18 B8-placebo/B8-oracle + Full matrix | **N2**, Nov–Dec 2026 | Mock records validate; placebo ≠ B8; oracle ≥ B8; dry-run shows 24 Core rows and the conditional Full rows; **freezes 36-vs-32-run definition** |
+| WP-18 B8-placebo/B8-oracle + Full matrix | **N2**, Nov–Dec 2026 | Mock records validate; placebo ≠ B8; oracle ≥ B8; dry-run shows 24 Core rows and the conditional Full rows; **freezes 32-vs-36-run definition** |
 | 24-item calibration → 180 → 300 | **N3**, Nov 2026–Feb 2027 | Calibration report; 180-item freeze with κ and defect rate; 300 only if clean |
 | Human verifier audit | **N4**, Nov–Dec 2026 | 150–200 pairs, 2 annotators; balanced accuracy ≥0.75, κ ≥0.60. Current lexical verifier 0.58 on the synthetic audit |
 | Pilot / G2 | **N5**, Dec 2026 | Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75 |
@@ -109,7 +110,7 @@ The detailed pre-P0 findings (injection without retrieval, CCR=0 in B8, `evidenc
 
 ## 5. Manuscript status
 
-- **Report:** `FYDP_Summer/out/fydp.pdf` - 68 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs. The implementation and conclusion are written. It is an **engineering report for the full project**, not an efficacy paper.
+- **Report:** `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs. The implementation and conclusion are written. It is an **engineering report for the full project**, not an efficacy paper.
 - **Journal:** `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs. Same caveat.
 - **Claim audits:** `Papev_Summer26_6/CLAIMS_AUDIT.md` and `FYDP_Summer/CLAIMS_AUDIT.md` are the authoritative record of the 9 Nov 2026 claim changes. `04_LITERATURE_AND_GAPS.md §7` is the historical source.
 - **No results claim:** do not write accuracy, CCR, CMR, trust AUROC, or sign-reversal claims until the pilot/Core data exist. The abstract must not claim an effect.
@@ -134,7 +135,7 @@ The detailed pre-P0 findings (injection without retrieval, CCR=0 in B8, `evidenc
 - Gate 0 timings and transcript: `experiments/gate0/`.
 - P0 gate results, test counts, and work-package records: `experiments/p0/`.
 - The code paths for vanilla MAD, mock end-to-end, options/parser, trust projection, metrics, manifest, and verifier interface.
-- The offline final-stack fit check (69.73 GB), **not** a hardware serving result.
+- The offline final-stack fit check (73.68 GB), **not** a hardware serving result.
 - The compiled page counts and the absence of LaTeX errors/undefined references.
 - The model-serving lessons from Gate 0 (quantization, vLLM nightly, sequential startup).
 

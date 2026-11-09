@@ -25,53 +25,53 @@
 \contentsline {section}{\numberline {3.2}Detailed Methodology and Design}{15}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Project Plan}{22}{section.3.3}%
 \contentsline {section}{\numberline {3.4}Task Allocation}{24}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Summary}{24}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Implementation and Results}{25}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Environment Setup}{25}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Testing and Evaluation}{31}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Results and Discussion}{33}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Summary}{36}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Standards and Design Constraints}{37}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Compliance with the Standards}{37}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Software Standards}{37}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{38}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{38}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Design Constraints}{39}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}Economic Constraint}{39}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{39}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{39}{subsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{39}{subsection.5.2.4}%
-\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{39}{subsection.5.2.5}%
-\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{40}{subsection.5.2.6}%
-\contentsline {subsection}{\numberline {5.2.7}Sustainability}{40}{subsection.5.2.7}%
-\contentsline {section}{\numberline {5.3}Cost Analysis}{40}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{41}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{41}{subsection.5.4.1}%
-\contentsline {subsubsection}{P1: Depth of Knowledge Required}{42}{section*.42}%
-\contentsline {subsubsection}{P2: Range of Conflicting Requirements}{43}{section*.43}%
-\contentsline {subsubsection}{P3: Depth of Analysis}{43}{section*.44}%
-\contentsline {subsubsection}{P4: Familiarity of Issues}{43}{section*.45}%
-\contentsline {subsubsection}{P5: Extent of Applicable Codes}{43}{section*.46}%
-\contentsline {subsubsection}{P6: Extent of Stakeholder Involvement}{43}{section*.47}%
-\contentsline {subsubsection}{P7: Interdependence}{44}{section*.48}%
+\contentsline {section}{\numberline {3.5}Summary}{25}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Implementation and Results}{26}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Environment Setup}{26}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Testing and Evaluation}{32}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Results and Discussion}{34}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Summary}{37}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Standards and Design Constraints}{38}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Compliance with the Standards}{38}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Software Standards}{38}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Hardware Standards}{39}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Communication Standards}{39}{subsection.5.1.3}%
+\contentsline {section}{\numberline {5.2}Design Constraints}{40}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Economic Constraint}{40}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Environmental Constraint}{40}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Ethical Constraint}{40}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Health and Safety Constraint}{41}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Social Constraint}{41}{subsection.5.2.5}%
+\contentsline {subsection}{\numberline {5.2.6}Political Constraint}{41}{subsection.5.2.6}%
+\contentsline {subsection}{\numberline {5.2.7}Sustainability}{41}{subsection.5.2.7}%
+\contentsline {section}{\numberline {5.3}Cost Analysis}{41}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Complex Engineering Problem}{43}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Complex Problem Solving}{43}{subsection.5.4.1}%
+\contentsline {subsubsection}{P1: Depth of Knowledge Required}{44}{section*.42}%
+\contentsline {subsubsection}{P2: Range of Conflicting Requirements}{44}{section*.43}%
+\contentsline {subsubsection}{P3: Depth of Analysis}{44}{section*.44}%
+\contentsline {subsubsection}{P4: Familiarity of Issues}{44}{section*.45}%
+\contentsline {subsubsection}{P5: Extent of Applicable Codes}{45}{section*.46}%
+\contentsline {subsubsection}{P6: Extent of Stakeholder Involvement}{45}{section*.47}%
+\contentsline {subsubsection}{P7: Interdependence}{45}{section*.48}%
 \contentsline {paragraph}{K1: Natural sciences}{45}{section*.49}%
-\contentsline {paragraph}{K2: Mathematics}{45}{section*.50}%
-\contentsline {paragraph}{K3: Engineering fundamentals}{45}{section*.51}%
-\contentsline {paragraph}{K4: Specialist knowledge}{45}{section*.52}%
-\contentsline {paragraph}{K5: Engineering methods}{45}{section*.53}%
-\contentsline {paragraph}{K6: Computational methods}{45}{section*.54}%
-\contentsline {paragraph}{K7: Codes and practices}{45}{section*.55}%
-\contentsline {paragraph}{K8: Research and context}{45}{section*.56}%
-\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{46}{subsection.5.4.2}%
-\contentsline {subsubsection}{A1: Range of Resources}{46}{section*.57}%
-\contentsline {subsubsection}{A2: Level of Interaction}{46}{section*.58}%
-\contentsline {subsubsection}{A3: Innovation}{46}{section*.59}%
-\contentsline {subsubsection}{A4: Consequences for Society and Environment}{46}{section*.60}%
-\contentsline {subsubsection}{A5: Familiarity}{47}{section*.61}%
-\contentsline {subsection}{\numberline {5.4.3}Program Outcomes}{47}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Summary}{47}{section.5.5}%
-\contentsline {chapter}{\numberline {6}Conclusion}{49}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Summary}{49}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Limitations}{49}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Future Work}{50}{section.6.3}%
-\contentsline {chapter}{References}{60}{chapter*.62}%
+\contentsline {paragraph}{K2: Mathematics}{46}{section*.50}%
+\contentsline {paragraph}{K3: Engineering fundamentals}{46}{section*.51}%
+\contentsline {paragraph}{K4: Specialist knowledge}{46}{section*.52}%
+\contentsline {paragraph}{K5: Engineering methods}{46}{section*.53}%
+\contentsline {paragraph}{K6: Computational methods}{46}{section*.54}%
+\contentsline {paragraph}{K7: Codes and practices}{47}{section*.55}%
+\contentsline {paragraph}{K8: Research and context}{47}{section*.56}%
+\contentsline {subsection}{\numberline {5.4.2}Engineering Activities}{47}{subsection.5.4.2}%
+\contentsline {subsubsection}{A1: Range of Resources}{47}{section*.57}%
+\contentsline {subsubsection}{A2: Level of Interaction}{47}{section*.58}%
+\contentsline {subsubsection}{A3: Innovation}{48}{section*.59}%
+\contentsline {subsubsection}{A4: Consequences for Society and Environment}{48}{section*.60}%
+\contentsline {subsubsection}{A5: Familiarity}{48}{section*.61}%
+\contentsline {subsection}{\numberline {5.4.3}Program Outcomes}{48}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Summary}{49}{section.5.5}%
+\contentsline {chapter}{\numberline {6}Conclusion}{50}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Summary}{50}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Limitations}{50}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Future Work}{51}{section.6.3}%
+\contentsline {chapter}{References}{61}{chapter*.62}%

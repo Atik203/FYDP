@@ -542,15 +542,20 @@ export function ProposalPage() {
           because same-family model copies share correlated blind spots and
           hallucination patterns, reducing the diversity benefit of multi-agent
           debate. We use a two-phase model strategy: during development
-          (Ph 0–2) the pipeline runs <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a></strong>,{" "}
+          (Ph 0–1) the pipeline runs <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a></strong>,{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a></strong>, and{" "}
           <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a></strong>{" "}
-          on an RTX A6000 48GB (spot ~$0.16–0.37/hr on Vast.ai), keeping iteration cost low.
-          For the final experiment matrix we swap to{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B-FP8</a></strong>,{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B-FP8</a></strong>, and{" "}
-          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral-24B-AWQ</a></strong> on an RTX PRO 6000 Blackwell 96GB (~$0.74–1.43/hr).
-          The pinned Final stack is 69.73 GB and fits one 96 GB card.
+          on an RTX A6000 48GB, keeping iteration cost low.
+          For the main causal matrix (Core and Full) we serve the same three
+          families at 24–27B in 4-bit:{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.8-27B" target="_blank" rel="noopener noreferrer">Qwen3.8-27B-AWQ-INT4</a></strong> (~21.0 GB),{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B AWQ</a></strong> (~17.2 GB), and{" "}
+          <strong><a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral-24B-AWQ</a></strong> (15.06 GB) — ~53.3 GB total
+          on one 80 GB A100 (~$0.136/GPU-h).
+          The pinned 73.68 GB FP8 stack (Qwen3.8-27B-FP8 29.95 GB / Gemma FP8
+          28.67 GB / Mistral AWQ 15.06 GB) on a 96 GB card is reserved for the N1
+          hardware smoke and a small GPQA precision replication, not the main
+          Full matrix.
           All three families (Alibaba, Google, Mistral) are genuinely distinct
           for true heterogeneity. The pipeline code is model-agnostic — only
           the model config changes between phases. The <em>N</em> = 3 configuration is chosen as
@@ -702,18 +707,18 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <tbody>
             <tr>
               <td style={tdStyle}>Agent 1</td>
-              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.6-27B" target="_blank" rel="noopener noreferrer">Qwen3.6-27B-FP8</a> (Final)</td>
-              <td style={tdStyle}>Two-phase: fast dev on RTX A6000 48GB, 27B FP8 for final experiments; 69.73 GB pinned Final stack</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.5-9B" target="_blank" rel="noopener noreferrer">Qwen3.5-9B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/Qwen/Qwen3.8-27B" target="_blank" rel="noopener noreferrer">Qwen3.8-27B</a> (Final)</td>
+              <td style={tdStyle}>Two-phase: fast dev on RTX A6000 48GB; 27B served AWQ 4-bit (~21.0 GB) for the Core/Full main matrix on one 80 GB A100. FP8 checkpoint (~29.95 GB) only for the 96 GB precision check.</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 2</td>
-              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B-FP8</a> (Final)</td>
-              <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, FP8, 256K context</td>
+              <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/google/gemma-4-12B" target="_blank" rel="noopener noreferrer">Gemma 4 12B</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/google/gemma-4-26B-A4B" target="_blank" rel="noopener noreferrer">Gemma-4-26B-A4B</a> (Final)</td>
+              <td style={tdStyle}>Dev: encoder-free proxy. Final: MoE, served AWQ 4-bit (~17.2 GB) on the 80 GB A100; FP8 checkpoint (28.67 GB) only for the precision check.</td>
             </tr>
             <tr>
               <td style={tdStyle}>Agent 3</td>
               <td style={tdStyle}><a style={linkStyle} href="https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512" target="_blank" rel="noopener noreferrer">Ministral-3-14B-Instruct</a> (Dev) → <a style={linkStyle} href="https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506" target="_blank" rel="noopener noreferrer">Mistral-24B-AWQ</a> (Final)</td>
-              <td style={tdStyle}>Dev: Mistral-family 14B, served as AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot run on Ampere). Final: third distinct family, AWQ 4-bit</td>
+              <td style={tdStyle}>Dev: Mistral-family 14B, served as AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot run on Ampere). Final: third distinct family, AWQ 4-bit (15.06 GB) on the 80 GB A100 main stack</td>
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
@@ -901,11 +906,10 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           aggregation; primary control), and <strong>B8</strong>{" "}
           (trust-weighted treatment). The six-arm target adds{" "}
           <strong>B8-placebo</strong> (verdicts shuffled within debate) and{" "}
-          <strong>B8-oracle</strong> (gold evidence), pending WP-18. If
-          B8-oracle uses gold-answer trust, the Full target is 36 runs; if it is
-          gold-evidence-only on EG-SSS, the target is 32 runs with recomputed
-          GPU-h. WP-13 is the landed B8-no-trust prompt split, not the
-          placebo/oracle slice.
+          <strong>B8-oracle</strong> (gold evidence), pending WP-18. The primary
+          Full matrix is 32 rows with the gold-evidence oracle on EG-SSS; the
+          36-row alternate uses gold-answer trust (1,440 GPU-h, $235). WP-13 is
+          the landed B8-no-trust prompt split, not the placebo/oracle slice.
         </p>
         <ul>
           <li><strong>B1</strong>: Single-Agent Chain-of-Thought</li>
@@ -972,10 +976,10 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Sharpened differentiation: evidence-grounded, numeric, bounded trust; B10 comparison</td>
             </tr>
             <tr>
-              <td style={tdStyle}>Single 96GB GPU compute ceiling</td>
+              <td style={tdStyle}>Single 80 GB A100 compute ceiling</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>FP8 native on Blackwell; Core matrix is 24 runs / 1,280 GPU-h; 6-arm Full target is a 36-run / 1,440 GPU-h envelope</td>
+              <td style={tdStyle}>4-bit 24–27B main stack (~53.3 GB) on one 80 GB A100; Core is 24 runs / 1,280 GPU-h; Full primary is 32 rows / 1,280 GPU-h (36-row alternate / 1,440 GPU-h)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Dataset mismatch (proof-only benchmarks)</td>
@@ -1014,12 +1018,15 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
 
         <h2 style={h2Style}>10. Timeline and Milestones</h2>
         <p>
-          P0 was released in Nov 2026. The final-stack smoke, WP-18
-          placebo/oracle, 24-item calibration and verifier audit precede the G2
-          pilot in Dec 2026. The G3 Core run follows in Jan 2027, and the G4/G5
+          P0 was released in Nov 2026. The N1 96 GB smoke + FP8 precision
+          replication, WP-18 placebo/oracle, 24-item calibration and verifier
+          audit precede the G2 pilot in Dec 2026. The G3 Core run follows in Jan 2027, and the G4/G5
           Full run plus the benchmark ladder in Feb 2027. Core and Full are
-          separate stacks (Dev vs Final); do not assume Core cells are reusable.
-          The $900&ndash;1,200 is the Full-run budget envelope. Human evaluation
+          separate matrices on the same 4-bit main stack; do not assume Core
+          cells are reusable. The plan totals $500&ndash;600 with a $600 hard
+          stop; the 96 GB FP8 stack is limited to the N1 smoke and a small GPQA
+          precision replication. If no 80 GB A100 is available, the fallback is
+          $1,050&ndash;1,150 and requires re-approval. Human evaluation
           and the SDT analysis follow in Mar,
           results freeze in Apr, thesis chapters in May, thesis submission in
           Jun, and the defence in Jun/Jul 2027. The paper is written and
@@ -1051,7 +1058,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
             <tr>
               <td style={tdStyle}>Dec 2026</td>
               <td style={tdStyle}>Pilot run</td>
-              <td style={tdStyle}>Final-stack 96 GB smoke ($80–120), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; target ≥0.75 balanced accuracy, κ ≥0.60), 50-question Month-1 pilot, then the 100–150-question G2 pilot</td>
+              <td style={tdStyle}>N1 96 GB smoke + FP8 precision replication ($25–40), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; target ≥0.75 balanced accuracy, κ ≥0.60), 50-question Month-1 pilot, then the 100–150-question G2 pilot</td>
               <td style={tdStyle}>G2: κ &gt; 0.75 and measured behavioural effect; if not, reframe honestly</td>
             </tr>
             <tr>
@@ -1063,7 +1070,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
             <tr>
               <td style={tdStyle}>Feb 2027</td>
               <td style={tdStyle}>Full run + benchmark</td>
-              <td style={tdStyle}>G4/G5: 36 runs at 300 items/dataset within a 1,440 GPU-h envelope; WP-18 adds B8-placebo/B8-oracle. If B8-oracle is gold-evidence-only on EG-SSS, 32 runs and recomputed GPU-h. EG-SSS v1.2 freezes at 180 items</td>
+              <td style={tdStyle}>G4/G5: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h; $210); WP-18 adds B8-placebo/B8-oracle. The 36-row gold-answer alternate is 1,440 GPU-h ($235). EG-SSS v1.2 freezes at 180 items</td>
               <td style={tdStyle}>Full run + benchmark ladder: 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
             <tr>

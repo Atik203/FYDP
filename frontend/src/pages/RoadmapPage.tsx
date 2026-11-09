@@ -37,7 +37,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 2, topic: 'Transformer Architecture', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Foundation of all LLM agents', link: { label: '100 Days of DL — Transformer units', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
       { num: 3, topic: 'Attention Mechanism', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: 'Understanding trust influence and context handling', link: { label: '100 Days of DL (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_RmvYuZauWaPlRTC54KxSNLtNn' } },
       { num: 4, topic: 'Embeddings & Vector Representations', level: 'Intermediate', levelEmoji: '🟢', importance: 'Critical', whyNeeded: 'Core of RAG and retrieval pipelines', link: { label: '100 Days of ML (CampusX)', href: 'https://youtube.com/playlist?list=PLKnIA16_Rmvbr7zKYQuBfsVkjoLcJgxHH' } },
-      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient local inference on the 96GB Blackwell card', link: { label: 'vLLM quantization docs', href: 'https://docs.vllm.ai/' } },
+      { num: 5, topic: 'Model Quantization (GPTQ / AWQ)', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Efficient 4-bit inference on the 80 GB A100 main stack', link: { label: 'vLLM quantization docs', href: 'https://docs.vllm.ai/' } },
       { num: 6, topic: 'Inference vs Fine-Tuning', level: 'Intermediate', levelEmoji: '🟢', importance: 'Medium', whyNeeded: 'Your work focuses on inference orchestration', link: { label: 'HF docs', href: 'https://huggingface.co/docs' } },
     ],
   },
@@ -52,7 +52,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 6, topic: 'Hallucination in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your main failure mode', link: { label: 'Your literature review', href: '/papers' } },
       { num: 7, topic: 'Sycophancy in LLMs', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Core research problem', link: { label: 'Sharma et al. 2023', href: 'https://arxiv.org/abs/2310.13548' } },
       { num: 8, topic: 'Model Calibration (ECE)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Foundation of trust calibration', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
-      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev stack (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → pinned Final stack (Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, 69.73 GB)', link: { label: 'Proposal §7', href: '/idea/1' } },
+      { num: 9, topic: 'Two-Phase Model Strategy', level: 'Intermediate', levelEmoji: '🟢', importance: 'High', whyNeeded: 'Dev stack (Qwen3.5-9B / Gemma 4 12B / Ministral-3-14B) → 4-bit main stack (Qwen3.8-27B-AWQ-INT4 ~21.0 GB / Gemma 4 26B-A4B AWQ ~17.2 GB / Mistral-24B-AWQ 15.06 GB; ~53.3 GB, one 80 GB A100); FP8 check stack (73.68 GB) is N1 smoke + GPQA precision replication', link: { label: 'Proposal §7', href: '/idea/1' } },
       { num: 10, topic: 'Sycophancy Injection Protocol Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'CCR operationalization; κ > 0.75 pilot check (Phase 1–2)', link: { label: 'Proposal §5.4', href: '/idea/1' } },
       { num: 11, topic: 'LLM Uncertainty & Confidence Estimation', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Lightweight confidence gating (Phase 2)', link: { label: 'Your literature review', href: '/papers' } },
     ],
@@ -140,7 +140,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Pilot run',
     hours: '~15 hr/wk',
     learn: 'Only the stats you will actually run: paired bootstrap, McNemar, Cohen\'s d, Cohen\'s κ — short scipy walkthroughs, no full stats course.',
-    build: 'Final-stack 96 GB smoke ($80–120); WP-18 placebo/oracle; 24-item calibration; verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60); 50-question Month-1 pilot, then the 100–150-question G2 pilot. G2 decides whether the Core run proceeds.',
+    build: 'N1 96 GB smoke + FP8 precision replication ($25–40); WP-18 placebo/oracle; 24-item calibration; verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60); 50-question Month-1 pilot, then the 100–150-question G2 pilot. G2 decides whether the Core run proceeds.',
     links: [
       { label: 'Du et al. — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
     ],
@@ -158,7 +158,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Full run + benchmark',
     hours: '~20 hr/wk',
     learn: 'Benchmark annotation and verifier-audit protocol; no new ML theory.',
-    build: 'WP-18 adds B8-placebo/B8-oracle; G4/G5 Full target is 36 runs at 300 items/dataset within a 1,440 GPU-h envelope (32 runs and recomputed GPU-h if B8-oracle is gold-evidence-only on EG-SSS). EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go.',
+    build: 'WP-18 adds B8-placebo/B8-oracle; G4/G5 Full primary is 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h; $210); the 36-row gold-answer alternate is 1,440 GPU-h ($235). EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go.',
     links: [],
   },
   {
@@ -273,15 +273,19 @@ export function RoadmapPage() {
         <Section accent="blue" className="animate-fade-up">
           <SectionTitle icon={Calendar}>A. Execution Plan (Blueprint §12)</SectionTitle>
           <p className="text-sm mb-4">
-            P0 was released in Nov 2026. The final-stack smoke, WP-18
-            placebo/oracle, 24-item calibration and verifier audit precede the
-            G2 pilot in Dec 2026; the G3 Core run follows in Jan 2027; the G4/G5
+            P0 was released in Nov 2026. The N1 96 GB smoke + FP8 precision
+            replication, WP-18 placebo/oracle, 24-item calibration and verifier
+            audit precede the G2 pilot in Dec 2026; the G3 Core run follows in Jan 2027; the G4/G5
             Full run plus the benchmark ladder follows in Feb; human eval/SDT in
             Mar; results freeze in Apr; thesis chapters in May; thesis submission
             in Jun; defence in Jun/Jul; paper after the defence (Aug–Dec 2027).
             Gates mark explicit go/no-go decisions. Core and Full are separate
-            stacks (Dev vs Final); do not assume Core cells are reusable. The
-            $900–1,200 is the Full-run budget envelope.
+            matrices on the same 4-bit main stack; do not assume Core cells are
+            reusable. The plan totals $500–600 with a $600 hard stop; the main
+            matrix runs the 4-bit 24–27B stack (~53.3 GB) on one 80 GB A100 at
+            $0.136/GPU-h, and the 96 GB FP8 stack is limited to the N1 smoke and
+            a small GPQA precision replication. If no 80 GB A100 is available,
+            the fallback is $1,050–1,150 and requires re-approval.
           </p>
           <GanttTable phases={ganttPhases} />
           <Timeline items={milestones} />
@@ -298,14 +302,14 @@ export function RoadmapPage() {
               { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this. Done — three-model serving verified 16 Sep 2026.' },
               { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions. Done — 10/10 debates, 3/3 rounds.' },
               { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Protocol and B8 injection wiring are in place; GPU pilot next.' },
-              { step: 4, title: 'Final-stack smoke, calibration, verifier audit, then pilot (Nov–Dec 2026)', desc: '96 GB final-stack smoke ($80–120), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60), then the 50-question Month-1 pilot and 100–150-question G2 pilot.' },
+              { step: 4, title: 'N1 smoke + FP8 precision check, calibration, verifier audit, then pilot (Nov–Dec 2026)', desc: 'N1 96 GB smoke + FP8 precision replication ($25–40), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60), then the 50-question Month-1 pilot and 100–150-question G2 pilot.' },
               { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Claim decomposition, domain routing, verifier interface, and endpoints are wired at P0.' },
               { step: 6, title: 'Trust update function', desc: 'Unit-test the operator order in isolation: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong.' },
               { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 (B8-no-trust prompt split) landed, and WP-18 remains for the placebo/oracle arms before the Full run.' },
               { step: 8, title: 'Baselines B1–B4', desc: 'Built and mock-verified; B3 and B4-matched are in the executable matrix.' },
               { step: 9, title: 'Baselines B5–B6 (Self-Consistency, MoA)', desc: 'Independent of core mechanism. Can build in parallel with step 10.' },
               { step: 10, title: 'Baseline B9 (iMAD reimplementation)', desc: 'Highest difficulty (~10 days). Sequenced last.' },
-              { step: 11, title: 'Core run → Full run', desc: 'G3 Core: 24 runs at 1,280 GPU-h. G4/G5 Full target: 36 runs at 300 items/dataset in a 1,440 GPU-h envelope; B8-placebo/B8-oracle are WP-18, with the oracle definition conditional.' },
+              { step: 11, title: 'Core run → Full run', desc: 'G3 Core: 24 runs at 1,280 GPU-h. G4/G5 Full primary: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h); the 36-row gold-answer alternate is 1,440 GPU-h. B8-placebo/B8-oracle are WP-18.' },
               { step: 12, title: 'Human evaluation + failure analysis', desc: 'Last — requires completed experimental results to annotate against.' },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3 sm:p-4 hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-colors">

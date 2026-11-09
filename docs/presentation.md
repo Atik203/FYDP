@@ -50,7 +50,7 @@ This is the level-one data flow: seven processes, four entities, three data stor
 
 ### Slide 9 — Experimental Setup
 
-To run this, we use two stacks: a four-bit dev stack on one RTX A6000, and an FP8 final stack on an RTX PRO 6000, both on vLLM. Each debate runs three rounds; the matrix uses two seeds. The stress test injects a fake expert consensus between rounds one and two; baselines B1 to B4 skip it. We validate with annotation agreement and bootstrap confidence intervals. Total compute: about one thousand two hundred eighty GPU-hours for the current matrix. Salman will present the results and the engineering check.
+To run this, we use two stacks: a four-bit 24–27B final-family stack on one 80 GB A100 for the main matrix, and an FP8 96 GB stack for the hardware smoke and a small precision replication, both on vLLM. Each debate runs three rounds; the matrix uses two seeds. The stress test injects a fake expert consensus between rounds one and two; baselines B1 to B4 skip it. We validate with annotation agreement and bootstrap confidence intervals. Total compute: about two thousand five hundred GPU-hours across the Core and Full plans. Salman will present the results and the engineering check.
 
 ### Slide 10 — Project Results
 
@@ -236,9 +236,9 @@ Thank you for your attention. We are happy to take your questions.
 **Slide 9 — Experimental Setup**
 
 - **Q: Why two model stacks?**
-  **A:** The dev stack runs on one RTX A6000 for fast iteration. The final stack runs bigger models in FP8 on an RTX PRO 6000. The code path is identical — only the config changes.
-- **Q: Why four-bit for dev and FP8 for the final stack?**
-  **A:** The A6000 is Ampere and cannot run official FP8 kernels, so dev uses four-bit AWQ or QAT. Blackwell supports FP8, so the final run uses it.
+  **A:** The main causal matrix runs 4-bit 24–27B final-family models on one 80 GB A100. The 96 GB FP8 stack is only for the N1 hardware smoke and a small GPQA precision replication. The code path is identical — only the config changes.
+- **Q: Why four-bit for the main matrix and FP8 for the check?**
+  **A:** Four-bit 24–27B fits on an 80 GB A100 at one hundred thirty-six thousandths of a dollar per GPU-hour, which keeps the matrix inside the budget. The FP8 96 GB stack proves the pinned full-precision checkpoints load and gives a small precision check.
 - **Q: Why three rounds and two seeds?**
   **A:** Three rounds give the trust score time to update. Two seeds give a replication check; the unit of analysis is the question, not the seed.
 - **Q: What exactly is injected?**
@@ -250,7 +250,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What are the generation settings?**
   **A:** Temperature zero point seven, one thousand and twenty-four output tokens, four thousand and ninety-six context on dev, and three retries per agent.
 - **Q: How much compute does this need?**
-  **A:** About one thousand two hundred eighty GPU-hours for the Core matrix at the conservative cap. Core is budgeted at four hundred twenty to five hundred eighty dollars; the Full run is nine hundred to one thousand two hundred dollars as a separate Final-stack matrix, with a hard stop of one thousand three hundred fifty before law-testing.
+  **A:** About one thousand sixty-seven GPU-hours planned, with a one thousand two hundred eighty cap for the Core matrix. Core is budgeted at one hundred seventy-five to two hundred ten dollars; the Full run is two hundred ten dollars in the 32-row gold-evidence default, or two hundred thirty-five dollars for the 36-row gold-answer alternate. The total plan is five to six hundred dollars, with a six hundred dollar hard stop.
 
 ### M5 — Md. Salman Rohoman Nayeem · Slides 10–11
 
@@ -293,7 +293,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Why is A3 not covered?**
   **A:** A3 is innovation. We combine existing concepts — debate, retrieval and trust weighting — so the step is incremental and not patentable.
 - **Q: Why is A4 covered?**
-  **A:** We assessed the social and environmental consequences. The harm we target is real, and energy use stays low at about one thousand two hundred eighty GPU-hours.
+  **A:** We assessed the social and environmental consequences. The harm we target is real, and energy use stays low because the plan is inference-only on rented spot GPUs — about two thousand five hundred GPU-hours across Core and Full.
 - **Q: What are the coverage numbers?**
   **A:** Six of seven P attributes, all eight K areas, four of five A activities, and six of twelve programme outcomes.
 - **Q: For P1, which K areas are needed?**
@@ -346,7 +346,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: What about ethics and bias?**
   **A:** Answers carry citations a reader can check. The adversarial sets test manipulation, and the human study will follow consent rules.
 - **Q: How much does the full study cost?**
-  **A:** About one thousand two hundred eighty GPU-hours for the Core matrix at the conservative cap. Core costs four hundred twenty to five hundred eighty dollars; the Full run is nine hundred to one thousand two hundred dollars as a separate Final-stack matrix, with a hard stop of one thousand three hundred fifty before law-testing.
+  **A:** About two thousand five hundred GPU-hours across the Core and Full plans. Core costs one hundred seventy-five to two hundred ten dollars; Full is two hundred ten dollars for the 32-row default or two hundred thirty-five for the 36-row alternate. The total is five to six hundred dollars, with a six hundred dollar hard stop.
 - **Q: What is the most important measured result so far?**
   **A:** Gate 0: the three-model debate loop runs end to end — ten of ten debates, ninety of ninety positions, about three hundred seventy seconds per debate.
 

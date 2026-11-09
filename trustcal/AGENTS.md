@@ -6,8 +6,8 @@ Canonical agent instructions for this directory: the P0-released implementation 
 
 - **vLLM owns the GPU.** `scripts/serve.sh` is the only GPU-touching file; everything else is plain Python over the OpenAI-compatible APIs at `127.0.0.1:8000-8002`. Use `127.0.0.1`, never `localhost`: the Windows IPv6 fallback costs about 2s per request.
 - **`configs/models.yaml` is the only model switch** (Dev ↔ Final). Serve commands are generated from it by `scripts/gen_serve_cmds.py` — never hand-edit commands into `serve.sh`, and never rename a served model (`--served-model-name` mismatches caused request 404s in an earlier draft).
-- **Order discipline (blueprint §13 / roadmap):** Final-stack smoke → WP-18 (placebo/oracle) → pilot → Core matrix → Full matrix. Never reorder; never run a matrix before the pilot. The released Core matrix is four conditions × 3 datasets × 2 seeds = 24 rows; the six-arm Full target is a separate later design.
-- **The Core matrix source is `configs/experiments.yaml`**, not `configs/datasets.yaml`. `datasets.yaml` carries dataset revisions/provenance and loader defaults; its `seeds` and `sample_caps` are not the matrix values. Do not add the six-arm target to `experiments.yaml`; WP-18 adds a separate `configs/experiments_full.yaml`.
+- **Order discipline (blueprint §13 / roadmap):** 4-bit smoke → pilot → Core matrix → Full matrix; the 96 GB FP8 N1 smoke and GPQA precision replication follow the 4-bit pilot/Core. Never run a matrix before the pilot. The Core matrix is four conditions × 3 datasets × 2 seeds = 24 rows; the six-arm Full target is a separate later design.
+- **The Core matrix source is `configs/experiments_fourbit.yaml`**, not `configs/datasets.yaml`. `datasets.yaml` carries dataset revisions/provenance and loader defaults; its `seeds` and `sample_caps` are not the matrix values. `configs/experiments.yaml` is the released historical Core config. Do not add the six-arm target to it; WP-18 added a separate `configs/experiments_full.yaml`.
 - **`results/` is gitignored and load-bearing** (Gate 0 logs, trust trajectories, matrix summaries). Copy artifacts off the box before destroying an instance.
 - **Never commit secrets.** `.env` is gitignored. `HF_TOKEN` (gated GPQA/HLE downloads), `OPENAI_API_KEY` (B7), and the optional retrieval keys come from the environment or `.env`; never paste a real key into a doc or a commit.
 
@@ -18,7 +18,7 @@ Canonical agent instructions for this directory: the P0-released implementation 
 | `configs/models.yaml` | agent → checkpoint, port, quant, VRAM split, per-agent flags, Final pins |
 | `configs/phase.yaml` | default phase (`dev` or `final`) when a CLI does not pass `--phase` |
 | `configs/experiments.yaml` | released Core matrix: 4 conditions × 3 datasets × 2 seeds |
-| `configs/experiments_full.yaml` | planned six-arm Full matrix; added by WP-18, absent until then |
+| `configs/experiments_full.yaml` | six-arm Full matrix; 32-row gold-evidence default / 36-row gold-answer alternate |
 | `configs/datasets.yaml` | dataset revisions, splits, provenance, loader seeds/caps (not the matrix) |
 | `src/trustcal/inference/` | OpenAI-compatible client, one per port; retries transient failures only |
 | `src/trustcal/agents/` | prompts (`AGENT_SYSTEM`, initial/revision, injection, `trust_line`) + claim parser (+ fallback) |
@@ -43,7 +43,7 @@ Canonical agent instructions for this directory: the P0-released implementation 
 | `scripts/pilot_report.py` | Month-1 PASS/AMBIGUOUS/NO-GO report |
 | `scripts/analyze.py` | pooled metrics, failure taxonomy, pilot, ECR |
 | `scripts/human_eval.py` | Phase 4 blinded Likert sheets + κ |
-| `scripts/smoke_test.py` | model-swap smoke test; currently `--arm B8` or `injection` only |
+| `scripts/smoke_test.py` | model-swap smoke test; supports dev/fourbit/final phases and B8/injection/placebo/oracle paths |
 | `scripts/verify_env.py` | imports/versions + `--check-servers` health gate |
 | `scripts/verifier_audit.py` | verifier audit sheets + balanced accuracy/κ |
 
@@ -58,24 +58,32 @@ The released Core matrix runs four conditions:
 | `B8-no-trust` | B8 (`use_trust: false`) | primary control; same retriever/prompts/partition as B8, majority aggregation |
 | `B8` | B8 | treatment; evidence-grounded trust during debate |
 
-The **six-arm target** adds `B8-placebo` (shuffled verdicts, trust-weighted) and `B8-oracle` (gold evidence, trust-weighted). It is **not** in `experiments.yaml`. WP-18 owns the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is an optional 3-sample GPT-6 Luna external-answer ceiling, not `B8-oracle`. The B1–B10 appendix grid stays out of the pre-registered matrix.
+The **six-arm target** adds `B8-placebo` (cross-agent round-pool verdict shuffle, trust-weighted) and `B8-oracle` (gold-evidence oracle on EG-SSS, or gold-answer trust in the 36-row alternate). It is **not** in `experiments.yaml`. WP-18 implemented the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is an optional 3-sample GPT-6 Luna external-answer ceiling, not `B8-oracle`. The B1-B10 appendix grid stays out of the pre-registered matrix.
 
-`python scripts/run_matrix.py --dry-run` shows the 24 Core rows. After WP-18, `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` shows the Full plan: 36 rows at 300 items/dataset if `B8-oracle` uses gold-answer trust, or 32 if it is gold-evidence-only on EG-SSS. The Core matrix's gate cap stays 1,280 GPU-h.
+`python scripts/run_matrix.py --config configs/experiments_fourbit.yaml --dry-run` shows the 24 Core rows on the 4-bit stack. `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` shows the Full plan: 32 rows with the gold-evidence oracle on EG-SSS, or 36 if `B8-oracle` uses gold-answer trust. `configs/experiments_precision.yaml` is the 3-row GPQA FP8 precision replication. The Core matrix's gate cap stays 1,280 GPU-h.
 
 ## Dev stack (RTX A6000 48GB)
 
 Quantized checkpoints pinned in `models.yaml` — the model names stay the roadmap's, the artifacts are 4-bit AWQ (Qwen), QAT w4a16 (Gemma), AWQ 4-bit (Ministral; the official FP8 checkpoint cannot run on Ampere). Nightly vLLM is mandatory; `install_vllm.sh` auto-detects the wheel index from the driver (≥580 → cu130, else cu129).
 
+## 4-bit matrix stack (RTX A100 80GB)
+
+`models.yaml` pins Qwen3.8-27B-AWQ-INT4 (21.0GB), Gemma-4-26B-A4B AWQ (17.2GB), and Mistral-24B-AWQ (15.06GB) at **53.3GB** total weights, with a 0.90 utilization sum and 8192-token context. This is the main Core/Full matrix stack. The offline check is:
+
+```bash
+python scripts/check_stack.py --phase fourbit
+```
+
 ## Final stack (RTX PRO 6000 Blackwell 96GB)
 
-`models.yaml` pins Qwen3.6-27B-FP8, Gemma-4-26B-A4B-FP8, and Mistral-24B-AWQ at **69.73GB** total weights, with a 0.90 utilization sum and 8192-token context. The offline Final gate is:
+`models.yaml` pins Qwen3.8-27B-FP8, Gemma-4-26B-A4B-FP8, and Mistral-24B-AWQ at **73.68GB** total weights, with a 0.90 utilization sum and 8192-token context. This stack is limited to the N1 smoke and the small GPQA precision replication, not the main Full matrix. The offline Final gate is:
 
 ```bash
 python scripts/check_stack.py --phase final
 HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline
 ```
 
-`check_stack.py` enforces a conservative 80GB weight budget, not the 96GB card capacity. These checks cover the config budget, cache, disk, context, and keys. They do **not** prove that vLLM loads all three checkpoints together. The 96 GB hardware smoke is a separate, required gate:
+`check_stack.py` enforces 53.26GB on the 80GB 4-bit phase and 73.68GB on the 96GB Final phase. These checks cover the config budget, cache, disk, context, and keys. They do **not** prove that vLLM loads all three checkpoints together. The 96 GB hardware smoke is a separate required gate for the FP8 precision replication:
 
 ```bash
 PHASE=final bash setup.sh
@@ -83,7 +91,7 @@ python scripts/verify_env.py --check-servers
 python scripts/smoke_test.py --phase final --limit 20
 ```
 
-No Final matrix starts until that hardware smoke passes and its `nvidia-smi` peak is recorded. If a server OOMs, lower that agent's `gpu_memory_utilization` and re-run; if Mistral's `auto` quant detection fails, set `quant: compressed-tensors`.
+No FP8 precision replication is trusted until that hardware smoke passes and its `nvidia-smi` peak is recorded. The 4-bit main matrix has its own 5-question smoke on the 80GB A100. If a server OOMs, lower that agent's `gpu_memory_utilization` and re-run; if Mistral's `auto` quant detection fails, set `quant: compressed-tensors`.
 
 ## Commands (run from `trustcal/`)
 
@@ -92,17 +100,19 @@ No Final matrix starts until that hardware smoke passes and its `nvidia-smi` pea
 | `HF_TOKEN=hf_... [VENV=1] bash setup.sh` | install deps + nightly vLLM + checkpoints (~31GB), start servers, verify. `VENV=1` on any image that blocks system pip (PEP 668): Thunder Compute, Vast PyTorch images |
 | `python scripts/verify_env.py --check-servers` | gate: three `server OK` lines |
 | `python scripts/p0_gate.py` | 13-check P0 engineering gate; exits non-zero on any failure |
-| `python scripts/check_stack.py --phase final` | offline Final weight/utilization budget check |
+| `python scripts/check_stack.py --phase fourbit` | offline 80 GB 4-bit matrix weight/utilization check |
+| `python scripts/check_stack.py --phase final` | offline 96 GB Final weight/utilization check |
 | `HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline` | Final cost-safety gate (servers, cache, disk, context, keys) |
 | `python scripts/preflight.py [--offline]` | Dev/default cost-safety gate before paid runs |
 | `python scripts/run_experiment.py --arm B3 --limit 10 --seed 1` | run/resume an arm (B1-B10, pilot, injection); writes `results/<arm>/<dataset>/seed<N>/` + summary |
 | `python scripts/run_experiment.py --arm injection --questions-file q.json` | injection harness; add `--questions-file` to bypass the HF dataset |
 | `python scripts/run_experiment.py --arm pilot --questions-file experiments/pilot-month1/questions.json` | Month-1 trust-weight pilot |
-| `python scripts/run_matrix.py --dry-run` | print the 24-row Core plan (2 seeds); `--arms`/`--datasets`/`--seed` filter |
-| `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` | print the Full plan after WP-18 (36 or 32 rows, conditional) |
+| `python scripts/run_matrix.py --config configs/experiments_fourbit.yaml --dry-run` | print the 24-row Core plan on the 4-bit stack (2 seeds) |
+| `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` | print the Full plan (32 rows gold-evidence; 36 rows gold-answer alternate) |
+| `python scripts/run_matrix.py --config configs/experiments_precision.yaml --dry-run` | print the 3-row GPQA FP8 precision replication |
 | `python scripts/pilot_report.py --dir results/pilot/<dataset>/seed1` | PASS/AMBIGUOUS/NO-GO; exit 0/2/1 |
 | `python scripts/analyze.py --records results/<arm>/<dataset>/seed1/records.jsonl` | pooled CCR/MPR, failures, pilot, ECR |
-| `python scripts/smoke_test.py --phase final --limit 20` | model-swap smoke test (B8 or injection only; WP-18 adds placebo/oracle) |
+| `python scripts/smoke_test.py --phase fourbit --limit 5` | 4-bit matrix smoke test (B8, injection, placebo, oracle paths) |
 | `python scripts/repro_mad.py --limit 10` | Gate 0; writes `results/gate0/` |
 | `python scripts/mock_vllm.py --ports 8000,8001,8002 --mode divergent` | local mock servers for GPU-free end-to-end runs |
 | `python scripts/annotate.py make --records <records.jsonl>` | κ annotation sheets (then `score --rater1/--rater2`, exit 2 if κ < 0.75) |

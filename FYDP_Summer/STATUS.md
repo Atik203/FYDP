@@ -10,7 +10,7 @@
 - **`2.back.tex`** — corrected the iMAD characterisation; replaced the false "none of the prior studies" absolute with a scoped gap; replaced the "existing research does not contain" absolute with "we are not aware"; updated the metric list to the current endpoints.
 - **`3.design.tex`** — rewritten to the university structure: 3.1 Requirement Analysis with the four required subsections, 3.2 Detailed Methodology and Design, 3.3 Project Plan, 3.4 Task Allocation, and 3.5 Summary. Detailed components use unnumbered paragraph headings so the table of contents stays clean. The FYDP~I ten-month plan was replaced with the current November 2026--December 2027 plan, the 24-run Core and 36/32-run Full targets, and the 24--180--300 benchmark ladder.
 - **`4.implementation.tex`** — rewritten as **Implementation and Results** with the fixed main sections 4.1 Environment Setup, 4.2 Testing and Evaluation, 4.3 Results and Discussion, and 4.4 Summary. It records the environment, implementation architecture, P0 hardening, 523-test suite, P0 gate, Gate 0, evaluation protocol, engineering results, projected efficacy values, discussion, and threats to validity.
-- **`5.sic.tex`** — corrected the Python version, FP8/PagedAttention wording, BM25/cross-encoder wording, and RAG expansion; filled the empty constraint subsections; replaced the 300-hour/340--820 budget with the 1,067--1,280 GPU-h matrix and the Core run (USD 420--580) / Full-run budget envelope (USD 900--1,200); fixed "seven attributes" to "six of seven, P6 not covered"; removed "incremental level of innovation"; removed the "energy usage very-low" claim; reconciled the six program outcomes.
+- **`5.sic.tex`** — corrected the Python version, FP8/PagedAttention wording, BM25/cross-encoder wording, and RAG expansion; filled the empty constraint subsections; replaced the 300-hour/340--820 budget with the 1,067--1,280 GPU-h matrix and the v1.3 4-bit/80 GB envelope (Core USD 175--210; Full target USD 210; total USD 500--600; hard stop USD 600); fixed "seven attributes" to "six of seven, P6 not covered"; removed "incremental level of innovation"; removed the "energy usage very-low" claim; reconciled the six program outcomes.
 - **`6.conclusion.tex`** — removed the separate "What Was and Was Not Shown" section. The summary now states the engineering-only boundary, and the limitations and future-work sections remain.
 - **`CLAIMS_AUDIT.md`** — mode/rung, old-to-new table, claim-evidence map, removed/narrowed claims, figure changes, unresolved items, compile result.
 
@@ -20,9 +20,10 @@
 - **P0 gate: 13 of 13 passed, 0 failed, 0 pending** (`p0_gate.py` strict run, 2026-11-09).
 - **Matrix: 24 rows** (4 arms × 3 datasets × 2 seeds), **1,280 GPU-h** conservative / **1,067 GPU-h** per-dataset caps.
 - **Gate 0: 10/10 debates, 90/90 positions, 370.8 s mean**, 21.5 s stdev, approximately USD 4.29.
-- **Final stack:** 69.73GB pinned weights (two FP8 + one AWQ); not smoke-tested.
+- **4-bit matrix stack:** 53.3GB pinned weights (Qwen3.8 AWQ, Gemma AWQ, Mistral AWQ); 80GB A100 offline check passes.
+- **Final stack:** 73.68GB pinned weights (Qwen3.8 FP8, Gemma FP8, Mistral AWQ); not smoke-tested.
 - **B7:** optional appendix ceiling, three GPT-6 Luna samples per question; not in Core/Full.
-- **Report:** 68 pages, 80 cited works, 0 errors/undefined refs; 14 overfull and 108 underfull boxes.
+- **Report:** 69 pages, 80 cited works, 0 errors/undefined refs; 14 overfull and 108 underfull boxes.
 
 ## Figure status
 
@@ -41,13 +42,13 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 ```
 
-Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **68 pages, 80 cited works, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 14 overfull boxes (most at 1.9--65.5pt in long table/paragraph lines) and 108 underfull boxes, mostly narrow table cells.
+Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **69 pages, 80 cited works, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 14 overfull boxes (most at 1.9--65.5pt in long table/paragraph lines) and 108 underfull boxes, mostly narrow table cells.
 
 ## Remaining placeholders / actions
 
 - `LICENSE` (MIT) is present at the repository root; the reproducibility section cites it.
 - The current suite records 602 passing tests (514 at the P0 release); re-run `pytest` only if the code changes.
-- Verify the RTX A6000 USD 0.263/hour figure or replace it with a dated quote.
+- **Historical note (retired):** the RTX A6000 USD 0.263/hour figure is superseded; current budget in `docs/agent/08_COMPUTE_COST.md` (80 GB A100 PCIe at USD 0.136/GPU-h).
 - Run `smoke_test.py --phase final` on the 96GB stack.
 - Complete the 150--200-pair verifier human audit.
 - Complete the 24-item calibration batch and freeze the EG-SSS 180-item Core floor / 300-item Full target.

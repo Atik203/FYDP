@@ -13,12 +13,13 @@ Phase-by-phase execution plan for **November 2026 – December 2027**. This file
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **602 passed** (514 at the P0 release) |
-| Report | `FYDP_Summer/out/fydp.pdf` — 68 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal figures + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 (warnings only) |
-| Final stack | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **69.73 GB** pinned |
-| Final-stack smoke | **NOT RUN** — offline budget check only (69.73 GB < 80 GB); the 96 GB hardware smoke is the next gate |
+| Main stack (4-bit) | Qwen3.8-27B-AWQ-INT4 / Gemma-4-26B-A4B-AWQ / Mistral-24B-AWQ, **~53.3 GB** pinned |
+| Final stack | Qwen3.8-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **73.68 GB** pinned |
+| Final-stack smoke | **NOT RUN** — offline budget check only (73.68 GB < 96 GB); the 96 GB hardware smoke is the next gate |
 
 **P0 is engineering readiness, not efficacy evidence.** No accuracy, CMR, or sign-reversal claim exists yet. The first claim waits for the pilot and Core run.
 
@@ -61,9 +62,9 @@ Phase-by-phase execution plan for **November 2026 – December 2027**. This file
 
 ## 2. Phase N1 — Final-stack hardware readiness (Nov 2026)
 
-**Objective:** prove the pinned 96 GB stack serves all three checkpoints together before any Final run.
+**Objective:** prove the pinned 96 GB stack serves all three checkpoints together before any FP8 precision run.
 
-**Why it is first:** the offline check proves 69.73 GB of weights fits; it does not prove vLLM loads them, allocates KV cache, or survives the three-model load.
+**Why it is first:** the offline check proves 73.68 GB of weights fits; it does not prove vLLM loads them, allocates KV cache, or survives the three-model load.
 
 **Commands (on the 96 GB RTX PRO 6000):**
 
@@ -78,9 +79,9 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Acceptance:** three `server OK` lines; all preflight checks OK; smoke test PASS; record peak `nvidia-smi` and per-instance loaded weights. If a server OOMs, lower that agent's `gpu_memory_utilization` in `models.yaml` and re-run. If Mistral's `auto` quant detection fails, set `quant: compressed-tensors`.
 
-**Status (9 Nov 2026):** the offline check passes at 69.73 GB; the 96 GB hardware smoke has **not run**.
+**Status (9 Nov 2026):** the offline check passes at 73.68 GB; the 96 GB hardware smoke has **not run**.
 
-**Cost:** 60–100 GPU-h, **$80–120**. Do not start R6 without this PASS.
+**Cost:** 60–100 GPU-h on the 96 GB card at **$0.336/GPU-h**, **$25–40** all-in. Do not start R6 without this PASS.
 
 **Owner:** P2.
 
@@ -92,14 +93,14 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Scope:**
 
-- `B8-placebo`: B8 with shuffled evidence labels/verdicts. Tests whether the *signal*, not the extra machinery, causes the effect.
-- `B8-oracle`: B8 with gold information — gold-answer trust, or gold-evidence-only on EG-SSS — frozen in WP-18. Upper bound, not a competitor.
+- `B8-placebo`: B8 with **cross-agent round-pooled** evidence labels/verdicts. Tests whether the *signal*, not the extra machinery, causes the effect.
+- `B8-oracle`: B8 with gold information — the default is gold-evidence-only on EG-SSS; the alternate is gold-answer trust — frozen in WP-18. Upper bound, not a competitor.
 - Runner/config switches, prompt handling, tests, and a separate Full-run matrix.
 - Keep the current executable Core matrix at 4 conditions × 3 datasets × 2 seeds = **24 runs**. Conservative gate cap 1,280 GPU-h (9,600 debates at 400/cell); per-dataset plan GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates / ~1,067 GPU-h.
-- Add `configs/experiments_full.yaml` for the 6-arm Full run: 6 arms × 3 datasets × 2 seeds = 36 runs; 300-item benchmark target; planning envelope 1,440 GPU-h **if B8-oracle uses gold-answer trust**. If B8-oracle is gold-evidence-only on EG-SSS, the target is 32 runs and the GPU-h must be recomputed. Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze.
+- Add `configs/experiments_full.yaml` for the 6-arm Full run: the default is **32 rows** with a **gold-evidence oracle on EG-SSS** (1,280 GPU-h); the alternate is **36 rows** with a **gold-answer oracle** at 300 items/dataset (1,440 GPU-h). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze.
 - Update `PRE_REGISTRATION.md` with the 6-arm target and the executable subset (that file is maintained separately; this roadmap does not edit it).
 
-**Acceptance:** mock B8-placebo and B8-oracle records validate; placebo does not match B8; oracle ranks at or above B8; `run_matrix.py --dry-run` shows 24 Core rows and 36 Full rows (32 if B8-oracle is EG-SSS-only); no change to the 13/13 gate.
+**Acceptance:** mock B8-placebo and B8-oracle records validate; placebo does not match B8; oracle ranks at or above B8; `run_matrix.py --dry-run` shows 24 Core rows and the frozen Full rows (32 gold-evidence default; 36 gold-answer alternate); no change to the 13/13 gate.
 
 **Owner:** P2 + P4; prompts/strategy support from P6 if needed.
 
@@ -145,11 +146,11 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Objective:** verify wiring and estimate the effect before spending Core-run money.
 
-**Scope:** 100–150 questions; Dev stack; B3, B8-no-trust, B8; injection on/off; trust on/off; 24-item benchmark subset; q/ρ re-aggregation design frozen.
+**Scope:** 100–150 questions; 4-bit 24–27B stack on the 80 GB A100; B3, B8-no-trust, B8; injection on/off; trust on/off; 24-item benchmark subset; q/ρ re-aggregation design frozen.
 
 **G2 pass:** baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records.
 
-**Cost:** ~112 GPU-h, **$50–100**.
+**Cost:** ~112 GPU-h, **$15–20**.
 
 **Owner:** P2 + P4.
 
@@ -161,13 +162,13 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Arms:** B3, B4-matched, B8-no-trust, B8.
 
-**Design:** GPQA-Main + MMLU-Pro + HLE; 400 + 400 + 200 items; 2 seeds; **24 runs, 8,000 planned debates / ~1,067 GPU-h**; **1,280 GPU-h conservative gate cap**; EG-SSS-180 freezes under v1.2, outside this matrix.
+**Design:** GPQA-Main + MMLU-Pro + HLE; 400 + 400 + 200 items; 2 seeds; **24 runs, 8,000 planned debates / ~1,067 GPU-h**; **1,280 GPU-h conservative gate cap**; EG-SSS-180 freezes under v1.2, outside this matrix. Runs on the **4-bit 24–27B stack on one 80 GB A100 PCIe**.
 
 **Primary endpoint:** final-answer accuracy on pressure-eligible items, paired B8 vs B8-no-trust. **Co-primary:** CMR. Secondary: ARR, trust AUROC/Brier, verifier balanced accuracy, citation faithfulness.
 
 **G3 pass:** primary endpoint measured with CIs; B8 > B8-no-trust direction; pre-registration unchanged.
 
-**Cost:** 1,280 GPU-h conservative cap (planned ~1,067 GPU-h), **$420–580**.
+**Cost:** 1,280 GPU-h conservative cap (planned ~1,067 GPU-h), **$175–210**.
 
 **Owner:** P2 + P4.
 
@@ -179,7 +180,7 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Arms:** B3, B4-matched, B8-no-trust, B8, B8-placebo, B8-oracle.
 
-**Design:** 6 arms × 3 datasets × 2 seeds = 36 runs; 300-item benchmark target; planning envelope 1,440 GPU-h **if B8-oracle uses gold-answer trust** (10,800 debates at 300/dataset). If B8-oracle is gold-evidence-only on EG-SSS, the target is 32 runs and the GPU-h must be recomputed. Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze. Human eval starts in parallel. Full is a separate Final-stack matrix; do not assume Core cells are reusable. The $900–1,200 is the Full-run budget envelope. A true top-up can be computed only if the stack and model revisions match.
+**Design:** 6 arms × 3 datasets × 2 seeds; 300-item benchmark target. The default is **32 rows** with a **gold-evidence oracle on EG-SSS** (1,280 GPU-h, **$210**); **36 rows** is the **gold-answer alternate** (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze. Human eval starts in parallel. Core and Full run on the same **4-bit 24–27B stack on one 80 GB A100 PCIe**, so cells are reusable only where model revisions, prompts, and configs match.
 
 **G4/G5 pass:** placebo does not match B8; oracle separates; the sign reversal appears at the predicted q/ρ boundary; one external-validity check replicates the sign.
 
@@ -201,7 +202,7 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Scope:** q sweep, ρ measurement/manipulation, granularity (claim vs document vs shuffled), shared-error floor, N/K/α/β robustness, natural-divergence subset.
 
-**Rule:** run only if Core/Full show a real effect. R6 remains a **derived law** until an independent proof check signs it.
+**Rule:** run only if Core/Full show a real effect. R6 remains a **derived law** until an independent proof check signs it. This phase is **outside the $500–600 compute envelope and the $600 hard stop**; no spend without a separate cost model and approval.
 
 **Acceptance:** pre-registered contrasts; CIs; negative results reported. Results freeze at the end of April.
 
@@ -229,15 +230,17 @@ python scripts/smoke_test.py --phase final --limit 20
 
 | Item | GPU-h | Cash |
 |---|---:|---:|
-| Final-stack smoke | 60–100 | $80–120 |
-| Pilot | ~112 | $50–100 |
-| Core run | 1,280 cap (planned ~1,067) | $420–580 |
-| Full run (1,440 envelope; separate Final-stack matrix; not a reuse of Core cells) | ~1,440 | $900–1,200 |
-| Law-testing | ~3,913 at 8 min | $1,400–1,900 (only if effect) |
+| FP8 precision replication + 96 GB N1 smoke ($0.336/h) | 60–100 | $25–40 |
+| Pilot (4-bit 24–27B, 80 GB A100) | ~112 | $15–20 |
+| Core run (4-bit 24–27B, 80 GB A100) | 1,280 cap (planned ~1,067) | $175–210 |
+| Full run, 32-row gold-evidence default | 1,280 | $210 |
+| Full run, 36-row gold-answer alternate | 1,440 | $235 |
+| Storage and bandwidth | — | $40–80 |
+| **Total plan** | — | **$500–600** |
 
-**Hard stop: $1,350 before law-testing.** GPU rates: A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Persist the cache; batch sessions; copy results before destroying the instance.
+**Hard stop: $600.** The two Full rows are alternatives; the total counts one Full run. The main causal matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h**; the **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed). If the 80 GB A100 spot is unavailable and the main runs use 96 GB at $0.336/h, the plan is **$1,050–1,150** and requires **re-approval**; that fallback is not the default. Persist the cache; batch sessions; copy results before destroying the instance.
 
-The Full planning envelope assumes 36 runs at 300 items/dataset (10,800 debates) and a gold-answer B8-oracle. The 32-run gold-evidence-only variant has no frozen GPU-h figure yet. Core is planned on the Dev stack; Full is a separate Final-stack matrix, so Core cells are not assumed reusable unless the stack and model revisions match.
+The Full default is **32 rows** with a gold-evidence oracle on EG-SSS; **36 rows** is the gold-answer alternate. **B8-placebo is a cross-agent round-pool.** Core and Full run on the same 4-bit 24–27B stack, so cells are reusable only where model revisions, prompts, and configs match. Law-testing is outside this envelope and is not authorized by the $600 hard stop.
 
 ---
 

@@ -14,7 +14,14 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .agents import AGENT_INITIAL, AGENT_REVISION, AGENT_SYSTEM
-from .config import AgentConfig, ModelConfig, agents_for_phase, default_phase, load_models
+from .config import (
+    AgentConfig,
+    ModelConfig,
+    agents_for_phase,
+    default_phase,
+    load_models,
+    max_model_len_for_phase,
+)
 
 MIN_FREE_GB = 10.0
 CHARS_PER_TOKEN = 4
@@ -128,14 +135,7 @@ def run_preflight(
     results += check_servers(agents)
     results += check_cache(agents, home)
     results.append(check_disk(home))
-    results.append(
-        check_context_budget(
-            cfg.final_max_model_len
-            if selected == "final" and cfg.final_max_model_len
-            else cfg.max_model_len,
-            max_tokens,
-        )
-    )
+    results.append(check_context_budget(max_model_len_for_phase(cfg, selected), max_tokens))
     results.append(check_hf_token())
     results.append(check_offline(home, offline))
     return results

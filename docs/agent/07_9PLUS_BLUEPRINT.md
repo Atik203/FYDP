@@ -1,6 +1,6 @@
 # 07 — The 9+ Blueprint (Risk-Managed Proposal)
 
-> **Status 9 November 2026:** this is a **proposal/strategy document, not results**. P0 engineering is released (13/13, 514 tests, `p0-release`); there are **no efficacy results** and the **96 GB hardware smoke has not run** (the offline 69.73 GB fit check passes). The project title is fixed: *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.* The 8 November 2026 probability/score estimates and week schedule are historical judgments, not current status. The current order of work is `roadmap.md`.
+> **Status 9 November 2026:** this is a **proposal/strategy document, not results**. P0 engineering is released (13/13, 514 tests, `p0-release`); there are **no efficacy results** and the **96 GB hardware smoke has not run** (the offline 73.68 GB fit check passes). The project title is fixed: *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.* The 8 November 2026 probability/score estimates and week schedule are historical judgments, not current status. The current order of work is `roadmap.md`. **Historical proposal; current budget and execution stack are in `docs/agent/08_COMPUTE_COST.md`.**
 
 **Date:** 8 November 2026 (original proposal); status banner added 9 November 2026
 **Premise:** the user wants 9+ but explicitly says: *do not suggest things that will fail; suggest what will work.*  
@@ -23,7 +23,7 @@ The team now has LLM agents. That is a real multiplier, but it is not a 5x multi
 | Theory drafting and proof exploration | **2–3x** | Agents can propose models and proof sketches, but LLM math is often plausible-but-wrong; a human must verify every step |
 | Benchmark item drafting and claim decomposition | **3–4x** | Agents can draft items and claims; humans must adjudicate gold labels |
 | Human evaluation | **1–1.5x** | Agents can prepare sheets and analyze agreement; they cannot replace the two human annotators |
-| GPU experiments | **1x** | Core run 1,280 GPU-h cap (~1,067 planned); Full run 1,440 GPU-h envelope (conditional 36/32 runs); law-testing is additional and only if the effect is real; agents cannot compress GPU wall-clock |
+| GPU experiments | **1x** | Core run 1,280 GPU-h cap (~1,067 planned); Full default 1,280 GPU-h (32-row gold-evidence), alternate 1,440 (36-row gold-answer); law-testing is outside the $600 hard stop; agents cannot compress GPU wall-clock |
 | Peer review / venue cycle | **1x** | 3–6 months; not compressible |
 
 **What this means for the plan:**
@@ -69,7 +69,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 | **Math** | A simple expectation argument | Concentration bounds, effective sample size, minimax lower bound, submodularity |
 | **Method** | Bounded trust update | **Value-of-information verification** with a near-optimality guarantee; risk-controlled abstention |
 | **Benchmark** | 180-item EG-SSS | **300–500 items**, 3 domains, 5 conditions, verifier-quality labels, human-validated |
-| **Causal study** | 2×2 with a few arms | **6-arm Full core (conditional 36/32 runs) + ceiling/granularity sweeps + mediation + claim-level vs document-level + evidence-supports-majority** |
+| **Causal study** | 2×2 with a few arms | **6-arm Full core (32-row gold-evidence default; 36-row gold-answer alternate) + ceiling/granularity sweeps + mediation + claim-level vs document-level + evidence-supports-majority** |
 | **Human eval** | 60 Likert items | **150–200 binary judgments**, 2 blinded annotators, κ/ICC, citation faithfulness |
 | **Writing** | A system report | A crisp law/benchmark paper with a falsifiable headline |
 
@@ -94,7 +94,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 1. **Theory (derived, proof check required):** a threshold law for a correct minority under a wrong majority, with claim dependence and adversarial evidence bias; sufficiency, necessity, and a finite-sample bound.
 2. **Method (proposal):** a value-of-information verification policy that chooses which claims to verify under a fixed budget, with a submodular near-optimality guarantee; an abstention gate when the evidence is insufficient.
 3. **Benchmark:** EG-SSS-300, 300 gold-evidence items across biomed, physics/chemistry, and math/CS, with five pressure/evidence conditions.
-4. **Causal study:** the 6-arm Full core (conditional 36/32 runs) plus ceiling/granularity sweeps isolating evidence *information* from evidence *influence*, with placebo/trust-hidden/oracle controls and a claim-level vs document-level test. The 6-arm core alone is 8+, not 9+.
+4. **Causal study:** the 6-arm Full core (32-row gold-evidence default; 36-row gold-answer alternate) plus ceiling/granularity sweeps isolating evidence *information* from evidence *influence*, with placebo/trust-hidden/oracle controls and a claim-level vs document-level test. The 6-arm core alone is 8+, not 9+.
 5. **Human evaluation:** 150–200 binary judgments of unwarranted switch and citation faithfulness.
 
 ---
@@ -304,9 +304,9 @@ The 9+ claim is not “trust helps.” It is **“evidence can backfire, and the
 - **Mediator:** trust margin; selection vs persuasion; silent dissent.
 - **Replication:** a second model family and a second domain.
 
-**6-arm vs 9+ resolution:** the 6-arm matrix (conditional 36/32 runs) is the **8+ core**; it is the Full run. The 9+ layer is **8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6)** — not a different 6-arm count. Do not describe the 6-arm Full target as a 9+ design, and do not fold 9+ sweeps into the 1,440 GPU-h Full envelope.
+**6-arm vs 9+ resolution:** the 6-arm matrix (32-row gold-evidence default; 36-row gold-answer alternate) is the **8+ core**; it is the Full run. The 9+ layer is **8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6)** — not a different 6-arm count. Do not describe the 6-arm Full target as a 9+ design, and do not fold 9+ sweeps into the Full envelopes (1,280 default; 1,440 alternate).
 - 8 arms + the ceiling sweep (S3) + the granularity/backfire manipulation (S4) + mediation (S5) + replication (S6).
-- The 9+ layer adds sweeps beyond the **1,440 GPU-h Full envelope**; it is not budgeted and is not part of the Core/Full plan.
+- The 9+ layer adds sweeps beyond the **Full envelopes (1,280 default; 1,440 alternate)**; it is not budgeted and is not part of the Core/Full plan.
 - Pre-register the four primary contrasts and the three-way interaction **before** the main runs.
 
 **Why this is 9+:** it predicts a **sign reversal** that no current paper reports. A paper that shows *when evidence makes debate worse* is more surprising and more useful than another “our trust score wins” paper.
@@ -459,7 +459,7 @@ This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 8
 
 ### 6.1 Arms
 
-**Core v1.0** uses the first four rows. **B8-placebo and B8-oracle are the Full target, pending WP-18**; the Full count is conditional (36 runs if B8-oracle uses gold-answer trust; 32 and recomputed if B8-oracle is gold-evidence-only on EG-SSS).
+**Core v1.0** uses the first four rows. **B8-placebo and B8-oracle are the Full target, pending WP-18**; the Full default is 32 rows with a gold-evidence oracle on EG-SSS (1,280 GPU-h), and 36 rows is the gold-answer alternate (1,440 GPU-h).
 
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
@@ -562,7 +562,7 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 | **Benchmark** | 3–11 | EG-SSS annotation starts week 3; 180-item v1.2 freeze; 300-item Full target only if clean | 8.1–8.3 |
 | **Theory** | 1–11 | Model + R2/R4/R6; proof check weeks 9–11; measure \(\rho\) in week 4 | 8.3–8.6 |
 | **Core run** | 5–19 | 4-arm causal study; GPQA-Main + MMLU-Pro + HLE; 400/400/200; 2 seeds; verify boundary | 7.6–8.0 |
-| **Full run** | 12–22 | 6-arm target pending WP-18; conditional 36/32 runs; 300-item target | 8.0–8.3 |
+| **Full run** | 12–22 | 6-arm target pending WP-18; 32-row gold-evidence default / 36-row gold-answer alternate; 300-item target | 8.0–8.3 |
 | **Human eval** | 15–22 | 150–200 binary judgments; 3 raters | 8.2–8.4 |
 | **9+ layer** | 12–22 | Value-of-information method; full theory validation; benchmark release | 8.6–9.0 |
 | **Writing** | 20–30 | Paper A + thesis; Paper B if time | 8.6–9.0 |
@@ -614,13 +614,13 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 - **4 conditions:** B3, B4-matched, B8-no-trust, B8. B8-placebo/B8-oracle are the Full target pending **WP-18**.
 - **3 datasets:** `gpqa_main` 400, `mmlu_pro` 400, `hle` 200 = 1,000 questions per cell.
 - **24 runs:** 4 conditions × 3 datasets × 2 seeds; 8,000 debates.
-- **GPU:** ~1,067 GPU-h planned; **1,280 GPU-h cap**. Pilot ~112; final-stack smoke 60–100. The final stack is **one 96 GB GPU** with the pinned **69.73 GB** weights (offline check only; hardware smoke not run).
+- **GPU:** ~1,067 GPU-h planned; **1,280 GPU-h cap**. Pilot ~112. Core and Full run on one **80 GB A100 PCIe** with the **4-bit 24–27B final families**. The **96 GB FP8 stack** is only the N1 hardware smoke plus the GPQA precision replication (60–100 GPU-h); the pinned **73.68 GB** weights are offline-checked only and the hardware smoke has not run.
 - **Annotation:** 24-item calibration → 180-item v1.2 freeze; 300 Full target; 600 stretch only with dedicated annotators.
 - **Endpoints:** final accuracy and CMR primary; trust AUROC/Brier, ARR, coverage secondary.
 - **Analysis:** paired by question; cluster bootstrap over questions; mixed-effects with dataset fixed effect.
 - **Target:** historical estimate 8.3–8.6. Fallback: 8.0–8.3. Negative/boundary: 7.5–8.0.
 
-**Budget (Vast.ai spot, 8 Nov 2026 price snapshot):** A6000 **$0.263/hr** median at 80 GiB; Max-Q **$0.74-1.02/hr**; S **$1.432/hr**; bandwidth $0.004-0.033/GB; storage **$0.20/GB-month**. **Final-stack smoke 60-100 GPU-h / $80-120; pilot ~112 / $50-100; Core 1,280 cap / $420-580; Full 1,440 envelope / $900-1,200; law-testing $1,400-1,900 only if the effect is real. Hard stop $1,350 before law-testing.** See `08_COMPUTE_COST.md`.
+**Budget (Vast.ai spot, 9 Nov 2026 snapshot):** main matrix on one **80 GB A100 PCIe** at **$0.136/GPU-h** (4-bit 24–27B final families); **pilot ~112 GPU-h / $15–20; Core 1,280 cap / $175–210; Full default 32-row gold-evidence 1,280 GPU-h / $210; Full alternate 36-row gold-answer 1,440 GPU-h / $235; storage/bandwidth $40–80; total $500–600; hard stop $600.** The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (60–100 GPU-h, **$25–40**). Fallback if the A100 spot is unavailable: 96 GB main runs = **$1,050–1,150**, requires re-approval; not the default. Law-testing is outside this envelope. See `08_COMPUTE_COST.md`.
 
 **Venue:** paper in **August–December 2027**, after the thesis defence. Target TACL rolling, EMNLP 2028, or a Q1 journal. **No paper deadline before the defence.**
 

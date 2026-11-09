@@ -25,7 +25,7 @@ const p0Kpis: KpiCard[] = [
   { value: "13/13", label: "P0 gate checks", variant: "green" },
   { value: "24", label: "Core runs · 1,280 GPU-h", variant: "default" },
   { value: "300", label: "Benchmark target · 180 floor", variant: "sky" },
-  { value: "69.73 GB / 96 GB", label: "Final stack · one Blackwell card", variant: "rose" },
+  { value: "~53.3 GB", label: "4-bit main stack · 80 GB A100", variant: "rose" },
 ];
 
 export function OverviewPage() {
@@ -108,11 +108,12 @@ export function OverviewPage() {
             </div>
             <KpiRow kpis={p0Kpis} />
             <p className="mt-3 text-[10px] leading-relaxed text-[#64748b] dark:text-[#94a3b8]">
-              <strong>Current report evidence:</strong> 68-pp report, 19-pp journal,
+              <strong>Current report evidence:</strong> 69-pp report, 19-pp journal,
               0 undefined references; tags <code>p0-gate</code> and{" "}
-              <code>p0-release</code>. Next: final-stack 96 GB smoke → WP-18
-              placebo/oracle → 24-item calibration → verifier audit → G2 pilot
-              (Dec 2026) → G3 Core (Jan 2027) → G4/G5 Full (Feb 2027).
+              <code>p0-release</code>. Next: N1 96 GB smoke + FP8 precision
+              replication → WP-18 placebo/oracle → 24-item calibration →
+              verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027) →
+              G4/G5 Full (Feb 2027).
             </p>
           </div>
         </Section>

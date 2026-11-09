@@ -13,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trustcal.config import agents_for_phase, default_phase, load_models  # noqa: E402
+from trustcal.config import PHASES, agents_for_phase, default_phase, load_models  # noqa: E402
 from trustcal.runner import ARMS, RunConfig, run  # noqa: E402
 
 
@@ -26,7 +26,7 @@ def main() -> None:
     parser.add_argument("--rounds", type=int, default=3)
     parser.add_argument("--out", default="results")
     parser.add_argument("--config", default="configs/models.yaml")
-    parser.add_argument("--phase", choices=["dev", "final"], default=default_phase())
+    parser.add_argument("--phase", choices=PHASES, default=default_phase())
     parser.add_argument("--questions-file", default=None, help="local JSON question list instead of the HF dataset")
     parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument("--beta", type=float, default=0.3)

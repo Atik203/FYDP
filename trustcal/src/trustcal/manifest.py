@@ -155,8 +155,13 @@ def _file_sha256(path: Path | str) -> str:
 
 def _model_checkpoints(models_path: Path | str) -> dict[str, list[dict]]:
     raw = yaml.safe_load(Path(models_path).read_text(encoding="utf-8")) or {}
+    fourbit = raw.get("fourbit_phase") or {}
     final = raw.get("final_phase") or {}
-    stacks = {"dev": raw.get("agents") or [], "final": final.get("agents") or []}
+    stacks = {
+        "dev": raw.get("agents") or [],
+        "fourbit": fourbit.get("agents") or [],
+        "final": final.get("agents") or [],
+    }
     return {
         phase: sorted(
             (

@@ -1376,7 +1376,7 @@ function CeActivityOneSlide() {
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
               Three model family sources, four literature APIs, six team members
-              and a rented Blackwell GPU.
+              and a rented 80 GB A100.
             </Bullet>
             <Bullet>
               Chapter 3 assigns each task to a specific member with weeks and

@@ -311,7 +311,7 @@
 - `run_matrix.py:173-190`.
 
 **Change:**
-1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`). **As executed at P0 release, the Core v1.0 matrix is narrower:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**; GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**, with a **1,280 GPU-h** conservative gate cap. EG-SSS is not in Core v1.0; it is 180 items at the v1.2 benchmark freeze. The Full target is 6 arms/3 datasets/2 seeds = **36 runs if B8-oracle uses gold-answer trust**, 300 items/dataset = 10,800 debates / **1,440 GPU-h envelope**; if B8-oracle is gold-evidence-only on EG-SSS, it is **32 runs** and must be recomputed. **WP-18** (not the historical WP-13) freezes the Full definition.
+1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`). **As executed at P0 release, the Core v1.0 matrix is narrower:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**; GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**, with a **1,280 GPU-h** conservative gate cap. EG-SSS is not in Core v1.0; it is 180 items at the v1.2 benchmark freeze. The Full target is 6 arms/3 datasets/2 seeds, **default 32 runs with a gold-evidence oracle on EG-SSS** (1,280 GPU-h / $210); **36 runs with gold-answer trust is the alternate** (300 items/dataset, 10,800 debates / 1,440 GPU-h / $235). **WP-18** (not the historical WP-13) freezes the Full definition.
 2. Compute power for CCR/accuracy; report MDE per dataset.
 3. Freeze `PRE_REGISTRATION.md`: primary endpoint, comparator, exclusions, analysis, multiplicity, stopping rules.
 4. Treat the full 15×5 grid as a thesis appendix plan, not an executable matrix.
@@ -381,7 +381,7 @@ The engineering gate passed. The two human-validation items below were explicitl
 - [x] P0-7 B8 vs B8-no-trust differs only in trust (landed as the historical WP-13 prompt split).
 - [x] P0-8 all revisions pinned; eligible n reported.
 - [x] P0-9 injection is one-shot with a neutral control. **Human manipulation κ ≥0.75 is G2, pending.**
-- [x] P0-10 Core matrix is 24 rows / 1,280 GPU-h cap; pre-registration v1.0 written. Full definition is WP-18, conditional.
+- [x] P0-10 Core matrix is 24 rows / 1,280 GPU-h cap; pre-registration v1.0 written. Full definition is WP-18, conditional: 32-row gold-evidence default ($210) / 36-row gold-answer alternate ($235).
 - [x] P0-11 manifest/resume test passes.
 - [x] P0-12 branch/docs updated: `main` = `dev`; manuscripts rewritten as engineering reports.
 

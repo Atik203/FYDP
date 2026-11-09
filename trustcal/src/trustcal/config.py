@@ -10,7 +10,7 @@ import yaml
 
 ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 PHASE_PATH = Path(__file__).resolve().parents[2] / "configs" / "phase.yaml"
-PHASES = ("dev", "final")
+PHASES = ("dev", "fourbit", "final")
 
 
 def load_env(path: Path | None = None) -> bool:
@@ -62,20 +62,27 @@ class ModelConfig:
     max_model_len: int = 4096
     gpu_memory_utilization: float | None = None
     agents: list[AgentConfig] = field(default_factory=list)
+    fourbit_agents: list[AgentConfig] = field(default_factory=list)
+    fourbit_rounds: int | None = None
+    fourbit_max_model_len: int | None = None
     final_agents: list[AgentConfig] = field(default_factory=list)
     final_rounds: int | None = None
     final_max_model_len: int | None = None
 
 
 def load_models(path: Path | str) -> ModelConfig:
-    """Parse configs/models.yaml. Use `agents_for_phase` to pick Dev vs Final."""
+    """Parse configs/models.yaml. Use `agents_for_phase` to pick a stack."""
     raw = yaml.safe_load(Path(path).read_text())
+    fourbit = raw.get("fourbit_phase", {})
     final = raw.get("final_phase", {})
     return ModelConfig(
         rounds=raw.get("rounds", 3),
         max_model_len=raw.get("max_model_len", 4096),
         gpu_memory_utilization=raw.get("gpu_memory_utilization"),
         agents=[AgentConfig(**a) for a in raw["agents"]],
+        fourbit_agents=[AgentConfig(**a) for a in fourbit.get("agents", [])],
+        fourbit_rounds=fourbit.get("rounds"),
+        fourbit_max_model_len=fourbit.get("max_model_len"),
         final_agents=[AgentConfig(**a) for a in final.get("agents", [])],
         final_rounds=final.get("rounds"),
         final_max_model_len=final.get("max_model_len"),
@@ -104,6 +111,10 @@ def agents_for_phase(cfg: ModelConfig, phase: str | None = None) -> list[AgentCo
     name = (phase or default_phase()).strip().lower()
     if name == "dev":
         return cfg.agents
+    if name == "fourbit":
+        if not cfg.fourbit_agents:
+            raise ValueError("config has no fourbit_phase.agents; cannot run the Four-bit stack")
+        return cfg.fourbit_agents
     if name == "final":
         if not cfg.final_agents:
             raise ValueError("config has no final_phase.agents; cannot run the Final stack")
@@ -112,11 +123,23 @@ def agents_for_phase(cfg: ModelConfig, phase: str | None = None) -> list[AgentCo
 
 
 def rounds_for_phase(cfg: ModelConfig, phase: str | None = None) -> int:
-    """Debate depth for the selected stack (Final may override the top-level value)."""
+    """Debate depth for the selected stack (non-dev phases may override it)."""
     name = (phase or default_phase()).strip().lower()
+    if name == "fourbit" and cfg.fourbit_rounds:
+        return int(cfg.fourbit_rounds)
     if name == "final" and cfg.final_rounds:
         return int(cfg.final_rounds)
     return int(cfg.rounds)
+
+
+def max_model_len_for_phase(cfg: ModelConfig, phase: str | None = None) -> int:
+    """Context window for the selected stack (non-dev phases may override it)."""
+    name = (phase or default_phase()).strip().lower()
+    if name == "fourbit" and cfg.fourbit_max_model_len:
+        return int(cfg.fourbit_max_model_len)
+    if name == "final" and cfg.final_max_model_len:
+        return int(cfg.final_max_model_len)
+    return int(cfg.max_model_len)
 
 
 def load_datasets(path: Path | str) -> dict:

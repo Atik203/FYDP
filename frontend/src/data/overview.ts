@@ -45,9 +45,9 @@ export interface RiskRow {
 export const ganttPhases: GanttPhase[] = [
   { name: 'Ph 0: Literature & Setup', duration: 'Jul–Sep 2026', deliverables: 'Literature freeze, vLLM 3-model serving on the A6000, Gate 0 MAD reproduction — passed 16 Sep 2026 (10/10 debates × 3 rounds)', progress: 100, barVariant: 'teal' },
   { name: 'Ph 1: P0 Engineering', duration: 'Oct–Nov 2026', deliverables: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 514 tests; P0 gate 13/13 passed.', progress: 100, barVariant: 'default' },
-  { name: 'Ph 2: Pilot run', duration: 'Dec 2026', deliverables: 'Final-stack 96 GB smoke ($80–120) → WP-18 placebo/oracle → 24-item calibration → verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) → 50-question Month-1 pilot → 100–150-question G2 pilot. 3 seeds for the pilot; 2 for the main matrix. G2 decides whether the Core run proceeds.', progress: 0, barVariant: 'amber' },
+  { name: 'Ph 2: Pilot run', duration: 'Dec 2026', deliverables: 'N1 96 GB smoke + FP8 precision replication ($25–40) → WP-18 placebo/oracle → 24-item calibration → verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) → 50-question Month-1 pilot → 100–150-question G2 pilot. 3 seeds for the pilot; 2 for the main matrix. G2 decides whether the Core run proceeds.', progress: 0, barVariant: 'amber' },
   { name: 'Ph 3: Core run', duration: 'Jan 2027', deliverables: 'G3 Core run: 4 executable arms (B3, B4-matched, B8-no-trust, B8) × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in Core v1.0 (180 items at the v1.2 benchmark freeze). PRE_REGISTRATION.md v1.0.', progress: 0, barVariant: 'rose' },
-  { name: 'Ph 4: Full run + benchmark', duration: 'Feb 2027', deliverables: 'G4/G5 Full target: 6 arms × 3 datasets × 2 seeds = 36 runs at 300 items/dataset, within a 1,440 GPU-h envelope (~10,800 debates if B8-oracle uses gold-answer trust). Adds B8-placebo/B8-oracle via WP-18. If B8-oracle is gold-evidence-only on EG-SSS, 32 runs and recomputed GPU-h. EG-SSS ladder: 180 floor, 300 target, 600 stretch, 800 no-go.', progress: 0, barVariant: 'rose' },
+  { name: 'Ph 4: Full run + benchmark', duration: 'Feb 2027', deliverables: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h; $210), plus a 36-row gold-answer alternate (1,440 GPU-h; $235). Adds B8-placebo/B8-oracle via WP-18. EG-SSS ladder: 180 floor, 300 target, 600 stretch, 800 no-go.', progress: 0, barVariant: 'rose' },
   { name: 'Ph 5: Human Eval + SDT', duration: 'Mar 2027', deliverables: 'Human evaluation / SDT, benchmark annotation, and verifier-audit follow-up.', progress: 0, barVariant: 'default' },
   { name: 'Ph 6: Results Freeze', duration: 'Apr 2027', deliverables: 'Freeze results, CIs, and effect sizes. No new runs or arm changes after the freeze.', progress: 0, barVariant: 'amber' },
   { name: 'Ph 7: Thesis Chapters', duration: 'May 2027', deliverables: 'Write the thesis chapters against the frozen results.', progress: 0, barVariant: 'teal' },
@@ -66,13 +66,13 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'P0 engineering gate',
     date: 'Nov 2026',
-    description: '514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Current report evidence: 68-pp report, 19-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
+    description: '514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Current report evidence: 69-pp report, 19-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
     deliverable: 'P0 gate report + runnable matrix — 13/13',
   },
   {
     milestone: 'Pilot run',
     date: 'Dec 2026',
-    description: 'Final-stack smoke, WP-18 placebo/oracle, a 24-item calibration, and the verifier audit precede the pilot. The 50-question Month-1 pilot is followed by the 100–150-question G2 pilot. G2 requires baseline CCR ≥0.30, trust AUROC ≥0.65, ≥65% correct-direction changes, and injection κ ≥0.75; if it fails, the project reframes to report the negative result honestly.',
+    description: 'N1 96 GB smoke + FP8 precision replication, WP-18 placebo/oracle, a 24-item calibration, and the verifier audit precede the pilot. The 50-question Month-1 pilot is followed by the 100–150-question G2 pilot. G2 requires baseline CCR ≥0.30, trust AUROC ≥0.65, ≥65% correct-direction changes, and injection κ ≥0.75; if it fails, the project reframes to report the negative result honestly.',
     deliverable: 'G2 pilot-run report',
   },
   {
@@ -84,7 +84,7 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'Full run + benchmark',
     date: 'Feb 2027',
-    description: 'G4/G5 Full target: 36 runs at 300 items/dataset within a 1,440 GPU-h envelope, adding B8-placebo/B8-oracle through WP-18 (32 runs and recomputed GPU-h if B8-oracle is gold-evidence-only on EG-SSS). EG-SSS benchmark freeze at 180 items (v1.2); ladder 180 floor, 300 target, 600 stretch, 800 no-go.',
+    description: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h), adding B8-placebo/B8-oracle through WP-18; the 36-row gold-answer alternate is 1,440 GPU-h. EG-SSS benchmark freeze at 180 items (v1.2); ladder 180 floor, 300 target, 600 stretch, 800 no-go.',
     deliverable: 'Full-run matrix + EG-SSS v1.2',
   },
   {
@@ -128,12 +128,13 @@ export const milestones: TimelineItem[] = [
 // Blueprint §7 — Models & Tools (two-phase strategy)
 export const resources: ResourceCard[] = [
   { label: 'Agent 1 (Dev)', value: 'Qwen3.5-9B', sub: 'Small, fast dev iteration on RTX A6000 48GB — served as 4-bit AWQ', href: 'https://huggingface.co/Qwen/Qwen3.5-9B' },
-  { label: 'Agent 1 (Final)', value: 'Qwen3.6-27B-FP8', sub: 'Full-scale 27B dense, FP8 on the 96 GB Blackwell card — part of the 69.73 GB pinned Final stack', href: 'https://huggingface.co/Qwen/Qwen3.6-27B' },
+  { label: 'Agent 1 (Final)', value: 'Qwen3.8-27B', sub: 'Full-scale 27B dense, served AWQ-INT4 4-bit (~21.0 GB) on the 80 GB A100 main stack; FP8 checkpoint (~29.95 GB) only for the 96 GB precision check', href: 'https://huggingface.co/Qwen/Qwen3.8-27B' },
   { label: 'Agent 2 (Dev)', value: 'Gemma 4 12B', sub: 'Encoder-free 12B, good proxy for 26B behaviour — served as QAT 4-bit', href: 'https://huggingface.co/google/gemma-4-12B' },
-  { label: 'Agent 2 (Final)', value: 'Gemma-4-26B-A4B-FP8', sub: 'MoE (3.8B active), FP8 — part of the 69.73 GB pinned Final stack', href: 'https://huggingface.co/google/gemma-4-26B-A4B' },
+  { label: 'Agent 2 (Final)', value: 'Gemma-4-26B-A4B', sub: 'MoE (3.8B active), served AWQ 4-bit (~17.2 GB) on the 80 GB A100 main stack; FP8 checkpoint (28.67 GB) only for the 96 GB precision check', href: 'https://huggingface.co/google/gemma-4-26B-A4B' },
   { label: 'Agent 3 (Dev)', value: 'Ministral-3-14B-Instruct', sub: 'Mistral-family 14B — AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot be served on Ampere)', href: 'https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512' },
-  { label: 'Agent 3 (Final)', value: 'Mistral-24B-AWQ', sub: 'Third training lineage, AWQ 4-bit — part of the 69.73 GB pinned Final stack', href: 'https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506' },
-  { label: 'Final stack (pinned)', value: '69.73 GB', sub: 'Qwen3.6-27B-FP8 · Gemma-4-26B-A4B-FP8 · Mistral-24B-AWQ — fits one 96 GB GPU' },
+  { label: 'Agent 3 (Final)', value: 'Mistral-24B-AWQ', sub: 'Third training lineage, AWQ 4-bit (15.06 GB) — main-matrix agent on the 80 GB A100', href: 'https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506' },
+  { label: '4-bit main stack (pinned)', value: '~53.3 GB', sub: 'Qwen3.8-27B-AWQ-INT4 (~21.0 GB) · Gemma 4 26B-A4B AWQ (~17.2 GB) · Mistral 24B AWQ (15.06 GB) — Core and Full causal matrix on one 80 GB A100' },
+  { label: 'FP8 check stack (pinned)', value: '73.68 GB', sub: 'Qwen3.8-27B-FP8 (29.95 GB) · Gemma-4-26B-A4B-FP8 (28.67 GB) · Mistral-24B-AWQ (15.06 GB) — N1 96 GB smoke + small GPQA precision replication, not the main matrix' },
   { label: 'Oracle (B7)', value: 'GPT-6 Luna (OpenAI)', sub: 'Optional external-answer ceiling; 3 samples/question; mean single-call accuracy + 3-sample majority; ~$3–9 per 1,000; not a Core arm' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
   { label: 'Inference', value: 'vLLM', sub: 'Free, fast, multi-model serving' },
@@ -152,11 +153,12 @@ export interface CostRow {
 }
 
 export const costEstimates: CostRow[] = [
-  { phase: 'Final-stack smoke (Nov 2026)', models: 'Final stack (69.73 GB pinned)', gpu: 'RTX PRO 6000 Blackwell 96GB', rate: '$0.74–1.43/hr', estHours: '—', totalRange: '$80–120' },
-  { phase: 'Pilot run (Dec 2026)', models: 'Dev stack', gpu: 'RTX A6000 48GB', rate: 'spot $0.16–0.37/hr', estHours: '—', totalRange: '$50–100' },
-  { phase: 'Core run (Jan 2027)', models: 'Dev stack', gpu: 'RTX A6000 48GB', rate: 'spot $0.16–0.37/hr', estHours: '1,280', totalRange: '$420–580' },
-  { phase: 'Full run (Feb 2027)', models: 'Final stack (69.73 GB pinned)', gpu: 'RTX PRO 6000 Blackwell 96GB', rate: '$0.74–1.43/hr', estHours: '1,440 envelope', totalRange: '$900–1,200' },
-  { phase: 'Law-testing (8 min/debate; after $1,350 hard stop)', models: 'Final stack (69.73 GB pinned)', gpu: 'RTX PRO 6000 Blackwell 96GB', rate: '$0.74–1.43/hr', estHours: '3,813', totalRange: '$1,400–1,900' },
+  { phase: 'N1 smoke + FP8 precision replication (Nov 2026)', models: 'FP8 check stack (73.68 GB pinned)', gpu: 'RTX PRO 6000 Blackwell 96GB', rate: '$0.336/GPU-h', estHours: '60–100', totalRange: '$25–40' },
+  { phase: 'Pilot run (Dec 2026)', models: '4-bit main stack (~53.3 GB)', gpu: '80 GB A100', rate: '$0.136/GPU-h', estHours: '~112', totalRange: '$15–20' },
+  { phase: 'Core run (Jan 2027)', models: '4-bit main stack (~53.3 GB)', gpu: '80 GB A100', rate: '$0.136/GPU-h', estHours: '1,067 · 1,280 cap', totalRange: '$175–210' },
+  { phase: 'Full run (Feb 2027)', models: '4-bit main stack (~53.3 GB)', gpu: '80 GB A100', rate: '$0.136/GPU-h', estHours: '1,280 · 1,440 alt', totalRange: '$210 · $235 alt' },
+  { phase: 'Storage + bandwidth (all stages)', models: 'Persistent volumes, checkpoints, logs', gpu: '—', rate: '—', estHours: '—', totalRange: '$40–80' },
+  { phase: 'Total (hard stop $600)', models: '80 GB A100 default; $1,050–1,150 fallback requires re-approval', gpu: '—', rate: '—', estHours: '—', totalRange: '$500–600' },
 ];
 
 // Blueprint §11 — Risk Assessment
@@ -166,7 +168,7 @@ export const risks: RiskRow[] = [
   { risk: 'Reviewers see as incremental over MoA/iMAD', likelihood: 'Low-Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: 'B6/B9 direct comparisons; pre-register the comparison; no headline effect size before the run' },
   { risk: 'Timeline overload (matrix + benchmark)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'High', impactVariant: 'rose', mitigation: 'Core run first (24 runs); Full run and 300-item benchmark only after Core run lands' },
   { risk: 'iMAD reimplementation fidelity', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '~10-day dedicated budget; explicit divergence documentation' },
-  { risk: 'Single 96GB GPU compute ceiling', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: 'FP8 native on Blackwell; Core matrix is 24 runs / 1,280 GPU-h; 6-arm Full target is a 36-run / 1,440 GPU-h envelope' },
+  { risk: 'Single 80 GB A100 compute ceiling', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '4-bit 24–27B main stack (~53.3 GB) on one 80 GB A100; Core is 24 runs / 1,280 GPU-h; Full primary is 32 rows / 1,280 GPU-h (36-row alternate / 1,440 GPU-h)' },
   { risk: 'Dataset mismatch (proof-only benchmarks)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'Moderate', impactVariant: 'amber', mitigation: 'BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; EG-SSS controlled set' },
 ];
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# ONE-COMMAND POD SETUP — Dev (RTX A6000 48GB) or Final (RTX PRO 6000 96GB)
+# ONE-COMMAND POD SETUP — Dev (48GB), Four-bit (80GB) or Final (96GB)
 #
 #   git clone https://github.com/Atik203/FYDP.git /workspace/fydp
 #   cd /workspace/fydp/trustcal
 #   HF_TOKEN=hf_... bash setup.sh                    # Dev stack (~31GB)
-#   HF_TOKEN=hf_... PHASE=final bash setup.sh        # Final stack (~70GB)
+#   HF_TOKEN=hf_... PHASE=fourbit bash setup.sh      # Four-bit stack (~53GB)
+#   HF_TOKEN=hf_... PHASE=final bash setup.sh        # Final stack (~71GB)
 #   HF_TOKEN=hf_... VENV=1 bash setup.sh             # recommended when the image
 #                                                    # blocks system pip (PEP 668)
 #
@@ -14,7 +15,7 @@
 # checkpoints for PHASE (pinned revisions from configs/models.yaml) → starts vLLM
 # on :8000-8002 → verifies imports, versions and server health.
 #
-# Options:  PHASE=dev|final  model stack (default dev)
+# Options:  PHASE=dev|fourbit|final  model stack (default dev)
 #           VENV=1          create .venv and install everything into it (recommended
 #                           on Thunder Compute; on RunPod the system env is fine)
 #           SKIP_SERVE=1   install + download only (no servers)
@@ -26,8 +27,8 @@ cd "$(dirname "$0")"
 
 PHASE="${PHASE:-dev}"
 case "$PHASE" in
-  dev|final) ;;
-  *) echo "ERROR: PHASE must be 'dev' or 'final' (got '$PHASE')" >&2; exit 1 ;;
+  dev|fourbit|final) ;;
+  *) echo "ERROR: PHASE must be 'dev', 'fourbit' or 'final' (got '$PHASE')" >&2; exit 1 ;;
 esac
 export PHASE
 export TRUSTCAL_PHASE="$PHASE"

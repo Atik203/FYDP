@@ -16,12 +16,13 @@
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **602 passed** (514 at the P0 release) |
-| Report | `FYDP_Summer/out/fydp.pdf` - 68 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 |
-| Final stack | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **69.73 GB** pinned |
-| Final-stack smoke | **NOT RUN** — offline budget check only (69.73 GB < 80 GB); the 96 GB hardware smoke is the next gate |
+| Main stack (4-bit) | Qwen3.8-27B-AWQ-INT4 / Gemma-4-26B-A4B-AWQ / Mistral-24B-AWQ, **~53.3 GB** pinned |
+| Final stack | Qwen3.8-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **73.68 GB** pinned |
+| Final-stack smoke | **NOT RUN** — offline budget check only (73.68 GB < 96 GB); the 96 GB hardware smoke is the next gate |
 
 **P0 is engineering readiness, not efficacy evidence.** No accuracy, CMR, or sign-reversal claim exists yet.
 
@@ -100,13 +101,15 @@ A 300-item set with clean gold is better than a 600-item set with bad gold.
 
 | Path | Cost |
 |---|---:|
-| Final-stack smoke | $80–120 |
-| Pilot | $50–100 |
-| Core run | **$420–580** |
-| Full run (separate Final-stack matrix; not a reuse of Core cells) | **$900–1,200** |
-| Law-testing | $1,400–1,900 (only if effect) |
+| FP8 precision replication + 96 GB N1 smoke | $25–40 |
+| Pilot | $15–20 |
+| Core run | **$175–210** |
+| Full run, 32-row gold-evidence default | **$210** |
+| Full run, 36-row gold-answer alternate | **$235** |
+| Storage and bandwidth | $40–80 |
+| **Total plan** | **$500–600** |
 
-**Hard stop: $1,350 before law-testing.** A6000 80 GiB **$0.263/hr**; RTX PRO 6000 Max-Q **$0.74–1.02/hr**; S **$1.432/hr**; storage **$0.20/GB-month**; bandwidth **$0.004–0.033/GB**. Persist the cache; batch sessions; copy results; destroy instances.
+**Hard stop: $600.** The Full default and alternate are alternatives; the total counts one Full run. Main matrix on one **80 GB A100 PCIe** spot at **$0.136/GPU-h** (4-bit 24–27B final families). The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (60–100 GPU-h, $25–40). If the A100 spot is unavailable and the main runs use 96 GB, the plan is **$1,050–1,150** and needs re-approval; it is not the default. Placebo is cross-agent round-pool. Persist the cache; batch sessions; copy results; destroy instances.
 
 ---
 

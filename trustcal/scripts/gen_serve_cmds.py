@@ -13,23 +13,24 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trustcal.config import load_models
+from trustcal.config import PHASES, agents_for_phase, load_models, max_model_len_for_phase
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate vLLM serve commands from configs/models.yaml")
     parser.add_argument("--config", default="configs/models.yaml")
-    parser.add_argument("--phase", choices=["dev", "final"], default="dev")
+    parser.add_argument("--phase", choices=PHASES, default="dev")
     args = parser.parse_args()
 
     cfg = load_models(args.config)
-    agents = cfg.agents if args.phase == "dev" else cfg.final_agents
+    agents = agents_for_phase(cfg, args.phase)
+    phase_max_len = max_model_len_for_phase(cfg, args.phase)
 
     for agent in agents:
         cmd = [
             "vllm", "serve", agent.model,
             "--port", str(agent.port),
-            "--max-model-len", str(agent.max_model_len or cfg.max_model_len),
+            "--max-model-len", str(agent.max_model_len or phase_max_len),
             "--gpu-memory-utilization",
             str(agent.gpu_memory_utilization or cfg.gpu_memory_utilization or 0.30),
             "--enforce-eager",

@@ -1,0 +1,58 @@
+# Four-bit matrix — the released 24-row Core design executed on the 80GB
+# four-bit stack (`phase: fourbit`). This is a precision/portability replication
+# of configs/experiments.yaml, which stays unchanged as the released historical
+# config. Same conditions, datasets, seeds and caps; only the model stack moves
+# from the 96GB FP8 phase to the 80GB AWQ phase.
+#
+#   B3            unweighted MAD (no retrieval)
+#   B4-matched    arm B4 with the same source partition as B8 (evidence control)
+#   B8-no-trust   arm B8 with use_trust=false (primary control)
+#   B8            ours (evidence-grounded trust)
+# 4 conditions x 3 datasets x 2 seeds = 24 runs.
+#
+# Compute check: the P0 gate keeps using sample_caps.main for every row, so
+# 4 x 3 x 2 x 400 = 9,600 debates x 8 min / 60 = 1,280 GPU-h <= 1,500.
+# Per-dataset caps plan 4 x 2 x (400 + 400 + 200) = 8,000 debates = 1,067 GPU-h.
+#
+# Order discipline (AGENTS.md): Final-stack smoke -> WP-18 -> Month-1 pilot ->
+# Core matrix -> Full matrix. This precision replication does not relax the
+# pilot gate; run it only after the fourbit smoke passes.
+#
+# `phase` selects the Four-bit stack from configs/models.yaml; `--phase`
+# overrides it. Check the budget with:
+#   python scripts/check_stack.py --phase fourbit
+#   python scripts/run_matrix.py --config configs/experiments_fourbit.yaml --dry-run
+
+phase: fourbit
+
+datasets:
+  - gpqa_main       # primary evidence-grounded set (448; Diamond stays pilot-only)
+  - mmlu_pro        # primary scale set (1,000 stratified from 6,696 STEM)
+  - hle             # ceiling/abstention control (gated: HF_TOKEN; not positive evidence)
+
+seeds: [1, 2]
+
+sample_caps:
+  pilot: 50
+  main: 400
+
+dataset_caps:
+  gpqa_main: 400
+  mmlu_pro: 400
+  hle: 200
+
+conditions:
+  B3:
+    arm: B3
+    description: "MAD (Du et al. 2023) — unweighted multi-agent debate."
+  B4-matched:
+    arm: B4
+    source_partitioning: true
+    description: "MAD + RAG, same source partition as B8 — evidence-information control."
+  B8-no-trust:
+    arm: B8
+    use_trust: false
+    description: "Primary control: same retriever/prompts/partition as B8 without trust re-weighting (majority aggregation)."
+  B8:
+    arm: B8
+    description: "Ours — trust-calibrated deliberation (evidence-grounded trust during debate)."

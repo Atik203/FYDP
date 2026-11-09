@@ -17,13 +17,13 @@ Work in this order. Record commands and exact output in `experiments/next/WP-<id
   HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline
   python scripts/smoke_test.py --phase final --limit 20
   ```
-  **Pass:** three `server OK`; all preflight checks OK; smoke PASS; record peak `nvidia-smi` and loaded weights. Cost 60–100 GPU-h / $80–120.
-- [ ] **N2 — WP-18 placebo/oracle (Nov–Dec 2026).** Implement B8-placebo and B8-oracle, prompt/config switches, tests, and `configs/experiments_full.yaml`. **Freeze the Full definition:** 36 runs if B8-oracle uses gold-answer trust at 300 items/dataset (10,800 debates / 1,440 GPU-h envelope); 32 runs and recompute if B8-oracle is gold-evidence-only on EG-SSS. **Not implemented.**
+  **Pass:** three `server OK`; all preflight checks OK; smoke PASS; record peak `nvidia-smi` and loaded weights. Cost 60–100 GPU-h on the 96 GB card at $0.336/GPU-h / $25–40 (includes the FP8 precision replication).
+- [ ] **N2 — WP-18 placebo/oracle (Nov–Dec 2026).** Implement B8-placebo and B8-oracle, prompt/config switches, tests, and `configs/experiments_full.yaml`. **Freeze the Full definition:** default 32 runs with a gold-evidence oracle on EG-SSS (1,280 GPU-h / $210); 36 runs with gold-answer trust is the alternate (1,440 GPU-h / $235). **Not implemented.**
 - [ ] **N3 — Benchmark calibration (Nov 2026–Feb 2027).** 24-item calibration first; if clean, 180-item **v1.2 freeze** (Core floor); 300-item Full target only if the 180 set is clean; 600 stretch; 800 no-go.
 - [ ] **N4 — Verifier audit (Nov–Dec 2026).** 150–200 claim–passage pairs, 2 annotators. Target balanced accuracy ≥0.75, κ ≥0.60. Current lexical verifier: **0.58** on the synthetic audit. **Pending.**
 - [ ] **N5/G2 — Pilot (Dec 2026).** Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records.
 - [ ] **G3 — Core run (Jan 2027).** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main` 400, `mmlu_pro` 400, `hle` 200) × 2 seeds = 24 runs. 8,000 debates ≈ 1,067 GPU-h planned; 1,280 cap.
-- [ ] **G4/G5 — Full run (Feb 2027).** 6-arm target, conditional 36/32 runs; placebo ≠ B8; oracle separates; sign reversal at the predicted q/ρ boundary; external validity.
+- [ ] **G4/G5 — Full run (Feb 2027).** 6-arm target; default 32-row gold-evidence on EG-SSS / 36-row gold-answer alternate; placebo ≠ B8; oracle separates; sign reversal at the predicted q/ρ boundary; external validity.
 - [ ] **Results freeze (Apr 2027).** CIs, negative results, pre-registered contrasts, manifest trace.
 - [ ] **Thesis (Jun 2027), defence (Jun/Jul 2027), paper (Aug–Dec 2027).** No paper deadline before the defence.
 
@@ -319,7 +319,7 @@ Do not proceed until:
 
 ## Phase 3 — Main experiments
 
-- [ ] **3.1 Historical Phase 3 plan (superseded).** The old 6-arm Core plan is not executable as written. Core v1.0 is 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = 24 runs. The 6-arm matrix is the Full target pending **WP-18** (conditional 36/32 runs).
+- [ ] **3.1 Historical Phase 3 plan (superseded).** The old 6-arm Core plan is not executable as written. Core v1.0 is 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = 24 runs. The 6-arm matrix is the Full target pending **WP-18** (default 32-row gold-evidence / 36-row gold-answer alternate).
   - **Done when:** all records have final accuracy, trust trajectory, per-claim verdicts.
 - [ ] **3.2 Verification-ceiling sweep**
   - Flip verdicts at 0–50% noise; recompute trust; estimate \(q^\star\).
