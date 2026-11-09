@@ -4,7 +4,7 @@
 
 ## What changed
 
-- **`0.0.title.tex`** — the cover now uses the exact paper title, *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus*, with the registered FYDP title retained as a small cover note.
+- **`0.0.title.tex`** — the cover now uses the exact paper title only, *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus*. No registered-title or cover note is included.
 - **`0.1.abstract.tex`** — rewritten as an FYDP~II abstract. States 523 current tests (514 at the P0 release), the 13/13 gate, and Gate 0 only; says explicitly that no efficacy result is reported.
 - **`1.intro.tex`** — corrected the 25.5% statistic and its denominator; removed "eliminate"; replaced the per-agent-confidence sentence with the external-evidence contrast; corrected the trust bound to the simplex projection; limited "tested" to the ten-question Gate 0 slice; removed the meta opening paragraph.
 - **`2.back.tex`** — corrected the iMAD characterisation; replaced the false "none of the prior studies" absolute with a scoped gap; replaced the "existing research does not contain" absolute with "we are not aware"; updated the metric list to the current endpoints.
