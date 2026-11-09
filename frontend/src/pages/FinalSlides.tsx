@@ -362,7 +362,7 @@ function FinalConventionalSlide() {
     ["B4", "Debate + retrieval"],
     ["B5", "Self-consistency"],
     ["B6", "Mixture-of-Agents"],
-    ["B7", "External-answer ceiling (GPT-6 Luna)"],
+    ["B7", "External-answer ceiling (GPT-6 Luna, 3 samples)"],
     ["B8", "Trust-calibrated (ours)"],
     ["B9", "iMAD"],
     ["B10", "ConsensAgent"],

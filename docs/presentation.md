@@ -165,7 +165,7 @@ Thank you for your attention. We are happy to take your questions.
 **Slide 6 — Conventional Method**
 
 - **Q: What is the B7 external-answer ceiling?**
-  **A:** B7 sends each question to OpenAI GPT-6 Luna as an optional external-answer ceiling. One call per question, about one to three dollars per thousand. It is not part of our mechanism, not in the Core or Full matrix, and never sees the gold answer.
+  **A:** B7 sends each question to OpenAI GPT-6 Luna as three independent samples, an optional external-answer ceiling. We report mean single-call accuracy with a confidence interval and the three-sample majority; about three to nine dollars per thousand. It is not part of our mechanism, not in the Core or Full matrix, and never sees the gold answer.
 - **Q: Why is B8 inside the B1 to B10 list if it is yours?**
   **A:** B8 is the proposed trust-calibrated system, placed in the same registry. The Core matrix runs B3, B4-matched, B8-no-trust and B8; the Full target adds placebo and oracle.
 - **Q: What is static aggregation?**
@@ -332,7 +332,7 @@ Thank you for your attention. We are happy to take your questions.
 - **Q: Versus DebUnc?**
   **A:** DebUnc weights by token-level uncertainty. We weight by retrieved evidence, so the signal is external and checkable.
 - **Q: Why not just use a frontier commercial model?**
-  **A:** The mechanism must be model-agnostic and reproducible on open models. The commercial model appears only as the optional B7 GPT-6 Luna call.
+  **A:** The mechanism must be model-agnostic and reproducible on open models. The commercial model appears only as the optional B7 three-sample GPT-6 Luna call.
 - **Q: How do you know the effect is not noise?**
   **A:** Two seeds, paired bootstrap with ten thousand resamples, ninety-five percent intervals, and Cohen's d. We require the interval of the difference to stay off zero.
 - **Q: Are you correcting for multiple comparisons?**

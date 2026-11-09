@@ -86,6 +86,27 @@ def test_b7_oracle_metadata_is_recorded(tmp_path) -> None:
     assert summary.n_debates == 1
 
 
+def test_b7_multi_sample_record(tmp_path) -> None:
+    class MultiOracle:
+        model = "multi-oracle"
+
+        def answer_samples(self, question: str) -> list[str]:
+            return ["Answer: beta", "Answer: beta", "Answer: alpha"]
+
+    cfg = RunConfig(arm="B7", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=1)
+    summary = run(cfg, questions=[QUESTION], oracle=MultiOracle())
+    record = read_records(records_path(cfg))[0]
+    assert record["oracle"]["n_samples"] == 3
+    assert record["oracle"]["sample_accuracy"] == pytest.approx(2 / 3)
+    assert record["oracle"]["sample_correct"] == [True, True, False]
+    assert record["oracle"]["majority_answer"] == record["parsed_answer"]
+    assert record["oracle"]["majority_answer"] == record["final_answer"]
+    assert record["oracle"]["majority_correct"] is True
+    assert record["final_answer_correct"] is True
+    assert summary.as_dict()["oracle"]["n_questions"] == 1
+    assert summary.as_dict()["oracle"]["sample_accuracy"] == pytest.approx(0.6667, abs=1e-4)
+
+
 def test_agent_scaling_cycles_clients(tmp_path) -> None:
     cfg = RunConfig(arm="B3", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=2, agents=5)
     clients = [FakeClient("alpha"), FakeClient("beta"), FakeClient("gamma")]

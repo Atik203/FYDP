@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from .metrics import ccr, evaluate_debate, mpr, summarize
+from .metrics import ccr, evaluate_debate, mpr, oracle_summary, summarize
 
 OPTIONS = ["mitochondrial matrix", "cytoplasm", "nucleus", "reticulum"]
 
@@ -177,6 +177,20 @@ def test_summary_pools_and_uses_divergent_denominator() -> None:
     assert s.ccr == pytest.approx(1 / 3)
     assert s.mpr == 0.5
     assert s.as_dict()["ccr"] == pytest.approx(0.3333, abs=1e-4)
+
+
+def test_oracle_summary_reports_sample_accuracy_and_ci() -> None:
+    records = [
+        {"oracle": {"sample_accuracy": 0.0, "n_samples": 3}, "final_answer_correct": False},
+        {"oracle": {"sample_accuracy": 1.0, "n_samples": 3}, "final_answer_correct": True},
+    ]
+    summary = oracle_summary(records)
+    assert summary is not None
+    assert summary["n_questions"] == 2
+    assert summary["n_samples"] == 3
+    assert summary["sample_accuracy"] == 0.5
+    assert summary["sample_accuracy_ci_low"] <= 0.5 <= summary["sample_accuracy_ci_high"]
+    assert summary["majority_accuracy"] == 0.5
 
 
 def test_missing_rounds_raise() -> None:
