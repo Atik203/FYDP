@@ -90,8 +90,14 @@ export function GroupSlide({
           }}
         >
           The Boundaries of Evidence-Grounded Trust
-          in Multi-Agent Debate
+          in Multi-Agent Scientific Debate
         </h1>
+        <div
+          className="mt-[0.7cqh] text-[2.2cqh] font-semibold leading-snug"
+          style={{ color: DEEP_INK, opacity: 0.72 }}
+        >
+          with a Controlled Benchmark for Sycophantic Consensus
+        </div>
         <div
           className="mt-[1.5cqh] flex items-center justify-center gap-[1.6cqw] text-[2.6cqh] font-bold"
           style={{ color: DEEP_INK }}
@@ -1476,7 +1482,7 @@ function CeActivityTwoSlide() {
             </Bullet>
             <Bullet>
               Environmental cost stays bounded: the pre-registered Core run
-              (24 rows, Jan 2027) is 1,280 GPU-hours, standard configurations,
+              (24 runs, Jan 2027) is 1,280 GPU-hours, standard configurations,
               no fine-tuning.
             </Bullet>
             <Bullet>

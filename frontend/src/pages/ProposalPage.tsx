@@ -147,7 +147,8 @@ export function ProposalPage() {
         }}
       >
         <h1 style={h1Style}>
-          The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate,
+          The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific
+          Debate,
           <br />
           with a Controlled Benchmark for Sycophantic Consensus
         </h1>
@@ -163,7 +164,7 @@ export function ProposalPage() {
         </p>
         <div style={metaStyle}>
           Domain: Agentic AI &middot; Multi-Agent Systems &middot; Trustworthy NLP
-          &nbsp;|&nbsp; Group 6 &middot; Phantom Devs &nbsp;|&nbsp; Nov 2026 &ndash; Dec 2027
+          &nbsp;|&nbsp; Group 6 &middot; Phantom Devs &nbsp;|&nbsp; Jul 2026 &ndash; Dec 2027
         </div>
         <p
           style={{
@@ -198,10 +199,11 @@ export function ProposalPage() {
           headcount, allowing an evidence-backed minority to outweigh an
           unsupported majority. Alongside the mechanism, the project targets a
           reproducible <strong>sycophancy-stress evaluation harness</strong> &mdash;
-          a controlled injection protocol and three metrics (CCR, MPR, ECR) &mdash;
-          and a pre-registered causal study: four executable arms now, a
-          six-arm target, three primary datasets, and HLE as an abstention
-          control. The planned benchmark follows a scale ladder of 180 items as
+          a controlled injection protocol, three metrics (CCR, MPR, ECR), a
+          controlled benchmark, and a pre-registered causal contrast (B8 vs
+          B8-no-trust) &mdash; with four executable arms now, a six-arm target,
+          and three Core datasets (GPQA-Main, MMLU-Pro STEM, HLE as an abstention
+          control). The planned benchmark follows a scale ladder of 180 items as
           the floor, 300 as the target, 600 as a stretch, and 800 as a no-go.
           The work runs entirely at inference time (no fine-tuning) on a
           single-GPU budget. Expected outcomes are stated as pre-registered
@@ -374,7 +376,7 @@ export function ProposalPage() {
               </td>
             </tr>
             <tr>
-              <td style={tdStyle}>Minority Sentinel (2025), SIGIR Workshop</td>
+              <td style={tdStyle}>Minority Sentinel (2026), SIGIR Workshop</td>
               <td style={tdStyle}>
                 Post-hoc correction based on log-level features after debate.
               </td>
@@ -453,9 +455,9 @@ export function ProposalPage() {
           <li>
             Empirically validate the four executable arms (B3, B4-matched,
             B8-no-trust, B8), with a six-arm target that adds B8-placebo and
-            B8-oracle, across three primary datasets. The pilot in Dec 2026 must
-            establish that trust re-weighting causally changes the output rather
-            than sitting in context ignored.
+            B8-oracle, across the three Core datasets. The pilot in Dec 2026 must
+            establish that trust re-weighting behaviourally changes the output
+            rather than sitting in context ignored.
           </li>
           <li>
             Compare against the strongest published mitigation (ConsensAgent)
@@ -743,14 +745,15 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
 
         <h2 style={h2Style}>7. Dataset Plan</h2>
         <p>
-          The P0 matrix uses three primary datasets. <strong>GPQA-Main</strong>{" "}
-          and <strong>MMLU-Pro STEM</strong> are the evidence-grounded
-          benchmarks; <strong>EG-SSS</strong> is the controlled gold-evidence
-          set for the mechanism test. <strong>HLE</strong> is an abstention
-          control, never pooled with the primary tests. The dataset audit found
-          that BrokenMath (451/451) and BrokenArXiv (87/87) are proof-only with
-          0% answer-type retention, so they are appendix-only and are not used
-          for CCR or evidence grounding.
+          The Core matrix uses three datasets. <strong>GPQA-Main</strong> and{" "}
+          <strong>MMLU-Pro STEM</strong> are the primary evidence-grounded
+          benchmarks; <strong>HLE</strong> is the abstention control, never
+          pooled with the primary tests. <strong>EG-SSS</strong> is the
+          controlled gold-evidence benchmark, not a Core dataset: it is frozen
+          at 180 items in v1.2. The dataset audit found that BrokenMath
+          (451/451) and BrokenArXiv (87/87) are proof-only with 0% answer-type
+          retention, so they are appendix-only and are not used for CCR or
+          evidence grounding.
         </p>
         <table style={tableStyle}>
           <thead>
@@ -776,7 +779,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             </tr>
             <tr>
               <td style={tdStyle}>EG-SSS</td>
-              <td style={tdStyle}>Controlled gold-evidence mechanism test</td>
+              <td style={tdStyle}>Controlled benchmark release (v1.2 freeze); not a Core dataset</td>
               <td style={tdStyle}>Original release (planned; CC BY 4.0)</td>
               <td style={tdStyle}>Annotation-intensive; 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
@@ -802,14 +805,15 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
         </table>
         <p>
           The design is two seeds for the main matrix (three for the pilot), with
-          a 24-item calibration before the pilot. The executable matrix is 4 arms
-          &times; 3 datasets &times; 2 seeds = 24 rows at 400 items per dataset,
-          budgeted at 1,280 GPU-h. The six-arm target adds B8-placebo and
-          B8-oracle once WP-13 provides the RunConfig switches, and the
-          pre-registration records both the target and the executable subset.
-          The benchmark ladder is 180 items as the floor (Core-run supporting
-          artifact), 300 as the target, 600 as a stretch, and 800 as a no-go
-          unless 2&ndash;3 dedicated annotators are committed.
+          a 24-item calibration before the pilot. The executable Core matrix is
+          4 arms &times; GPQA-Main 400 / MMLU-Pro STEM 400 / HLE 200 &times; 2
+          seeds = 24 runs, budgeted at 1,280 GPU-h. B8-oracle is not a Core arm,
+          and EG-SSS is not in Core v1.0. The six-arm target adds B8-placebo and
+          B8-oracle through WP-18, and the pre-registration records both the
+          target and the executable subset. The benchmark ladder is 180 items as
+          the floor (EG-SSS v1.2 freeze), 300 as the target, 600 as a stretch,
+          and 800 as a no-go unless 2&ndash;3 dedicated annotators are
+          committed.
         </p>
         <p>
           The injection protocol pre-filters questions where the three agents
@@ -841,7 +845,11 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
 
         <h3 style={h3Style}>8.2 Evaluation metrics</h3>
         <p>
-          Three primary metrics operationalise the evaluation. <strong>Collapse
+          Three primary metrics operationalise the evaluation. Before the pilot,
+          the verifier audit checks 150&ndash;200 claim&ndash;evidence pairs; the
+          lexical baseline scores 0.58 balanced accuracy on the synthetic audit,
+          against a target of &ge;0.75 balanced accuracy and Cohen&apos;s
+          &kappa; &ge;0.60. <strong>Collapse
           Rate (CCR)</strong> measures the proportion of correct minority agents
           that abandon their position under injected pressure:
         </p>
@@ -885,7 +893,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
 
         <h3 style={h3Style}>8.3 Baselines and executable arms</h3>
         <p>
-          The full comparison set is B1&ndash;B10. The pre-registered P0 matrix
+          The full comparison set is B1&ndash;B10. The pre-registered Core matrix
           runs four executable arms: <strong>B3</strong> (vanilla MAD),{" "}
           <strong>B4-matched</strong> (retrieved evidence with the same
           partition and prompts as B8, majority aggregation),{" "}
@@ -893,7 +901,11 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           aggregation; primary control), and <strong>B8</strong>{" "}
           (trust-weighted treatment). The six-arm target adds{" "}
           <strong>B8-placebo</strong> (verdicts shuffled within debate) and{" "}
-          <strong>B8-oracle</strong> (gold evidence), pending WP-13.
+          <strong>B8-oracle</strong> (gold evidence), pending WP-18. If
+          B8-oracle uses gold-answer trust, the Full target is 36 runs; if it is
+          gold-evidence-only on EG-SSS, the target is 32 runs with recomputed
+          GPU-h. WP-13 is the landed B8-no-trust prompt split, not the
+          placebo/oracle slice.
         </p>
         <ul>
           <li><strong>B1</strong>: Single-Agent Chain-of-Thought</li>
@@ -904,7 +916,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <li><strong>B6</strong>: Mixture-of-Agents (MoA, Wang et al., ICLR 2025)</li>
           <li><strong>B7</strong>: Oracle (strongest available model)</li>
           <li><strong>B8</strong>: Trust-calibrated system; <strong>B8-no-trust</strong> is the primary control</li>
-          <li><strong>B8-placebo / B8-oracle</strong>: six-arm target, pending WP-13</li>
+          <li><strong>B8-placebo / B8-oracle</strong>: six-arm target, pending WP-18</li>
           <li><strong>B9</strong>: iMAD (Fan et al., AAAI 2026) &mdash; reimplemented</li>
           <li><strong>B10</strong>: ConsensAgent (Pitre et al., ACL 2025) &mdash; reimplemented or mechanism-level comparison</li>
         </ul>
@@ -914,7 +926,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           mitigation. B9 (iMAD) carries the highest implementation difficulty and
           is budgeted at approximately 10 working days. The appendix grid is a
           thesis plan, not part of the pre-registered primary matrix; no claim is
-          made that B8 beats &ldquo;ten baselines.&rdquo;
+          made that B8 beats all B1&ndash;B10 comparison definitions.
         </p>
 
         <h3 style={h3Style}>8.4 Ablation studies</h3>
@@ -963,7 +975,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Single 96GB GPU compute ceiling</td>
               <td style={tdStyle}>Medium</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>FP8 native on Blackwell; Core run matrix is 24 rows / 1,280 GPU-h; 6-arm Full run target is ~1,920 GPU-h</td>
+              <td style={tdStyle}>FP8 native on Blackwell; Core matrix is 24 runs / 1,280 GPU-h; 6-arm Full target is a 36-run / 1,440 GPU-h envelope</td>
             </tr>
             <tr>
               <td style={tdStyle}>Dataset mismatch (proof-only benchmarks)</td>
@@ -992,21 +1004,23 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
           </tbody>
         </table>
         <p>
-          The highest-risk assumption is that trust-weight changes causally alter
-          the final output rather than being ignored by the aggregation step. A
-          24-item calibration and pilot in Dec 2026 tests this before the matrix,
-          so a failed premise is discovered early and cheaply. All risks are
-          documented transparently with pre-specified fallback plans rather than
-          assumed away.
+          The highest-risk assumption is that trust-weight changes behaviourally
+          alter the final output rather than being ignored by the aggregation
+          step. A 24-item calibration and pilot in Dec 2026 tests this before the
+          matrix, so a failed premise is discovered early and cheaply. All risks
+          are documented transparently with pre-specified fallback plans rather
+          than assumed away.
         </p>
 
         <h2 style={h2Style}>10. Timeline and Milestones</h2>
         <p>
-          P0 closes in Nov 2026. The Pilot run follows in Dec 2026, the Core run
-          in Jan 2027, and the Full run plus
-          the 300-item benchmark in Feb 2027. Core run is a prefix of the Full
-          run; completed cells are reused, so the costs are not additive for
-          those cells. Human evaluation and the SDT analysis follow in Mar,
+          P0 was released in Nov 2026. The final-stack smoke, WP-18
+          placebo/oracle, 24-item calibration and verifier audit precede the G2
+          pilot in Dec 2026. The G3 Core run follows in Jan 2027, and the G4/G5
+          Full run plus the benchmark ladder in Feb 2027. Core and Full are
+          separate stacks (Dev vs Final); do not assume Core cells are reusable.
+          The $900&ndash;1,200 is the Full-run budget envelope. Human evaluation
+          and the SDT analysis follow in Mar,
           results freeze in Apr, thesis chapters in May, thesis submission in
           Jun, and the defence in Jun/Jul 2027. The paper is written and
           submitted after the defence (Aug&ndash;Dec 2027). No conference
@@ -1037,25 +1051,25 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
             <tr>
               <td style={tdStyle}>Dec 2026</td>
               <td style={tdStyle}>Pilot run</td>
-              <td style={tdStyle}>24-item calibration, then behavioural pilot and κ check</td>
-              <td style={tdStyle}>Gate 1: κ &gt; 0.75 and measured behavioural effect; if not, reframe honestly</td>
+              <td style={tdStyle}>Final-stack 96 GB smoke ($80–120), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; target ≥0.75 balanced accuracy, κ ≥0.60), 50-question Month-1 pilot, then the 100–150-question G2 pilot</td>
+              <td style={tdStyle}>G2: κ &gt; 0.75 and measured behavioural effect; if not, reframe honestly</td>
             </tr>
             <tr>
               <td style={tdStyle}>Jan 2027</td>
               <td style={tdStyle}>Core run</td>
-              <td style={tdStyle}>4 arms + oracle; 3 datasets × 400 items × 2 seeds = 24 rows, 1,280 GPU-h; 180-item EG-SSS</td>
-              <td style={tdStyle}>Core-run causal study, pre-registered analysis</td>
+              <td style={tdStyle}>G3: 4 arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h; B8-oracle is not a Core arm; EG-SSS is not in Core v1.0</td>
+              <td style={tdStyle}>Core matrix + pre-registered causal contrast (B8 vs B8-no-trust)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Feb 2027</td>
               <td style={tdStyle}>Full run + benchmark</td>
-              <td style={tdStyle}>Add B8-placebo/B8-oracle if WP-13 lands; extend to 6 arms × 3 datasets × 400 items × 2 seeds and 300-item EG-SSS</td>
-              <td style={tdStyle}>Full run + EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go</td>
+              <td style={tdStyle}>G4/G5: 36 runs at 300 items/dataset within a 1,440 GPU-h envelope; WP-18 adds B8-placebo/B8-oracle. If B8-oracle is gold-evidence-only on EG-SSS, 32 runs and recomputed GPU-h. EG-SSS v1.2 freezes at 180 items</td>
+              <td style={tdStyle}>Full run + benchmark ladder: 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
             <tr>
               <td style={tdStyle}>Mar 2027</td>
               <td style={tdStyle}>Human eval + SDT</td>
-              <td style={tdStyle}>Human evaluation / SDT, benchmark annotation, verifier audit</td>
+              <td style={tdStyle}>Human evaluation / SDT, benchmark annotation, verifier-audit follow-up</td>
               <td style={tdStyle}>Human-eval + benchmark package</td>
             </tr>
             <tr>
@@ -1092,12 +1106,13 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
         </table>
         <p>
           The Go/No-Go logic is unchanged in spirit: Gate 0 validated the base
-          loop (achieved 16 Sep 2026, 10/10 debates, mean 370.8 s/debate); Gate 1
-          requires the injection protocol to reach inter-rater reliability
-          &kappa; &gt; 0.75 and the pilot to show a behavioural effect; and the
-          Core run matrix is only interpreted against the pre-registered endpoints. If
-          a gate is not met, the next phase is restructured to address the failure
-          rather than letting the schedule dictate the claim.
+          loop (achieved 16 Sep 2026, 10/10 debates, mean 370.8 s/debate); the
+          G2 pilot requires the injection protocol to reach inter-rater
+          reliability &kappa; &gt; 0.75 and a measured behavioural effect; G3
+          runs the Core matrix; G4/G5 run the Full target. The Core matrix is
+          only interpreted against the pre-registered endpoints (B8 vs
+          B8-no-trust). If a gate is not met, the next phase is restructured to
+          address the failure rather than letting the schedule dictate the claim.
         </p>
 
         <h2 style={h2Style}>11. Expected Contributions and Outcomes</h2>

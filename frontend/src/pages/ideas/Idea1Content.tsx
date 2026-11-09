@@ -75,10 +75,11 @@ export function Idea1Content() {
         <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
         <Callout variant="info" title="📌 P0 implementation status (Nov 2026)">
           <p className="mb-2">
-            <strong>514 tests; P0 gate 13/13 passed.</strong> The core is wired:
+            <strong>514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release).</strong> The core is wired:
             options in prompts, parser/scorer, trust simplex projection, verifier
             interface, claim-domain routing, endpoints, and manifest/resume.
-            This is engineering readiness, <strong>not an efficacy result</strong>.
+            Release evidence: 57-pp report, 18-pp journal, 0 undefined
+            references. This is engineering readiness, <strong>not an efficacy result</strong>.
             Everything below is planned work unless it is explicitly dated as
             done.
           </p>
@@ -112,8 +113,9 @@ export function Idea1Content() {
                 C2 — Open Sycophancy-Stress Evaluation Harness (co-primary).
               </strong>{" "}
               A pre-registered injection protocol + CCR / MPR / ECR metrics, a
-              4-arm executable matrix with a 6-arm target, and a 300-item
-              benchmark target (180 floor).
+              4-arm executable matrix with a 6-arm target, three Core datasets
+              (GPQA, MMLU-Pro, HLE), and an EG-SSS benchmark at 180 floor / 300
+              target.
             </li>
             <li>
               <strong>C3 — Supporting:</strong> Progressive, source-partitioned
@@ -322,8 +324,8 @@ export function Idea1Content() {
             </h4>
             <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-0">
               Ties agent influence to something <em>external</em> and{" "}
-              <em>independent</em> of debate social dynamics — the actual causal
-              lever needed to break sycophantic collapse, not just detect it.
+              <em>independent</em> of debate social dynamics — the lever needed
+              to break sycophantic collapse, not just detect it.
             </p>
           </ColBox>
         </TwoCol>
@@ -837,7 +839,9 @@ export function Idea1Content() {
           Vast.ai) with the smaller models, then run the matrix on RTX PRO 6000
           Blackwell 96GB (~$0.74–1.43/hr). The pinned Final stack (Qwen3.6-27B-FP8
           / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ) is 69.73 GB and fits one card.
-          Use the sliders below to estimate a budget.
+          A 96 GB final-stack smoke ($80–120) is required before the pilot; the
+          offline check passes, but the hardware smoke has not been run. Use the
+          table below to review the budget.
         </p>
         <CostTable />
 
@@ -916,11 +920,12 @@ export function Idea1Content() {
       <Section id="dataset-plan" className="animate-fade-up animate-delay-1">
         <SectionTitle icon={BarChart3}>8. Dataset Plan</SectionTitle>
         <p className="text-sm mb-4">
-          Three primary datasets: GPQA-Main and MMLU-Pro STEM for
-          evidence-grounded accuracy, plus EG-SSS as the controlled
-          gold-evidence mechanism test. HLE is an abstention control.
-          BrokenMath and BrokenArXiv are appendix-only: both are proof-only with
-          0% answer-type retention, so they are not usable for CCR.
+          Core datasets: GPQA-Main and MMLU-Pro STEM for evidence-grounded
+          accuracy, plus HLE as the abstention control. EG-SSS is the controlled
+          gold-evidence benchmark, not a Core dataset: the v1.2 freeze is 180
+          items, with 300 as the ladder target. BrokenMath and BrokenArXiv are
+          appendix-only: both are proof-only with 0% answer-type retention, so
+          they are not usable for CCR.
         </p>
         <div className="overflow-x-auto rounded-lg shadow-sm">
           <table className="w-full border-collapse text-xs sm:text-sm">
@@ -946,7 +951,7 @@ export function Idea1Content() {
                 >
                   <td className="p-2.5 font-medium">{ds.name}</td>
                   <td className="p-2.5">
-                    <Badge variant={i < 3 ? "rose" : "blue"}>
+                    <Badge variant={i < 2 ? "rose" : "blue"}>
                       {ds.role.split(" ")[0]}
                     </Badge>{" "}
                     {ds.role}
@@ -962,9 +967,13 @@ export function Idea1Content() {
           </table>
         </div>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3">
-          <strong>Scale:</strong> 24-item calibration first; then 400 items per
-          dataset, 2 seeds (3 for the pilot) = 24 executable rows, 1,280 GPU-h.
-          Benchmark ladder: 180 floor, 300 target, 600 stretch, 800 no-go.
+          <strong>Scale:</strong> 24-item calibration first; then the Core matrix
+          is 4 arms × GPQA-Main 400 / MMLU-Pro STEM 400 / HLE 200 × 2 seeds =
+          24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in
+          Core v1.0. The Full target is 36 runs at 300 items/dataset within a
+          1,440 GPU-h envelope (32 runs and recomputed GPU-h if B8-oracle is
+          gold-evidence-only on EG-SSS). Benchmark ladder: 180 floor, 300 target,
+          600 stretch, 800 no-go.
           <br />
           <strong>Fallback:</strong> If HLE access is delayed, it stays an
           abstention control and is not replaced by a primary set. If the
@@ -1004,7 +1013,7 @@ export function Idea1Content() {
                 [
                   "MPR (Minority Preservation)",
                   "% debates where correct minority survives to final output",
-                  "H2 (pre-registered target): MPR improves by ≥15pp vs plain MAD across the 3 primary datasets",
+                  "H2 (pre-registered target): MPR improves by ≥15pp vs plain MAD on GPQA-Main and MMLU-Pro STEM, with EG-SSS reported separately at the benchmark freeze",
                 ],
                 [
                   "ECR (Evidence Calibration)",
@@ -1031,6 +1040,11 @@ export function Idea1Content() {
         </div>
 
         <h4 className="text-sm font-bold mb-3">Baselines (B1–B10) and Executable Arms</h4>
+        <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-2">
+          B1–B10 are comparison definitions. The Core matrix runs four arms
+          (B3, B4-matched, B8-no-trust, B8); the six-arm target adds
+          B8-placebo/B8-oracle through WP-18.
+        </p>
         <div className="overflow-x-auto rounded-lg shadow-sm mb-4">
           <table className="w-full border-collapse text-xs sm:text-sm">
             <thead>
@@ -1056,7 +1070,7 @@ export function Idea1Content() {
                 ["B7", "Oracle (Gemini 3.1 Pro Preview)", "Upper-bound ceiling"],
                 ["B8", "Ours (trust-weighted)", "Primary system"],
                 ["B8-no-trust", "Same evidence/prompts, majority", "Primary control — isolates the trust mechanism"],
-                ["B8-placebo / B8-oracle", "Six-arm target", "Pending WP-13; verdicts shuffled / gold evidence"],
+                ["B8-placebo / B8-oracle", "Six-arm target", "Pending WP-18; verdicts shuffled / gold evidence (oracle definition conditional)"],
                 ["B9", "iMAD", "Closest published efficiency competitor"],
                 [
                   "B10",
@@ -1078,10 +1092,12 @@ export function Idea1Content() {
         </div>
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mb-4">
           <strong>Executable now:</strong> B3, B4-matched, B8-no-trust, and B8
-          (4 arms × 3 datasets × 2 seeds = 24 rows, 1,280 GPU-h). The 6-arm
-          target adds B8-placebo and B8-oracle once WP-13 provides the RunConfig
-          switches; the pre-registration records both the target and the
-          executable subset.
+          (4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs,
+          1,280 GPU-h). The 6-arm target adds B8-placebo and B8-oracle through
+          WP-18; the pre-registration records both the target and the executable
+          subset. If B8-oracle uses gold-answer trust, the Full target is 36
+          runs; if it is gold-evidence-only on EG-SSS, 32 runs with recomputed
+          GPU-h.
         </p>
 
         <Callout
@@ -1096,8 +1112,8 @@ export function Idea1Content() {
             differentiation line in our related-work section.
           </p>
           <p className="text-sm mb-0">
-            <strong>Implementation plan:</strong> Full reimplementation if Phase
-            2 capacity allows (~1 week). Minimum: compare against published
+            <strong>Implementation plan:</strong> Full reimplementation if
+            Full-run capacity allows (~1 week). Minimum: compare against published
             results (state-of-the-art on six reasoning datasets), with explicit
             mechanism differentiation in the paper. If excluded, a written
             comparison paragraph explaining why (mechanism difference:
@@ -1231,12 +1247,13 @@ export function Idea1Content() {
           12. Month-by-Month Roadmap (Nov 2026 – Dec 2027)
         </SectionTitle>
         <p className="text-sm mb-4">
-          Per the execution plan: P0 Nov 2026; Pilot run Dec 2026; Core run
-          Jan 2027 with the 180-item benchmark; Full run
-          + 300-item benchmark Feb 2027; human eval/SDT Mar;
-          results freeze Apr; thesis chapters May; thesis submit Jun; defence
-          Jun/Jul; paper after defence Aug–Dec 2027. No fixed conference deadline
-          drives the schedule; the thesis clock comes first.
+          Per the execution plan: P0 released Nov 2026; final-stack smoke, WP-18,
+          24-item calibration and verifier audit precede the G2 pilot in Dec
+          2026; G3 Core run Jan 2027; G4/G5 Full run plus the benchmark ladder
+          Feb 2027; human eval/SDT Mar; results freeze Apr; thesis chapters May;
+          thesis submit Jun; defence Jun/Jul; paper after defence Aug–Dec 2027.
+          No fixed conference deadline drives the schedule; the thesis clock
+          comes first.
           <strong className="block mt-1">Note:</strong> If ConsensAgent is added
           as B10, budget ~1 week in the Full-run phase for a lightweight
           reimplementation or use published numbers where directly comparable.
@@ -1273,8 +1290,8 @@ export function Idea1Content() {
             },
             {
               step: 4,
-              title: "Calibration + behavioural-effectiveness pilot (Dec 2026)",
-              desc: "Highest-risk assumption (Section 0). Run the 24-item calibration first, then the pilot, before the matrix.",
+              title: "Final-stack smoke, calibration, verifier audit, then pilot (Nov–Dec 2026)",
+              desc: "Highest-risk assumption (Section 0). Run the 96 GB final-stack smoke ($80–120), WP-18 placebo/oracle, the 24-item calibration, and the verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) before the 50-question Month-1 pilot and 100–150-question G2 pilot.",
             },
             {
               step: 5,
@@ -1289,7 +1306,7 @@ export function Idea1Content() {
             {
               step: 7,
               title: "Full debate loop (LangGraph state machine)",
-              desc: "Core loop, endpoints, manifest, and resume are wired at P0. P0 gate is 13/13.",
+              desc: "Core loop, endpoints, manifest, and resume are wired at P0. P0 gate is 13/13; WP-13 (B8-no-trust prompt split) landed, and WP-18 remains for placebo/oracle.",
             },
             {
               step: 8,
@@ -1308,13 +1325,13 @@ export function Idea1Content() {
             },
             {
               step: 11,
-              title: "Model-swap smoke test (two-phase gate)",
-              desc: "~$3, 2-hour RTX PRO 6000 rental. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. Fix any model-specific issues before full matrix.",
+              title: "Final-stack 96 GB smoke test (two-phase gate)",
+              desc: "Costs $80–120. Run 20 questions across all Final models — verify claim tags parse, injection works, trust math runs, LangGraph completes K=3. The offline check passes; the 96 GB hardware smoke has not yet been run. Fix any model-specific issues before the matrix.",
             },
             {
               step: 12,
-              title: "Core run (24 rows) then Full run",
-              desc: "Run 4 arms × 3 datasets × 400 items × 2 seeds = 24 rows at 1,280 GPU-h after the smoke test. Full run adds B8-placebo/B8-oracle only if WP-13 lands.",
+              title: "Core run (24 runs) then Full run target",
+              desc: "G3 Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs at 1,280 GPU-h. G4/G5 Full target: 36 runs at 300 items/dataset within a 1,440 GPU-h envelope; B8-placebo/B8-oracle are WP-18, with the oracle definition conditional.",
             },
             {
               step: 13,
@@ -1358,7 +1375,7 @@ export function Idea1Content() {
               calibration + pilot (step 4) confirms the core assumption.
             </li>
             <li>
-              Never skip the model-swap smoke test (step 11) — a 2-hour/$3
+              Never skip the final-stack smoke test (step 11) — an $80–120
               check prevents discovering model-specific issues at full scale.
             </li>
           </ul>
@@ -1384,7 +1401,7 @@ export function Idea1Content() {
               Rigorous Evaluation
             </div>
             <p className="text-sm">
-              4 executable arms with a 6-arm target, 3 primary datasets, 2 seeds,
+              4 executable arms with a 6-arm target, 3 Core datasets, 2 seeds,
               and statistical testing with
               95% CIs and effect sizes (Cohen's d).
             </p>
@@ -1662,7 +1679,7 @@ export function Idea1Content() {
             {
               icon: "🧪",
               label:
-                "Dec 2026 calibration + pilot confirms trust weight causally affects aggregation output (necessary condition — reframes the result if it fails).",
+                "Dec 2026 calibration + pilot confirms trust weight behaviourally affects aggregation output (necessary condition — reframes the result if it fails).",
             },
             {
               icon: "📝",

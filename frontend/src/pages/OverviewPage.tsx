@@ -23,9 +23,9 @@ const idea = ideaMetadata[0];
 const p0Kpis: KpiCard[] = [
   { value: "514", label: "Tests passing", variant: "green" },
   { value: "13/13", label: "P0 gate checks", variant: "green" },
-  { value: "24", label: "Core run rows · 1,280 GPU-h", variant: "default" },
+  { value: "24", label: "Core runs · 1,280 GPU-h", variant: "default" },
   { value: "300", label: "Benchmark target · 180 floor", variant: "sky" },
-  { value: "69.73 GB", label: "Final stack · 80 GB budget", variant: "rose" },
+  { value: "69.73 GB / 96 GB", label: "Final stack · one Blackwell card", variant: "rose" },
 ];
 
 export function OverviewPage() {
@@ -37,10 +37,10 @@ export function OverviewPage() {
           <>
             The Boundaries of Evidence-Grounded
             <br />
-            Trust in Multi-Agent Debate
+            Trust in Multi-Agent Scientific Debate
           </>
         }
-        subtitle="with a controlled benchmark for sycophantic consensus · Agentic AI · TACL / EMNLP 2028"
+        subtitle="with a Controlled Benchmark for Sycophantic Consensus · Agentic AI · TACL / EMNLP 2028"
         coverItems={[
           { label: "Prepared By", value: "Md. Atikur Rahaman" },
           {
@@ -48,7 +48,8 @@ export function OverviewPage() {
             value: "atik203",
             href: "https://github.com/atik203",
           },
-          { label: "Timeline", value: "Jul 2026 – Jun 2027" },
+          { label: "Timeline", value: "Jul 2026 – Dec 2027" },
+          { label: "Key Dates", value: "Thesis Jun 2027 · Defence Jun/Jul 2027 · Paper Aug–Dec 2027" },
         ]}
       />
 
@@ -81,15 +82,15 @@ export function OverviewPage() {
             <div>
               <p className="text-sm sm:text-base leading-relaxed mb-3">
                 <strong>Secondary contribution</strong> is an open evaluation
-                harness (CCR/MPR/ECR metrics + 9-baseline suite) for future
-                sycophancy mitigation research.
+                harness (CCR/MPR/ECR metrics; 4 executable arms and a 6-arm
+                target) for future sycophancy mitigation research.
               </p>
               <p className="text-sm sm:text-base leading-relaxed">
                 We target <strong>≥20% sycophancy reduction</strong> (CCR
-                metric) vs. vanilla MAD on adversarial benchmarks (BrokenMath,
-                BrokenArXiv, HLE) within a single-GPU, inference-only FYDP
-                project. The Core run (24 rows) is pre-registered; no efficacy
-                claim is made yet.
+                metric) vs. vanilla MAD on GPQA-Main, MMLU-Pro STEM and EG-SSS
+                primary sets; HLE is the abstention control, and
+                BrokenMath/BrokenArXiv are appendix-only. The Core run (24 runs)
+                is pre-registered; no efficacy claim is made yet.
               </p>
             </div>
           </div>
@@ -106,6 +107,13 @@ export function OverviewPage() {
               </span>
             </div>
             <KpiRow kpis={p0Kpis} />
+            <p className="mt-3 text-[10px] leading-relaxed text-[#64748b] dark:text-[#94a3b8]">
+              <strong>P0 release evidence:</strong> 57-pp report, 18-pp journal,
+              0 undefined references; tags <code>p0-gate</code> and{" "}
+              <code>p0-release</code>. Next: final-stack 96 GB smoke → WP-18
+              placebo/oracle → 24-item calibration → verifier audit → G2 pilot
+              (Dec 2026) → G3 Core (Jan 2027) → G4/G5 Full (Feb 2027).
+            </p>
           </div>
         </Section>
 
@@ -125,7 +133,7 @@ export function OverviewPage() {
             {
               icon: CheckCircle,
               title: "The Goal",
-              desc: "Target ≥20% sycophancy reduction on adversarial benchmarks against 9 baselines; efficacy is not yet measured.",
+              desc: "Target ≥20% sycophancy reduction on GPQA-Main, MMLU-Pro STEM and EG-SSS; 4 executable arms and a 6-arm target, with B1–B10 as comparison definitions. Efficacy is not yet measured.",
             },
           ].map(({ icon: Icon, title, desc }) => (
             <div

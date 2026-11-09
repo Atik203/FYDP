@@ -242,7 +242,9 @@ function FinalObjectiveSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Ten baselines (B1–B10), including MoA, iMAD and ConsensAgent.
+              4 executable arms (B3, B4-matched, B8-no-trust, B8); 6-arm target
+              adds B8-placebo/B8-oracle (WP-18 pending); B1–B10 are comparison
+              definitions.
             </Bullet>
             <Bullet>
               Metrics: accuracy, collapse (CCR), minority survival (MPR),
@@ -281,19 +283,19 @@ function FinalDatasetSlide() {
         badge="Dataset"
         badgeBg="#ccfbf1"
         badgeColor={TEAL}
-        title="Five Scientific Question Sets"
-        subtitle="Stable sets measure accuracy; adversarial sets measure collapse; one expert set measures the ceiling."
+        title="Six Scientific Question Sets"
+        subtitle="Three Core datasets measure accuracy and abstention; EG-SSS is the controlled benchmark; two proof-only sets are appendix-only."
       />
       <SlideTable
         head={["Dataset", "Role", "Size", "License"]}
-        colWidths={["16%", "22%", "38%", "24%"]}
+        colWidths={["16%", "24%", "36%", "24%"]}
         accent={TEAL}
         rows={[
-          ["GPQA", "Stable", "≈450 questions · Diamond 198", "CC BY 4.0"],
-          ["MMLU-Pro", "Stable", "12,032 questions · 14 subjects", "MIT"],
-          ["HLE", "Expert ceiling", "2,500+ expert questions", "MIT · gated"],
-          ["BrokenMath", "Adversarial", "504 samples · 183 final-answer", "CC BY-NC-SA 4.0"],
-          ["BrokenArXiv", "Adversarial, monthly", "monthly sets", "CC BY-SA 4.0"],
+          ["GPQA-Main", "Primary evidence-grounded", "448 total · 400 cap", "CC BY 4.0"],
+          ["MMLU-Pro", "Primary scale/robustness", "STEM stratified · 400 cap", "MIT"],
+          ["HLE", "Abstention control", "200 cap · retrieval-resistant", "MIT · gated"],
+          ["EG-SSS", "Controlled benchmark · v1.2 freeze", "180 floor · 300 target", "CC BY 4.0 (planned)"],
+          ["BrokenMath + BrokenArXiv", "Appendix-only premise rejection", "451 / 87 proof-only · 0% answer retention", "CC BY-NC-SA / CC BY-SA"],
         ]}
       />
       <div className="grid grid-cols-3 gap-[1.8cqw] mt-[2cqh] flex-1 min-h-0">
@@ -332,18 +334,20 @@ function FinalDatasetSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              Core: 400/dataset × 2 seeds (24 rows, Jan 2027); Full: 6 arms,
-              Feb 2027.
+              Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24
+              runs (Jan 2027); Full target: 36 runs at 300/dataset (Feb 2027).
             </Bullet>
             <Bullet>
-              Pilot: 50 questions. Gold answers are never shown to agents.
+              Pilot: 50-question Month-1 pilot, then the 100–150-question G2
+              pilot. Gold answers are never shown to agents.
             </Bullet>
           </ul>
         </Card>
       </div>
       <NoteStrip color={TEAL}>
         GPQA and HLE need a click-through access agreement; BrokenArXiv rotates
-        monthly, so every result cites its snapshot.
+        monthly, so every result cites its snapshot. EG-SSS ladder: 180 floor,
+        300 target, 600 stretch, 800 no-go.
       </NoteStrip>
     </div>
   );
@@ -428,8 +432,9 @@ function FinalConventionalSlide() {
               className="text-[1.9cqh] font-semibold leading-snug"
               style={{ color: "#475569" }}
             >
-              B1–B4 isolate debate and retrieval; B5–B10 are the published
-              competitors.
+              B1–B10 are comparison definitions. Core runs B3, B4-matched,
+              B8-no-trust and B8; the 6-arm target adds B8-placebo/B8-oracle
+              (WP-18 pending).
             </div>
           </div>
         </Card>
@@ -613,7 +618,7 @@ function FinalSetupSlide() {
       />
       <SlideTable
         head={["Stack", "Agents", "Hardware", "Precision"]}
-        colWidths={["12%", "48%", "26%", "14%"]}
+        colWidths={["10%", "44%", "22%", "24%"]}
         accent={ACCENT}
         rows={[
           [
@@ -626,7 +631,7 @@ function FinalSetupSlide() {
             "Final",
             "Qwen3.6-27B · Gemma 4 26B A4B · Mistral-Small-3.2-24B",
             "RTX PRO 6000 96 GB",
-            "FP8",
+            "FP8 (Qwen/Gemma) · AWQ 4-bit (Mistral)",
           ],
         ]}
       />
@@ -660,7 +665,7 @@ function FinalSetupSlide() {
       </div>
       <NoteStrip color={ACCENT}>
         Serving: vLLM, OpenAI-compatible, one server per agent · Final stack
-        69.73 GB / 80 GB · Core run 24 rows / 1,280 GPU-h (Jan 2027).
+        69.73 GB / 96 GB · Core run 24 runs / 1,280 GPU-h (Jan 2027).
       </NoteStrip>
     </div>
   );
@@ -681,7 +686,7 @@ function FinalResultsSlide() {
         <div className="flex flex-col justify-center min-h-0">
           <SlideTable
             head={["Area", "Status", "Evidence"]}
-            colWidths={["17%", "18%", "65%"]}
+            colWidths={["17%", "20%", "63%"]}
             accent={ACCENT}
             rows={[
               [
@@ -696,18 +701,23 @@ function FinalResultsSlide() {
               ],
               [
                 "P0 gate",
-                "11 / 13",
-                "2 pending: B8-no-trust prompts, B8+injection wiring",
+                "13 / 13",
+                "all gate checks passed (514 tests); tags p0-gate, p0-release",
+              ],
+              [
+                "P0 release",
+                "57 pp · 18 pp",
+                "report + journal, 0 undefined references",
               ],
               [
                 "Core run",
-                "24 rows",
-                "4 arms × 3 datasets × 2 seeds = 1,280 GPU-h · Jan 2027",
+                "24 runs",
+                "4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 1,280 GPU-h · Jan 2027",
               ],
               [
                 "Final stack",
-                "69.73 GB",
-                "of the 80 GB weight budget · 0.90 utilization",
+                "69.73 GB / 96 GB",
+                "72.6% weights · 0.90 vLLM utilization",
               ],
               [
                 "Benchmark",
@@ -724,12 +734,12 @@ function FinalResultsSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              No efficacy result: the Core run (24 rows, Jan 2027) is
+              No efficacy result: the Core run (24 runs, Jan 2027) is
               pre-registered, not run.
             </Bullet>
             <Bullet>
-              The pilot is 10 GPQA questions; it shows the pipeline runs end to
-              end.
+              The 50-question Month-1 pilot and the 100–150-question G2 pilot are
+              planned, not run. The 10-debate Gate 0 run is not the pilot.
             </Bullet>
             <Bullet>
               CCR/MPR/ECR comparisons are planned, not measured.
@@ -742,8 +752,9 @@ function FinalResultsSlide() {
         </Card>
       </div>
       <NoteStrip color={TEAL}>
-        Next: run the Core stage (Jan 2027), then the Full stage (Feb 2027). No
-        efficacy claim is made yet.
+        Next: 96 GB final-stack smoke → WP-18 (placebo/oracle) → 24-item
+        calibration → verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027)
+        → G4/G5 Full (Feb 2027). No efficacy claim is made yet.
       </NoteStrip>
     </div>
   );
@@ -847,8 +858,9 @@ function FinalLimitationsSlide() {
         >
           <ul className="flex flex-col justify-center h-full">
             <Bullet>
-              The pilot covers 10 questions; the Core run (24 rows, Jan 2027) is
-              pre-registered, not yet run.
+              The 50-question Month-1 pilot and 100–150-question G2 pilot are
+              planned; the Core run (24 runs, Jan 2027) is pre-registered, not
+              yet run.
             </Bullet>
             <Bullet>
               Injection is an explicit upper-bound stress test, not everyday
@@ -919,8 +931,10 @@ function FinalConclusionSlide() {
               Applies to scientific QA, education and other evidence domains.
             </Bullet>
             <Bullet>
-              Remaining: run the Core (Jan 2027) and Full (Feb 2027) stages,
-              ablations, human study, open-source release.
+              Remaining: 96 GB final-stack smoke → WP-18 → 24-item calibration →
+              verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027) → G4/G5
+              Full (Feb 2027), then ablations, human study and open-source
+              release.
             </Bullet>
           </ul>
         </Card>
@@ -985,8 +999,10 @@ function FinalCompactConclusionSlide() {
               measured.
             </Bullet>
             <Bullet>
-              Remaining: run the Core (Jan 2027) and Full (Feb 2027) stages,
-              ablations, human study, open-source release.
+              Remaining: 96 GB final-stack smoke → WP-18 → 24-item calibration →
+              verifier audit → G2 pilot (Dec 2026) → G3 Core (Jan 2027) → G4/G5
+              Full (Feb 2027), then ablations, human study and open-source
+              release.
             </Bullet>
           </ul>
         </Card>

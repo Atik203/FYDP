@@ -5,32 +5,50 @@ import { cn } from "@/lib/utils";
  *
  * The old hour sliders assumed a 1,000-hour dev ceiling and an 800-hour final
  * ceiling. Those numbers no longer describe the project: the pre-registered
- * matrix is 24 rows / 1,280 GPU-h, and the publication stages are costed
+ * Core matrix is 24 runs / 1,280 GPU-h, and the publication stages are costed
  * all-in (GPU + bandwidth + storage + 20% spot overhead).
  */
 
 const STAGES = [
   {
+    name: "Final-stack smoke",
+    scope: "69.73 GB stack on one 96 GB card · offline check passes",
+    when: "Nov 2026",
+    hours: "—",
+    cost: "$80–120",
+    color: "#475569",
+    bg: "rgba(71,85,105,0.08)",
+  },
+  {
+    name: "Pilot",
+    scope: "24-item calibration · 50-question Month-1 pilot · 100–150-question G2 pilot",
+    when: "Dec 2026",
+    hours: "—",
+    cost: "$50–100",
+    color: "#e8590c",
+    bg: "rgba(232,89,12,0.08)",
+  },
+  {
     name: "Core",
-    scope: "4 arms + oracle · ~400/dataset × 2 seeds · 180-item benchmark",
+    scope: "4 arms (B3, B4-matched, B8-no-trust, B8) · GPQA 400 / MMLU-Pro 400 / HLE 200 · 2 seeds = 24 runs",
     when: "Jan 2027",
-    hours: "~1,160",
+    hours: "1,280",
     cost: "$420–580",
     color: "#7c3aed",
     bg: "rgba(124,58,237,0.08)",
   },
   {
     name: "Full",
-    scope: "6 arms × 3 datasets × 400 × 2 seeds · 300-item benchmark · human eval",
+    scope: "6-arm target · 36 runs at 300/dataset · 1,440 GPU-h envelope · WP-18 placebo/oracle",
     when: "Feb 2027",
-    hours: "2,460–2,700 total",
-    cost: "$900–1,200 top-up",
+    hours: "1,440 envelope",
+    cost: "$900–1,200 envelope",
     color: "#0ca678",
     bg: "rgba(12,166,120,0.08)",
   },
   {
     name: "Law-testing",
-    scope: "8 min/debate · 3,813 GPU-h matrix + Final replication",
+    scope: "8 min/debate · 3,813 GPU-h matrix + Final replication · after $1,350 hard stop",
     when: "Apr 2027",
     hours: "3,900+",
     cost: "$1,400–1,900",
@@ -46,7 +64,7 @@ const FINAL_WEIGHTS = [
 ] as const;
 
 const FINAL_TOTAL = 69.73;
-const FINAL_LIMIT = 80;
+const FINAL_LIMIT = 96;
 
 export function CostTable() {
   return (
@@ -98,11 +116,12 @@ export function CostTable() {
       </div>
 
       <p className="text-[10px] text-[#64748b] dark:text-[#94a3b8] leading-relaxed">
-        <strong>Core</strong> = Core run (legacy “C+”); <strong>Full</strong> =
-        Full run (legacy “TACL full”). The Full run resumes from the Core run,
-        so its cost is a top-up, not additive. “TACL” is the venue
-        (Transactions of the Association for Computational Linguistics), not a
-        stage.
+        <strong>Core</strong> = Core run; <strong>Full</strong> = Full run. Core
+        and Full are separate stacks (Dev vs Final); do not assume Core cells are
+        reusable. The $900–1,200 is the Full-run budget envelope. “TACL” is the
+        venue (Transactions of the Association for Computational Linguistics),
+        not a stage. The $1,350 hard stop applies before law-testing is
+        authorized.
       </p>
 
       {/* Final stack weight budget */}
@@ -127,7 +146,7 @@ export function CostTable() {
               {w.model} <strong className="font-mono">{w.gb.toFixed(2)} GB</strong>
             </span>
           ))}
-          <span className="font-semibold">0.90 utilization · 8k context</span>
+          <span className="font-semibold">0.90 vLLM utilization · 8k context</span>
         </div>
       </div>
 
@@ -158,9 +177,10 @@ export function CostTable() {
         All-in = GPU + bandwidth + storage + 20% spot overhead. Core is the
         first executable stage; Full and Law-testing are conditional. Prices are
         volatile — re-run the market query before renting. The pre-registered
-        executable Core matrix is 24 rows at 1,280 GPU-h. Final stack uses
-        Qwen3.6-27B FP8, Gemma 4 26B A4B FP8 and Mistral Small 3.2 24B AWQ on
-        one RTX PRO 6000 96 GB card.
+        Core matrix is 24 runs at 1,280 GPU-h; the Full target is a 36-run /
+        1,440 GPU-h envelope (32 runs and recomputed GPU-h if B8-oracle is
+        gold-evidence-only on EG-SSS). Final stack uses Qwen3.6-27B FP8, Gemma 4
+        26B A4B FP8 and Mistral Small 3.2 24B AWQ on one RTX PRO 6000 96 GB card.
       </p>
     </div>
   );

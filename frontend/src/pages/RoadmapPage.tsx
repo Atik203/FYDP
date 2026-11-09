@@ -89,7 +89,7 @@ const roadmapSections: RoadmapSection[] = [
       { num: 2, topic: 'Effect Size Reporting', level: 'Advanced', levelEmoji: '🟡', importance: 'Critical', whyNeeded: "Cohen's d, Cliff's delta for sycophancy reduction claims" },
       { num: 3, topic: 'Inter-rater Agreement (κ)', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Validating sycophancy injection protocol (Phase 1 pilot)' },
       { num: 4, topic: 'Ablation Study Design', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Isolating each component contribution; required for Q1 submission', link: { label: 'Proposal §11', href: '/idea/1' } },
-      { num: 5, topic: 'Calibration Metrics (ECE, ECR)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Your primary ECR metric', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
+      { num: 5, topic: 'Calibration Metrics (ECE, ECR)', level: 'Expert', levelEmoji: '🔴', importance: 'Critical', whyNeeded: 'Calibration endpoint for the trust signal (H3)', link: { label: 'Guo et al. 2017', href: 'https://arxiv.org/abs/1706.04599' } },
       { num: 6, topic: 'Benchmark Evaluation Harness', level: 'Advanced', levelEmoji: '🟡', importance: 'High', whyNeeded: 'Reproducible multi-benchmark evaluation', link: { label: 'lm-eval-harness', href: 'https://github.com/EleutherAI/lm-evaluation-harness' } },
     ],
   },
@@ -126,7 +126,7 @@ const monthPlan: MonthPlan[] = [
   },
   {
     month: 'Oct–Nov 2026',
-    phase: 'P0 — in progress',
+    phase: 'P0 — released Nov 2026',
     hours: '~20 hr/wk',
     learn: 'LangGraph StateGraph subset — the ~5-API core, not the whole library (CampusX playlist, videos 1–6 only); trust projection math from the P0 interfaces.',
     build: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 514 tests; P0 gate 13/13.',
@@ -140,7 +140,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Pilot run',
     hours: '~15 hr/wk',
     learn: 'Only the stats you will actually run: paired bootstrap, McNemar, Cohen\'s d, Cohen\'s κ — short scipy walkthroughs, no full stats course.',
-    build: '24-item calibration first; then the behavioural-effectiveness pilot and κ check. Exit: Gate 1 decides whether the Core run proceeds.',
+    build: 'Final-stack 96 GB smoke ($80–120); WP-18 placebo/oracle; 24-item calibration; verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60); 50-question Month-1 pilot, then the 100–150-question G2 pilot. G2 decides whether the Core run proceeds.',
     links: [
       { label: 'Du et al. — MAD paper', href: 'https://arxiv.org/abs/2305.14325' },
     ],
@@ -150,7 +150,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Core run',
     hours: '~20 hr/wk',
     learn: 'Nothing new — debugging discipline and log inspection only. If you need a concept, look it up on demand.',
-    build: '4 arms + oracle × 3 datasets × 2 seeds = 24 rows, 1,280 GPU-h. No efficacy claim until the pre-registered analysis.',
+    build: 'G3 Core run: 4 arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in Core v1.0. No efficacy claim until the pre-registered analysis.',
     links: [],
   },
   {
@@ -158,7 +158,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Full run + benchmark',
     hours: '~20 hr/wk',
     learn: 'Benchmark annotation and verifier-audit protocol; no new ML theory.',
-    build: 'Add B8-placebo/B8-oracle if WP-13 lands; extend to the 6-arm Full run. EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go.',
+    build: 'WP-18 adds B8-placebo/B8-oracle; G4/G5 Full target is 36 runs at 300 items/dataset within a 1,440 GPU-h envelope (32 runs and recomputed GPU-h if B8-oracle is gold-evidence-only on EG-SSS). EG-SSS: 180 floor, 300 target, 600 stretch, 800 no-go.',
     links: [],
   },
   {
@@ -166,7 +166,7 @@ const monthPlan: MonthPlan[] = [
     phase: 'Human eval + freeze',
     hours: '~15 hr/wk',
     learn: 'Inter-annotator agreement (κ/ICC) for the human evaluation.',
-    build: 'Human evaluation / SDT, benchmark annotation, verifier audit, then results freeze with CIs and effect sizes. No post-hoc arm changes.',
+    build: 'Human evaluation / SDT, benchmark annotation, verifier-audit follow-up, then results freeze with CIs and effect sizes. No post-hoc arm changes.',
     links: [],
   },
   {
@@ -258,9 +258,9 @@ export function RoadmapPage() {
       <PageHeader
         docType="FYDP Learning & Execution Roadmap · Idea 1"
         title={<>Idea 1 Learning &amp; Execution Roadmap</>}
-        subtitle="The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate · Nov 2026 – Dec 2027"
+        subtitle="The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus · Nov 2026 – Dec 2027"
         coverItems={[
-          { label: 'Timeline', value: 'P0 → Paper (Nov 2026 – Dec 2027)' },
+          { label: 'Timeline', value: 'P0 release → Paper (Nov 2026 – Dec 2027)' },
           { label: 'Weekly Time', value: '15–20 Hours' },
           { label: 'Target Venue', value: 'TACL (rolling) · EMNLP 2028 fallback' },
           { label: 'Research Focus', value: 'Agentic AI · Anti-Sycophancy · Trust Calibration' },
@@ -273,14 +273,15 @@ export function RoadmapPage() {
         <Section accent="blue" className="animate-fade-up">
           <SectionTitle icon={Calendar}>A. Execution Plan (Blueprint §12)</SectionTitle>
           <p className="text-sm mb-4">
-            P0 closes in Nov 2026; the Pilot run follows in Dec; the Core run
-            in Jan 2027 with the 180-item benchmark; the Full run
-            plus the 300-item benchmark in Feb; human
-            eval/SDT in Mar; results freeze in Apr; thesis chapters in May;
-            thesis submission in Jun; defence in Jun/Jul; paper after the
-            defence (Aug–Dec 2027). Gates mark explicit go/no-go decisions. Core
-            run is a prefix of the Full run; completed cells are reused, so costs
-            are not additive for those cells.
+            P0 was released in Nov 2026. The final-stack smoke, WP-18
+            placebo/oracle, 24-item calibration and verifier audit precede the
+            G2 pilot in Dec 2026; the G3 Core run follows in Jan 2027; the G4/G5
+            Full run plus the benchmark ladder follows in Feb; human eval/SDT in
+            Mar; results freeze in Apr; thesis chapters in May; thesis submission
+            in Jun; defence in Jun/Jul; paper after the defence (Aug–Dec 2027).
+            Gates mark explicit go/no-go decisions. Core and Full are separate
+            stacks (Dev vs Final); do not assume Core cells are reusable. The
+            $900–1,200 is the Full-run budget envelope.
           </p>
           <GanttTable phases={ganttPhases} />
           <Timeline items={milestones} />
@@ -297,14 +298,14 @@ export function RoadmapPage() {
               { step: 1, title: 'vLLM multi-model serving setup', desc: 'Nothing else can be tested without this. Done — three-model serving verified 16 Sep 2026.' },
               { step: 2, title: 'Vanilla MAD reproduction (Du et al. 2023)', desc: 'Gate 0 — validates base loop independent of our additions. Done — 10/10 debates, 3/3 rounds.' },
               { step: 3, title: 'Injection protocol (§5.4)', desc: 'Must exist before trust mechanism — trust calibration needs a working stress test. Protocol and B8 injection wiring are in place; GPU pilot next.' },
-              { step: 4, title: 'Calibration + behavioural-effectiveness pilot (Dec 2026)', desc: '24-item calibration first; then the pilot on the highest-risk assumption.' },
+              { step: 4, title: 'Final-stack smoke, calibration, verifier audit, then pilot (Nov–Dec 2026)', desc: '96 GB final-stack smoke ($80–120), WP-18 placebo/oracle, 24-item calibration, verifier audit (150–200 pairs; lexical baseline 0.58 balanced accuracy; target ≥0.75, κ ≥0.60), then the 50-question Month-1 pilot and 100–150-question G2 pilot.' },
               { step: 5, title: 'Claim decomposition + source-partitioned retrieval', desc: 'Trust formula inputs are outputs of retrieval. Claim decomposition, domain routing, verifier interface, and endpoints are wired at P0.' },
               { step: 6, title: 'Trust update function', desc: 'Unit-test the operator order in isolation: logit accumulation → softmax → floor/ceiling simplex projection. Clamp-then-renormalise is wrong.' },
-              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 remains for the placebo/oracle arms before the Full run.' },
+              { step: 7, title: 'Full debate loop (LangGraph)', desc: 'Core loop, manifest, and resume are wired; WP-13 (B8-no-trust prompt split) landed, and WP-18 remains for the placebo/oracle arms before the Full run.' },
               { step: 8, title: 'Baselines B1–B4', desc: 'Built and mock-verified; B3 and B4-matched are in the executable matrix.' },
               { step: 9, title: 'Baselines B5–B6 (Self-Consistency, MoA)', desc: 'Independent of core mechanism. Can build in parallel with step 10.' },
               { step: 10, title: 'Baseline B9 (iMAD reimplementation)', desc: 'Highest difficulty (~10 days). Sequenced last.' },
-              { step: 11, title: 'Core run → Full run', desc: 'Core run: 24 rows at 1,280 GPU-h. Full run adds B8-placebo/B8-oracle only if WP-13 lands.' },
+              { step: 11, title: 'Core run → Full run', desc: 'G3 Core: 24 runs at 1,280 GPU-h. G4/G5 Full target: 36 runs at 300 items/dataset in a 1,440 GPU-h envelope; B8-placebo/B8-oracle are WP-18, with the oracle definition conditional.' },
               { step: 12, title: 'Human evaluation + failure analysis', desc: 'Last — requires completed experimental results to annotate against.' },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex gap-3 items-start bg-[#f0f2f7] dark:bg-[#1a1d35] border border-[#e2e8f0] dark:border-[rgba(255,255,255,0.1)] rounded-md p-3 sm:p-4 hover:border-[#3b5bdb] dark:hover:border-[#3b5bdb] transition-colors">
@@ -322,9 +323,10 @@ export function RoadmapPage() {
             <p className="text-sm">
               Two long-lived branches only: <code>main</code> (public mirror) and{" "}
               <code>dev</code> (development; <code>main</code> is the release deploy).
-              Snapshots are git tags (P0, Pilot, Core, Full), not long-lived
-              phase branches. Feature work lands on short-lived slices and
-              merges back with <code>--no-ff</code>.
+              Snapshots are git tags, not long-lived phase branches:{" "}
+              <code>p0-gate</code> and <code>p0-release</code> exist now; Pilot,
+              Core and Full tags are planned. Feature work lands on short-lived
+              slices and merges back with <code>--no-ff</code>.
             </p>
           </Callout>
           <Callout variant="info" title="⚠ Critical Ordering Constraints" className="mt-4">

@@ -192,7 +192,7 @@ export function PapersPage() {
           { label: "Papers Read", value: "34" },
           { label: "Papers Tracked", value: "39" },
           { label: "Critical Priority", value: "14" },
-          { label: "Last Verified", value: "Sep 2026" },
+          { label: "Last Verified", value: "Sep 2026 snapshot" },
         ]}
       />
 
@@ -206,7 +206,8 @@ export function PapersPage() {
           <p className="text-sm mb-2">
             Stage 4 (Closest Related Work) and every 2024–2026 paper has been
             checked via live search — publication status, venue, and DOI are
-            current as of September 2026. Older foundational papers (Stages 1, 5, 6)
+            current as of this September 2026 snapshot (not a November 2026
+            re-verification). Older foundational papers (Stages 1, 5, 6)
             are well-established, high-confidence citations.{" "}
             <strong>
               Re-verify all Stage 4 papers before final thesis submission

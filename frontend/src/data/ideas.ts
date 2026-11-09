@@ -25,7 +25,7 @@ export interface IdeaMetadata {
 export const ideaMetadata: IdeaMetadata[] = [
   {
     id: 1,
-    title: 'The Boundaries of Evidence-Grounded Trust in Multi-Agent Debate',
+    title: 'The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus',
     shortTitle: 'The Trust Boundary',
     icon: '🤖',
     domain: 'Agentic AI / Reasoning',
@@ -38,14 +38,15 @@ export const ideaMetadata: IdeaMetadata[] = [
     subtitle: 'Domain: Agentic AI · LLM Reasoning · Multi-Agent Systems · Trust Calibration · P0 status, no efficacy results yet',
     coverItems: [
       { label: 'Target Venue', value: 'TACL (rolling) · EMNLP 2028 fallback' },
-      { label: 'P0 Gate', value: '11 / 13 passed' },
+      { label: 'P0 Gate', value: '13 / 13 passed' },
       { label: 'P0 Tests', value: '514' },
-      { label: 'Matrix', value: '24 rows · 1,280 GPU-h' },
+      { label: 'P0 Release', value: '57-pp report · 18-pp journal · 0 undefined refs' },
+      { label: 'Core Matrix', value: '24 runs · 1,280 GPU-h' },
     ],
     kpis: [
       { value: '514', label: 'P0 Tests Passing', variant: 'default' },
       { value: '13/13', label: 'P0 Gate Passed', variant: 'green' },
-      { value: '24', label: 'Executable Matrix Rows', variant: 'sky' },
+      { value: '24', label: 'Core Runs', variant: 'sky' },
       { value: '300', label: 'Benchmark Target (180 floor)', variant: 'amber' },
       { value: '3', label: 'Agent Roles in Pipeline', variant: 'rose' },
     ],
