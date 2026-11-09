@@ -1,5 +1,6 @@
 """Preflight the model stack budget: weights and per-instance VRAM reservations.
 
+The 80GB limit is a conservative weight budget, not the 96GB card capacity.
 The real proof is ``smoke_test.py --phase final`` on the 96GB card; this check
 catches a config that cannot fit before a paid session starts.
 """
@@ -14,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from trustcal.config import agents_for_phase, load_models  # noqa: E402
 
-MAX_WEIGHTS_GB = 80.0
+MAX_WEIGHTS_GB = 80.0  # conservative weight budget; the card is 96GB
 MAX_UTILIZATION = 0.90 + 1e-9
 
 

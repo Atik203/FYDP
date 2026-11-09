@@ -6,9 +6,9 @@ The core idea: in multi-agent LLM debate, a confidently wrong majority can press
 
 ## Research pipeline
 
-The implementation of the proposed system lives in [`trustcal/`](trustcal/) (Python + vLLM). Phase-by-phase plan: [`roadmap.md`](roadmap.md) · design: [`docs/blueprint.md`](docs/blueprint.md) · injection protocol spec: [`trustcal/INJECTION_PROTOCOL.md`](trustcal/INJECTION_PROTOCOL.md) · experiment reports and artifacts: [`experiments/`](experiments/). Agent/operator instructions for the GPU box: [`trustcal/AGENTS.md`](trustcal/AGENTS.md).
+The implementation of the proposed system lives in [`trustcal/`](trustcal/) (Python + vLLM). **P0 is released** (9 November 2026): gate 13/13, 514 tests, tags `p0-gate` and `p0-release`. This is engineering readiness, not efficacy — the 24-run Core matrix has not been run, the six-arm Full target is pending WP-18, and the 96 GB Final-stack hardware smoke has not run. Phase-by-phase plan: [`roadmap.md`](roadmap.md) · design: [`docs/blueprint.md`](docs/blueprint.md) · current implementation state: [`trustcal/IMPLEMENTATION_STATUS.md`](trustcal/IMPLEMENTATION_STATUS.md) · pre-registration: [`PRE_REGISTRATION.md`](PRE_REGISTRATION.md) · injection protocol spec: [`trustcal/INJECTION_PROTOCOL.md`](trustcal/INJECTION_PROTOCOL.md) · experiment reports and artifacts: [`experiments/`](experiments/). Agent/operator instructions for the GPU box: [`trustcal/AGENTS.md`](trustcal/AGENTS.md).
 
-> **LLM agents: start at [`docs/agent/README.md`](docs/agent/README.md).** It contains the current-state audit, the P0 fix list with acceptance tests, the reframed experiment plan, the verified prior-art/gap analysis, the writing/venue rules, and the DeepSeek V4.1 Flash Max checklist.
+> **LLM agents: read [`AGENTS.md`](AGENTS.md) first.** The historical P0 audit and fix list live in [`docs/agent/README.md`](docs/agent/README.md); current release state is in [`trustcal/IMPLEMENTATION_STATUS.md`](trustcal/IMPLEMENTATION_STATUS.md) and [`experiments/p0/README.md`](experiments/p0/README.md).
 
 ## Tech stack
 
@@ -42,13 +42,17 @@ The dev server runs at the URL Vite prints (default `http://localhost:5173`).
 
 ## Routes
 
-| Path        | Page                                                       |
-| ----------- | ---------------------------------------------------------- |
-| `/`         | Overview                                                   |
-| `/idea/1`   | Idea 1 detail — the trust-calibrated deliberation proposal |
-| `/roadmap`  | Project roadmap / timeline                                 |
-| `/papers`   | Literature review                                          |
-| `/proposal` | Full proposal                                              |
+| Path             | Page                                                       |
+| ---------------- | ---------------------------------------------------------- |
+| `/`              | Overview                                                   |
+| `/idea/1`        | Idea 1 detail — the trust-calibrated deliberation proposal |
+| `/roadmap`       | Project roadmap / timeline                                 |
+| `/papers`        | Literature review                                          |
+| `/proposal`      | Full proposal                                              |
+| `/slide`         | Main projector deck (keyboard navigation)                  |
+| `/slide/ce`      | Complex Engineering deck                                   |
+| `/slide/final`   | Final defence deck (18 slides)                             |
+| `/slide/final/1` | Compact final deck (14 slides)                             |
 
 ## Project structure
 
@@ -64,14 +68,17 @@ frontend/        React + Vite app (site source, configs, scripts)
     pages/        One component per route
   scripts/
     prerender.mjs Post-build static prerendering via headless Chrome
-trustcal/        Python pipeline (Phase 0 skeleton; see docs/project_structure.md)
-  src/trustcal/   inference, agents, retrieval, trust, orchestrator, eval
-  configs/        models.yaml (Dev→Final swap), datasets.yaml
-  scripts/        serve.sh, repro_mad.py (Gate 0), smoke_test.py
-docs/           Research blueprint and literature-review guide
-roadmap.md      Phase-by-phase execution plan (blueprint §12–13)
+trustcal/        Python pipeline (P0 released; see trustcal/AGENTS.md)
+  src/trustcal/   inference, agents, retrieval, trust, orchestrator, eval, runner
+  configs/        models.yaml (Dev→Final switch), experiments.yaml (Core matrix),
+                  phase.yaml, datasets.yaml (revisions/provenance)
+  scripts/        serve.sh, repro_mad.py (Gate 0), run_matrix.py, p0_gate.py,
+                  check_stack.py, smoke_test.py
+experiments/     Per-run reports and `next/WP-*.md` planning records
+docs/            Research blueprint and literature-review guide
+roadmap.md       Phase-by-phase execution plan (blueprint §12–13)
 literature_review/
-  papers/       Per-paper detailed review entries
+  papers/        Per-paper detailed review entries
 ```
 
 ## Prerendering

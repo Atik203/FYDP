@@ -1,11 +1,13 @@
 # Pre-registration — Trust-Calibrated Multi-Agent Scientific Deliberation (P0 matrix)
 
-**Version:** 1.0
+**Version:** 1.0 (v1.1 erratum appended in §12)
 **Date:** 9 November 2026
 **Status:** frozen before any confirmatory matrix run; the executable matrix in
 `trustcal/configs/experiments.yaml` is cut to four conditions. The two remaining
-arms of the six-arm target are pending WP-13 and must be added, with a version
-bump, before unblinding.
+arms of the six-arm target are pending WP-18 and must be added, with a version
+bump, before unblinding. The v1.1 erratum records the released prompt hash and
+branch retirement and assigns the six-arm completion to WP-18; it changes no
+endpoint or analysis.
 **Project:** FYDP research proposal, Group 6 · Team Phantom Devs.
 **Scope:** the P0 confirmatory matrix (WP-14). This document is the
 pre-registration for the primary and co-primary endpoints below. It does not
@@ -76,17 +78,17 @@ The six-arm target is the causal design in
 | 2 | **B4-matched** | retrieved; same source partition and prompts as B8 | majority | executable |
 | 3 | **B8-no-trust** | retrieved; same as B8 | majority (`use_trust: false`) | executable; primary control |
 | 4 | **B8** | retrieved | trust-weighted | executable; treatment |
-| 5 | **B8-placebo** | retrieved; verdicts shuffled within debate | trust-weighted | **pending WP-13**, added before unblinding |
-| 6 | **B8-oracle** | gold evidence (gold-evidence subset) | trust-weighted | **pending WP-13**, added before unblinding |
+| 5 | **B8-placebo** | retrieved; verdicts shuffled within debate | trust-weighted | **pending WP-18**, added before unblinding |
+| 6 | **B8-oracle** | gold evidence (gold-evidence subset) | trust-weighted | **pending WP-18**, added before unblinding |
 
 The executable matrix is exactly the four conditions above:
 4 conditions × 3 datasets × 2 seeds = 24 runs. `B8-placebo` and `B8-oracle`
-need RunConfig switches that do not exist until WP-13; they are documented here
-as the remaining two arms of the six-arm target and will be added as version
-1.1 before unblinding. Adding them is not optional and not result-dependent:
+need RunConfig switches that do not exist until WP-18; they are documented here
+as the remaining two arms of the six-arm target and will be added as a later
+version before unblinding. Adding them is not optional and not result-dependent:
 the causal claim in the thesis requires the placebo contrast
 (evidence calibration vs any re-weighting) and the oracle upper bound
-(verifier bottleneck). If WP-13 misses the pre-run window, the matrix runs as
+(verifier bottleneck). If WP-18 misses the pre-run window, the matrix runs as
 version 1.0 and the thesis reports the six-arm design as incomplete rather
 than silently dropping the contrast.
 
@@ -201,10 +203,10 @@ tokens, or wall-clock as a primary claim. Compute is reported descriptively
 ## 5. Sample size, power, and MDE
 
 **Planned caps.** 400 `gpqa_main` + 400 `mmlu_pro` + 200 `hle`, two seeds.
-Planned rows: 4 conditions × (400 + 400 + 200) × 2 seeds = 8,000 debates,
-≈ 1,067 GPU-h at 8 min/debate. The P0 gate uses the conservative
+Planned debates: 4 conditions × (400 + 400 + 200) × 2 seeds = 8,000; rows: 24;
+planned 1,067 GPU-h at 8 min/debate. The P0 gate uses the conservative
 `sample_caps.main = 400` for every dataset:
-4 × 3 × 2 × 400 = 9,600 debates × 8 min / 60 = 1,280 GPU-h ≤ 1,500 GPU-h.
+4 × 3 × 2 × 400 = 9,600 debates × 8 min / 60 = 1,280 GPU-h ≤ 1,500 GPU-h gate cap.
 
 **Analysable n.** The pre-registered n is the number of pressure-eligible
 questions after exclusions, reported per dataset and arm in `eligible_n.json`.
@@ -354,7 +356,7 @@ including `hle` (control, descriptive only).
 ## 8. Stopping rules and amendments
 
 1. **No condition is added, removed, or redefined after seeing results.** The
-   only pre-unblinding additions allowed are B8-placebo and B8-oracle (WP-13)
+   only pre-unblinding additions allowed are B8-placebo and B8-oracle (WP-18)
    and EG-SSS-180 (benchmark freeze), each with a new version and a new config
    hash.
 2. **No optional stopping and no interim analysis of the primary contrast.**
@@ -386,10 +388,10 @@ the values below are the pre-run record. A manifest mismatch refuses resume
 | Item | Value |
 |---|---|
 | Pre-registration version / date | 1.0 / 9 November 2026 |
-| Signing base commit | `842dacc` (`origin/feat/p0-hardening`) |
+| Signing base commit | `842dacc` (`origin/feat/p0-hardening`; historical signing branch, now retired) |
 | Matrix-cut commit | recorded in `experiments/p0/WP-14.md` and `run_manifest.json` at launch |
 | `trustcal/configs/experiments.yaml` sha256 | `d63ee9ac0c6ebfc5fc59f84bb5643e9bc283e4186f0ef0fb5a31d6634763d01d` (committed blob) |
-| `agents/prompts.py` sha256 | `6cc9b0e611718294e9977f3f430a84e8dd2c34e600d3c6a04b151d0c8ecb93d0` (committed blob) |
+| `agents/prompts.py` sha256 | `6cc9b0e611718294e9977f3f430a84e8dd2c34e600d3c6a04b151d0c8ecb93d0` (pre-WP-13; superseded by the v1.1 erratum: `bc9c7b…`) |
 | Parser version | `p0-1` (`parser_version` stored per record) |
 | Verifier | name/version stored per verdict; balanced accuracy audited on 150–200 pairs |
 | Decoding | temperature 0.7, rounds 3, N = 3 agents, seeds 1 and 2 |
@@ -450,12 +452,48 @@ failure, not a warning.
 | Version | Date | Change | Status |
 |---|---|---|---|
 | 1.0 | 9 November 2026 | Initial pre-registration; executable 4-condition matrix cut; six-arm target named | frozen |
-| 1.1 | before unblinding | Add B8-placebo and B8-oracle after WP-13 adds the RunConfig switches (six-arm target complete) | pending |
+| 1.1 | 9 November 2026 | Erratum: released prompt hash `bc9c7b…`; `origin/feat/p0-hardening` retired; B8-placebo/B8-oracle assigned to WP-18; oracle semantics pending WP-18 | frozen |
 | 1.2 | benchmark freeze | Add EG-SSS-180 as the third primary dataset and the gold-evidence testbed | pending |
+| 1.3 | WP-18 freeze | Freeze placebo/oracle semantics, Full config hash, and row count (36 or 32) before unblinding | pending |
 
 Amendments are made only before unblinding. Once the first confirmatory row is
 inspected, the version is closed; a later change is a new pre-registration, not
 an edit.
+
+### v1.1 erratum — 9 November 2026
+
+This erratum does not change the v1.0 endpoints, tests, exclusions, or analysis.
+It records the P0 release state and corrects labels that would otherwise
+misroute the remaining work.
+
+- **Released prompt hash.** The released `agents/prompts.py` blob begins
+  `bc9c7b…`; the v1.0 value `6cc9b0…` was the pre-WP-13 blob and is superseded.
+  `run_manifest.json` records the on-disk hash actually read at launch.
+- **Branch retirement.** P0 is released; `main` and `dev` are both at
+  `2ae56a3`, with tags `p0-gate` = `055a244` and `p0-release` = `7f2c11f`.
+  The signing branch `origin/feat/p0-hardening` is retired; §9's row is
+  historical. Only `main`, `dev`, and short-lived `next/*` branches remain.
+- **WP label collision.** v1.0 §2 and §8 used the label "pending WP-13" for the
+  two arms. That label is historical: the landed WP-13 is the B8-no-trust
+  prompt split. The pending placebo/oracle slice is **WP-18**; its planning
+  record is `experiments/next/WP-18.md`. All substantive references in this
+  document now point to WP-18.
+- **§5 wording correction.** v1.0 line 204 called 8,000 debates "planned rows";
+  this erratum corrects it to "8,000 planned debates; 24 rows; 1,067 GPU-h
+  planned; 1,280 GPU-h gate cap."
+- **Six-arm target.** WP-18 will add `placebo_mode` and `oracle_mode`, a
+  separate `configs/experiments_full.yaml`, and the mock/smoke coverage. The
+  target is 6 arms × 3 datasets × 2 seeds = 36 runs at 300 items/dataset =
+  10,800 debates / 1,440 GPU-h if B8-oracle uses gold-answer trust; 32 runs /
+  1,280 GPU-h if B8-oracle is gold-evidence-only on EG-SSS. The v1.0 Core
+  matrix remains 24 runs, 8,000 planned debates / 1,067 GPU-h, with the
+  1,280 GPU-h gate cap.
+- **Oracle semantics pending.** WP-18 must freeze whether B8-oracle uses
+  gold-answer trust or gold-evidence-only trust on EG-SSS. Neither definition
+  is asserted here; the choice changes the run count and GPU envelope above.
+  B7 (Gemini external answer) is not B8-oracle.
+- **EG-SSS-180.** Not in v1.0. It joins at benchmark freeze as v1.2. No
+  EG-SSS result exists at this date.
 
 ---
 

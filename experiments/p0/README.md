@@ -1,6 +1,10 @@
 # P0 work packages
 
-Integration branch: temporary `feat/p0-hardening`; it merges into `dev` after the 13/13 gate, then `dev` releases to `main` (tags `p0-gate`, `p0-release`). Slice branches: `p0/wp-A` … `p0/wp-F`; one worktree per letter (`E:\FYDP-p0-A` …), deleted after merge. Contract: `docs/agent/09_P0_INTERFACES.md`. Gate: `scripts/p0_gate.py` (13 checks) before any pilot or matrix run.
+> **Historical record — 9 November 2026.** P0 is released. `main` and `dev` are both at `2ae56a3`; tags are `p0-gate` = `055a244` and `p0-release` = `7f2c11f`. The temporary `feat/p0-hardening` integration branch and the `p0/wp-*` slices are retired and deleted, and no extra worktrees remain. This page records how P0 was built; it is not a live landing checklist.
+
+Release state: **13/13 gate checks**, **514 tests**, **P0 released 9 November 2026**. No efficacy result exists — the 24-row Core matrix is planned, not run, and the six-arm Full target is pending WP-18. The executable Core matrix is 4 conditions × 3 datasets × 2 seeds = 24 rows; the gate cap is 1,280 GPU-h. The Final-stack config is pinned and offline-checked; the 96 GB hardware smoke has not been run.
+
+Contract: `docs/agent/09_P0_INTERFACES.md`. Gate: `scripts/p0_gate.py` (13 checks) before any pilot or matrix run.
 
 | WP | P0 | Owner | Deliverable | Wave |
 |---|---|---|---|---|
@@ -23,7 +27,11 @@ Integration branch: temporary `feat/p0-hardening`; it merges into `dev` after th
 | 16 | P0-12 | integrator | Docs/status reconciliation; branch promotion | 4 |
 | 17 | — | integrator | Final-stack readiness: pin FP8 repos, <80 GB, `setup.sh`/`serve.sh`, smoke | 3 |
 
-## Landed on `feat/p0-hardening`
+WP-16 has no separate `WP-16.md`: its docs/status reconciliation and branch promotion are covered by `WAVE2.md` and the release history around tag `p0-release` = `7f2c11f`.
+
+## Landed (historical integration branch)
+
+The commits below landed on the temporary P0 integration branch, which then merged into `dev` and `main` and is now retired.
 
 | WP | Commit | State |
 |---|---|---|
@@ -40,4 +48,8 @@ Integration branch: temporary `feat/p0-hardening`; it merges into `dev` after th
 | 14 | `9b57b9d` | 24-row matrix, per-dataset caps, pre-registration |
 | 17 | `61af3b0` | Final stack <80GB, phase-aware setup |
 
-Rules: one lease holder per file (see 09); slice branches push after every green checkpoint; integrator merges `--no-ff` to `feat/p0-hardening` daily; no commit mixes docs with code; no force-push.
+Historical branch rules (no longer active): one lease holder per file (see 09); slice branches push after every green checkpoint; integrator merges `--no-ff` to the integration branch daily; no commit mixes docs with code; no force-push.
+
+## WP-13 / WP-18 naming
+
+The landed [`WP-13.md`](WP-13.md) is the **B8-no-trust prompt split**. The pending B8-placebo / B8-oracle slice is **WP-18**; its planning record is [`../next/WP-18.md`](../next/WP-18.md). Do not reuse WP-13 for the placebo or oracle arms.

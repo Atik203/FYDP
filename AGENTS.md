@@ -6,7 +6,7 @@ Canonical agent instructions for this repo. Read by opencode (DeepSeek V4, MiniM
 
 Static React site presenting the FYDP research proposal **"Trust-Calibrated Multi-Agent Scientific Deliberation for Mitigating Sycophantic Consensus in LLM Reasoning"** (Group 6 · Team Phantom Devs).
 
-Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer (sycophantic collapse). The proposal re-weights each agent's influence *during* the debate using an evidence-grounded trust score derived from retrieved external evidence, not a majority vote. This repo holds both the presentation site (`frontend/`) and the Phase 0+ implementation of the mechanism (`trustcal/`, Python + vLLM) — the pipeline has its own agent file: `trustcal/AGENTS.md`.
+Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressure a correct minority agent into abandoning its answer (sycophantic collapse). The proposal re-weights each agent's influence *during* the debate using an evidence-grounded trust score derived from retrieved external evidence, not a majority vote. This repo holds both the presentation site (`frontend/`) and the P0 implementation of the mechanism (`trustcal/`, Python + vLLM) — the pipeline has its own agent file: `trustcal/AGENTS.md`.
 
 ## Tech stack
 
@@ -28,7 +28,7 @@ Core thesis: in multi-agent LLM debate, a confidently wrong majority can pressur
 | `npm run preview` (in `frontend/`) | Serve the production build |
 | `npm run lint` (in `frontend/`) | Oxlint |
 
-All app commands run from the `frontend/` directory — that's the Vercel root. Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked. The Python research pipeline is separate: its commands run from `trustcal/` and are documented in `trustcal/AGENTS.md` (`pytest` exists there).
+All app commands run from the `frontend/` directory — that's the Vercel root. Always run `npm run build` after changing `.tsx`/`.ts` — it typechecks *and* prerenders, so it is the single source of truth for "did I break it". There is no test runner configured; do not invent one unless asked. The Python research pipeline is separate: its commands run from `trustcal/` and are documented in `trustcal/AGENTS.md`. From `trustcal/`, `pytest` and `python scripts/p0_gate.py` are the local gates.
 
 ## Layout
 
@@ -42,11 +42,15 @@ frontend/            React app (Vite root; see Routes below)
     data/                Page content (ideas.ts, overview.ts, papers.ts)
     pages/               One component per route
   scripts/prerender.mjs  Headless-Chrome prerender, runs after vite build
-trustcal/              Python pipeline (vLLM serving + debate runner; see trustcal/AGENTS.md)
-  configs/             models.yaml (Dev/Final switch), datasets.yaml (revisions, caps)
-  src/trustcal/        inference · agents · orchestrator (injection) · trust · eval · runner · preflight
-  scripts/             setup.sh, serve.sh, run_experiment.py, preflight.py, mock_vllm.py, annotate.py
-experiments/           Per-run reports + committed artifacts (index in experiments/README.md)
+trustcal/              Python pipeline (P0 released; vLLM serving + debate runner; see trustcal/AGENTS.md)
+  configs/             models.yaml (Dev/Final switch), experiments.yaml (Core matrix),
+                       phase.yaml (default stack), datasets.yaml (revisions/provenance)
+  src/trustcal/        inference · agents · orchestrator (injection) · trust · retrieval ·
+                       eval · runner · preflight
+  scripts/             setup.sh, serve.sh, run_experiment.py, run_matrix.py, p0_gate.py,
+                       check_stack.py, preflight.py, mock_vllm.py, annotate.py, smoke_test.py
+experiments/           Per-run reports + committed artifacts and `next/WP-*.md` planning
+                       records (index in experiments/README.md)
 docs/                  Research blueprint + literature-review guide
 roadmap.md             Phase-by-phase execution plan (blueprint §12–13)
 literature_review/
@@ -65,7 +69,10 @@ Defined in `frontend/src/App.tsx`; the prerender list in `frontend/scripts/prere
 | `/roadmap` | RoadmapPage | |
 | `/papers` | PapersPage | Literature review |
 | `/proposal` | ProposalPage | |
-| `/slide` | SlidePage | Projector deck, not in nav; keyboard-nav only |
+| `/slide` | SlidePage | Main projector deck, not in nav; keyboard-nav only |
+| `/slide/ce` | SlidesCePage | Complex Engineering deck, not in nav |
+| `/slide/final` | FinalSlidePage | Final defence deck (18 slides), not in nav |
+| `/slide/final/1` | FinalCompactSlidePage | Compact final deck (14 slides), not in nav |
 
 When you add or remove a route, update **both** `frontend/src/App.tsx` and the `routes` array in `frontend/scripts/prerender.mjs`, or the new page won't be prerendered.
 
@@ -83,9 +90,16 @@ When you add or remove a route, update **both** `frontend/src/App.tsx` and the `
 
 Paper reviews live in `literature_review/papers/NN-slug-author-year.md` and follow a fixed expert template (see `01-imad-fan-2026.md` as the reference format): header block (status / threat-to-novelty / verified date / summary / relevance / gap), then a Section 2 with a Q1–Q9 quick-reference table and deeper analysis. When adding a paper, also update `literature_review/index.md` (comparison matrix, quick triage, gap map, verification log). Verify citations against the primary source (ACL Anthology, DOI, DBLP), not just the PDF footer.
 
+## Branches
+
+- `main` — release trunk and deployed frontend. Never push directly.
+- `dev` — long-lived integration branch; slice from here.
+- `next/<slice>` — short-lived work branch in its own worktree; push after each green checkpoint, merge into `dev`, then delete.
+- Release tags mark promoted commits (`p0-gate`, `p0-release`). Only `main` and `dev` are long-lived; `feat/*` and `p0/wp-*` slices are retired.
+
 ## Safety / scope
 
-- Static presentation repo. There are no secrets, servers, or auth here — don't add them unless asked.
+- The frontend is static, but the repo is not secret-free: `trustcal/` runs three local vLLM servers on `127.0.0.1:8000-8002` and reads `.env` (`HF_TOKEN`, `GEMINI_API_KEY`, optional retrieval keys). Never commit `.env`, keys, `results/`, or model caches.
 - `pdfs/` and `markdowns/` are gitignored source material; don't commit them.
 - Don't commit unless explicitly asked. Never push to `main` directly; use a branch.
 - `dist/` is build output — never edit it by hand.

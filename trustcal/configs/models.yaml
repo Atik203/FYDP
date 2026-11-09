@@ -51,7 +51,9 @@ agents:
 # revisions pinned 2026-11-08 from the HF API. weights_gb are repo totals, so the
 # Qwen figure is the language model only: --language-model-only drops the 6.0GB
 # vision tower. scripts/check_stack.py and test_final_stack.py enforce <=80GB and
-# a utilization sum <=0.90; the real proof is `smoke_test.py --phase final`.
+# a utilization sum <=0.90. Offline preflight is `check_stack.py --phase final`
+# then `HF_HUB_OFFLINE=1 python scripts/preflight.py --phase final --offline`;
+# the real stack proof is `smoke_test.py --phase final` on the 96GB card.
 final_phase:
   max_model_len: 8192
   gpu_memory_utilization: 0.90

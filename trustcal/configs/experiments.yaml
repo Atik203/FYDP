@@ -1,4 +1,5 @@
-# Experiment matrix — conditions x datasets x seeds.
+# Experiment matrix — conditions x datasets x seeds. This file is the matrix
+# source of truth; datasets.yaml carries revisions and loader defaults only.
 # run_matrix.py builds one RunConfig per row and calls trustcal.runner.run().
 # CLI filters (--datasets/--arms/--seed/--limit) override the values here.
 #
@@ -10,18 +11,20 @@
 #   B8            ours (evidence-grounded trust)
 # 4 conditions x 3 datasets x 2 seeds = 24 runs. The six-arm target in
 # PRE_REGISTRATION.md adds B8-placebo and B8-oracle; those need RunConfig flags
-# from WP-13, so they are deliberately not executable yet. The full 15-condition
-# grid lives in the commented appendix_conditions block below; re-add it there
-# for the thesis appendix, never to this matrix.
+# (`placebo_mode`, `oracle_mode`) from WP-18, so they are deliberately not
+# executable here. WP-18 adds a separate configs/experiments_full.yaml; do not
+# add the Full arms to this file. The full 15-condition grid lives in the
+# commented appendix_conditions block below; re-add it there for the thesis
+# appendix, never to this matrix.
 #
 # Compute check (P0 gate check 13): the gate deliberately uses sample_caps.main
 # for every row, so 4 x 3 x 2 x 400 = 9,600 debates x 8 min / 60 = 1,280 GPU-h
 # <= 1,500. Per-dataset caps below plan 4 x 2 x (400 + 400 + 200) = 8,000
 # debates = 1,067 GPU-h; --limit overrides both maps.
 #
-# Order discipline (AGENTS.md): Gate 0 -> injection protocol -> Month-1 pilot
-# -> trust mechanism -> baselines -> matrix. Do not run the full matrix before
-# the pilot gate passes.
+# Order discipline (AGENTS.md): Final-stack smoke -> WP-18 (placebo/oracle) ->
+# Month-1 pilot -> Core matrix -> Full matrix. Do not run a matrix before the
+# pilot gate passes.
 #
 # `phase` selects the Dev or Final stack from configs/models.yaml; `--phase`
 # overrides it. The Month-1 `pilot` arm is deliberately NOT a matrix condition:
@@ -71,8 +74,9 @@ conditions:
 
 # Thesis appendix only. These conditions are NOT part of the pre-registered
 # matrix; they stay out until a new pre-registration version re-admits them.
-# B8-placebo and B8-oracle join the six-arm target after WP-13 adds the
-# RunConfig switches (verdict shuffling and gold-evidence injection).
+# B8-placebo and B8-oracle join the six-arm target after WP-18 adds the
+# RunConfig switches (verdict shuffling and gold-evidence/gold-answer trust).
+# They belong in the separate Full config, not here.
 # appendix_conditions:
 #   B1:
 #     arm: B1
@@ -109,10 +113,10 @@ conditions:
 #     description: "Ablation: update trust every round, even on unanimous panels."
 #   B8-placebo:
 #     arm: B8
-#     description: "Six-arm target (pending WP-13): verdicts shuffled within debate; trust-weighted."
+#     description: "Six-arm target (pending WP-18): verdicts shuffled within debate; trust-weighted."
 #   B8-oracle:
 #     arm: B8
-#     description: "Six-arm target (pending WP-13): gold evidence; trust-weighted; verifier upper bound."
+#     description: "Six-arm target (pending WP-18): gold evidence; trust-weighted; verifier upper bound."
 #   injection:
 #     arm: injection
 #     description: "Injected-confidence stress test — consensus pressure on minority agents."

@@ -1,13 +1,18 @@
 """CLI: run the experiment matrix (conditions x datasets x seeds).
 
-    python scripts/run_matrix.py --dry-run
-    python scripts/run_matrix.py --limit 10 --datasets gpqa,mmlu_pro --arms B3,B8
+    python scripts/run_matrix.py --dry-run                     # 24 Core rows, 2 seeds
+    python scripts/run_matrix.py --limit 10 --datasets gpqa_main,mmlu_pro --arms B3,B8
     python scripts/run_matrix.py --phase final --out results/matrix-final
+    # after WP-18 (conditional Full plan):
+    python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run
 
-The matrix is read from ``configs/experiments.yaml``. Each row is one
-``trustcal.runner.run`` call; successful rows are aggregated into
-``summary.json`` and ``table.md`` under ``--out``. A failed row is reported but
-does not stop the remaining rows; the process exits nonzero if any row failed.
+The default matrix is the frozen Core plan in ``configs/experiments.yaml``:
+4 conditions x 3 datasets x 2 seeds = 24 rows. After WP-18, the separate Full
+plan is read with ``--config configs/experiments_full.yaml``; do not add the
+six-arm target to the Core config. Each row is one ``trustcal.runner.run`` call;
+successful rows are aggregated into ``summary.json`` and ``table.md`` under
+``--out``. A failed row is reported but does not stop the remaining rows; the
+process exits nonzero if any row failed.
 
 P0-10: ``sample_caps.main`` is the per-condition cap the P0 gate multiplies over
 every dataset, while ``dataset_caps`` sets the cap actually planned for a
@@ -227,7 +232,7 @@ def _run_dir(cfg: RunConfig) -> Path:
 
 
 def _aggregate(rows: list[dict]) -> list[dict]:
-    """Mean CCR/MPR + 95% bootstrap CI per condition x dataset (3 seeds)."""
+    """Mean CCR/MPR + 95% bootstrap CI per condition x dataset (over seeds)."""
     groups: dict[tuple[str, str], list[dict]] = {}
     for row in rows:
         groups.setdefault((row["condition"], row["dataset"]), []).append(row)
@@ -292,7 +297,7 @@ def main() -> int:
     parser.add_argument("--config", default="configs/experiments.yaml", help="matrix YAML")
     parser.add_argument("--out", default="results/matrix", help="output root for runs + summary files")
     parser.add_argument("--limit", type=_positive_int, default=None, help="questions per run (overrides sample_caps)")
-    parser.add_argument("--datasets", default=None, help="comma-separated filter, e.g. gpqa,mmlu_pro")
+    parser.add_argument("--datasets", default=None, help="comma-separated filter, e.g. gpqa_main,mmlu_pro")
     parser.add_argument("--arms", default=None, help="comma-separated filter, e.g. B3,B8")
     parser.add_argument("--seed", type=int, default=None, help="run only this seed")
     parser.add_argument("--phase", choices=PHASES, default=None, help="model stack; defaults to config phase")

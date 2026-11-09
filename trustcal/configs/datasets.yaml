@@ -100,6 +100,11 @@ datasets:
     split: "test"
     revision: "b189ec765aa7ed75c8acfea42df31fdae71f97be"
 
+# Loader defaults, NOT the matrix plan. `run_matrix.py` reads the seed list and
+# caps from configs/experiments.yaml (`seeds: [1, 2]`; `sample_caps.main: 400`;
+# per-dataset caps 400/400/200). Keep these values for direct loaders/repro and
+# treat `experiments.yaml` as the matrix source; edit both only with a
+# pre-registration version.
 seeds: [1, 2, 3]
 rounds: 3
 
