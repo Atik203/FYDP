@@ -78,7 +78,7 @@ export function Idea1Content() {
             <strong>514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release).</strong> The core is wired:
             options in prompts, parser/scorer, trust simplex projection, verifier
             interface, claim-domain routing, endpoints, and manifest/resume.
-            Current report evidence: 60-pp report, 18-pp journal, 0 undefined
+            Current report evidence: 61-pp report, 17-pp journal, 0 undefined
             references. This is engineering readiness, <strong>not an efficacy result</strong>.
             Everything below is planned work unless it is explicitly dated as
             done.

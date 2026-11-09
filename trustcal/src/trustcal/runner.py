@@ -843,8 +843,11 @@ def run(
 
     probe: _RetrieverProbe | None = None
     retriever = None
-    if cfg.arm in ("B2", "B4"):
+    if cfg.arm == "B2":
         probe = _RetrieverProbe(_retriever(cfg, partition=False))
+        retriever = probe
+    elif cfg.arm == "B4":
+        probe = _RetrieverProbe(_retriever(cfg))
         retriever = probe
     elif cfg.arm == "B8":
         probe = _RetrieverProbe(_retriever(cfg))

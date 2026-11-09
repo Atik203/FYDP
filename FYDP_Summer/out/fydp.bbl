@@ -100,6 +100,20 @@ D.~Zhang, Z.-Z. Li, M.-L. Zhang, J.~Zhang, Z.~Liu, Y.~Yao, H.~Xu, J.~Zheng,
 \newblock {\em IEEE Transactions on Pattern Analysis and Machine Intelligence},
   48(3):3335--3354, 2026.
 
+\bibitem{estornell2024multillm}
+Andrew Estornell and Yang Liu.
+\newblock Multi-{LLM} debate: Framework, principals, and interventions.
+\newblock In {\em Advances in Neural Information Processing Systems},
+  volume~38, 2024.
+
+\bibitem{sharma2024sycophancy}
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
+  Samuel~R. Bowman, et~al.
+\newblock Towards understanding sycophancy in language models.
+\newblock In {\em The Twelfth International Conference on Learning
+  Representations}, 2024.
+\newblock arXiv:2310.13548.
+
 \bibitem{li2024survey}
 Xinyi Li, Sai Wang, Siqi Zeng, Yu~Wu, and Yi~Yang.
 \newblock A survey on {LLM}-based multi-agent systems: workflow,
@@ -193,139 +207,11 @@ Yubo Wang, Xueguang Ma, Ge~Zhang, Yuansheng Ni, Abhranil Chandra, Shiguang Guo,
   and Benchmarks Track)}, 2024.
 \newblock arXiv:2406.01574.
 
-\bibitem{yao2025peacemaker}
-Binwei Yao, Chao Shang, Wanyu Du, Jianfeng He, Ruixue Lian, Yi~Zhang, Hang Su,
-  Sandesh Swamy, and Yanjun Qi.
-\newblock Peacemaker or troublemaker: How sycophancy shapes multi-agent debate.
-\newblock {\em arXiv preprint arXiv:2509.23055}, 2025.
-
-\bibitem{wynn2025talk}
-Andrea Wynn, Harsh Satija, and Gillian~K. Hadfield.
-\newblock Talk isn't always cheap: Understanding failure modes in multi-agent
-  debate.
-\newblock {\em arXiv preprint arXiv:2509.05396}, 2025.
-
-\bibitem{chen2024reconcile}
-Justin Chih-Yao Chen, Swarnadeep Saha, and Mohit Bansal.
-\newblock {R}e{C}oncile: Round-table conference improves reasoning via
-  consensus among diverse {LLM}s.
-\newblock In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, {\em
-  Proceedings of the 62nd Annual Meeting of the Association for Computational
-  Linguistics (Volume 1: Long Papers)}, pages 7066--7085, Bangkok, Thailand,
-  August 2024. Association for Computational Linguistics.
-
-\bibitem{sharma2024sycophancy}
-Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
-  Samuel~R. Bowman, et~al.
-\newblock Towards understanding sycophancy in language models.
-\newblock In {\em The Twelfth International Conference on Learning
-  Representations}, 2024.
-\newblock arXiv:2310.13548.
-
-\bibitem{wang2025learning}
-Haotian Wang, Xiyuan Du, Weijiang Yu, Qianglong Chen, Kun Zhu, Zheng Chu, Lian
-  Yan, and Yi~Guan.
-\newblock Learning to break: Knowledge-enhanced reasoning in multi-agent debate
-  system.
-\newblock {\em Neurocomputing}, 618:129063, 2025.
-
-\bibitem{liu2025breaking}
-Yexiang Liu, Jie Cao, Zekun Li, Ran He, and Tieniu Tan.
-\newblock Breaking mental set to improve reasoning through diverse multi-agent
-  debate.
-\newblock In Y.~Yue, A.~Garg, N.~Peng, F.~Sha, and R.~Yu, editors, {\em
-  International Conference on Learning Representations}, 2025.
-
-\bibitem{li-etal-2024-improving-multi}
-Yunxuan Li, Yibing Du, Jiageng Zhang, Le~Hou, Peter Grabowski, Yeqing Li, and
-  Eugene Ie.
-\newblock Improving multi-agent debate with sparse communication topology.
-\newblock In {\em Findings of the Association for Computational Linguistics:
-  EMNLP 2024}, pages 7281--7294, Miami, Florida, USA, November 2024.
-  Association for Computational Linguistics.
-
-\bibitem{gomez2026multiagent}
-Susana G\'{o}mez~\'{A}lvarez, Alejandro Mozo~Quesada, Tom\'{a}s Navarro, Sergio
-  G\'{a}lvez~Rojas, and Francisco L\'{o}pez~Valverde.
-\newblock Multi-agent debate system based on large language models: structured
-  deliberation and validation in satellite communications.
-\newblock {\em Journal of Intelligent Information Systems}, August 2026.
-
-\bibitem{zhou2025adaptive}
-Y.~Zhou and Y.~Chen.
-\newblock Adaptive heterogeneous multi-agent debate for enhanced educational
-  and factual reasoning in large language models.
-\newblock {\em Journal of King Saud University - Computer and Information
-  Sciences}, 37:330, November 2025.
-
-\bibitem{yang2025comprehensive}
-Wenli Yang, Lilian Some, Michael Bain, and Byeong Kang.
-\newblock A comprehensive survey on integrating large language models with
-  knowledge-based methods.
-\newblock {\em Knowledge-Based Systems}, 318:113503, 2025.
-
-\bibitem{cemri2025why}
-Mert Cemri, Melissa~Z. Pan, Shuyi Yang, Lakshya~A. Agrawal, Bhavya Chopra,
-  Rishabh Tiwari, Kurt Keutzer, Aditya Parameswaran, Dan Klein, Kannan
-  Ramchandran, Matei Zaharia, Joseph~E. Gonzalez, and Ion Stoica.
-\newblock Why do multi-agent {LLM} systems fail?
-\newblock In {\em Advances in Neural Information Processing Systems}, 2025.
-\newblock Datasets and Benchmarks Track.
-
-\bibitem{estornell2024multillm}
-Andrew Estornell and Yang Liu.
-\newblock Multi-{LLM} debate: Framework, principals, and interventions.
-\newblock In {\em Advances in Neural Information Processing Systems},
-  volume~38, 2024.
-
 \bibitem{phan2026hle}
 Long Phan, Alice Gatti, Ziwen Han, Nathaniel Li, Josephina Hu, et~al.
 \newblock A benchmark of expert-level academic questions to assess {AI}
   capabilities.
 \newblock {\em Nature}, 649:1139--1146, 2026.
 \newblock arXiv:2501.14249; Humanity's Last Exam.
-
-\bibitem{petrov2025brokenmath}
-Ivo Petrov, Jasper Dekoninck, and Martin Vechev.
-\newblock {BrokenMath}: A benchmark for sycophancy in theorem proving with
-  {LLM}s.
-\newblock {\em arXiv preprint arXiv:2510.04721}, 2025.
-
-\bibitem{dekoninck2026matharena}
-Jasper Dekoninck, Nikola Jovanovic, Tim Gehrunger, K\'{a}ri R\"{o}gnvaldsson,
-  Ivo Petrov, Chenhao Sun, and Martin~T. Vechev.
-\newblock Beyond benchmarks: {MathArena} as an evaluation platform for
-  mathematics with {LLM}s.
-\newblock {\em arXiv preprint arXiv:2605.00674}, 2026.
-
-\bibitem{subramaniam2025multiagent}
-Vighnesh Subramaniam, Yilun Du, Joshua~B. Tenenbaum, Antonio Torralba, Shuang
-  Li, and Igor Mordatch.
-\newblock Multiagent finetuning: Self improvement with diverse reasoning
-  chains.
-\newblock In {\em The Thirteenth International Conference on Learning
-  Representations}, 2025.
-
-\bibitem{guo2017calibration}
-Chuan Guo, Geoff Pleiss, Yu~Sun, and Kilian~Q. Weinberger.
-\newblock On calibration of modern neural networks.
-\newblock In {\em Proceedings of the 34th International Conference on Machine
-  Learning}, volume~70 of {\em Proceedings of Machine Learning Research}, pages
-  1321--1330, 2017.
-
-\bibitem{koehn2004statistical}
-Philipp Koehn.
-\newblock Statistical significance tests for machine translation evaluation.
-\newblock In {\em Proceedings of the 2004 Conference on Empirical Methods in
-  Natural Language Processing}, pages 388--395, Barcelona, Spain, July 2004.
-  Association for Computational Linguistics.
-
-\bibitem{wang2023selfconsistency}
-Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc~V. Le, Ed~H. Chi, Sharan Narang,
-  Aakanksha Chowdhery, and Denny Zhou.
-\newblock Self-consistency improves chain of thought reasoning in language
-  models.
-\newblock In {\em The Eleventh International Conference on Learning
-  Representations}, 2023.
 
 \end{thebibliography}

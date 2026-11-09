@@ -1,4 +1,4 @@
-# Report Status — FYDP II
+# Report Status — Full Project Report
 
 **Updated:** 9 November 2026 · **Base:** `main` = `dev` = `bacc59c` (P0 release `7f2c11f`; tags `p0-gate`, `p0-release`).
 
@@ -22,7 +22,7 @@
 - **Gate 0: 10/10 debates, 90/90 positions, 370.8 s mean**, 21.5 s stdev, approximately USD 4.29.
 - **Final stack:** 69.73GB pinned weights (two FP8 + one AWQ); not smoke-tested.
 - **B7:** optional appendix ceiling, three GPT-6 Luna samples per question; not in Core/Full.
-- **Report:** 60 pages, 0 errors/undefined refs; 15 overfull and 103 underfull boxes.
+- **Report:** 61 pages, 0 errors/undefined refs; 15 overfull and 108 underfull boxes.
 
 ## Figure status
 
@@ -41,7 +41,7 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 ```
 
-Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **60 pages, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 15 overfull boxes (most at 1.9--65.5pt in long table/paragraph lines) and 103 underfull boxes, mostly narrow table cells.
+Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **61 pages, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 15 overfull boxes (most at 1.9--65.5pt in long table/paragraph lines) and 108 underfull boxes, mostly narrow table cells.
 
 ## Remaining placeholders / actions
 

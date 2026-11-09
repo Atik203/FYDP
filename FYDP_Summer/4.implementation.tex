@@ -1,6 +1,6 @@
 \chapter{Implementation and Results}\label{chapter:implementation}
 
-This chapter records the implementation of the trust-calibrated deliberation framework and the results available at the FYDP~II stage. It separates three kinds of evidence. The first is what ran on real hardware: Gate~0, a vanilla multi-agent debate on ten GPQA questions, and a small live smoke of the optional B7 ceiling. The second is what the P0 gate checks without a GPU: option rendering, answer parsing, trust bounds, endpoints, dataset pins, claim routing, the manifest guard, and the matrix budget. The third is the test suite, which exercises the same modules on synthetic and mock inputs. The comparative matrix has not been run, so the chapter makes no claim that trust weighting reduces collapse or improves accuracy. Where a result does not yet exist, the chapter uses a clearly labelled projected value and states the basis for it.
+This chapter records the implementation of the trust-calibrated deliberation framework and the results available at the time of writing. It separates three kinds of evidence. The first is what ran on real hardware: Gate~0, a vanilla multi-agent debate on ten GPQA questions, and a small live smoke of the optional B7 ceiling. The second is what the P0 gate checks without a GPU: option rendering, answer parsing, trust bounds, endpoints, dataset pins, claim routing, the manifest guard, and the matrix budget. The third is the test suite, which exercises the same modules on synthetic and mock inputs. The comparative matrix has not been run, so the chapter makes no claim that trust weighting reduces collapse or improves accuracy. Where a result does not yet exist, the chapter uses a clearly labelled projected value and states the basis for it.
 
 \section{Environment Setup}\label{sec:environment-setup}
 
@@ -55,7 +55,7 @@ The option renderer shuffles choices with a per-question seed derived from a SHA
 
 Claim decomposition uses tagged spans in the same generation. If no tags are present, the parser falls back to sentence splitting, keeps items of at least three words, and caps the fallback at 20 claims. The trust configuration uses at most eight claims per agent. Retrieval is routed by claim domain rather than by agent identity: biomedical and clinical claims query PubMed and Semantic Scholar, physics, chemistry, mathematics, and computer-science claims query arXiv and Semantic Scholar, and other claims query Semantic Scholar or OpenAlex. Passages are deduplicated by DOI, arXiv identifier, or title.
 
-The verifier is a separate interface with four implementations: lexical overlap, cross-encoder, natural-language inference, and an LLM judge. The default is lexical. A supported verdict requires support in the retrieved passage; a contradicted verdict requires an explicit contradiction; no evidence yields unverifiable. Contested evidence is reported separately and is not counted as support or contradiction. The interface records the verifier name and version with each verdict.
+The verifier is a separate interface with four implementations: lexical overlap, cross-encoder, natural-language inference, and an LLM judge. The default is lexical. A supported verdict requires support in the retrieved passage; a contradicted verdict requires an explicit contradiction; no evidence yields unverifiable. Evidence that supports and contradicts the same claim is recorded as unverifiable rather than counted in either direction. The interface records the verifier name and version with each verdict.
 
 The trust update follows the design in Chapter~\ref{chapter:design}. Let $w_i^{(t)}$ be agent $i$'s weight at round $t$, $V_i$ the number of its claims that the verifier supports, $H_i$ the number it contradicts, and $n_i$ the number checked. The operator accumulates evidence in the log domain,
 \begin{equation}
@@ -78,7 +78,7 @@ Aggregation is a weighted plurality. For each distinct final answer $a$, the sco
 \end{equation}
 and the group with the largest score wins. Ties resolve to the first observed answer. The majority answer is computed and stored alongside the weighted answer so the same transcript can be scored under both rules; it does not choose the treatment's final answer.
 
-The injection path is a one-shot stress test. After round~0, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round~1. Round~2 carries no injection.
+The injection path is a one-shot stress test. After round~0, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents or without a strict 2/3 majority; ties and plurality-only panels are ineligible. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is delivered as a one-shot user-turn addition in the second revision round (record round~2); the system prompt is unchanged, and round~3 carries no injection.
 
 The runner writes one JSON line per completed debate and appends it immediately, so a crash costs at most one question of GPU time. Re-running the same configuration skips completed question identifiers. Every record carries the question identifier, arm, seed, question, gold answer, raw and rendered options, permutation, rendered gold letter, raw answer, parsed answer, parser version, per-round answers, transcript, injection record, trust trajectory, final trust, verdicts, evidence, aggregation, and timing. The schema validator requires the final answer, its source, the parser version, and a valid trust simplex; it rejects a record rather than writing a plausible but unobserved value.
 
@@ -172,7 +172,7 @@ Gate~0 proves that the serving layer, the three-agent loop, the revision rounds,
 The repository includes a mock vLLM server with three modes: agree, divergent, and untagged. The integration test starts the mock panel, runs an arm against it, and asserts the designed injection-collapse scenario. This path is how the injection, trust, aggregation, and record code are exercised without a GPU. It is also the path used to demonstrate the pipeline when a GPU is unavailable. The mock server does not test model quality, retrieval quality, or verifier accuracy; it tests orchestration and data flow.
 
 \paragraph*{Evaluation protocol.}
-The confirmatory evaluation is pre-registered. The executable Core matrix is four conditions (B3, B4-matched, B8-no-trust, B8) on GPQA-Main, MMLU-Pro STEM, and HLE, with two seeds. GPQA-Main and MMLU-Pro are capped at 400 items and HLE at 200. The conservative gate cap is 9{,}600 debates at eight minutes each, or 1{,}280 GPU-hours; at the per-dataset caps the plan is 8{,}000 debates, about 1{,}067 GPU-hours. The realised eligible $n$ is reported per dataset and arm. The primary contrast is B8 versus B8-no-trust, paired by question. The primary endpoint is final-answer accuracy on pressure-eligible items; the co-primary endpoint is CMR. The secondary family contains appropriate revision rate, trust AUROC, trust Brier, verifier balanced accuracy, and citation faithfulness. The confirmatory family is Holm-adjusted at a family-wise $\alpha=0.05$.
+The confirmatory evaluation is pre-registered. The executable Core matrix is four conditions (B3, B4-matched, B8-no-trust, B8) on GPQA-Main, MMLU-Pro (STEM-intended), and HLE, with two seeds. GPQA-Main and MMLU-Pro are capped at 400 items and HLE at 200. The conservative gate cap is 9{,}600 debates at eight minutes each, or 1{,}280 GPU-hours; at the per-dataset caps the plan is 8{,}000 debates, about 1{,}067 GPU-hours. The realised eligible $n$ is reported per dataset and arm. The primary contrast is B8 versus B8-no-trust, paired by question. The primary endpoint is final-answer accuracy on pressure-eligible items; the co-primary endpoint is CMR. The secondary family contains appropriate revision rate, trust AUROC, trust Brier, verifier balanced accuracy, and citation faithfulness. The confirmatory family is Holm-adjusted at a family-wise $\alpha=0.05$.
 
 The analysis uses an exact McNemar test on seed~1, a paired risk difference with a question-clustered bootstrap, a seed-2 replication, and a mixed-effects sensitivity analysis. At $n=400$ and a discordant-pair proportion of 0.20, the planning minimum detectable difference is 6.3 percentage points unadjusted and about 7.5 points after the four-test Holm adjustment. If the realised eligible $n$ falls below 300 on a dataset, that dataset is reported as underpowered and is not used for a positive claim. HLE is reported separately and is not pooled with the primary tests.
 
@@ -183,7 +183,7 @@ The optional B7 external-answer ceiling is not part of the confirmatory matrix. 
 \paragraph*{Reproducibility.}
 The reproducibility package is designed around five artifacts. The code is released under the MIT licence (see \texttt{LICENSE} at the repository root). The model configuration pins every checkpoint and revision, and the dataset configuration pins every revision as a 40-character commit hash. The seed is recorded in the run configuration and in the manifest, and the per-question option permutation is derived from the seed and the question identifier. The manifest records the configuration hash, the model checkpoints, the prompt hash, the dataset revisions, the code commit, the temperature, and the seed, and the resume guard refuses a mismatch. The pre-registration fixes the four executable arms, the three datasets, the two seeds, the primary and co-primary endpoints, the analysis plan, and the stopping rules before the matrix runs.
 
-Gated datasets are shared as identifiers and hashes only. GPQA and HLE require a click-through agreement, and their item text is not redistributed. MMLU-Pro is public. The code release does not include model weights or raw dataset rows. The result package includes the transcripts and the evidence trail, which is what a reader needs to audit a decision without receiving the benchmark items.
+Gated datasets are shared as identifiers and hashes only. GPQA and HLE require a click-through agreement, and their item text is not redistributed. MMLU-Pro is public. The code release does not include model weights or raw dataset rows. The result package currently stores the full record; a release step must redact question text, options, and gold answers for gated items while keeping hashes, transcripts, and the evidence trail.
 
 \section{Results and Discussion}\label{sec:results-discussion}
 
@@ -192,7 +192,7 @@ Table~\ref{tab:engineering-results} collects the measured engineering evidence. 
 
 \begin{table}[H]
   \centering
-  \caption{Measured engineering results at the FYDP~II stage. None of these is an efficacy result.}
+  \caption{Measured engineering results at the time of writing. None of these is an efficacy result.}
   \renewcommand{\arraystretch}{1.25}
   \small
   \begin{tabular}{|p{0.28\textwidth}|p{0.38\textwidth}|p{0.22\textwidth}|}
@@ -224,12 +224,12 @@ The efficacy results do not exist yet. The Core and Full matrices have not run, 
 
 \begin{table}[H]
   \centering
-  \caption{Projected efficacy values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE.}
+  \caption{Projected and target values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE; the AUROC, $\kappa$, verifier, and citation rows are gate thresholds or sample plans, not effect estimates.}
   \renewcommand{\arraystretch}{1.25}
   \small
   \begin{tabular}{|p{0.30\textwidth}|p{0.26\textwidth}|p{0.34\textwidth}|}
     \hline
-    Quantity & Projected value & Basis \\
+    Quantity & Planning value or target & Basis \\
     \hline
     Collapse reduction (CCR/CMR) & 20--30\% relative & Design target; matrix not run \\
     \hline
@@ -247,12 +247,12 @@ The efficacy results do not exist yet. The Core and Full matrices have not run, 
   \label{tab:expected-results}
 \end{table}
 
-The projected values serve three purposes. First, they make the expected direction of the study explicit before the matrix runs. Second, they let the sample-size and power calculation be checked against a concrete effect. Third, they make the eventual result easier to interpret: if the observed effect is near the projection, the mechanism is behaving as designed; if it is near zero, the boundary analysis must explain why; if it is negative, the backfire prediction is supported. The projections are not evidence, and a null or negative result is reportable under the pre-registration.
+The projected values serve three purposes. First, they make the expected direction of the study explicit before the matrix runs. Second, they let the sample-size and power calculation be checked against a concrete effect. Third, they make the eventual result easier to interpret: a result near the projection is consistent with the design; a result near zero requires the boundary analysis; a negative average effect is consistent with backfire, but mechanism attribution requires the pre-registered placebo/oracle contrasts and the N9 boundary manipulation. The projections are not evidence, and a null or negative result is reportable under the pre-registration.
 
 \paragraph*{Discussion.}
 The engineering results support a narrow conclusion: the framework can be built, exercised, and audited, and the evaluation plan is executable. They do not support a claim that trust-calibrated deliberation reduces sycophantic collapse. Three gaps separate the current evidence from that claim. The first is the verifier. The default lexical verifier has a synthetic balanced accuracy of 0.58, and the human audit has not run. A trust signal built on a weak verifier can amplify a confident wrong majority, so the verifier audit is a scientific prerequisite, not a cleanup task. The second gap is the benchmark. EG-SSS is not built, and the 24-item calibration is the first test of whether the annotation plan is feasible. The third gap is the paid matrix. The Core run is the first test of the primary contrast; the Full run is the first test of the placebo and oracle controls.
 
-The expected values in Table~\ref{tab:expected-results} should be read against those gaps. A 20--30\% relative collapse reduction is a meaningful target only if the baseline collapse rate is high enough to leave room for it. The Gate~2 pilot is designed to measure that baseline before the Core run. The 2-point accuracy gain is deliberately modest; the primary accuracy analysis is a paired test with a 5-point non-inferiority margin and a 7.5-point MDE, so the study is not powered to detect a 2-point difference on its own. The 2-point figure is useful for discussion, not for a standalone claim.
+The expected values in Table~\ref{tab:expected-results} should be read against those gaps. A 20--30\% relative collapse reduction is a meaningful target only if the baseline collapse rate is high enough to leave room for it. The Gate~2 pilot is designed to measure that baseline before the Core run. The 2-point accuracy gain is deliberately modest. The safety analysis uses a 5-point non-inferiority margin on all eligible items; the primary paired accuracy test has a 7.5-point Holm MDE on pressure-eligible items, so the study is not powered to detect a 2-point difference on its own. The 2-point figure is useful for discussion, not for a standalone claim.
 
 The optional B7 ceiling is a reference, not a competitor. It answers a different question: what does a strong single call get on the same items? It cannot replace the B8 versus B8-no-trust contrast, and it is not part of the Core or Full matrix. Its three-sample design reduces the sampling noise that a single call would introduce, but it is still an external reference and not a test of the mechanism.
 

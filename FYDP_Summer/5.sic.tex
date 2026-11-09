@@ -22,7 +22,7 @@ Cross-encoders rerank passages returned by retrieval. The implementation uses a 
 
 \subsection{Hardware Standards}
 
-Experiments are conducted on a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned final checkpoints are two FP8 models and one AWQ model, totalling 69.73GB, so they fit on one 96GB card with room for the KV cache.
+The final experiments are planned for a single NVIDIA RTX PRO 6000 Blackwell GPU with 96 GB GDDR7 memory; Gate~0 ran on the 48 GB RTX A6000 development card. Memory capacity and architecture were the key considerations. The development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B) run as 4-bit checkpoints on the 48GB development card. The final models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B) total about 77 billion parameters. The pinned final checkpoints are two FP8 models and one AWQ model, totalling 69.73GB. The offline budget check passes, but the 96 GB hardware smoke has not run, so the final stack has not been validated on the card.
 
 An initial alternative was the RTX A6000 80GB. It has enough memory for the development stack at 4-bit precision and rents at about \$0.263 per hour, but it is an Ampere card: it cannot run the FP8 final checkpoints and would require a fully 4-bit final stack. Faster still is the H100 80GB; however it costs roughly double as much and offers none of what our framework requires. Finally, the L40S at 48 GB and the consumer RTX 5090 at 32 GB do not have enough memory to hold the full final model trio. Thus the RTX PRO 6000 provides enough memory for the pinned stack, supports FP8, and can be rented within the student budget. To stage models prior to moving them to the GPU the host computer needs at least 64 GB of system RAM and NVMe disk storage.
 
@@ -36,7 +36,7 @@ Each source of evidence is accessed through its public REST interface: PubMed E-
 
 \subsection{Economic Constraint}
 
-The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in and a Full-run top-up of USD 900--1,200 over the Core envelope. Retrieval APIs are free at their public tiers, GPQA and MMLU-Pro are public, and the code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
+The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in; the pilot is a separate USD 50--100. The Full run has a separate Final-stack budget envelope of USD 900--1,200. Retrieval APIs are free at their public tiers; MMLU-Pro is public, while GPQA and HLE are gated and not redistributed. The code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
 
 \subsection{Environmental Constraint}
 
@@ -65,7 +65,7 @@ The main sustainability choice is inference-only operation on quantized checkpoi
 
 \section{Cost Analysis}
 
-The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run, including pilot and sweep, at USD 420--580 all-in, and a Full-run top-up of USD 900--1,200 over the Core envelope. The Full run is the six-arm target: 36 runs at 300 questions per dataset, or 10,800 debates, under a 1,440 GPU-h envelope if B8-oracle is defined as gold-answer trust; the count is recomputed if WP-18 defines it as gold-evidence-only on EG-SSS. The Core run is a prefix of the Full run only if the model stack matches. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
+The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run at USD 420--580 all-in; the pilot is a separate USD 50--100. The Full run has a separate Final-stack budget envelope of USD 900--1,200. The Full run is the six-arm target: 36 runs at 300 questions per dataset, or 10,800 debates, under a 1,440 GPU-h envelope if B8-oracle is defined as gold-answer trust; the count is recomputed if WP-18 defines it as gold-evidence-only on EG-SSS. The Core run is a prefix of the Full run only if the model stack matches. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
 
 \begin{center}
     \begin{table}[ht]
@@ -78,9 +78,9 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Executable matrix GPU time                         & 1,067--1,280 GPU-h               & within Core-run envelope  \\
             \hline
-            Core run (matrix, pilot, sweep)                      & 1,160 GPU-h planning             & 420--580 all-in     \\
+            Core run (matrix)                                    & 1,280 GPU-h cap; 1,067 planned   & 420--580 all-in     \\
             \hline
-            Full run (six arms, 300 per dataset)          & 36 runs; 1,440 GPU-h envelope    & 900--1,200 top-up   \\
+            Full run (six arms, 300 per dataset)          & 36 runs; 1,440 GPU-h envelope    & 900--1,200 envelope \\
             \hline
             Retrieval APIs (PubMed, arXiv, S2, OpenAlex)        & public tiers                     & 0                   \\
             \hline
@@ -88,7 +88,7 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Storage and bandwidth                               & included in the envelopes        & included            \\
             \hline
-            \textbf{Planning range}                             &                                  & \textbf{420--1,780} \\
+            \textbf{Planning range (Core + Full)}               &                                  & \textbf{1,320--1,780} \\
             \hline
         \end{tabular}
         \label{tab:budget}
@@ -108,16 +108,16 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Executable P0 matrix                   & 1,067--1,280       & 24 runs; gate cap or per-dataset caps \\
             \hline
-            Core run (pilot and sweep included)     & 1,160 planning     & experiment-plan Core-run scenario        \\
+            Core run (matrix)                      & 1,280 cap; 1,067 planned & 24 runs; gate cap or per-dataset caps \\
             \hline
-            Full run                         & 1,440 (36 runs)       & USD 900--1,200 top-up over Core \\
+            Full run                         & 1,440 (36 runs)       & USD 900--1,200 envelope; separate Final stack \\
             \hline
         \end{tabular}
         \label{tab:budget-phase}
     \end{table}
 \end{center}
 
-Storage and bandwidth are included in the scenario envelopes rather than billed separately. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are public; HLE and GPQA are gated and are not redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
+Storage and bandwidth are included in the scenario envelopes rather than billed separately. The retrieval APIs are free at their public tiers, but rate limits can increase wall-clock time. MMLU-Pro~\cite{wang2024mmlupro} is public (MIT); GPQA~\cite{rein2024gpqa} is gated (CC BY 4.0) and HLE is gated (MIT). Neither gated set is redistributed. Printing (approximately \$15) and internet connectivity are treated as fixed and excluded from the compute envelope. Overleaf is provided to the team, so it adds no cost.
 
 An alternative budget using the RTX A6000 80GB was also considered. At about \$0.263 per hour, the same 1,280 GPU-h matrix would cost about \$337 in GPU time, before storage and overhead. The A6000 is cheaper but has no FP8 path, so the final stack would have to be fully 4-bit and the final-stack replication would not exercise the pinned FP8 checkpoints. The RTX PRO 6000 was chosen because the Blackwell FP8 path keeps the pipeline simple and avoids tighter quantization or sequential model loading.
 
@@ -148,7 +148,7 @@ There is no revenue stream anticipated for this project. The project is an acade
     \end{table}
 \end{center}
 
-A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run top-up about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
+A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run budget envelope about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
 
 
 \section{Complex Engineering Problem}
@@ -181,11 +181,11 @@ This project required knowledge of multiple areas including machine learning, na
 
 \subsubsection{P2: Range of Conflicting Requirements}
 
-P2 is covered. The project needed to meet multiple competing requirements. Accuracy competed with latency and cost. More rounds improved the signal but increased both the inference time and the GPU bill. Strong weighting would limit diversity due to trust calibration. The need to cover evidence competed with API rate limits. Therefore, the team needed to resolve these together. Round caps and simplex bounds were established, and verdicts are conservatively resolved. Thus, none of the competing needs dominate.
+P2 is covered. The project needed to meet multiple competing requirements. Accuracy competed with latency and cost. The design assumes that more rounds would strengthen the signal while increasing inference time and GPU cost; the N9 ablations test that assumption. Strong weighting would limit diversity due to trust calibration. The need to cover evidence competed with API rate limits. Therefore, the team needed to resolve these together. Round caps and simplex bounds were established, and verdicts are conservatively resolved. Thus, none of the competing needs dominate.
 
 \subsubsection{P3: Depth of Analysis}
 
-P3 is covered. There is no textbook solution to the problem. The design defines comparative experiments against majority voting, MoA, iMAD, and DebUnc. It also defines metrics for the failure modes: final-answer accuracy, correct-minority retention, collapse under pressure, appropriate revision, and trust calibration. The injection point adds a controlled wrong-consensus condition. The matrix is pre-registered but has not been run, so the depth of the design is what supports P3 at mid-project, not completed comparative results.
+P3 is covered. There is no textbook solution to the problem. The design defines the executable Core controls (B3, B4-matched, B8-no-trust) and the proposed B8; MoA, iMAD, and DebUnc are related baselines, not Core arms. It also defines metrics for the failure modes: final-answer accuracy, correct-minority retention, collapse under pressure, appropriate revision, and trust calibration. The injection point adds a controlled wrong-consensus condition. The matrix is pre-registered but has not been run, so the depth of the design is what supports P3, not completed comparative results.
 
 \subsubsection{P4: Familiarity of Issues}
 
@@ -201,7 +201,7 @@ P6 is not covered. The project does not have any external stakeholders. The only
 
 \subsubsection{P7: Interdependence}
 
-P7 is covered. The tight interdependencies between the Confidence Gate, Orchestrator, Claim Decomposer, Retrieval Subsystem, Trust Updater and Aggregator make it a candidate for P7. This means that if there is an error in the Retrieval Subsystem, this will be reflected in both Verdicts and ultimately the Final Answer through the Trust Score. Because of these interdependencies, P7 has been marked as "covered" with the addition of the Failure-Isolation Rule identified in Section 3.1.1.
+P7 is covered. The tight interdependencies between the Confidence Gate, Orchestrator, Claim Decomposer, Retrieval Subsystem, Trust Updater and Aggregator make it a candidate for P7. This means that if there is an error in the Retrieval Subsystem, this will be reflected in both Verdicts and ultimately the Final Answer through the Trust Score. Because of these interdependencies, P7 is marked as covered; the fault-tolerance requirement is stated in Section 3.1.1.
 
 Table~\ref{tab:knowledge} details the profile. The paragraphs below explain
 each K for this project and why it is covered or not.
@@ -244,7 +244,7 @@ each K for this project and why it is covered or not.
 
 \paragraph{K4: Specialist knowledge} K4 is covered. The main areas are large language models, multi-agent debate, retrieval-augmented generation (RAG), and sycophancy. These areas drive how claims are divided, how evidence is retrieved, and how trust is computed.
 
-\paragraph{K5: Engineering methods} K5 is covered. An experimental methodology is used with controlled variables. The analysis plan specifies confidence intervals and baseline comparisons. The comparative runs are not yet complete; the evidence at mid-project is the implementation, the test suite, and Gate~0.
+\paragraph{K5: Engineering methods} K5 is covered. An experimental methodology is used with controlled variables. The analysis plan specifies confidence intervals and baseline comparisons. The comparative runs are not yet complete; the evidence is the implementation, the test suite, and Gate~0.
 
 \paragraph{K6: Computational methods} K6 is covered. Our main application tools are Python, PyTorch, vLLM (to serve the model), and FastAPI (to serve the dashboard). Sentence-transformers (to re-rank passages) and Git (for version control) complete the suite of applications.
 
@@ -285,7 +285,7 @@ A1 is covered. Three model family sources; Four Literature API's; Six team membe
 
 \subsubsection{A2: Level of Interaction}
 
-A2 is covered. The system makes heavy use of the outside world. Every round of debating calls three external model API endpoints and three Literature API endpoints, and there is communication to/from the rented cloud GPU. Team communication occurs via the shared repository and weekly meeting. High degree of interactivity = why A2 is labeled as covered.
+A2 is covered. The system makes heavy use of the outside world. Each round calls three local vLLM model endpoints; each claim is routed to a two-source pair (PubMed/Semantic Scholar, arXiv/Semantic Scholar, or Semantic Scholar/OpenAlex), and there is communication to and from the rented cloud GPU. Team communication occurs via the shared repository and weekly meeting. High degree of interactivity = why A2 is labeled as covered.
 
 \subsubsection{A3: Innovation}
 
@@ -301,7 +301,7 @@ A5 is covered. Both multi-agent debate/evidence verification were uncharted terr
 
 \subsection{Program Outcomes}
 
-Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
+Table~\ref{tab:po_map} maps the project against the twelve program outcomes.
 
 \begin{center}
     \begin{table}[ht]
@@ -327,7 +327,7 @@ Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
     \end{table}
 \end{center}
 
-The real-life problem in Chapter~1 and the work in this report address six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12. Literature review and gap analysis (Chapter~2) cover PO4. PO2 is covered by the requirements work in Chapter~3. PO10 is addressed in the interim report and in the oral presentation. The timeline and budget cover PO11. The journal writing and the independent learning record cover PO12. The remaining six outcomes are scheduled for FYDP~II and FYDP~III and are marked as not covered in Table~\ref{tab:po_map}.
+The real-life problem in Chapter~1 and the work in this report address six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12. Literature review and gap analysis (Chapter~2) cover PO4. PO2 is covered by the requirements work in Chapter~3. PO10 is addressed in this report and in the oral presentation. The timeline and budget cover PO11. The journal writing and the independent learning record cover PO12. The remaining six outcomes are outside the scope of this report and are marked as not covered in Table~\ref{tab:po_map}.
 
 \section{Summary}
-The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run top-up of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, FYDP~I covers PO1, PO2, PO4, PO10, PO11, and PO12.
+The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run budget envelope of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, this report covers PO1, PO2, PO4, PO10, PO11, and PO12.

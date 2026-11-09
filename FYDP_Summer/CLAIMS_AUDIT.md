@@ -154,8 +154,8 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 
 **Engine:** pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). No XeLaTeX, LuaLaTeX, `fontspec`, `unicode-math`, shell-escape, or engine-specific package was added.
 
-**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current FYDP~II build is **60 pages**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
+**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current full-project build is **61 pages**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
 
-**Warnings:** 6 overfull `\hbox` warnings and 84 underfull `\hbox` warnings. Five overfull boxes are pre-existing title/acknowledgement lines at 3.2pt. One overfull box is a 6.6pt line in the implementation summary. The underfull boxes are mostly narrow table cells; none prevents compilation.
+**Warnings:** the current build has 15 overfull `\hbox` warnings and 108 underfull `\hbox` warnings; the audit-time build had 6 and 84. The overfull boxes are mostly title, acknowledgement, and long table lines. The underfull boxes are mostly narrow table cells; none prevents compilation.
 
 **Repository checks:** `git diff --check` passes (line-ending warnings only). No generated `.aux`, `.log`, `.pdf`, `.bbl`, `.out`, `.toc`, `.lof`, or `.lot` files were added or modified in the commit.
