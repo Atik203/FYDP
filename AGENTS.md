@@ -99,7 +99,7 @@ Paper reviews live in `literature_review/papers/NN-slug-author-year.md` and foll
 
 ## Safety / scope
 
-- The frontend is static, but the repo is not secret-free: `trustcal/` runs three local vLLM servers on `127.0.0.1:8000-8002` and reads `.env` (`HF_TOKEN`, `GEMINI_API_KEY`, optional retrieval keys). Never commit `.env`, keys, `results/`, or model caches.
+- The frontend is static, but the repo is not secret-free: `trustcal/` runs three local vLLM servers on `127.0.0.1:8000-8002` and reads `.env` (`HF_TOKEN`, `OPENAI_API_KEY` for B7, optional retrieval keys). Never commit `.env`, keys, `results/`, or model caches.
 - `pdfs/` and `markdowns/` are gitignored source material; don't commit them.
 - Don't commit unless explicitly asked. Never push to `main` directly; use a branch.
 - `dist/` is build output — never edit it by hand.

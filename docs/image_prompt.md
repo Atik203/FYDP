@@ -1,5 +1,7 @@
 # Image Generation Prompts — Journal Figures (Gemini / Nano Banana)
 
+> **Note:** Gemini/Nano Banana here is the figure-generation tool only; B7 no longer uses Gemini.
+
 Copy each prompt below into Gemini image generation. One figure per prompt. The prompts follow the visual style of Figure 1 (`methodology-flow.jpg`): flat vector infographic, white background, rounded cards, numbered circles, navy arrows.
 
 ## How to use

@@ -92,7 +92,7 @@ conditions:
 #     description: "Mixture-of-Agents (Wang et al. 2024) — layered aggregation."
 #   B7:
 #     arm: B7
-#     description: "Oracle (Gemini 3.1 Pro Preview) — needs GEMINI_API_KEY; not a competitor."
+#     description: "Oracle (GPT-6 Luna) — needs OPENAI_API_KEY; not a competitor."
 #   B9:
 #     arm: B9
 #     description: "iMAD (Fan et al. 2026) — heuristic confidence/hesitation gate, not FocusCal."

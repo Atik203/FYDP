@@ -165,7 +165,7 @@ Every "why did you choose X" question, in one table.
 | Metrics | Final accuracy + CMR primary; ARR, trust AUROC/Brier; ECR deprecated | Correction, minority survival, ranking, no regression | `eval/endpoints.py` |
 | κ gate | ≥ 0.75 | Human annotation quality before any measurement counts | `trustcal/INJECTION_PROTOCOL.md:59-64` |
 | CCR threshold | baseline CCR ≥ 0.30 | Gate 1: the injection must induce real collapse before trust is tested | `FYDP_Summer/3.design.tex:121` |
-| Oracle baselines | B7, Gemini 3.1 Pro, one call/question; B8-oracle pending WP-18 | B7 is a ceiling reference, not the mechanism; B8-oracle is the trust upper bound | blueprint `:322,339`; WP-18 |
+| Ceiling baselines | B7, OpenAI GPT-6 Luna (`gpt-6-luna`), one call/question; B8-oracle pending WP-18 | B7 is an optional external-answer ceiling, not the mechanism or B8-oracle; B8-oracle is the trust upper bound | blueprint `:322,339`; WP-18 |
 | No fine-tuning | served models only | Reproducible on open models at fixed compute | blueprint `:319-321` |
 
 **Why questions with longer answers:**
@@ -439,7 +439,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 | B4-matched | Debate + retrieval, matched | Retrieval without trust, same prompts and evidence budget as B8 | ✅ implemented |
 | B5 | Self-consistency | Samples within one model | ✅ implemented |
 | B6 | Mixture-of-Agents | Static layered aggregation | ✅ implemented (approximation) |
-| B7 | Oracle (Gemini 3.1 Pro) | Upper-bound ceiling, one call/question | ✅ implemented; needs `GEMINI_API_KEY` |
+| B7 | External-answer ceiling (GPT-6 Luna) | Optional ceiling, one call/question; not in Core/Full | ✅ implemented; needs `OPENAI_API_KEY`; live 1-question smoke pending |
 | B8 | Ours | The trust-calibrated system | ✅ implemented; treatment |
 | B8-no-trust | Matched control | B8 with trust weighting off | ✅ implemented; primary control |
 | B9 | iMAD reimplementation | Debate-trigger prediction | ✅ implemented (approximation) |
@@ -449,7 +449,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 
 **Oracle details (the classic trap question):**
 
-- B7 sends each question to a large commercial model (Gemini 3.1 Pro), one call per question, about $5–7 total for 1,000 questions.
+- B7 is the optional external-answer ceiling: it sends each question to OpenAI GPT-6 Luna (`gpt-6-luna`), one call per question, about $1–3 per 1,000 questions (recompute from actual prompt/output tokens).
 - It is a **ceiling reference**, not part of the mechanism; it never receives the gold answer (`blueprint.md:322,339`).
 - B8-oracle is different: it is an internal upper bound that uses gold information — gold-answer trust, or gold-evidence-only on EG-SSS — and it is not implemented yet (WP-18). If it is gold-evidence-only on EG-SSS, the Full target is 32 runs, not 36.
 - If asked "is that unfair, a bigger model?": yes, deliberately — it shows the best a strong single call achieves, so the panel can see where debate+trust lands relative to a frontier point.
@@ -468,7 +468,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 - **B4-matched Debate + retrieval** — evidence in context but no trust weighting, with the same prompts and evidence budget as B8. The key "is our weighting layer necessary" contrast. ✅ implemented.
 - **B5 Self-Consistency** — multiple samples from one model; tests whether sampling beats structured debate. ✅ implemented.
 - **B6 Mixture-of-Agents** — layered static merging; tests static aggregation against iterative trust. ✅ implemented (approximation).
-- **B7 Oracle** — Gemini 3.1 Pro, one call per question, ceiling only, ~$5–7 total. Answers "what does a frontier single call get?" ✅ implemented.
+- **B7 external-answer ceiling** — OpenAI GPT-6 Luna (`gpt-6-luna`), one call per question, optional, ~$1–3 per 1,000 questions; not in the Core or Full matrix and not B8-oracle. Answers "what does a frontier single call get?" ✅ implemented.
 - **B8 Ours** — the trust-calibrated system, placed inside the registry. ✅ implemented; trust wired.
 - **B8-no-trust** — B8 with trust weighting off, the primary matched control. ✅ implemented (WP-13).
 - **B9 iMAD reimplementation** — predicts when to debate from hesitation cues, then standard majority. Tests gating versus in-debate weighting. ✅ implemented (approximation).
@@ -850,7 +850,7 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 | Law-testing | ~3,913 GPU-h at 8 min; $1,400–1,900 | only if effect |
 | Hard stop | $1,350 before law-testing | `roadmap.md` §13 |
 | Gate 0 actual | ≈$4.29 | `experiments/gate0/README.md` |
-| Oracle B7 | $5–7 total | blueprint §7 |
+| External-answer ceiling B7 (optional) | ~$1–3 per 1,000 questions (recompute from actual tokens) | blueprint §7 |
 
 **Honest line:** "The old deck and report figures are historical. The current stage split is smoke, pilot, Core, Full run and law-testing; the Gate 0 actual gives the per-question sanity check."
 
@@ -920,7 +920,7 @@ The uncomfortable questions, with answers that hold up.
 | iMAD (AAAI 2026) | Predicts when to debate; saves up to 92% tokens | Once triggered, still majority voting |
 | ConsensAgent (ACL 2025) | Prompt rewriting on stalling/copy-paste | Still decides via self-reported confidence |
 | DebUnc (EMNLP 2025) | Weights by token-level uncertainty | Internal signal, not retrieved evidence; oracle is an upper bound |
-| B7 Oracle | Commercial model ceiling | Reference point only, not a mechanism |
+| B7 external-answer ceiling | Commercial model ceiling (GPT-6 Luna) | Reference point only, not a mechanism; not B8-oracle |
 
 **What we do NOT claim:** not "first to mitigate sycophancy"; not a solved calibration problem; not better than frontier models — we change how a debate aggregates evidence at equal model scale.
 
@@ -1002,7 +1002,7 @@ The uncomfortable questions, with answers that hold up.
 - **If asked "is it real or planned?":** use Section 12 verbatim. Trust math ✅ wired; retrieval routing ✅ implemented; verifier interface ✅ with human audit pending; ECR 🟡 deprecated; the confidence gate remains 🟡 prompt-only.
 - **If asked "show me the code":** open the file named in the question's **Code:** line; the full map is in Section 11.
 - **If asked "what happens if we do X?":** find the scenario in Section 4 and give the behavior plus the file:line.
-- **If asked "why not GPT-4 for everything?":** the mechanism must stay model-agnostic and reproducible on open models; the commercial model is only B7, the ceiling reference.
+- **If asked "why not GPT-4 for everything?":** the mechanism must stay model-agnostic and reproducible on open models; the commercial model is only B7, the optional GPT-6 Luna external-answer ceiling.
 - **If asked "what did you personally do?":** answer from Section 19.
 - **If asked "what are you most confident about?":** the debate loop runs end to end (Gate 0: 10/10, 90/90) and the trust math is bounded and tested; the remaining work is the paid matrix and the human verifier audit.
 - **If asked "what is the weakest part?":** retrieval coverage; unverifiable claims are excluded, so sparse fields weaken the signal. Say it before they do.

@@ -1,6 +1,6 @@
 # Pre-registration — Trust-Calibrated Multi-Agent Scientific Deliberation (P0 matrix)
 
-**Version:** 1.0 (v1.1 erratum appended in §12)
+**Version:** 1.0 (v1.1 and v1.4 errata appended in §12)
 **Date:** 9 November 2026
 **Status:** frozen before any confirmatory matrix run; the executable matrix in
 `trustcal/configs/experiments.yaml` is cut to four conditions. The two remaining
@@ -455,6 +455,7 @@ failure, not a warning.
 | 1.1 | 9 November 2026 | Erratum: released prompt hash `bc9c7b…`; `origin/feat/p0-hardening` retired; B8-placebo/B8-oracle assigned to WP-18; oracle semantics pending WP-18 | frozen |
 | 1.2 | benchmark freeze | Add EG-SSS-180 as the third primary dataset and the gold-evidence testbed | pending |
 | 1.3 | WP-18 freeze | Freeze placebo/oracle semantics, Full config hash, and row count (36 or 32) before unblinding | pending |
+| 1.4 | 9 November 2026 | B7 provider: Gemini retired; OpenAI gpt-6-luna | frozen |
 
 Amendments are made only before unblinding. Once the first confirmatory row is
 inspected, the version is closed; a later change is a new pre-registration, not
@@ -494,6 +495,25 @@ misroute the remaining work.
   B7 (Gemini external answer) is not B8-oracle.
 - **EG-SSS-180.** Not in v1.0. It joins at benchmark freeze as v1.2. No
   EG-SSS result exists at this date.
+
+### v1.4 erratum — 9 November 2026
+
+This erratum records a provider change for B7 only. It does not change an
+endpoint, an arm, a dataset, a seed, or a run count.
+
+- **Provider.** B7 moves from Gemini 3.1 Pro Preview to OpenAI `gpt-6-luna`
+  (released 22 September 2026). The model is pinned by name; each B7 record
+  stores `provider`, `model`, `response_id`, and `system_fingerprint` alongside
+  the answer. `OPENAI_API_KEY` is the only B7 key; the Gemini runtime path is
+  retired.
+- **Status unchanged.** B7 remains an optional external-answer ceiling, not
+  B8-oracle, and it is not in the four-condition Core matrix or the six-arm
+  Full target. B8-oracle semantics remain pending WP-18 as recorded in v1.1;
+  this erratum does not decide them. No endpoint, arm, seed, or run count
+  changes.
+- **Cost.** B7 costs roughly $1–3 per 1,000 questions, dominated by output
+  tokens; recompute from the actual prompt/output tokens before quoting a
+  total. This replaces the earlier side estimate for the Gemini path.
 
 ---
 

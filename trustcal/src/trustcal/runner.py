@@ -494,7 +494,11 @@ def oracle_record(
     record["transcript"] = [{"round": 1, "positions": [text]}]
     parsed = parse_position(text)
     record["rounds"] = [{"answers": [parsed], "inconclusive": [not bool(parsed)]}]
-    record["oracle"] = {"model": getattr(oracle, "model", None)}
+    oracle_meta = {"model": getattr(oracle, "model", None)}
+    last_meta = getattr(oracle, "last_metadata", None)
+    if isinstance(last_meta, dict):
+        oracle_meta.update(last_meta)
+    record["oracle"] = oracle_meta
     score = score_answer(text, question.get("answer") or "", rendered)
     record["raw_answer"] = text
     record["parsed_answer"] = score.parsed
@@ -834,9 +838,9 @@ def run(
             )
         elif cfg.arm == "B7":
             if oracle is None:
-                from .eval.oracle import GeminiOracle
+                from .eval.oracle import OpenAIOracle
 
-                oracle = GeminiOracle()
+                oracle = OpenAIOracle()
             record = oracle_record(
                 qid, question, oracle, cfg.arm, cfg.seed, manifest_hash_value=run_hash
             )
