@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "If you use this software or the accompanying report, please cite it using the metadata below."
+title: "The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus"
+type: software
+authors:
+  - family-names: Rahaman
+    given-names: Md. Atikur
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Hasan
+    given-names: Rakibul
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Nayeem
+    given-names: Md. Salman Rohoman
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Paul
+    given-names: Pratay
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Himel
+    given-names: Yousuf Kamal
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Limu
+    given-names: Mst. Farjana Akter
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+  - family-names: Huda
+    given-names: Mohammad Nurul
+    affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
+version: 0.2.0
+date-released: 2026-11-09
+url: "https://github.com/Atik203/trustcal"
+repository-code: "https://github.com/Atik203/trustcal"
+license: MIT
+keywords:
+  - multi-agent LLM debate
+  - sycophantic consensus
+  - trust calibration
+  - scientific reasoning
+  - evidence grounding
+  - controlled benchmark
+abstract: >-
+  TrustCal studies whether evidence-grounded trust reduces sycophantic collapse
+  in multi-agent scientific debate relative to a matched majority-vote control,
+  and where verifier accuracy and evidence redundancy place its boundary. The
+  repository contains the Python pipeline, the pre-registered evaluation plan,
+  the controlled-benchmark design, the full project report, and the journal
+  manuscript. P0 engineering is released; the confirmatory Core and Full
+  matrices have not been run, so no efficacy result is claimed.

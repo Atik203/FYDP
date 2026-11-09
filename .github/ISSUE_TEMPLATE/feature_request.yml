@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose a scoped change to the pipeline, site, or research workflow.
+title: "[feat]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is missing or difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the smallest change that solves the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Python pipeline
+        - experiment design
+        - frontend
+        - report or journal
+        - documentation or CI
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Research constraints
+      options:
+        - label: This change preserves the pre-registered endpoints, exclusions, or stopping rules.
+        - label: This change does not add a secret, private annotation, or unverified citation.

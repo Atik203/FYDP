@@ -123,7 +123,7 @@ Three changes explain why the implementation differs from the earlier draft. Fir
 \section{Testing and Evaluation}\label{sec:testing-evaluation}
 
 \paragraph*{Test suite.}
-The current suite contains 602 passing tests; 514 of those were present at the P0 release. The additional tests cover the three-sample B7 ceiling, the per-sample record fields, and the oracle summary. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
+The current suite contains 615 passing tests; 514 of those were present at the P0 release. The additional tests cover the three-sample B7 ceiling, the per-sample record fields, and the oracle summary. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
 
 \paragraph*{P0 gate.}
 The P0 gate is a separate 13-check script that runs before any paid run. It checks the test suite, the record schema, options in prompts, the parser corpus, trust bounds, neutral and verbosity behaviour, the B8 versus B8-no-trust prompt diff, the B8-plus-injection mock, the endpoint summary, dataset pins, claim routing, the manifest guard, and the matrix budget. It reports 13 passed, 0 failed, and 0 pending. The gate is an engineering readiness check, not a result.
@@ -201,7 +201,7 @@ Table~\ref{tab:engineering-results} collects the measured engineering evidence. 
     \hline
     P0 gate & 13 passed, 0 failed, 0 pending & Measured \\
     \hline
-    Test suite & 602 passed; 514 at the P0 release & Measured \\
+    Test suite & 615 passed; 514 at the P0 release & Measured \\
     \hline
     Gate~0 & 10/10 debates, 90/90 positions, 370.8\,s mean & Measured \\
     \hline
@@ -263,4 +263,4 @@ The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence 
 
 \section{Summary}\label{sec:implementation-summary}
 
-The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 602-test suite covers the contracts on synthetic and mock inputs. The engineering results do not establish efficacy. The expected values in this chapter are projections, not findings. The remaining work is the verifier human audit, the EG-SSS calibration set, the WP-18 placebo/oracle slice, the precision-stack smoke test, and the paid Core and Full matrices. Those are the conditions for an efficacy claim, and none of them is met in this report.
+The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 615-test suite covers the contracts on synthetic and mock inputs. The engineering results do not establish efficacy. The expected values in this chapter are projections, not findings. The remaining work is the verifier human audit, the EG-SSS calibration set, the WP-18 placebo/oracle slice, the precision-stack smoke test, and the paid Core and Full matrices. Those are the conditions for an efficacy claim, and none of them is met in this report.

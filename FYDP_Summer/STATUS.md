@@ -16,7 +16,7 @@
 
 ## Current numbers used
 
-- **602 passing tests** in the current suite; **514 at the P0 release** (`experiments/p0/WAVE2.md`).
+- **615 passing tests** in the current suite; **514 at the P0 release** (`experiments/p0/WAVE2.md`).
 - **P0 gate: 13 of 13 passed, 0 failed, 0 pending** (`p0_gate.py` strict run, 2026-11-09).
 - **Matrix: 24 rows** (4 arms × 3 datasets × 2 seeds), **1,280 GPU-h** conservative / **1,067 GPU-h** per-dataset caps.
 - **Gate 0: 10/10 debates, 90/90 positions, 370.8 s mean**, 21.5 s stdev, approximately USD 4.29.
@@ -47,7 +47,7 @@ Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exite
 ## Remaining placeholders / actions
 
 - `LICENSE` (MIT) is present at the repository root; the reproducibility section cites it.
-- The current suite records 602 passing tests (514 at the P0 release); re-run `pytest` only if the code changes.
+- The current suite records 615 passing tests (514 at the P0 release); re-run `pytest` only if the code changes.
 - **Historical note (retired):** the RTX A6000 USD 0.263/hour figure is superseded; current budget in `docs/agent/08_COMPUTE_COST.md` (80 GB A100 PCIe at USD 0.136/GPU-h).
 - Run `smoke_test.py --phase final` on the 96GB stack.
 - Complete the 150--200-pair verifier human audit.

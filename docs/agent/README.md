@@ -11,7 +11,7 @@
 | Branches | `main` = `dev` = `2ae56a3` (post-release docs commit) |
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed** |
-| Tests | **602 passed** (514 at the P0 release) |
+| Tests | **615 passed** (514 at the P0 release) |
 | Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, 0 errors/undefined refs |
 | Final stack | Qwen3.8-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **73.68 GB** pinned |

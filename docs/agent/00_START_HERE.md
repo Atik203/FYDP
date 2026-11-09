@@ -87,7 +87,7 @@ Use `docs/GLOSSARY.md` everywhere. The current names are **Core run** and **Full
 ## 4. What is actually strong
 
 - Modular, readable codebase: inference, agents, retrieval, trust, orchestrator, eval, stats.
-- **602 tests** (514 at the P0 release) and a mock vLLM end-to-end path; 13/13 P0 gate checks.
+- **615 tests** (514 at the P0 release) and a mock vLLM end-to-end path; 13/13 P0 gate checks.
 - Gate 0: 10/10 debates, 90/90 non-empty positions, 370.8 s/debate.
 - Resumable JSONL, manifest/resume refusal, preflight, annotation tooling, human-eval tooling.
 - Two compiled manuscripts: 69-page report (80 cited works) and 19-page journal (71 cited works), 0 errors/undefined refs.

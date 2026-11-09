@@ -2,7 +2,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # ONE-COMMAND POD SETUP — Dev (48GB), Four-bit (80GB) or Final (96GB)
 #
-#   git clone https://github.com/Atik203/FYDP.git /workspace/fydp
+#   git clone https://github.com/Atik203/trustcal.git /workspace/fydp
 #   cd /workspace/fydp/trustcal
 #   HF_TOKEN=hf_... bash setup.sh                    # Dev stack (~31GB)
 #   HF_TOKEN=hf_... PHASE=fourbit bash setup.sh      # Four-bit stack (~53GB)

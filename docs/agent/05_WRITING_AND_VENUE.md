@@ -30,7 +30,7 @@ Do not mix them. The current 69-page artifact is the report; the 19-page artifac
 | Report | 69 pp; 80 cited works; 0 errors/undefined refs | Compiles; engineering report |
 | Journal | 19 pp; 71 cited works; 0 errors/undefined refs | Compiles; engineering report |
 | P0 gate | 13/13 | Engineering readiness only |
-| Tests | 602 passed (514 at P0 release) | Code path is tested |
+| Tests | 615 passed (514 at P0 release) | Code path is tested |
 | Efficacy results | **None** | No accuracy/CMR/CCR claim may be written |
 | Claim audit | Resolved 9 Nov 2026 | See the two `CLAIMS_AUDIT.md` files |
 | Benchmark | 24 calibration → 180 v1.2 → 300 Full | 600 stretch; 800 no-go |
