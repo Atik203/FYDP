@@ -9,7 +9,7 @@ Canonical agent instructions for this directory: the P0-released implementation 
 - **Order discipline (blueprint §13 / roadmap):** Final-stack smoke → WP-18 (placebo/oracle) → pilot → Core matrix → Full matrix. Never reorder; never run a matrix before the pilot. The released Core matrix is four conditions × 3 datasets × 2 seeds = 24 rows; the six-arm Full target is a separate later design.
 - **The Core matrix source is `configs/experiments.yaml`**, not `configs/datasets.yaml`. `datasets.yaml` carries dataset revisions/provenance and loader defaults; its `seeds` and `sample_caps` are not the matrix values. Do not add the six-arm target to `experiments.yaml`; WP-18 adds a separate `configs/experiments_full.yaml`.
 - **`results/` is gitignored and load-bearing** (Gate 0 logs, trust trajectories, matrix summaries). Copy artifacts off the box before destroying an instance.
-- **Never commit secrets.** `.env` is gitignored. `HF_TOKEN` (gated GPQA/HLE downloads), `GEMINI_API_KEY` (B7), and the optional retrieval keys come from the environment or `.env`; never paste a real key into a doc or a commit.
+- **Never commit secrets.** `.env` is gitignored. `HF_TOKEN` (gated GPQA/HLE downloads), `OPENAI_API_KEY` (B7), and the optional retrieval keys come from the environment or `.env`; never paste a real key into a doc or a commit.
 
 ## Layout
 
@@ -58,7 +58,7 @@ The released Core matrix runs four conditions:
 | `B8-no-trust` | B8 (`use_trust: false`) | primary control; same retriever/prompts/partition as B8, majority aggregation |
 | `B8` | B8 | treatment; evidence-grounded trust during debate |
 
-The **six-arm target** adds `B8-placebo` (shuffled verdicts, trust-weighted) and `B8-oracle` (gold evidence, trust-weighted). It is **not** in `experiments.yaml`. WP-18 owns the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is a Gemini external-answer ceiling, not `B8-oracle`. The B1–B10 appendix grid stays out of the pre-registered matrix.
+The **six-arm target** adds `B8-placebo` (shuffled verdicts, trust-weighted) and `B8-oracle` (gold evidence, trust-weighted). It is **not** in `experiments.yaml`. WP-18 owns the `placebo_mode` / `oracle_mode` flags, the separate Full config, and the frozen definitions of the placebo shuffle unit/seed and the oracle semantics. `B7` is a GPT-6 Luna external-answer ceiling (optional), not `B8-oracle`. The B1–B10 appendix grid stays out of the pre-registered matrix.
 
 `python scripts/run_matrix.py --dry-run` shows the 24 Core rows. After WP-18, `python scripts/run_matrix.py --config configs/experiments_full.yaml --dry-run` shows the Full plan: 36 rows at 300 items/dataset if `B8-oracle` uses gold-answer trust, or 32 if it is gold-evidence-only on EG-SSS. The Core matrix's gate cap stays 1,280 GPU-h.
 
@@ -116,7 +116,7 @@ No Final matrix starts until that hardware smoke passes and its `nvidia-smi` pea
 
 - `HF_HOME` defaults to `/workspace/.cache/huggingface` when writable, else `$HOME/.cache/huggingface` — both are on the persistent disk for the supported providers.
 - A dead server shows up as a `FAIL server :<port>` line; read `results/logs/vllm-<port>.log`. OOM → lower that agent's `gpu_memory_utilization` in `models.yaml` and re-run `serve.sh`.
-- GPQA/HLE are gated Hugging Face repos: downloads 401 without `HF_TOKEN`. B7 needs `GEMINI_API_KEY`.
+- GPQA/HLE are gated Hugging Face repos: downloads 401 without `HF_TOKEN`. B7 needs `OPENAI_API_KEY`.
 - Vast images ship their own `AGENTS.md`/`CLAUDE.md` plus `vast-capabilities` (installed services, ports, persistence) — prefer those for machine facts.
 
 ## Managing the GPU instance from a local machine (Vast.ai)

@@ -69,6 +69,23 @@ def test_b7_oracle_record(tmp_path) -> None:
     assert summary.n_debates == 1
 
 
+def test_b7_oracle_metadata_is_recorded(tmp_path) -> None:
+    class MetadataOracle:
+        model = "fake-oracle"
+        last_metadata = {"provider": "fake", "response_id": "resp_1"}
+
+        def answer(self, question: str) -> str:
+            return "Answer: beta"
+
+    cfg = RunConfig(arm="B7", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=1)
+    summary = run(cfg, questions=[QUESTION], oracle=MetadataOracle())
+    record = read_records(records_path(cfg))[0]
+    assert record["oracle"]["model"] == "fake-oracle"
+    assert record["oracle"]["provider"] == "fake"
+    assert record["oracle"]["response_id"] == "resp_1"
+    assert summary.n_debates == 1
+
+
 def test_agent_scaling_cycles_clients(tmp_path) -> None:
     cfg = RunConfig(arm="B3", dataset="local", limit=1, seed=1, out_root=tmp_path, rounds=2, agents=5)
     clients = [FakeClient("alpha"), FakeClient("beta"), FakeClient("gamma")]

@@ -1067,7 +1067,7 @@ export function Idea1Content() {
                 ["B4", "MAD + RAG", "Debate with evidence; B4-matched uses the B8 partition and prompts"],
                 ["B5", "Self-Consistency", "k samples, majority vote"],
                 ["B6", "MoA (equal-weight)", "Multi-model, static aggregation"],
-                ["B7", "Oracle (Gemini 3.1 Pro Preview)", "Upper-bound ceiling"],
+                ["B7", "Oracle (GPT-6 Luna)", "Optional external-answer ceiling; not a Core arm"],
                 ["B8", "Ours (trust-weighted)", "Primary system"],
                 ["B8-no-trust", "Same evidence/prompts, majority", "Primary control — isolates the trust mechanism"],
                 ["B8-placebo / B8-oracle", "Six-arm target", "Pending WP-18; verdicts shuffled / gold evidence (oracle definition conditional)"],

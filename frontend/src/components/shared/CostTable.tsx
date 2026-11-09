@@ -182,6 +182,11 @@ export function CostTable() {
         gold-evidence-only on EG-SSS). Final stack uses Qwen3.6-27B FP8, Gemma 4
         26B A4B FP8 and Mistral Small 3.2 24B AWQ on one RTX PRO 6000 96 GB card.
       </p>
+
+      <p className="text-[10px] text-[#94a3b8] leading-relaxed">
+        B7 external-answer ceiling (optional): OpenAI GPT-6 Luna, $0.10/M input
+        · $0.50/M output; not a Core arm and outside the GPU envelope.
+      </p>
     </div>
   );
 }

@@ -17,7 +17,7 @@ BASELINES = {
     "B4": "MAD + RAG",
     "B5": "Self-Consistency (Wang et al. 2022)",
     "B6": "Mixture-of-Agents (Wang et al. 2024)",
-    "B7": "Oracle (Gemini 3.1 Pro Preview)",
+    "B7": "Oracle (GPT-6 Luna)",
     "B8": "Ours (trust-calibrated deliberation)",
     "B9": "iMAD (Fan et al. 2026)",
     "B10": "ConsensAgent (Pitre et al. 2025)",
@@ -30,7 +30,7 @@ RUNNER_ARMS = tuple(BASELINES) + ("pilot", "injection")
 DEFERRED: dict[str, str] = {}
 
 APPROXIMATIONS = {
-    "B7": "needs GEMINI_API_KEY; oracle, not a competitor mechanism",
+    "B7": "needs OPENAI_API_KEY; oracle, not a competitor mechanism",
     "B9": "heuristic confidence/hesitation gate, not the trained FocusCal MLP",
     "B10": "trigger + confidence/consistency aggregation; no fine-tuned prompt optimizer",
 }

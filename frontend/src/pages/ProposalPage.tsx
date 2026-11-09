@@ -717,8 +717,8 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
             </tr>
             <tr>
               <td style={tdStyle}>Oracle (B7)</td>
-              <td style={tdStyle}>Gemini 3.1 Pro Preview</td>
-              <td style={tdStyle}>Upper-bound ceiling reference only, not core mechanism</td>
+              <td style={tdStyle}>GPT-6 Luna (OpenAI)</td>
+              <td style={tdStyle}>Optional external-answer ceiling; not a Core arm. $0.10/M input · $0.50/M output; 1.05M context / 128K output</td>
             </tr>
             <tr>
               <td style={tdStyle}>Reranker</td>
@@ -914,7 +914,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           <li><strong>B4</strong>: MAD + RAG; <strong>B4-matched</strong> uses the B8 evidence partition and prompts</li>
           <li><strong>B5</strong>: Self-Consistency (Wang et al.)</li>
           <li><strong>B6</strong>: Mixture-of-Agents (MoA, Wang et al., ICLR 2025)</li>
-          <li><strong>B7</strong>: Oracle (strongest available model)</li>
+          <li><strong>B7</strong>: Oracle (GPT-6 Luna) &mdash; optional external-answer ceiling, not a Core arm</li>
           <li><strong>B8</strong>: Trust-calibrated system; <strong>B8-no-trust</strong> is the primary control</li>
           <li><strong>B8-placebo / B8-oracle</strong>: six-arm target, pending WP-18</li>
           <li><strong>B9</strong>: iMAD (Fan et al., AAAI 2026) &mdash; reimplemented</li>

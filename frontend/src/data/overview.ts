@@ -134,7 +134,7 @@ export const resources: ResourceCard[] = [
   { label: 'Agent 3 (Dev)', value: 'Ministral-3-14B-Instruct', sub: 'Mistral-family 14B — AWQ 4-bit on the A6000 (the official FP8 checkpoint cannot be served on Ampere)', href: 'https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512' },
   { label: 'Agent 3 (Final)', value: 'Mistral-24B-AWQ', sub: 'Third training lineage, AWQ 4-bit — part of the 69.73 GB pinned Final stack', href: 'https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506' },
   { label: 'Final stack (pinned)', value: '69.73 GB', sub: 'Qwen3.6-27B-FP8 · Gemma-4-26B-A4B-FP8 · Mistral-24B-AWQ — fits one 96 GB GPU' },
-  { label: 'Oracle (B7)', value: 'Gemini 3.1 Pro Preview', sub: 'Upper-bound ceiling only, ~$5–7 for full oracle pass' },
+  { label: 'Oracle (B7)', value: 'GPT-6 Luna (OpenAI)', sub: 'Optional external-answer ceiling; $0.10/M input · $0.50/M output; not a Core arm' },
   { label: 'Reranker', value: 'ms-marco-MiniLM cross-encoder', sub: 'Standard, fast, well-validated' },
   { label: 'Inference', value: 'vLLM', sub: 'Free, fast, multi-model serving' },
   { label: 'Orchestration', value: 'LangGraph', sub: 'State-machine fits round-based debate' },

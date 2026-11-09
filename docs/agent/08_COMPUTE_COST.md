@@ -74,6 +74,7 @@ vastai search offers 'gpu_name=A100_PCIE num_gpus=1 rentable=true' -i --limit 40
 | Pilot (N5/G2) | ~112 | **$50–100** | Dev stack; 100–150 questions |
 | **Core run** (G3) | **1,280 cap** (~1,067 planned) | **$420–580** | 4 conditions × GPQA 400 + MMLU-Pro 400 + HLE 200 × 2 seeds = 24 runs / 8,000 debates |
 | **Full run** (G4/G5) | **1,440 envelope** | **$900–1,200 envelope** | Conditional: 36 runs if B8-oracle uses gold-answer trust at 300/dataset (10,800 debates); 32 runs and recompute if gold-evidence-only on EG-SSS. WP-18 freezes. Core and Full are different stacks (Dev vs Final); do not assume Core cells are reusable. The $900–1,200 is the Full-run budget envelope. Compute a true top-up only if the stack and model revisions match. |
+| B7 external-answer ceiling (optional) | 0 GPU-h | ~$1–3 per 1,000 questions | OpenAI GPT-6 Luna, one call/question; not in Core/Full; recompute from actual tokens |
 | Law-testing (N9) | 8-min basis | **$1,400–1,900** | **Only if the Core/Full effect is real** |
 | Benchmark/human storage (no GPU) | 0 | $30–120 | Annotation/volume costs |
 
