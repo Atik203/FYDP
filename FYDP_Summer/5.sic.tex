@@ -36,7 +36,7 @@ Each source of evidence is accessed through its public REST interface: PubMed E-
 
 \subsection{Economic Constraint}
 
-The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in and a Full run at USD 900--1,200 all-in. Retrieval APIs are free at their public tiers, GPQA and MMLU-Pro are public, and the code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
+The matrix is budgeted at 1,280 GPU-h under the gate's conservative cap, or about 1,067 GPU-h under the per-dataset caps. The experiment plan estimates the Core run at USD 420--580 all-in and a Full-run top-up of USD 900--1,200 over the Core envelope. Retrieval APIs are free at their public tiers, GPQA and MMLU-Pro are public, and the code is inference-only, so no training compute is required. The main economic risk is a GPU price increase or a retrieval API moving to a paid tier; both are covered by the contingency in the budget.
 
 \subsection{Environmental Constraint}
 
@@ -65,7 +65,7 @@ The main sustainability choice is inference-only operation on quantized checkpoi
 
 \section{Cost Analysis}
 
-The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run, including pilot and sweep, at USD 420--580 all-in, and a Full run at USD 900--1,200 all-in. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
+The budget covers GPU rental, storage, and the free tiers of the retrieval APIs; no training compute is purchased. The pre-registered matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs. At the gate's conservative 400 questions per run and 8 minutes per debate, the matrix is 1,280 GPU-h; the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions give about 1,067 GPU-h. The experiment plan estimates the Core run, including pilot and sweep, at USD 420--580 all-in, and a Full-run top-up of USD 900--1,200 over the Core envelope. The Full run is the six-arm target: 36 runs at 300 questions per dataset, or 10,800 debates, under a 1,440 GPU-h envelope if B8-oracle is defined as gold-answer trust; the count is recomputed if WP-18 defines it as gold-evidence-only on EG-SSS. The Core run is a prefix of the Full run only if the model stack matches. The earlier 300-hour figure described the pre-P0 plan and is superseded. Table~\ref{tab:budget} gives the planning envelope; Table~\ref{tab:budget-phase} separates the executable matrix from the larger scenarios.
 
 \begin{center}
     \begin{table}[ht]
@@ -80,7 +80,7 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Core run (matrix, pilot, sweep)                      & 1,160 GPU-h planning             & 420--580 all-in     \\
             \hline
-            Full run (main, pilot, sweep, Final)          & 2,460--2,700 GPU-h planning      & 900--1,200 all-in   \\
+            Full run (six arms, 300 per dataset)          & 36 runs; 1,440 GPU-h envelope    & 900--1,200 top-up   \\
             \hline
             Retrieval APIs (PubMed, arXiv, S2, OpenAlex)        & public tiers                     & 0                   \\
             \hline
@@ -88,7 +88,7 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Storage and bandwidth                               & included in the envelopes        & included            \\
             \hline
-            \textbf{Planning range}                             &                                  & \textbf{420--1,200} \\
+            \textbf{Planning range}                             &                                  & \textbf{420--1,780} \\
             \hline
         \end{tabular}
         \label{tab:budget}
@@ -110,7 +110,7 @@ The budget covers GPU rental, storage, and the free tiers of the retrieval APIs;
             \hline
             Core run (pilot and sweep included)     & 1,160 planning     & experiment-plan Core-run scenario        \\
             \hline
-            Full run                         & 2,460--2,700 planning & experiment-plan Full-run scenario   \\
+            Full run                         & 1,440 (36 runs)       & USD 900--1,200 top-up over Core \\
             \hline
         \end{tabular}
         \label{tab:budget-phase}
@@ -148,7 +148,7 @@ There is no revenue stream anticipated for this project. The project is an acade
     \end{table}
 \end{center}
 
-A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run envelope about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
+A ten percent buffer on the Core-run envelope is about USD 42--58, and on the Full-run top-up about USD 90--120. The buffer covers price increases and extended operating time if a run fails or a gate needs a repeat before the end of the plan period.
 
 
 \section{Complex Engineering Problem}
@@ -330,4 +330,4 @@ Table~\ref{tab:po_map} maps FYDP I against the twelve program outcomes.
 The real-life problem in Chapter~1 and the work in this report address six of the twelve program outcomes: PO1, PO2, PO4, PO10, PO11, and PO12. Literature review and gap analysis (Chapter~2) cover PO4. PO2 is covered by the requirements work in Chapter~3. PO10 is addressed in the interim report and in the oral presentation. The timeline and budget cover PO11. The journal writing and the independent learning record cover PO12. The remaining six outcomes are scheduled for FYDP~II and FYDP~III and are marked as not covered in Table~\ref{tab:po_map}.
 
 \section{Summary}
-The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run envelope of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, FYDP~I covers PO1, PO2, PO4, PO10, PO11, and PO12.
+The chapter defined the requirements for the software, hardware, and communication layers and documented the economic, environmental, ethical, and social constraints that shaped design decisions. The budget analysis shows that the pre-registered matrix is 1,067--1,280 GPU-h, with a Core-run planning envelope of USD 420--580 all-in and a Full-run top-up of USD 900--1,200. The complex engineering mapping shows that six of the seven P attributes are covered, with P6 not covered because there are no external stakeholders. K1--K8 are all covered. A1--A2, A4, and A5 are covered, while A3 is not. For the program outcomes, FYDP~I covers PO1, PO2, PO4, PO10, PO11, and PO12.

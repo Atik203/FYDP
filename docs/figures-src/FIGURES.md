@@ -9,7 +9,7 @@ Canonical SVG sources for the six journal figures and two report-specific drawin
 | `fig-pipeline.svg` | `fig-pipeline.png` | 6000 × 3375 | 5.70 in (`0.88\linewidth`) | 1052 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 1; report Fig. 1.1 |
 | `fig-context.svg` | `fig-context.png` | 6000 × 3375 | 5.18 in (`0.80\linewidth`) | 1157 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 2 only (report uses `report-context`) |
 | `fig-claim-example.svg` | `fig-claim-example.png` | 6000 × 3375 | 5.18 in (`0.80\linewidth`) | 1157 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 3 (report copy supplied, not referenced) |
-| `fig-trust-detail.svg` | `fig-trust-detail.png` | 6000 × 3375 | 3.76 in (`0.58\linewidth`) | 1596 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 4 (report copy supplied, not referenced) |
+| `fig-trust-detail.svg` | `fig-trust-detail.png` | 6000 × 3375 | 5.70 in (`0.88\linewidth`) | 1052 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 4 (report copy supplied, not referenced) |
 | `fig-round-loop.svg` | `fig-round-loop.png` | 6000 × 3375 | 5.70 in (`0.88\linewidth`) | 1052 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 5 (report copy supplied, not referenced) |
 | `fig-dataflow.svg` | `fig-dataflow.png` | 6000 × 3375 | 5.70 in (`0.88\linewidth`) | 1052 | 5.91 in (`\textwidth`) | 1016 | Journal Fig. 6 only (report uses `report-dataflow`) |
 
@@ -26,7 +26,7 @@ The report-only PNGs are **not** written to `docs/figures/`, `frontend/public/fi
 
 Journal widths use the `cas-sc` text width: 192 mm paper − 2 × 13.7 mm margins = 164.6 mm. Report widths use A4 with 3 cm margins (150 mm). DPI is `6000 / displayed width in inches`. The journal PNGs are served by the site from `frontend/public/figures/` at `/figures/<name>.png`.
 
-**Readability note.** A 26-unit body line is 11.7 pt at the 10 in design width, so it prints at about 6.1–6.7 pt at the journal placements above. The exception is `fig-trust-detail` at `0.58\linewidth` (3.76 in), where 26-unit text prints at about 4.4 pt. That placement should be widened to roughly `0.88\linewidth` or the figure simplified before submission; the PNG itself is correct at 600 DPI.
+**Readability note.** A 26-unit body line is 11.7 pt at the 10 in design width, so it prints at about 6.1–6.7 pt at the journal placements above. The former `fig-trust-detail` placement was widened to `0.88\linewidth` (5.70 in, 1052 DPI); no journal figure now falls below about 6 pt. The PNGs themselves are correct at 600 DPI.
 
 ## Captions
 
@@ -58,11 +58,13 @@ The script reads each SVG, verifies `width="6000" height="3375" viewBox="0 0 160
 
 ## Manuscript alignment notes
 
-The figures follow the current P0 design. Several manuscript passages and captions still describe the previous drawings and need a text-only update in the manuscript worktrees (no `.tex` file was changed here):
+The figures follow the current P0 design, and the manuscript captions and retrieval prose are aligned with the current drawings:
 
-- Journal `fig-context`: the journal §3.1 caption still describes a system-context diagram with external actors. The journal figure is the majority-vote/trust comparison; the report uses `report-context` for its actual context diagram. The journal caption/prose still needs a text-only update.
-- Journal `fig-dataflow`: the journal caption describes a level-one DFD with three data stores. The journal figure is the schema-v2 record path; the report's DFD is `report-dataflow`. The journal caption still needs a text-only update.
-- `fig-claim-example`: the journal caption describes one supported claim that raises trust. The figure now shows three claims with supported, contradicted, and unverifiable verdicts.
-- `fig-trust-detail`: the journal caption still says softmax → clamp → renormalization. The P0-5 operator is `ℓ = log S + αV/n − βH/n`, one softmax, then a floor/ceiling simplex projection.
-- `fig-round-loop`: the journal caption says six stages; the figure shows R0–R3 plus the closing trust pass.
-- Retrieval prose in journal §3.4 and report §3.1 still assigns one database per agent. The pipeline figure shows claim-domain routing (`bio/clinical → PubMed + S2`, `physics/chem and math/CS → arXiv + S2`, `other → S2/OpenAlex`), which is the P0-8 design.
+- Journal `fig-context`: the caption describes the majority-vote/trust comparison. The report uses `report-context` for its system-boundary diagram.
+- Journal `fig-dataflow`: the caption describes the schema-v2 record path. The report uses `report-dataflow` for its level-one DFD.
+- `fig-claim-example`: the caption describes three claims with supported, contradicted, and unverifiable verdicts.
+- `fig-trust-detail`: the caption describes the P0-5 operator, `ℓ = log S + αV/n − βH/n`, one softmax, then a floor/ceiling simplex projection. The journal placement is `0.88\linewidth` (5.70 in, 1052 DPI).
+- `fig-round-loop`: the caption describes R0–R3 plus the closing trust pass, and the one-shot injection between rounds one and two.
+- Retrieval prose in journal §3.4 and report §3.1 uses claim-domain routing (`bio/clinical → PubMed + S2`, `physics/chem and math/CS → arXiv + S2`, `other → S2/OpenAlex`), which is the P0-8 design.
+
+**Future re-check:** if any PNG is regenerated or replaced, open it and confirm that its labels match the caption before submission. The figures were not regenerated during this pass.

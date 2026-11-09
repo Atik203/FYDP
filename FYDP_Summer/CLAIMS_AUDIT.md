@@ -1,6 +1,8 @@
 # Claims Audit — FYDP Summer Report
 
-**Branch:** `docs/report-claims` · **Base:** `origin/feat/p0-hardening` at `8417dc7` · **Audit date:** 9 November 2026.
+**Branch:** `docs/report-claims` · **Base (historical):** `origin/feat/p0-hardening` at `8417dc7` · **Audit date:** 9 November 2026.
+
+> **Historical record (audit of the report at `8417dc7`).** The current release base is `main` = `dev` = `2ae56a3` (P0 release `7f2c11f`; tags `p0-gate`, `p0-release`). The P0 gate is now 13/13 with 514 tests. The old-to-new tables below are retained as the historical audit of the pre-release text; only rows that state a current status are updated, and those updates are marked in the row text.
 
 **Mode and authorship rung**
 - Existing chapters (`0.1`–`3`, `5`): **Mode 1 — edit/polish**, **rung B** (author wrote; agent edits for clarity, claims, and consistency).
@@ -62,10 +64,10 @@ Line numbers are the current lines after editing. Old text is quoted in short fo
 | Gate 0: 3,708.1 s total, 370.8 s mean, 21.5 s stdev, 334.8/404.4 s fastest/slowest | `experiments/gate0/README.md` §7.3 | verified |
 | Gate 0: 275,668 characters; 5/30 Ministral generations untagged | `experiments/gate0/README.md` §7.1, §7.2 | verified |
 | Gate 0: approximately USD 4.29 including ingress | `experiments/gate0/README.md` §9 | verified |
-| 478+ passing tests | `origin/feat/p0-hardening` at `8417dc7`, `experiments/p0/WAVE2.md` ("pytest 478") | verified (branch record; not re-run in this docs worktree) |
-| P0 gate 11 passed, 2 pending; WP-13 and WP-09 | `experiments/p0/WAVE2.md`; `experiments/p0/README.md` | verified |
+| 514 passing tests | P0 release `7f2c11f`; `experiments/p0/WAVE2.md` ("pytest 514") | verified |
+| P0 gate 13 passed, 0 failed, 0 pending | `experiments/p0/WAVE2.md`; `p0_gate.py` strict run, 2026-11-09 | verified |
 | Matrix: 4 arms × 3 datasets × 2 seeds = 24 rows; 1,280 GPU-h conservative, 1,067 GPU-h per-dataset caps | `trustcal/configs/experiments.yaml`; `PRE_REGISTRATION.md` v1.0; P0 gate check 13 | verified |
-| Six-arm target adds B8-placebo and B8-oracle after WP-13 | `PRE_REGISTRATION.md` §2 | verified |
+| Six-arm target adds B8-placebo and B8-oracle through WP-18 | `PRE_REGISTRATION.md` §2; roadmap WP-18 | verified |
 | Final stack: Qwen3.6-27B-FP8 26.0GB, Gemma 4 26B-A4B FP8 28.67GB, Mistral Small 3.2 24B AWQ 15.06GB; total 69.73GB | `trustcal/configs/models.yaml` final phase | verified (sum of pinned weights) |
 | Development stack: RTX A6000 48GB, Python 3.12.3, PyTorch 2.11.0, vLLM 0.29.1rc1.dev128 | `experiments/gate0/README.md` §3-4 | verified |
 | Trust guarantees: min ≥ floor, sum = 1, ceiling ≤ max(c,1/N), neutral identity, verbosity invariance | `trust/update.py`; P0 gate checks 5-6 | verified |
@@ -76,12 +78,12 @@ Line numbers are the current lines after editing. Old text is quoted in short fo
 | Eight datasets pinned; `answer_type` preserved | P0 gate check 10 output | verified |
 | Claim routing: bio → PubMed + S2; math → arXiv + S2 | P0 gate check 11 output | verified |
 | Manifest/resume: mismatch refused, identical accepted | P0 gate check 12; `manifest.py` | verified |
-| Runner record adapter still missing `manifest_hash`, `final_answer`, and trust-field copies | `trustcal/src/trustcal/runner.py` (no manifest/final-answer fields); `experiments/p0/WP-04.md` §"Wave-2 runner patch plan" | verified as an open gap |
+| Runner record adapter carries `manifest_hash`, `final_answer`, and trust-field copies | `trustcal/src/trustcal/runner.py`; `experiments/p0/WP-04.md` | verified (wired in P0 release) |
 | Final stack not smoke-tested | `trustcal/IMPLEMENTATION_STATUS.md`; `models.yaml` comments | verified status |
 | Verifier human audit not done; lexical default | `trustcal/IMPLEMENTATION_STATUS.md` | verified status |
 | Live retrieval APIs not exercised by tests | `trustcal/IMPLEMENTATION_STATUS.md` | verified status |
-| Code MIT licence | `docs/agent/03_EXPERIMENT_PLAN.md` release strategy | placeholder — no `LICENSE` file exists in the repo yet |
-| Core run USD 420--580; Full run USD 900--1,200 | `docs/GLOSSARY.md`; `docs/agent/03_EXPERIMENT_PLAN.md` | verified planning values |
+| Code MIT licence | `LICENSE` at the repository root (MIT, Copyright 2026 Team Phantom Devs) | verified |
+| Core run USD 420--580; Full-run top-up USD 900--1,200 | `docs/GLOSSARY.md`; `docs/agent/03_EXPERIMENT_PLAN.md` | verified planning values |
 | A100 80GB at USD 1.78/hour | Earlier report text only; not re-verified | placeholder — author estimate |
 | "about 77 billion parameters" for the final trio | Approximate from model names (27 + 26 + 24) | placeholder — approximate, not independently verified |
 
@@ -126,15 +128,15 @@ The report uses three figures: `fig-pipeline.png` (Introduction), `fig-context.p
 
 | Item | Status | Action |
 |---|---|---|
-| 478+ tests | Branch record (`8417dc7`); not re-run in this docs worktree because no Python test environment is installed here. | Re-run `pytest` in `trustcal/` before submission; update the number if it changes. |
+| 514 tests | P0 release (`7f2c11f`); the audit itself was written at `8417dc7` (478+). | Re-run `pytest` in `trustcal/` only if the code changes; update the number if it differs. |
 | A100 80GB at USD 1.78/hour | Author estimate from the earlier draft; not re-verified against a current provider. | Verify or replace with a dated Vast.ai/RunPod quote. |
 | "about 77 billion parameters" | Approximate from model names; not independently counted. | Verify from model cards if the exact parameter count matters. |
-| MIT licence | Release plan only; no `LICENSE` file in the repository. | Add the MIT licence file before claiming the code is MIT-licensed. |
+| MIT licence | `LICENSE` is present at the repository root (MIT). | No action; keep the licence with the release. |
 | Final-stack smoke test | Not run. | Run `smoke_test.py --phase final` on the 96GB stack before the matrix. |
 | Verifier human audit | Not run. | Complete 150--200 pairs, two annotators, balanced accuracy and κ. |
-| B8-no-trust and B8+injection | Pending WP-13 and WP-09. | Finish before the matrix; the gate remains 11/13 until then. |
-| Runner record adapter | Missing `manifest_hash`, `final_answer`, and trust-field copies. | Apply the WP-04b runner patch before a paid run. |
-| `Core run` terminology | Glossary defines the Core run as 4 arms + oracle; the executable 24-row matrix is 4 arms without the oracle. | The report distinguishes "executable matrix" from the "six-arm target"; keep that distinction in the final version. |
+| B8-no-trust and B8+injection | Landed in the P0 release; gate 13/13. | No action; the remaining slice is WP-18 (placebo/oracle). |
+| Runner record adapter | Wired in the P0 release (`manifest_hash`, `final_answer`, trust-field copies). | Verify a sample record before the paid run. |
+| `Core run` terminology | Core v1.0 is the four-arm 24-row matrix. The earlier "4 arms + oracle" description is superseded; B8-oracle belongs to the six-arm Full target under WP-18. | Keep the Core/Full and four-arm/six-arm distinctions in the final version. |
 | Figure content vs captions | PNGs not visually verified. | Check after the figure agent's 600+ DPI regeneration. |
 
 ---
@@ -152,8 +154,8 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 
 **Engine:** pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). No XeLaTeX, LuaLaTeX, `fontspec`, `unicode-math`, shell-escape, or engine-specific package was added.
 
-**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. **58 pages.** 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
+**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current P0-release build is **57 pages**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
 
-**Warnings:** 7 overfull `\hbox` warnings and 82 underfull `\hbox` warnings. Six overfull boxes are pre-existing title/acknowledgement lines at 3.2pt and 2.7pt. One overfull box is a 6.6pt line in the implementation summary. The underfull boxes are mostly narrow table cells; none prevents compilation.
+**Warnings:** 6 overfull `\hbox` warnings and 84 underfull `\hbox` warnings. Five overfull boxes are pre-existing title/acknowledgement lines at 3.2pt. One overfull box is a 6.6pt line in the implementation summary. The underfull boxes are mostly narrow table cells; none prevents compilation.
 
 **Repository checks:** `git diff --check` passes (line-ending warnings only). No generated `.aux`, `.log`, `.pdf`, `.bbl`, `.out`, `.toc`, `.lof`, or `.lot` files were added or modified in the commit.

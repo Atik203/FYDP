@@ -1,7 +1,7 @@
 # Preprint status — claims-accuracy pass
 
-**Branch:** merged into `feat/p0-hardening`; `docs/journal-claims` removed
-**Base:** `feat/p0-hardening` (P0 gate 13/13)
+**Branch:** `docs/journal-claims` merged; `main` = `dev` = `2ae56a3`
+**Base:** P0 release `7f2c11f` (P0 gate 13/13; tags `p0-gate`, `p0-release`)
 **Date:** 9 November 2026
 **Manuscript:** `cas-sc-template.tex`
 **Audit:** `CLAIMS_AUDIT.md`
@@ -17,7 +17,7 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 | Item | Value | Source |
 |---|---|---|
 | Gate 0 | 10/10 debates, 3/3 rounds each, 90/90 non-empty positions, 370.8 s mean, 3,708.1 s total | `experiments/gate0/README.md` |
-| Tests | 514 at the P0 gate (re-run before submission) | `experiments/p0/WAVE2.md` |
+| Tests | 514 at the P0 release | `experiments/p0/WAVE2.md` |
 | P0 gate | 13 passed, 0 failed, 0 pending | `p0_gate.py` strict run, 2026-11-09 |
 | Matrix | 24 rows, 4 arms x 3 datasets x 2 seeds | `trustcal/configs/experiments.yaml` |
 | Budget | 1,280 GPU-h conservative gate (9,600 debates x 8 min) | `PRE_REGISTRATION.md`, gate check 13 |
@@ -31,7 +31,7 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 - Datasets corrected: GPQA-Main and MMLU-Pro STEM are primary, HLE is a control, EG-SSS is planned, and BrokenMath/BrokenArXiv are proof-only and excluded.
 - Baselines corrected: four executable conditions; B9/B10 are approximations, not faithful reimplementations.
 - Metrics corrected: final accuracy and CMR are confirmatory; CCR-0, CCR-E, MPR-weighted, and ARR are descriptive; trust AUROC and Brier are secondary; ECR is not a primary target.
-- Results replaced by "Implementation Status and Planned Evaluation": Gate 0, 478 tests, 11/13 gate, known gaps, the 24-run pre-registered matrix, planned statistics, and limitations. No expected-value tables.
+- Results replaced by "Implementation Status and Planned Evaluation": Gate 0, 514 tests, 13/13 gate, known gaps, the 24-run pre-registered matrix, planned statistics, and limitations. No expected-value tables.
 - Conclusion and declarations corrected; code is MIT, EG-SSS will be CC BY 4.0, gated datasets are IDs/hashes only, and dual-use/abstention language is added.
 - Five verified bibliography entries added.
 
@@ -68,10 +68,10 @@ No overfull box comes from the new prose or the new equations. The final PDF was
 
 ## Remaining work before submission
 
-1. Re-run `pytest` and pin the test count (478 at this checkpoint).
+1. Re-run `pytest` only if the code changes; the P0 release count is 514.
 2. Confirm every regenerated figure matches its caption.
-3. Add an MIT `LICENSE` file to the repository.
+3. `LICENSE` (MIT) is present at the repository root; no action.
 4. Verify dataset licence statements against the live cards.
 5. Add page numbers for the five new bibliography entries.
 6. Run the injection kappa validation before using injection results.
-7. Do not claim 13/13 gate or any efficacy result until WP-13, WP-09, and the paid matrix land.
+7. Complete the final-stack smoke test, the WP-18 placebo/oracle slice, the 24-item calibration batch, and the verifier human audit before the paid matrix. The 13/13 gate is achieved; no efficacy result is claimed.

@@ -84,7 +84,7 @@ applies one softmax, and projects the result onto the polytope
 \end{equation}
 The defaults are $\alpha=0.5$, $\beta=0.3$, $f=0.1$, and $c=0.9$. The projection guarantees $w_i \ge f$ and $\sum_i w_i = 1$ for every finite input. The ceiling is relaxed to $1/N$ only when $Nc<1$, a case with no feasible vector; $N=1$ returns $[1.0]$ because that is the only feasible vector. Neutral evidence, $V_i=H_i=0$, is an identity for an already feasible vector: the weights do not drift toward uniform. Dividing by $n_i$ cancels verbosity, so duplicating every claim does not increase an agent's weight.
 
-The operator is implemented in \texttt{trust/update.py}. The P0 gate runs 30,000 random draws for $N=1,3,5$ and checks the floor and the sum. It also checks neutral evidence and verbosity invariance. The debate loop calls the operator after each evidence round and performs a closing pass on the final positions, so the vector used by aggregation is computed from the final positions rather than from an earlier round. The result carries \texttt{trust\_for\_positions} and \texttt{trust\_status}. The runner-side record adapter still has to copy those fields into every record; until then, the debate result is the authoritative audit trail.
+The operator is implemented in \texttt{trust/update.py}. The P0 gate runs 30,000 random draws for $N=1,3,5$ and checks the floor and the sum. It also checks neutral evidence and verbosity invariance. The debate loop passes the per-agent claim counts to the operator, calls it after each evidence round, and performs a closing pass on the final positions, so the vector used by aggregation is computed from the final positions rather than from an earlier round. The result carries \texttt{trust\_for\_positions} and \texttt{trust\_status}, and the runner copies those fields into every record.
 
 \subsection{Weighted Aggregation}\label{subsec:weighted-aggregation}
 
@@ -96,17 +96,17 @@ and the group with the largest score wins. Ties resolve to the first observed an
 
 \subsection{Injection Protocol}\label{subsec:injection-implementation}
 
-The injection path is a one-shot stress test. After round one, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round two. Round three carries no injection. Ineligible items are logged with a reason and are not fatal. The injection path is implemented and mock-tested; it has not been exercised on a real model panel, and the B8-plus-injection wiring is one of the two pending P0 gate checks.
+The injection path is a one-shot stress test. After round one, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round two. Round three carries no injection. Ineligible items are logged with a reason and are not fatal. The injection path is implemented, mock-tested, and wired to the B8-plus-injection arm; it has not been exercised on a real model panel.
 
 \subsection{Runner, Records, and Manifest}\label{subsec:runner-records}
 
 The runner writes one JSON line per completed debate and appends it immediately, so a crash costs at most one question of GPU time. Re-running the same configuration skips completed question identifiers. Every record carries the question identifier, arm, seed, question, gold answer, raw and rendered options, permutation, rendered gold letter, raw answer, parsed answer, parser version, per-round answers, transcript, injection record, trust trajectory, final trust, verdicts, evidence, aggregation, and timing. The schema validator requires the final answer, its source, the parser version, and a valid trust simplex; it rejects a record rather than writing a plausible but unobserved value.
 
-The manifest layer hashes the configuration files, the run configuration, the model checkpoints, the prompt file, the pinned dataset revisions, the code commit, the temperature, and the seed. The hash excludes the creation time, so re-running the same configuration later resumes instead of forking. The resume guard refuses to append when a result-affecting field differs, and it names the differing keys. The P0 gate exercises the guard with an identical manifest and a changed manifest; the changed manifest is refused. The runner-side stamping of every record with the manifest hash is the remaining adapter patch, so the contract is implemented and gate-tested but not yet present in every record written by the runner.
+The manifest layer hashes the configuration files, the run configuration, the model checkpoints, the prompt file, the pinned dataset revisions, the code commit, the temperature, and the seed. The hash excludes the creation time, so re-running the same configuration later resumes instead of forking. The resume guard refuses to append when a result-affecting field differs, and it names the differing keys. The P0 gate exercises the guard with an identical manifest and a changed manifest; the changed manifest is refused. The runner stamps every record with the manifest hash, so the contract is implemented, gate-tested, and present in the records written by the runner.
 
 \section{P0 Hardening Changes}\label{sec:p0-changes}
 
-Table~\ref{tab:p0-changes} lists the P0 changes that are present in the branch. The table uses ``gate-tested'' for a path that the P0 gate exercises without a GPU, and ``pending'' for work that is not in the branch. The gate reports 11 passed, 0 failed, and 2 pending checks. The pending checks are WP-13 (the B8-no-trust prompt split) and WP-09 (B8-plus-injection wiring). The verifier human audit, the paid Core run, and the final-stack smoke test are outside the gate and remain outstanding.
+Table~\ref{tab:p0-changes} lists the P0 changes that are present in the P0 release. The table uses ``gate-tested'' for a path that the P0 gate exercises without a GPU. The gate reports 13 passed, 0 failed, and 0 pending checks. The verifier human audit, the EG-SSS calibration set, the paid Core run, and the final-stack smoke test are outside the gate and remain outstanding.
 
 \begin{table}[ht]
   \centering
@@ -120,7 +120,7 @@ Table~\ref{tab:p0-changes} lists the P0 changes that are present in the branch. 
     \hline
     1 & Answer-span parser and scorer; 50-case corpus; parser version & Parser and scorer & Gate-tested: 50/50 exact; notation and unit probes pass \\
     \hline
-    2 & Final-answer fields and accuracy endpoint & Record schema, endpoints & Endpoint gate-tested on fixtures; runner stamping pending (WP-04b) \\
+    2 & Final-answer fields and accuracy endpoint & Record schema, endpoints & Endpoint gate-tested on fixtures; runner stamps final-answer fields into every record \\
     \hline
     4 & Eight endpoints with raw counts and confidence intervals & Endpoints module & Gate-tested: 8 endpoints on 6 records \\
     \hline
@@ -130,23 +130,23 @@ Table~\ref{tab:p0-changes} lists the P0 changes that are present in the branch. 
     \hline
     8 & Pinned dataset revisions and claim-domain routing & Dataset config and routing & Gate-tested: 8 datasets pinned; bio routes to PubMed, math does not \\
     \hline
-    10 & Matrix cut to four executable arms; pre-registration & Matrix config and pre-registration & Gate-tested: 24 rows, 1,280 GPU-h, version 1.0; six-arm target pending WP-13 \\
+    10 & Matrix cut to four executable arms; pre-registration & Matrix config and pre-registration & Gate-tested: 24 rows, 1,280 GPU-h, version 1.0; six-arm target is WP-18 \\
     \hline
-    11 & Manifest and resume guard & Manifest module & Gate-tested: mismatch refused, identical manifest accepted; runner stamping pending \\
+    11 & Manifest and resume guard & Manifest module & Gate-tested: mismatch refused, identical manifest accepted; runner stamps the manifest hash \\
     \hline
   \end{tabular}
   \label{tab:p0-changes}
 \end{table}
 
-Three changes need a word of explanation because they alter what the earlier draft claimed. First, the trust operator is no longer a clamp followed by renormalization. The old order could leave a weight below the floor after renormalization; the projection makes the floor a property of the output rather than a hope. Second, the option order is no longer the dataset order. The correct answer was always option~A in the GPQA loader, and the prompts did not contain the options at all. The renderer and the scorer now use the same permutation. Third, the matrix is no longer the 15-condition grid. The executable matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs, at 1,280 GPU-h under the gate's conservative cap. The six-arm target adds B8-placebo and B8-oracle after WP-13; the pre-registration names both and states that the thesis reports the six-arm design as incomplete rather than silently dropping the contrasts if they are not added before unblinding.
+Three changes need a word of explanation because they alter what the earlier draft claimed. First, the trust operator is no longer a clamp followed by renormalization. The old order could leave a weight below the floor after renormalization; the projection makes the floor a property of the output rather than a hope. Second, the option order is no longer the dataset order. The correct answer was always option~A in the GPQA loader, and the prompts did not contain the options at all. The renderer and the scorer now use the same permutation. Third, the matrix is no longer the 15-condition grid. The executable matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs, at 1,280 GPU-h under the gate's conservative cap. The six-arm target adds B8-placebo and B8-oracle through WP-18; the pre-registration names both and states that the thesis reports the six-arm design as incomplete rather than silently dropping the contrasts if they are not added before unblinding.
 
 \section{Testing and Validation}\label{sec:testing-validation}
 
 \subsection{Test Suite}\label{subsec:test-suite}
 
-The branch records 478+ passing tests. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
+The branch records 514 passing tests. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
 
-The P0 gate is a separate 13-check script that runs before any paid run. It checks the test suite, the record schema, options in prompts, the parser corpus, trust bounds, neutral and verbosity behaviour, the B8 versus B8-no-trust prompt diff, the B8-plus-injection mock, the endpoint summary, dataset pins, claim routing, the manifest guard, and the matrix budget. At the time of writing it reports 11 passed, 0 failed, and 2 pending. The two pending checks are the B8-no-trust prompt split and the B8-plus-injection wiring. The gate is an engineering readiness check, not a result.
+The P0 gate is a separate 13-check script that runs before any paid run. It checks the test suite, the record schema, options in prompts, the parser corpus, trust bounds, neutral and verbosity behaviour, the B8 versus B8-no-trust prompt diff, the B8-plus-injection mock, the endpoint summary, dataset pins, claim routing, the manifest guard, and the matrix budget. It reports 13 passed, 0 failed, and 0 pending. The gate is an engineering readiness check, not a result.
 
 \subsection{Mock End-to-End Path}\label{subsec:mock-end-to-end}
 
@@ -202,4 +202,4 @@ Gated datasets are shared as identifiers and hashes only. GPQA and HLE require a
 
 \section{Summary}\label{sec:implementation-summary}
 
-The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 497+ test suite covers the contracts on synthetic and mock inputs. The remaining work is the verifier human audit, the B8-no-trust prompt variant, the final-stack smoke test, and the paid matrix. Those are the conditions for an efficacy claim, and none of them is met in this report.
+The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 514-test suite covers the contracts on synthetic and mock inputs. The remaining work is the verifier human audit, the EG-SSS calibration set, the WP-18 placebo/oracle slice, the final-stack smoke test, and the paid matrix. Those are the conditions for an efficacy claim, and none of them is met in this report.

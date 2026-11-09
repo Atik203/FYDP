@@ -2,9 +2,11 @@
 
 **Date:** 9 November 2026
 **Branch:** `docs/journal-claims`
-**Base:** `f777852` (`origin/feat/p0-hardening`, WP-14 merged)
+**Base (historical):** `f777852` (`origin/feat/p0-hardening`, WP-14 merged)
 **Manuscript:** `Papev_Summer26_6/cas-sc-template.tex`
 **Companion files:** `Papev_Summer26_6/STATUS.md`, `Papev_Summer26_6/cas-refs.bib`
+
+> **Historical record (audit of the manuscript at `f777852`).** The current release base is `main` = `dev` = `2ae56a3` (P0 release `7f2c11f`); the P0 gate is 13/13 with 514 tests. The old-to-new table below is retained as the historical audit of the pre-release text; only rows that state a current status are updated, and those updates are marked in the row text.
 
 ## Mode and authorship rung
 
@@ -23,10 +25,10 @@ The pass makes the preprint honest about the current P0 implementation. It is **
 The P0 facts used in the text are:
 
 - Gate 0: 10/10 debates, 3/3 rounds each, 90/90 non-empty positions, 370.8 s mean, 3,708.1 s total.
-- Tests: 478 at the current checkpoint. `experiments/p0/WAVE2.md` at `f777852` records 465; 478 is the newer checkpoint supplied for this pass. Re-run `pytest` before submission to pin the number.
-- P0 gate: 11 passed, 0 failed, 2 pending (WP-13 B8-no-trust, WP-09 B8+injection).
+- Tests: 514 at the P0 release. The audit was written against 478; `experiments/p0/WAVE2.md` at `f777852` records 465.
+- P0 gate: 13 passed, 0 failed, 0 pending at the P0 release (11 passed and 2 pending when this audit was written).
 - Matrix: 24 rows (4 arms x 3 datasets x 2 seeds), 1,280 GPU-h conservative gate, `PRE_REGISTRATION.md` v1.0.
-- Not yet: verifier human audit, paid Core-run matrix, final-stack smoke.
+- Not yet: verifier human audit, EG-SSS, 24-item calibration batch, WP-18 placebo/oracle slice, final-stack smoke, and the paid Core-run matrix.
 
 ## Old -> new table
 
@@ -78,8 +80,8 @@ The P0 facts used in the text are:
 |---|---|---|
 | Gate 0: 10/10 debates, 3/3 rounds, 90/90 non-empty positions, 370.8 s mean, 3,708.1 s total | `experiments/gate0/README.md` (result summary, measurements) | Verified |
 | Fallback claim extractor used in 5 of 30 Ministral generations | `experiments/gate0/README.md` (Phase-1 implication) | Verified |
-| 478 tests pass | User-supplied checkpoint for this pass; `experiments/p0/WAVE2.md` at `f777852` records 465 | Verified at checkpoint; re-run `pytest` before submission |
-| P0 gate 11 passed / 0 failed / 2 pending (WP-13, WP-09) | `experiments/p0/WAVE2.md`; `experiments/p0/WP-14.md` (full gate output) | Verified |
+| 514 tests pass | P0 release `7f2c11f`; `experiments/p0/WAVE2.md` | Verified at P0 release; re-run `pytest` only if the code changes |
+| P0 gate 13 passed / 0 failed / 0 pending | `experiments/p0/WAVE2.md`; `p0_gate.py` strict run, 2026-11-09 | Verified |
 | Matrix 24 rows, 4 arms x 3 datasets x 2 seeds | `trustcal/configs/experiments.yaml`; `experiments/p0/WP-14.md` (dry run) | Verified |
 | Conservative budget 1,280 GPU-h (9,600 debates x 8 min) | `PRE_REGISTRATION.md` section 5; `experiments/p0/WP-14.md`; gate check 13 | Verified |
 | `PRE_REGISTRATION.md` v1.0, dated 9 November 2026 | `PRE_REGISTRATION.md` header | Verified |
@@ -88,11 +90,11 @@ The P0 facts used in the text are:
 | GPQA-Main 448 items, 400 sampled; MMLU-Pro STEM 6,696, 400 sampled; HLE 200; EG-SSS 180 not built | `trustcal/configs/datasets.yaml`; `PRE_REGISTRATION.md` section 3 | Verified from config; EG-SSS is planned |
 | BrokenMath 451 proof items; BrokenArXiv 87 proof items; 0% answer-type retention | `docs/agent/00_START_HERE.md` warning 17; `trustcal/configs/datasets.yaml` appendix-only roles | Verified from the dataset audit |
 | Verifier interface has lexical, cross-encoder, NLI, LLM-judge implementations; lexical is the default | `trustcal/src/trustcal/retrieval/verifier.py`; `trustcal/IMPLEMENTATION_STATUS.md` | Verified from code |
-| Verifier is not injected into `DebateRunner`; claim counts are not passed; final-position trust is not produced | `trustcal/src/trustcal/orchestrator/debate.py` (calls `classify_claim`; `TrustState.update(support, harm)`; updates before revision) | Verified from code |
-| B8-no-trust prompt split and B8+injection are pending | `experiments/p0/WAVE2.md`; `experiments/p0/WP-14.md` (gate checks 7 and 8) | Verified |
+| Verifier is injected into `DebateRunner`; claim counts are passed; final-position trust (`trust_for_positions`) is produced | `trustcal/src/trustcal/orchestrator/debate.py`; `experiments/p0/WAVE2.md` | Verified in P0 release |
+| The B8-no-trust and B8+injection paths are wired | `experiments/p0/WAVE2.md`; P0 gate checks 7 and 8 | Verified |
 | Final 96 GB stack has not been smoke-tested | `trustcal/IMPLEMENTATION_STATUS.md` (known gaps) | Verified |
 | Injection validation (40 items, two annotators, kappa >= 0.75) has not run | `trustcal/INJECTION_PROTOCOL.md`; `trustcal/IMPLEMENTATION_STATUS.md` (human-eval tooling, no raters) | Verified as planned, not executed |
-| Code is MIT; EG-SSS will be CC BY 4.0 | Author instruction for this pass; no `LICENSE` file exists in the repo yet | Author decision; TODO add `LICENSE` |
+| Code is MIT; EG-SSS will be CC BY 4.0 | `LICENSE` at the repository root (MIT); author instruction for EG-SSS | Verified (MIT file present); EG-SSS licence is planned |
 | GPQA is CC BY 4.0; MMLU-Pro and HLE are used under their stated terms | Existing manuscript text; dataset documentation | Inherited; verify against the live dataset cards before submission |
 
 ## Citation verification
@@ -137,14 +139,14 @@ The figure agent is regenerating all six canonical PNGs at 600+ DPI. The manuscr
 
 | Item | Status | Action |
 |---|---|---|
-| 478 tests | Checkpoint number supplied for this pass; `WAVE2.md` at `f777852` says 465 | Re-run `pytest` on the submission commit and replace the number if it differs |
-| Figure captions vs regenerated PNGs | Pending the figure agent | Open each PNG and confirm the labels match the caption |
-| Code license | No `LICENSE` file in the repo | Add an MIT `LICENSE` before submission |
+| 514 tests | P0 release count; the audit was written against 478, and `WAVE2.md` at `f777852` says 465 | Re-run `pytest` only if the code changes; replace the number if it differs |
+| Figure captions vs regenerated PNGs | Captions are aligned with the current figures | Open each PNG if it is regenerated and confirm the labels match the caption |
+| Code license | `LICENSE` (MIT) is present at the repository root | No action |
 | Dataset licenses | Inherited from the old draft | Verify GPQA, MMLU-Pro, HLE, BrokenMath, BrokenArXiv terms against the live cards |
 | New bibliography page numbers | Omitted | Fill from the camera-ready proceedings |
 | Injection annotator count | Protocol says two; no rater sheet exists | Confirm the protocol and run the kappa check before using injection results |
 | `B4-matched` / "source partition" terminology | Config flag is `source_partitioning`; text says "claim-domain retrieval configuration" | Keep the paper's design term; note the config flag in the reproducibility appendix |
-| 13/13 gate | Not achieved; 11/13 | Do not claim 13/13 until WP-13 and WP-09 land and the gate exits 0 |
+| 13/13 gate | Achieved at the P0 release (`7f2c11f`) | Do not reuse the 11/13 count; the remaining slice is WP-18 |
 
 ## Where the skill forced a narrowing or removal
 

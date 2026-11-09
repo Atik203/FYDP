@@ -20,7 +20,7 @@ where $w_i^{(t)}$ is the current trust weight. One softmax turns the scores into
 The projection matters. Without it an agent could be silenced outright or could grow to dominate the debate. A clamp followed by renormalization is not equivalent: the old order could leave a weight below the floor, so the implementation projects after a single softmax and tests the result. An injection point lets the harness deliver a fabricated wrong consensus to the targeted agents once, between rounds. That is how sycophantic collapse is measured under controlled pressure. At the end, a weighted plurality over the observed answers selects the final answer, using the trust vector computed from the final positions (\texttt{trust\_for\_positions}). Majority voting is retained as a baseline and logged for comparison; it does not choose the treatment's answer. The results package contains the final answer, the retrieved passages and per-claim verdicts, the trust history, and the transcript for each agent.
 
 The evaluation harness will compute an estimate of the answer's correctness along with a measure of how well the framework has collapsed into a consensus, preserved minority opinions, and calibrated its use of evidence. It will evaluate
-this framework relative to baseline methods based upon majority voting and MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc}. There are several built-in recovery routes in case there is some kind of failure within the system. For example, if a model's output cannot be processed then it will be sent through the fallback extraction path. Any timeouts encountered during this process are retried up to three attempts with exponential backoff before the round is declared inconclusive. Additionally, if a retrieval API becomes unavailable then the system will either default to using available cached evidence or make queries directly to OpenAlex.
+this framework with the four executable arms; MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc} remain related baselines and are not part of the current matrix. There are several built-in recovery routes in case there is some kind of failure within the system. For example, if a model's output cannot be processed then it will be sent through the fallback extraction path. Any timeouts encountered during this process are retried up to three attempts with exponential backoff before the round is declared inconclusive. Additionally, if a retrieval API becomes unavailable then the system will either default to using available cached evidence or make queries directly to OpenAlex.
 
 With respect to non-functional requirements, which refer to properties of systems, such as performance and scalability, but do not describe specific behavior, latency is currently the most significant limiting factor. This is achieved by forcing adherence to the limit of three debate rounds plus three retries. This ensures that total processing times remain reasonable on the intended hardware. The system was also designed such that when a single component fails, it does not bring down the entire debate. Instead, failure is dealt with at a local level while keeping other components active. Portability is another important design consideration. By utilizing the vLLM interface compatible with OpenAI, the framework supports both closed APIs and locally hosted models with equal ease. For practical purposes, the same pipeline can operate unmodified on both our development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B), as well as the final evaluation models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B). No fine tuning is required for inference. The pinned final checkpoints total 69.73GB, so the three models share one 96GB RTX PRO 6000 Blackwell GPU with headroom for the KV cache. Using this GPU costs approximately USD 1.10 to 2.70 per hour, with a median near USD 1.60. The pinned final checkpoints total 69.73GB, which leaves headroom on the 96GB card for the KV cache. Finally, each run records its seed, the order of multiple-choice options is derived from a per-question seed, and all relevant intermediate outputs are logged. This allows the final output to maintain an auditable decision trail detailing which agent's claims were supported or contradicted by the evidence. Throughout this process, the ground truth remains completely hidden from the agents, and the final record links supported claims to the passages that supported them.
 
@@ -78,13 +78,13 @@ The design also fixes the evaluation contract. Each question is paired across ar
 
 The project runs for ten months, from Month 1 to Month 10, and covers 40 weeks.
 It is split into eight phases with six review gates. The work starts with literature
-and setup and ends with writing and submission. Table~\ref{tab:phases} lists each
+and setup and ends with writing, the final defence, and paper submission. Table~\ref{tab:phases} lists each
 phase with its weeks and deliverables. Table~\ref{tab:gates} lists the gates and
 their checkpoints. Table~\ref{tab:swot} adds a SWOT view of the plan. This report
 covers work through the mid-project review in Month 5, while later phases carry
 the project to the final defence.
 
-The plan starts with scoping. Project scoping in Phase-0 fixes the research question, the trust-calibrated idea, the evaluation shape, and the gate criteria. Data and model work runs in parallel. Datasets GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are checked, and the three development models are chosen with their serving setup. Analysis of the baseline follows in Phase-1. Injection tests and baselines B1 to B4 are run, and the pilot checks if a wrong majority can still fool voting. Design and implement fill Phase-2. Claim decomposition and claim-domain retrieval are created. The trust operator uses logit accumulation, one softmax, and a simplex projection. A short dry-run and a design freeze mark the end of Phase-2 to 3. Phase-3a holds the main studies: the core conditions on the primary datasets, with two seeds and 95\% confidence intervals. Phase-3b contains ablation studies implementing different agent numbers as well as different alpha/beta combinations. The human study and failure reviews occur in Phase-4. Finally, writing, reproducibility packaging, submission, and defence preparation complete the project in Phase-5.
+The plan starts with scoping. Project scoping in Phase-0 fixes the research question, the trust-calibrated idea, the evaluation shape, and the gate criteria. Data and model work runs in parallel. Datasets GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are checked, and the three development models are chosen with their serving setup. Analysis of the baseline follows in Phase-1. Injection tests and the B3 and B4-matched arms are run, and the pilot checks if a wrong majority can still fool voting. Design and implement fill Phase-2. Claim decomposition and claim-domain retrieval are created. The trust operator uses logit accumulation, one softmax, and a simplex projection. A short dry-run and a design freeze mark the end of Phase-2 to 3. Phase-3a holds the main studies: the core conditions on the primary datasets, with two seeds and 95\% confidence intervals. Phase-3b contains ablation studies implementing different agent numbers as well as different alpha/beta combinations. The human study and failure reviews occur in Phase-4. Finally, writing, reproducibility packaging, and defence preparation complete the project in Phase-5, with the paper submission planned for August--December 2027.
 
 \begin{center}
   \begin{table}[ht]
@@ -97,9 +97,9 @@ The plan starts with scoping. Project scoping in Phase-0 fixes the research ques
       \hline
       Phase-0: Literature and Setup          & Month 1 (Wk 1--4)        & Literature freeze, vLLM serving and Python debate-loop setup, model identification, vanilla MAD reproduction         \\
       \hline
-      Phase-1: Injection and Baselines       & Month 2 (Wk 5--8)        & Injection protocol, baselines B1--B4, Proposition 1 proof, month-end pilot                          \\
+      Phase-1: Injection and Executable Arms & Month 2 (Wk 5--8)        & Injection protocol, B3 and B4-matched arms, Proposition 1 proof, month-end pilot                    \\
       \hline
-      Phase-2: Trust Mechanism Build         & Months 3--4 (Wk 9--16)   & Claim decomposition, source-partitioned RAG, trust function v1, baselines B5/B6/B9                  \\
+      Phase-2: Trust Mechanism Build         & Months 3--4 (Wk 9--16)   & Claim decomposition, claim-domain retrieval, trust function v1, B8-no-trust and B8 arms              \\
       \hline
       Phase-2 to 3: Mid-Project              & Month 5 (Wk 17--20)      & Design freeze, dry run on one dataset, FYDP-1 defence preparation, and review feedback fixes        \\
       \hline
@@ -107,9 +107,9 @@ The plan starts with scoping. Project scoping in Phase-0 fixes the research ques
       \hline
       Phase-3b: Ablations and Scaling        & Month 7 (Wk 25--28)      & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, and results freeze                       \\
       \hline
-      Phase-4: Human Evaluation and Analysis & Month 8 (Wk 29--32)      & Human evaluation with $n=60$, ECR calibration, failure analysis, and buffer for slippage            \\
+      Phase-4: Human Evaluation and Analysis & Month 8 (Wk 29--32)      & Human evaluation with $n=60$, trust AUROC/Brier calibration, failure analysis, and buffer for slippage \\
       \hline
-      Phase-5: Writing and Submission        & Months 9--10 (Wk 33--40) & Thesis and paper drafting, reproducibility package, submission, and FYDP-2 defence preparation      \\
+      Phase-5: Writing and Defence           & Months 9--10 (Wk 33--40) & Thesis drafting, reproducibility package, FYDP-2 defence preparation, paper submission Aug--Dec 2027 \\
       \hline
     \end{tabular}
     \label{tab:phases}
@@ -129,13 +129,13 @@ The plan starts with scoping. Project scoping in Phase-0 fixes the research ques
       \hline
       Gate 1 (Go/No-Go) & End of Month 2 & Injection validation reaches $\kappa \geq 0.75$, baseline CCR sits at 0.30 or higher, pilot executed    \\
       \hline
-      Gate 2            & End of Month 4 & Trust mechanism plus source-partitioned RAG plus competitor baselines, first CCR and MPR on one dataset \\
+      Gate 2            & End of Month 4 & Trust mechanism plus claim-domain retrieval plus the four executable arms, first CCR and MPR on one dataset \\
       \hline
       FYDP-1 Defence    & Month 5        & Mid-project report with design freeze and initial results                                               \\
       \hline
       Gate 3            & End of Month 7 & Full results freeze with confidence intervals and effect sizes                                          \\
       \hline
-      Submit and FYDP-2 & Months 9--10   & Paper submitted, thesis completed, final defence                                                        \\
+      Thesis and FYDP-2 & Months 9--10   & Thesis completed, final defence, paper submission Aug--Dec 2027                                        \\
       \hline
     \end{tabular}
     \label{tab:gates}
@@ -170,11 +170,11 @@ However, two buffers act as insurance policies along the critical path of our pr
 
 Phase-0 spans weeks 1 through week 4. Weeks 1 and 2 are focused on freezing literature and locking reference lists, with each paper being evaluated against their respective DOIs. Week 3 sets up vLLM serving and the Python debate loop. Week 4 evaluates all three models on a small GPQA~\cite{rein2024gpqa} slice. We need to reproduce Du et al. results on that same slice with our vanilla MAD baseline before moving forward with Phase-1.
 
-Phase-1 runs Week 5 to Week 8. Week 5 builds the injection harness that inserts a fabricated wrong consensus between rounds. Week 6 to Week 8 validate the injection with kappa checks and run baselines B1 to B4. The month ends with a pilot that must reach CCR 0.30 or higher to pass Gate 1. Phase-2 spans Week 9 to Week 16. Week 9 to Week 12 build claim decomposition. Source-partitioned RAG with cross-encoder reranking is added in Week 13 to Week 16.
+Phase-1 runs Week 5 to Week 8. Week 5 builds the injection harness that inserts a fabricated wrong consensus between rounds. Week 6 to Week 8 validate the injection with kappa checks and run the B3 and B4-matched arms. The month ends with a pilot that must reach CCR 0.30 or higher to pass Gate 1. Phase-2 spans Week 9 to Week 16. Week 9 to Week 12 build claim decomposition. Claim-domain retrieval with cross-encoder reranking is added in Week 13 to Week 16.
 
-Weeks 17--20 (Phase-2 to Phase-3) freeze the design and conduct a ``dry'' run of a single dataset for the purpose of mid-project review. Weeks 21--24 (Phase-3a), use core conditions on primary datasets with two random seeds and 95\% confidence intervals. Weeks 25--28 (Phase-3b), use 4 ablation points and sweep through $N$ and $\alpha/\beta$ values. Weeks 29--32 (Phase-4), conduct human evaluations with $n = 60$. Finally, Weeks 33--40 (Phase-5) will be devoted to writing up my thesis/paper along with creating a reproducibility package.
+Weeks 17--20 (Phase-2 to Phase-3) freeze the design and conduct a ``dry'' run of a single dataset for the purpose of mid-project review. Weeks 21--24 (Phase-3a), use core conditions on primary datasets with two random seeds and 95\% confidence intervals. Weeks 25--28 (Phase-3b), use 4 ablation points and sweep through $N$ and $\alpha/\beta$ values. Weeks 29--32 (Phase-4), conduct human evaluations with $n = 60$. Finally, Weeks 33--40 (Phase-5) will be devoted to writing the thesis, preparing the final defence, and creating a reproducibility package, with the paper submission planned for August--December 2027.
 
-The pre-registered matrix is budgeted at 1,280 GPU-h under the gate's conservative cap of 400 questions per dataset, or about 1,067 GPU-h under the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions. The experiment plan estimates the Core run at USD 420--580 all-in and a Full run at USD 900--1,200 all-in. GPU time is concentrated in Phase-3a and Phase-3b. If a retrieval API fails, the run falls back to cached evidence or OpenAlex; a Gate-2 dry-run failure does not move the final defence date because the Month-8 buffer absorbs it.
+The pre-registered matrix is budgeted at 1,280 GPU-h under the gate's conservative cap of 400 questions per dataset, or about 1,067 GPU-h under the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions. The experiment plan estimates the Core run at USD 420--580 all-in and a Full-run top-up of USD 900--1,200 over the Core envelope. GPU time is concentrated in Phase-3a and Phase-3b. If a retrieval API fails, the run falls back to cached evidence or OpenAlex; a Gate-2 dry-run failure does not move the final defence date because the Month-8 buffer absorbs it.
 
 \section{Task Allocation}\label{sec:task-allocation}
 
@@ -197,11 +197,11 @@ across the ten months.
       \hline
       Rakibul Hasan               & Vanilla MAD reproduction, injection protocol \\
       \hline
-      Md. Salman Rohoman Nayeem   & Claim decomposition, source-partitioned RAG  \\
+      Md. Salman Rohoman Nayeem   & Claim decomposition, claim-domain retrieval  \\
       \hline
-      Pratay Paul                 & Evaluation harness, CCR/MPR/ECR metrics      \\
+      Pratay Paul                 & Evaluation harness, CCR/MPR, trust AUROC/Brier \\
       \hline
-      Yousuf Kamal Himel          & Baselines B1--B9, vLLM serving               \\
+      Yousuf Kamal Himel          & Executable arms B3/B4-matched/B8-no-trust/B8; B1--B10 registry appendix; vLLM serving \\
       \hline
       Mst. Farjana Akter Limu     & Evidence APIs, dashboard, result packages    \\
       \hline
