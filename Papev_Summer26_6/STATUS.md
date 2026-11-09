@@ -6,7 +6,7 @@
 **Manuscript:** `cas-sc-template.tex`
 **Audit:** `CLAIMS_AUDIT.md`
 
-**Title:** “The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.” The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is used until the causal estimand is formally defined. The FYDP report cover keeps the registered title until the supervisor approves a change.
+**Title:** “The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.” The title uses “with” rather than a colon, following the course teacher’s formatting preference. “Controlled” is used until the causal estimand is formally defined. The FYDP report cover now uses the same exact title, with the registered FYDP title retained as a small cover note.
 
 ## What this branch does
 
@@ -17,7 +17,7 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 | Item | Value | Source |
 |---|---|---|
 | Gate 0 | 10/10 debates, 3/3 rounds each, 90/90 non-empty positions, 370.8 s mean, 3,708.1 s total | `experiments/gate0/README.md` |
-| Tests | 514 at the P0 release | `experiments/p0/WAVE2.md` |
+| Tests | 523 current (514 at the P0 release) | `pytest`; `experiments/p0/WAVE2.md` |
 | P0 gate | 13 passed, 0 failed, 0 pending | `p0_gate.py` strict run, 2026-11-09 |
 | Matrix | 24 rows, 4 arms x 3 datasets x 2 seeds | `trustcal/configs/experiments.yaml` |
 | Budget | 1,280 GPU-h conservative gate (9,600 debates x 8 min) | `PRE_REGISTRATION.md`, gate check 13 |
@@ -31,7 +31,7 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 - Datasets corrected: GPQA-Main and MMLU-Pro STEM are primary, HLE is a control, EG-SSS is planned, and BrokenMath/BrokenArXiv are proof-only and excluded.
 - Baselines corrected: four executable conditions; B9/B10 are approximations, not faithful reimplementations.
 - Metrics corrected: final accuracy and CMR are confirmatory; CCR-0, CCR-E, MPR-weighted, and ARR are descriptive; trust AUROC and Brier are secondary; ECR is not a primary target.
-- Results replaced by "Implementation Status and Planned Evaluation": Gate 0, 514 tests, 13/13 gate, known gaps, the 24-run pre-registered matrix, planned statistics, and limitations. No expected-value tables.
+- Results replaced by "Implementation Status and Planned Evaluation": Gate 0, 523 current tests (514 at the P0 release), 13/13 gate, known gaps, the 24-run pre-registered matrix, planned statistics, and limitations. No expected-value tables. The optional appendix-only B7 ceiling is documented as three GPT-6 Luna samples per question and is not in the Core or Full matrix.
 - Conclusion and declarations corrected; code is MIT, EG-SSS will be CC BY 4.0, gated datasets are IDs/hashes only, and dual-use/abstention language is added.
 - Five verified bibliography entries added.
 
@@ -68,7 +68,7 @@ No overfull box comes from the new prose or the new equations. The final PDF was
 
 ## Remaining work before submission
 
-1. Re-run `pytest` only if the code changes; the P0 release count is 514.
+1. Re-run `pytest` only if the code changes; the current count is 523, with 514 at the P0 release.
 2. Confirm every regenerated figure matches its caption.
 3. `LICENSE` (MIT) is present at the repository root; no action.
 4. Verify dataset licence statements against the live cards.

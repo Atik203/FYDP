@@ -12,7 +12,7 @@
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed** |
 | Tests | **514 passed** |
-| Report | `FYDP_Summer/out/fydp.pdf` — 57 pages, 0 errors/undefined refs |
+| Report (FYDP~II) | `FYDP_Summer/out/fydp.pdf` — 60 pages, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 18 pages, 0 errors/undefined refs |
 | Final stack | Qwen3.6-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **69.73 GB** pinned |
 | Final-stack 96 GB smoke | **Not run** |

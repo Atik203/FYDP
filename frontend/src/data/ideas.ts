@@ -40,7 +40,7 @@ export const ideaMetadata: IdeaMetadata[] = [
       { label: 'Target Venue', value: 'TACL (rolling) · EMNLP 2028 fallback' },
       { label: 'P0 Gate', value: '13 / 13 passed' },
       { label: 'P0 Tests', value: '514' },
-      { label: 'P0 Release', value: '57-pp report · 18-pp journal · 0 undefined refs' },
+      { label: 'FYDP II Report', value: '60-pp report · 18-pp journal · 0 undefined refs' },
       { label: 'Core Matrix', value: '24 runs · 1,280 GPU-h' },
     ],
     kpis: [

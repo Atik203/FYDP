@@ -2,7 +2,7 @@
 
 **Status date:** 9 November 2026. **P0 engineering is released; there are no efficacy results.**
 
-**Readiness:** `FYDP_Summer/out/fydp.pdf` — **57 pages**, 0 errors/undefined refs. `Papev_Summer26_6/out/cas-sc-template.pdf` — **18 pages**, 0 errors/undefined refs. Implementation and conclusion are **written** for the P0 engineering release. Neither manuscript reports an efficacy result.
+**Readiness:** `FYDP_Summer/out/fydp.pdf` — **60 pages**, 0 errors/undefined refs. `Papev_Summer26_6/out/cas-sc-template.pdf` — **18 pages**, 0 errors/undefined refs. Implementation and conclusion are **written** for the P0 engineering release. Neither manuscript reports an efficacy result.
 
 **Title (fixed, no colon):** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
 
@@ -19,7 +19,7 @@ Choose one genre before further editing:
 - **FYDP report:** design + implementation + P0 engineering results + limitations. Keep the engineering chapters.
 - **Paper:** one claim, 8 pages, 4–6 experiments, related work, limitations, ethics. Move accreditation material to the thesis appendix.
 
-Do not mix them. The current 57-page artifact is the report; the 18-page artifact is the journal-style engineering paper.
+Do not mix them. The current 60-page artifact is the report; the 18-page artifact is the journal-style engineering paper.
 
 ---
 
@@ -27,7 +27,7 @@ Do not mix them. The current 57-page artifact is the report; the 18-page artifac
 
 | Item | State (9 Nov 2026) | Implication |
 |---|---|---|
-| Report | 57 pp; 0 errors/undefined refs | Compiles; engineering report |
+| Report | 60 pp; 0 errors/undefined refs | Compiles; engineering report |
 | Journal | 18 pp; 0 errors/undefined refs | Compiles; engineering report |
 | P0 gate | 13/13 | Engineering readiness only |
 | Tests | 514 passed | Code path is tested |

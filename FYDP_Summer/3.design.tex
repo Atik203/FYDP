@@ -1,34 +1,63 @@
-\chapter{Project Design}
+\chapter{Project Design}\label{chapter:design}
 
-Chapter 3 defines the system requirements and lays out the methodology, the design decisions, and the project plan with the task allocation. The first section records the functional and nonfunctional requirements together with the context diagram, the level-one data flow diagram, and the interface design.
+This chapter defines the system requirements and the design that the implementation follows. Section~\ref{sec:requirement-analysis} records the functional and nonfunctional requirements, the system boundary, the level-one data flow, and the user interface. Section~\ref{sec:detailed-methodology} describes the debate loop, the claim-level evidence pipeline, the bounded trust operator, the aggregation rule, the injection protocol, and the experimental design. Section~\ref{sec:project-plan} gives the current FYDP~II plan, Section~\ref{sec:task-allocation} assigns the modules, and Section~\ref{sec:design-summary} closes the chapter.
 
 \section{Requirement Analysis}\label{sec:requirement-analysis}
 
-Requirement analysis fixes what the framework must do before any code is written. The system is an experimental deliberation layer rather than a conventional application, so the requirements are framed around the research pipeline. A question enters, agents debate it over a fixed number of rounds, the claims are checked against external evidence, and a trust-weighted answer comes out. A multi-agent debate approach is used here since prior research indicates it yields more factual responses than relying on a single model ~\cite{du2024improving}. Furthermore, we incorporated a trust mechanism to prevent situations where a confident but incorrect majority forces a correct minority agent to change its answer ~\cite{pitre-etal-2025-consensagent}. The below sections will provide detail on the individual components of the System Requirements for this project including Boundaries, Data Flows and the User Interface for the Framework.
+The framework is an experimental deliberation layer, not a conventional application. A question enters, three heterogeneous agents debate it over three rounds, each agent's claims are checked against retrieved scientific evidence, and a trust-weighted answer leaves the system. The design must make that pipeline correct, reproducible, and auditable before it can support an efficacy claim.
+
 \subsection{Functional and Nonfunctional Requirements}\label{subsec:requirements}
 
-The Functional Requirements outline the primary functions that the framework provides. All input questions (from both the User and/or the Evaluation Harness) are processed in complete ignorance of their actual "ground-truth" as it relates to the Agents. In order to be efficient, all input questions do not require a full debate. Therefore, an initial Confidence Gate determines whether an input question should receive a Direct Response or be sent to the Main Pipeline for processing. The Orchestration Process controls 3 different Heterogeneous LLM Agents, each revising at most 3 times per Agent (via State Machine), as determined by 3 retry limits.
+Table~\ref{tab:functional-requirements} lists the functional requirements. Each requirement names the component that satisfies it and the evidence that will show it works. The verification column separates gate-tested behaviour from behaviour that requires a paid model run; a gate-tested path is not an efficacy result.
 
-Each Agent's Reasoning is segmented into Atomic Factual Claims and carefully tagged to its Source. If this structured tagging process fails, a fallback extraction pass is triggered to handle the unparsed text. Retrieval routes each claim by domain: biomedical and clinical claims go to PubMed and Semantic Scholar, physics, chemistry, mathematics, and computer-science claims go to arXiv and Semantic Scholar, and other claims go to Semantic Scholar or OpenAlex. Passages are deduplicated by DOI, arXiv identifier, or title, and a cross-encoder reranks the candidates that come back. Each claim then receives one of three verdicts: supported, contradicted, or unverifiable. Contested evidence is reported separately rather than counted as support or contradiction.
+\begin{table}[H]
+  \centering
+  \caption{Functional requirements and their verification. Gate-tested means the path runs without a GPU; paid-run evidence is still outstanding where marked.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.06\textwidth}|p{0.46\textwidth}|p{0.24\textwidth}|p{0.16\textwidth}|}
+    \hline
+    ID & Requirement & Component & Verification \\
+    \hline
+    FR1 & Accept a question, preserve the gold answer privately, and render multiple-choice options in a seeded order & Dataset loader, option renderer, prompts & Gate-tested; permutation stored \\
+    \hline
+    FR2 & Run three heterogeneous agents for three rounds, with independent round-0 positions and revision rounds that expose peer positions & Debate loop & Gate~0 on ten GPQA items \\
+    \hline
+    FR3 & Decompose each position into atomic claims, with a fallback for untagged prose & Claim parser & Gate-tested; 50-case parser corpus \\
+    \hline
+    FR4 & Route each claim to a domain-specific source pair and deduplicate passages & Claim-domain retriever & Gate-tested; live APIs not yet exercised \\
+    \hline
+    FR5 & Assign supported, contradicted, or unverifiable through one verifier interface & Verifier interface & Gate-tested; human audit pending \\
+    \hline
+    FR6 & Update a bounded trust vector from the verdict counts, with a floor and a ceiling & Trust operator & Gate-tested; 30,000 draws for $N=1,3,5$ \\
+    \hline
+    FR7 & Aggregate the final positions by trust-weighted plurality, and log the majority answer separately & Aggregation & Gate-tested; paid run pending \\
+    \hline
+    FR8 & Deliver one fabricated wrong consensus to targeted agents between rounds, and record the manipulation & Injection protocol & Mock-tested; real-model run pending \\
+    \hline
+    FR9 & Write one schema-valid record per question with answers, claims, evidence, verdicts, trust, injection, timing, and manifest hash & Runner and records & Gate-tested; 523-test suite \\
+    \hline
+    FR10 & Resume a run without duplicating completed questions, and refuse a changed manifest & Manifest and resume guard & Gate-tested; mismatch refused \\
+    \hline
+    FR11 & Compute final-answer accuracy, correct-minority retention, appropriate revision, trust calibration, and verifier accuracy & Evaluation harness & Gate-tested on fixtures; matrix not run \\
+    \hline
+    FR12 & Provide a GPU-free mock path for orchestration, injection, and record tests & Mock vLLM servers & Integration test \\
+    \hline
+  \end{tabular}
+  \label{tab:functional-requirements}
+\end{table}
 
-After every evidence round the trust vector is updated in the log domain. For agent $i$ in round $t$, let $V_i$ be the number of supported claims, $H_i$ the number of contradicted claims, and $n_i$ the number of claims checked. The score is
-\begin{equation}
-\ell_i^{(t+1)} = \log w_i^{(t)} + \alpha \frac{V_i}{n_i} - \beta \frac{H_i}{n_i},
-\end{equation}
-where $w_i^{(t)}$ is the current trust weight. One softmax turns the scores into weights, and a simplex projection enforces $w_i \ge f$, $\sum_i w_i = 1$, and $w_i \le \max(c, 1/N)$. The defaults are $\alpha=0.5$, $\beta=0.3$, $f=0.1$, and $c=0.9$.
+The nonfunctional requirements follow from the research setting. Reproducibility is the first requirement: every result-affecting input, including the model checkpoint, prompt text, dataset revision, seed, option permutation, and code commit, must be recorded in a manifest. Auditability is the second: a reader must be able to trace a final answer back to the positions, claims, passages, and verdicts that produced it. Boundedness is the third: the trust vector must remain on the simplex, so no agent is silenced and no agent dominates. Portability is the fourth: the pipeline must run against local vLLM servers and against any OpenAI-compatible endpoint without changing the orchestration code.
 
-The projection matters. Without it an agent could be silenced outright or could grow to dominate the debate. A clamp followed by renormalization is not equivalent: the old order could leave a weight below the floor, so the implementation projects after a single softmax and tests the result. An injection point lets the harness deliver a fabricated wrong consensus to the targeted agents once, between rounds. That is how sycophantic collapse is measured under controlled pressure. At the end, a weighted plurality over the observed answers selects the final answer, using the trust vector computed from the final positions (\texttt{trust\_for\_positions}). Majority voting is retained as a baseline and logged for comparison; it does not choose the treatment's answer. The results package contains the final answer, the retrieved passages and per-claim verdicts, the trust history, and the transcript for each agent.
+Latency and cost are operational constraints. The debate is fixed at three rounds and three agents, and each model call is retried at most three times. That cap keeps a single question within a predictable budget and prevents a failed server from holding a run indefinitely. The final stack is designed for one 96\,GB card, with a pinned 69.73\,GB weight total and a 0.90 utilization sum; the development stack runs on one 48\,GB A6000. The system is inference-only, so no training cost or model-update risk is introduced.
 
-The evaluation harness will compute an estimate of the answer's correctness along with a measure of how well the framework has collapsed into a consensus, preserved minority opinions, and calibrated its use of evidence. It will evaluate
-this framework with the four executable arms; MoA~\cite{wang2025mixture}, iMAD~\cite{fan2026imad}, and DebUnc~\cite{yoffe-etal-2025-debunc} remain related baselines and are not part of the current matrix. There are several built-in recovery routes in case there is some kind of failure within the system. For example, if a model's output cannot be processed then it will be sent through the fallback extraction path. Any timeouts encountered during this process are retried up to three attempts with exponential backoff before the round is declared inconclusive. Additionally, if a retrieval API becomes unavailable then the system will either default to using available cached evidence or make queries directly to OpenAlex.
-
-With respect to non-functional requirements, which refer to properties of systems, such as performance and scalability, but do not describe specific behavior, latency is currently the most significant limiting factor. This is achieved by forcing adherence to the limit of three debate rounds plus three retries. This ensures that total processing times remain reasonable on the intended hardware. The system was also designed such that when a single component fails, it does not bring down the entire debate. Instead, failure is dealt with at a local level while keeping other components active. Portability is another important design consideration. By utilizing the vLLM interface compatible with OpenAI, the framework supports both closed APIs and locally hosted models with equal ease. For practical purposes, the same pipeline can operate unmodified on both our development models (Qwen3.5-9B, Gemma 4 12B, Ministral-3-14B), as well as the final evaluation models (Qwen3.6-27B, Gemma 4 26B, Mistral Small 3.2 24B). No fine tuning is required for inference. The pinned final checkpoints total 69.73GB, so the three models share one 96GB RTX PRO 6000 Blackwell GPU with headroom for the KV cache. Using this GPU costs approximately USD 1.10 to 2.70 per hour, with a median near USD 1.60. The pinned final checkpoints total 69.73GB, which leaves headroom on the 96GB card for the KV cache. Finally, each run records its seed, the order of multiple-choice options is derived from a per-question seed, and all relevant intermediate outputs are logged. This allows the final output to maintain an auditable decision trail detailing which agent's claims were supported or contradicted by the evidence. Throughout this process, the ground truth remains completely hidden from the agents, and the final record links supported claims to the passages that supported them.
+Fault tolerance is local rather than global. A retrieval failure produces an unverifiable claim, a parser failure triggers the fallback extractor, and a model timeout produces an inconclusive position after the retry budget. None of these failures may silently fabricate a value. Security and privacy are handled by keeping API keys in the environment, never committing \texttt{.env}, and sharing gated dataset text only as identifiers and hashes.
 
 \subsection{Context Diagram}\label{subsec:context-diagram}
 
-As illustrated in Figure ~\ref{fig:context-diagram}, the context diagram outlines the system boundaries and identifies the external actors interacting with the framework. The core system is positioned at the center, receiving input questions either directly from a user or via the evaluation harness. Scientific passages come back from three external databases, and off-the-shelf language models are called through the vLLM server on a rented RTX PRO 6000 Blackwell GPU. The evaluation harness receives the scores, and the user gets the final result package with the answer, the citations, the trust trajectory, and each reasoning trace.
+Figure~\ref{fig:context-diagram} fixes the system boundary. A user or the evaluation harness submits a question and its rendered options. The framework calls three model servers, four literature sources, and a verifier layer. The evaluation harness receives the result package: the final answer, the per-claim verdicts, the retrieved passages, the trust trajectory, and the transcript. The gold answer is held outside the agents' context for the whole debate.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{fig-context.png}
   \caption{Context diagram: questions and rendered options enter; three agents call the vLLM server; claims route by domain to PubMed, arXiv, Semantic Scholar, and OpenAlex; verifier labels update the trust vector; the result package records the final answer, evidence, and final trust vector.}
@@ -37,11 +66,9 @@ As illustrated in Figure ~\ref{fig:context-diagram}, the context diagram outline
 
 \subsection{Data Flow Diagram Level 1}\label{subsec:dfd-level1}
 
-The level-one data flow diagram in Figure~\ref{fig:dfd-level1} decomposes the framework into seven processes. A question enters through the intake and gate process, which decides between a direct answer and a debate; for a debate, the option renderer applies a seeded permutation and stores the rendered order. Orchestration runs the revision rounds. It sends inference requests to the external models and reads and writes the debate state. Each position is decomposed into atomic claims, and each claim is routed by domain to PubMed, arXiv, Semantic Scholar, or OpenAlex. The verifier assigns supported, contradicted, or unverifiable, and the verdicts drive the trust update through logit accumulation, one softmax, and a simplex projection. The new trust values are written back into the debate state. One-shot injection is delivered before round two. At the last round, weighted aggregation uses the final trust vector and the packaging process logs the result before it returns to the user. Three data stores hold the debate state, the evidence and verdict log, and the results log.
+Figure~\ref{fig:dfd-level1} decomposes the framework into seven processes. The intake and gate process accepts the question and decides whether a debate is warranted. The option renderer applies a seeded permutation and stores the rendered order. Orchestration runs the revision rounds and writes the debate state. Claim decomposition turns each position into atomic claims, and domain routing sends each claim to its source pair. The verifier assigns labels, and the trust update applies logit accumulation, one softmax, and a simplex projection. One-shot injection is delivered before round two. Weighted aggregation uses the final trust vector, and the packaging process writes the result. Three stores hold the debate state, the evidence and verdict log, and the results log.
 
-The diagram reads from left to right and top to bottom. The evaluation harness submits a question and its rendered options, and the confidence gate decides whether the debate is worth running. The orchestration process then asks the model server for the agent positions. Positions are decomposed into atomic claims, and the routing process sends each claim to its domain-specific sources. The verifier labels are stored in the evidence log before they drive the trust update. The updated trust is written back into the debate state, so the next round starts from the corrected influence values. At the last round the aggregation process selects the answer with the trust vector computed from the final positions. The packaging process logs it in the results log, and the result package with the answer, evidence, and trust history returns to the user.
-
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{fig-dataflow.png}
   \caption{Level-one data flow: option rendering, debate state, claim decomposition, domain routing, verifier labels, simplex trust update, one-shot injection, and weighted aggregation.}
@@ -50,214 +77,262 @@ The diagram reads from left to right and top to bottom. The evaluation harness s
 
 \subsection{UI Design}\label{subsec:ui-design}
 
-The framework is operated through a command-line interface. It starts experiments and points the pipeline at the evaluation datasets; every run writes a JSON result package. The command line is the primary interface because the system runs in batches on a rented GPU, where a graphical interface adds little value. A web dashboard for inspecting single debates is planned but is not part of the P0 implementation. Figures~\ref{fig:cli} and~\ref{fig:dashboard} are layout mock-ups, not screenshots of a running system. The dashboard mock-up shows the intended agent cards, trust trajectory, and per-claim verdict view.
+The primary interface is a command-line runner. It starts an arm, points the pipeline at a dataset or a local question file, and writes a JSONL record stream plus a summary. The command line is appropriate because the system runs in batches on a rented GPU and because every experiment must be reproducible from a command. A web dashboard for inspecting a single debate is planned but is not part of the P0 implementation. Figures~\ref{fig:cli} and~\ref{fig:dashboard} are layout mock-ups, not screenshots of a running system.
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Mock-up of the command-line experiment interface.}}
+  \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering Mock-up of the command-line experiment interface.}}
   \caption{Mock-up of the command-line interface for running experiments and writing JSON result packages.}
   \label{fig:cli}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
   \centering
-  \fbox{\parbox[c][6cm][c]{0.8\textwidth}{\centering Mock-up of the planned debate-inspection dashboard.}}
+  \fbox{\parbox[c][5cm][c]{0.8\textwidth}{\centering Mock-up of the planned debate-inspection dashboard.}}
   \caption{Mock-up of the planned web dashboard showing agent positions, the trust trajectory, and per-claim evidence verdicts.}
   \label{fig:dashboard}
 \end{figure}
 
-\section{Detailed Methodology and Design}
+\section{Detailed Methodology and Design}\label{sec:detailed-methodology}
 
-The design separates the debate from the evidence layer. The debate fixes the number of agents at $N=3$ and the number of rounds at $K=3$. The first round collects independent positions; rounds two and three expose each agent to the other agents' positions and to its own current trust weight. The evidence layer runs after each round's positions are fixed. It decomposes each position into at most eight claims, routes each claim to a domain-specific source pair, retrieves and deduplicates passages, and assigns a verdict. The verdicts are counted per agent as $V_i$ and $H_i$, and the trust operator in Section~\ref{sec:requirement-analysis} updates the vector.
+\paragraph*{System overview.}
+The architecture separates three concerns. The orchestration layer owns the round loop, the agent prompts, and the aggregation rule. The evidence layer owns claim extraction, source routing, retrieval, and verdicts. The evaluation layer owns the endpoints, the statistics, the records, and the manifest. The separation matters because the trust signal is only as good as the evidence layer, and the evidence layer must be auditable independently of the debate.
 
-The aggregation step is a weighted plurality. For each distinct final answer $a$, the score is $\sum_{i:\,p_i=a} w_i$, and the answer with the largest score wins; ties resolve to the first observed answer. The majority answer is computed and stored for comparison, but the treatment's final answer is the weighted winner. This separation lets the same debate transcript be scored under majority and trust-weighted aggregation without re-running the models.
+The design keeps the debate fixed at $N=3$ agents and $K=3$ rounds. Round~0 collects independent positions. Rounds~1 and~2 expose each agent to the other agents' positions and to its own current trust weight; an agent never sees another agent's weight. The evidence layer runs after each round's positions are fixed, so the trust update cannot change the positions that produced it. A closing pass recomputes trust from the final positions, and that vector is the one used by aggregation.
 
-The design also fixes the evaluation contract. Each question is paired across arms by a frozen round-0 prefix and the same option permutation. The primary endpoint is final-answer accuracy; the co-primary endpoint is correct-minority retention. Collapse under pressure, appropriate revision, and trust calibration are secondary or mechanism measures. The pre-registered matrix is described in Section~\ref{sec:project-plan}.
+\paragraph*{Debate loop.}
+The loop is a plain Python state machine. For each round it builds a prompt from the question, the rendered options, the agent's own previous position, its trust weight, and the peer positions truncated to 1{,}500 characters. The truncation keeps the three-agent transcript inside the 4{,}096-token development context. A model call is retried at most three times with exponential backoff; an empty completion or an unparseable position becomes an inconclusive position rather than a fabricated answer. The loop records every position, every prompt version, the retry count, and the elapsed time.
+
+The three agents are deliberately heterogeneous. The development stack uses Qwen3.5-9B-AWQ, Gemma~4 12B, and Ministral-3-14B-AWQ; the final stack replaces them with Qwen3.6-27B-FP8, Gemma~4 26B-A4B-FP8, and Mistral Small 3.2 24B-AWQ. The different pre-training pipelines are intended to reduce correlated errors, but that assumption is tested only by the planned model-family and shared-error analyses, not by Gate~0.
+
+\paragraph*{Options and answer parsing.}
+The GPQA loader stores the correct answer first, and MMLU-Pro stores the dataset order. Neither order may reach a prompt, because a model can learn a position shortcut. The renderer shuffles the choices with a per-question seed derived from a SHA-256 hash of the question identifier and the run seed. The permutation is stored in the record, so the rendered order is reproducible across processes and resumes. Free-form items receive the literal instruction ``Answer format: free text'' and no fabricated options.
+
+The parser prefers an explicit answer span: an \texttt{Answer:} or \texttt{Final answer:} line, a boxed expression, or the last line containing a letter or a number. It handles caret and LaTeX scientific notation, strips units before numeric comparison, and maps a letter or option text to the rendered option. Every record carries a parser version. Gate~0 showed why this is load-bearing: 17 of 90 generations opened with a formatting-only line and placed the answer on the next line.
+
+\paragraph*{Claim decomposition.}
+Agents are prompted to tag claims as \texttt{<claim id="cX">...</claim>} in the same generation. The parser extracts the tagged spans. If no tags are present, it falls back to sentence splitting, keeps items of at least three words, and caps the fallback at 20 claims. The trust configuration uses at most eight claims per agent. The fallback is necessary: in Gate~0, Qwen and Gemma tagged all 30 generations each, while Ministral left 5 of 30 untagged. Without the fallback, those positions would contribute no verifiable claims and would be treated as neutral by accident.
+
+The claim text is what the retrieval and verifier layers see. Untagged prose is not verified. A judgment-style claim usually returns unverifiable and therefore does not move trust. This is a deliberate limit: the mechanism acts only on claims that the evidence layer can check.
+
+\paragraph*{Claim-domain retrieval.}
+Retrieval is routed by claim domain rather than by agent identity. Biomedical and clinical claims query PubMed and Semantic Scholar; physics, chemistry, mathematics, and computer-science claims query arXiv and Semantic Scholar; other claims query Semantic Scholar or OpenAlex. This replaces an earlier design in which agent~1 always used PubMed, agent~2 always used arXiv, and agent~3 always used Semantic Scholar. The earlier design confounded source, domain, and model family: an agent could appear better because its assigned source covered the question's domain more easily.
+
+Retrieved passages are deduplicated by DOI, arXiv identifier, or title. The retriever takes a small candidate set and selects the passages shown to the agent; the trust configuration uses three passages per claim. The live APIs are not exercised by the test suite. A retrieval failure is recorded, and the claim becomes unverifiable when no passage is returned. The retrieval layer is therefore designed and routed, but its live coverage and rate-limit behaviour remain operational risks.
+
+\paragraph*{Verifier interface.}
+The verifier is a separate interface with four implementations: lexical overlap, cross-encoder, natural-language inference, and an LLM judge. The default is lexical. A supported verdict requires support in the retrieved passage; a contradicted verdict requires an explicit contradiction; no evidence yields unverifiable. Contested evidence is reported separately and is not counted as support or contradiction. The interface records the verifier name and version with each verdict.
+
+The lexical default is a diagnostic, not a validated scientific verifier. It scores claim-term coverage and can misread numeric or negated statements. The cross-encoder is optional and requires \texttt{sentence-transformers}; the LLM-judge hook exists but is not passed by the debate runner in the current branch. The human audit of 150--200 claim--passage pairs has not been completed, and the synthetic audit reports a balanced accuracy of 0.58. For that reason, the report makes no claim about verifier accuracy, and the planned matrix treats verifier quality as a moderator.
+
+\paragraph*{Trust operator.}
+Let $w_i^{(t)}$ be agent $i$'s weight at round $t$, $V_i$ the number of its claims that the verifier supports, $H_i$ the number it contradicts, and $n_i$ the number checked. The operator accumulates evidence in the log domain:
+\begin{equation}
+  \ell_i^{(t+1)} = \log w_i^{(t)} + \alpha \frac{V_i}{n_i} - \beta \frac{H_i}{n_i},
+  \label{eq:trust-update}
+\end{equation}
+where $\alpha=0.5$ and $\beta=0.3$. One softmax turns the scores into weights, and a projection places the result on the polytope
+\begin{equation}
+  \mathcal{W} = \left\{ w \in \mathbb{R}^{N} : w_i \ge f,\; \sum_{i=1}^{N} w_i = 1,\; w_i \le \max(c, 1/N) \right\},
+  \label{eq:trust-simplex}
+\end{equation}
+with floor $f=0.1$ and ceiling $c=0.9$. The projection guarantees the floor and the sum for every finite input. The ceiling is relaxed to $1/N$ only when $Nc<1$, a case with no feasible vector; $N=1$ returns $[1.0]$ because that is the only feasible vector. Neutral evidence, $V_i=H_i=0$, is an identity for an already feasible vector, so the weights do not drift toward uniform. Dividing by $n_i$ cancels verbosity, so duplicating every claim does not increase an agent's weight.
+
+The implementation performs a closing pass on the final positions and exposes \texttt{trust\_for\_positions}. It also records \texttt{trust\_status} so an abstention is distinguishable from a zero weight. This timing matters: an earlier implementation updated trust before the final positions were fixed, which meant the aggregation used a vector that did not correspond to the answers being aggregated.
+
+\paragraph*{Weighted aggregation.}
+Aggregation is a weighted plurality, not a majority vote. Each agent's final parsed position is mapped to a canonical answer group. For each group $a$, the score is
+\begin{equation}
+  S(a) = \sum_{i:\,p_i=a} w_i,
+  \label{eq:weighted-aggregation}
+\end{equation}
+and the group with the largest score wins. Ties resolve to the first observed answer. The majority answer is computed and stored alongside the weighted answer so the same transcript can be scored under both rules; it does not choose the treatment's final answer. This separation lets the pilot compare the weighted and unweighted winners without re-running the models.
+
+\paragraph*{Injection protocol.}
+The injection path is a one-shot stress test. After round~0, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round~1. Round~2 carries no injection. Ineligible items are logged with a reason and are not fatal.
+
+The injection is a controlled stress test, not natural sycophancy. It isolates the effect of social pressure from the effect of evidence. The manipulation check is a separate annotation task; it is not part of the confirmatory matrix.
+
+\paragraph*{Runner, records, and manifest.}
+The runner writes one JSON line per completed debate and appends it immediately, so a crash costs at most one question of GPU time. Re-running the same configuration skips completed question identifiers. Every record carries the question identifier, arm, seed, question, gold answer, raw and rendered options, permutation, rendered gold letter, raw answer, parsed answer, parser version, per-round answers, transcript, injection record, trust trajectory, final trust, verdicts, evidence, aggregation, and timing. The schema validator requires the final answer, its source, the parser version, and a valid trust simplex; it rejects a record rather than writing a plausible but unobserved value.
+
+The manifest hashes the configuration files, the run configuration, the model checkpoints, the prompt file, the pinned dataset revisions, the code commit, the temperature, and the seed. The hash excludes the creation time, so re-running the same configuration later resumes instead of forking. The resume guard refuses to append when a result-affecting field differs, and it names the differing keys. The P0 gate exercises the guard with an identical manifest and a changed manifest; the changed manifest is refused.
+
+\paragraph*{B7 external-answer ceiling.}
+B7 is an optional appendix arm, not part of the Core or Full matrix. It sends each question to OpenAI GPT-6 Luna three times, records each sample, and reports the mean single-call accuracy with a question-level bootstrap confidence interval and the three-sample majority accuracy. Ties resolve to the first sample. The arm is a reference point for ``what does a strong single call get?'', not a competitor mechanism and not the internal B8-oracle arm. Its cost is projected at roughly \$3--9 per 1{,}000 questions at three samples.
+
+\paragraph*{Experimental design.}
+The study asks four questions. \textbf{RQ1:} Does evidence-grounded trust improve final-answer accuracy and correct-minority retention relative to a matched majority-vote control? \textbf{RQ2:} Does the effect reverse when verifier accuracy or evidence redundancy falls below a boundary? \textbf{RQ3:} How much of the effect depends on claim-level evidence rather than on any re-weighting? \textbf{RQ4:} How much of the remaining error is a shared-error floor that no independent verifier can remove?
+
+The corresponding hypotheses are pre-registered. H1: B8 improves accuracy and CMR over B8-no-trust on pressure-eligible items. H2: the sign of the effect depends on verifier accuracy and redundancy, with a sign reversal at the predicted boundary. H3: the placebo arm, which shuffles verdicts, does not reproduce the B8 effect. H4: the oracle arm bounds the verifier bottleneck, and the shared-error floor limits the achievable selective risk.
+
+\paragraph*{Arms and controls.}
+Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable conditions. The Full target adds the placebo and oracle controls, which require WP-18. B7 is optional and appendix-only.
+
+\begin{table}[H]
+  \centering
+  \caption{Arms and controls. Core v1.0 is the executable matrix; Full is the six-arm target pending WP-18.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.14\textwidth}|p{0.30\textwidth}|p{0.28\textwidth}|p{0.18\textwidth}|}
+    \hline
+    Arm & Evidence & Aggregation & Status \\
+    \hline
+    B3 & None & Majority & Core \\
+    \hline
+    B4-matched & Retrieved, same partition and prompts as B8 & Majority & Core \\
+    \hline
+    B8-no-trust & Retrieved, same as B8 & Majority (\texttt{use\_trust=false}) & Core; primary control \\
+    \hline
+    B8 & Retrieved & Trust-weighted & Core; treatment \\
+    \hline
+    B8-placebo & Retrieved, verdicts shuffled within debate & Trust-weighted & Full; WP-18 pending \\
+    \hline
+    B8-oracle & Gold information (gold-answer or gold-evidence-only on EG-SSS) & Trust-weighted & Full; WP-18 pending \\
+    \hline
+    B7 & External single-call ceiling; three GPT-6 Luna samples & Not applicable & Optional appendix \\
+    \hline
+  \end{tabular}
+  \label{tab:arms}
+\end{table}
+
+The primary causal contrast is B8 versus B8-no-trust. B3 and B4-matched are controls, not competitors: B3 isolates debate without retrieval, and B4-matched provides an evidence-information control. The placebo contrast tests whether the effect comes from evidence calibration or from any re-weighting. The oracle contrast bounds the verifier bottleneck. The pre-registration names both the six-arm target and the four-arm executable subset.
+
+\paragraph*{Datasets and benchmark ladder.}
+Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the primary sets; HLE is an abstention and ceiling control and is never pooled with the primary tests. EG-SSS is the team-built gold-evidence benchmark. It is not in Core v1.0; it joins at the v1.2 benchmark freeze as a 180-item set and scales to the 300-item Full target.
+
+\begin{table}[H]
+  \centering
+  \caption{Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.18\textwidth}|p{0.10\textwidth}|p{0.44\textwidth}|p{0.18\textwidth}|}
+    \hline
+    Dataset & Cap & Role & Status \\
+    \hline
+    GPQA-Main & 400 & Primary evidence-grounded set & Pinned revision \\
+    \hline
+    MMLU-Pro STEM & 400 & Primary scale and robustness set & Pinned revision \\
+    \hline
+    HLE & 200 & Abstention and ceiling control; not pooled & Pinned revision \\
+    \hline
+    EG-SSS-180 & 180 & Gold-evidence mechanism test; Core floor & v1.2 freeze \\
+    \hline
+    EG-SSS-300 & 300 & Full-run target & Target \\
+    \hline
+  \end{tabular}
+  \label{tab:datasets}
+\end{table}
+
+The benchmark ladder is 24 calibration items, 180 items for the Core floor, 300 items for the Full target, 600 as a stretch, and 800 as a no-go. A 300-item set with clean gold is better than a 600-item set with unreliable gold. The calibration batch is the first decision point: if the estimated annotation effort or defect rate is too high, the set is cut to 120 items rather than allowing the benchmark to delay the matrix.
+
+\paragraph*{Endpoints and statistical analysis.}
+Final-answer accuracy is the primary endpoint. It is binary at the question level, scored against the gold answer, and paired across arms. Correct-minority retention (CMR) is the co-primary endpoint. On a pressure-eligible item, the round-0 panel has a strict wrong majority and at least one correct agent; CMR is the fraction of those items where an initially correct agent still holds the gold answer at the final round.
+
+The secondary family contains appropriate revision rate, trust AUROC, trust Brier score, verifier balanced accuracy, and citation faithfulness. CCR-0, CCR-E, and MPR-weighted are diagnostics. ECR is deprecated: it is a calibration proxy that is anti-correlated with correctness and is not a primary endpoint. The analysis reports counts and confidence intervals for every rate, not only a point estimate.
+
+The unit of analysis is the question. Seed~1 is the pre-registered primary replicate for the exact McNemar test; seed~2 is the replication. Both seeds enter the effect estimate and the mixed-effects sensitivity analysis. The primary family contains four confirmatory tests and is Holm-adjusted at a family-wise $\alpha=0.05$. Accuracy non-inferiority uses a 5-percentage-point margin at $n\approx300$--400; the planning minimum detectable difference at $n=400$ and a discordant-pair proportion of 0.20 is about 6.3 percentage points unadjusted and 7.5 points after Holm. A dataset with fewer than 300 realised eligible items is reported as underpowered and is not used for a positive claim. HLE is reported separately and is not part of the primary family.
+
+\paragraph*{Threats to validity.}
+The first threat is verifier quality. The default verifier is lexical, and the synthetic audit scores 0.58 balanced accuracy. A trust signal built on a weak verifier can amplify a confident wrong majority. The human audit of 150--200 pairs is the gate that must pass before the matrix can support a high-$q$ claim. The second threat is retrieval coverage. The routing and deduplication logic are tested, but the live APIs are not; rate limits, malformed responses, and sparse domains can turn claims into unverifiable ones. The third threat is shared error. Three heterogeneous models reduce but do not eliminate correlated mistakes, and the shared-error floor is a boundary on what any independent verifier can certify.
+
+The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 96\,GB serving stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains.
 
 \section{Project Plan}\label{sec:project-plan}
 
-The project runs for ten months, from Month 1 to Month 10, and covers 40 weeks.
-It is split into eight phases with six review gates. The work starts with literature
-and setup and ends with writing, the final defence, and paper submission. Table~\ref{tab:phases} lists each
-phase with its weeks and deliverables. Table~\ref{tab:gates} lists the gates and
-their checkpoints. Table~\ref{tab:swot} adds a SWOT view of the plan. This report
-covers work through the mid-project review in Month 5, while later phases carry
-the project to the final defence.
+The project is in FYDP~II. Table~\ref{tab:phases} gives the current plan from November 2026 to December 2027. The order is deliberate: the final-stack smoke must pass before WP-18 and the pilot; the pilot must pass before the Core run; the Core run must pass before the Full run; and no paper deadline is allowed before the thesis defence.
 
-The plan starts with scoping. Project scoping in Phase-0 fixes the research question, the trust-calibrated idea, the evaluation shape, and the gate criteria. Data and model work runs in parallel. Datasets GPQA~\cite{rein2024gpqa} and MMLU-Pro~\cite{wang2024mmlupro} are checked, and the three development models are chosen with their serving setup. Analysis of the baseline follows in Phase-1. Injection tests and the B3 and B4-matched arms are run, and the pilot checks if a wrong majority can still fool voting. Design and implement fill Phase-2. Claim decomposition and claim-domain retrieval are created. The trust operator uses logit accumulation, one softmax, and a simplex projection. A short dry-run and a design freeze mark the end of Phase-2 to 3. Phase-3a holds the main studies: the core conditions on the primary datasets, with two seeds and 95\% confidence intervals. Phase-3b contains ablation studies implementing different agent numbers as well as different alpha/beta combinations. The human study and failure reviews occur in Phase-4. Finally, writing, reproducibility packaging, and defence preparation complete the project in Phase-5, with the paper submission planned for August--December 2027.
+\begin{table}[H]
+  \centering
+  \caption{FYDP~II phases, dates, deliverables, and gates.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.05\textwidth}|p{0.22\textwidth}|p{0.12\textwidth}|p{0.35\textwidth}|p{0.12\textwidth}|}
+    \hline
+    ID & Phase & Date & Deliverable & Gate \\
+    \hline
+    N1 & Final-stack smoke & Nov 2026 & 96\,GB hardware smoke; 60--100 GPU-h & N1 \\
+    \hline
+    N2 & WP-18 placebo/oracle & Nov--Dec 2026 & \texttt{placebo\_mode}, \texttt{oracle\_mode}, Full config & N2 \\
+    \hline
+    N3 & Benchmark calibration & Nov 2026--Feb 2027 & 24-item calibration, 180-item freeze, 300 target & N3 \\
+    \hline
+    N4 & Verifier audit & Nov--Dec 2026 & 150--200 pairs; BA $\ge0.75$, $\kappa\ge0.60$ & N4 \\
+    \hline
+    N5 & Pilot run & Dec 2026 & 100--150 questions; CCR, AUROC, injection $\kappa$ & G2 \\
+    \hline
+    N6 & Core run & Jan 2027 & 24 runs, 1{,}280 GPU-h cap; 180-item benchmark & G3 \\
+    \hline
+    N7 & Full run & Feb 2027 & 36-run target (32 if oracle is EG-SSS-only) & G4/G5 \\
+    \hline
+    N8 & Human evaluation and SDT & Mar 2027 & 150--200 paired items, 3 raters; expert ceiling & Analysis \\
+    \hline
+    N9 & Law-testing and ablations & Apr 2027 & $q/\rho$ sweeps, granularity, shared-error floor & Freeze \\
+    \hline
+    N10 & Thesis & May--Jun 2027 & Chapters, internal review, submission; defence Jun/Jul & Thesis \\
+    \hline
+    N11 & Paper & Aug--Dec 2027 & Journal manuscript after the defence & Paper \\
+    \hline
+  \end{tabular}
+  \label{tab:phases}
+\end{table}
 
-\begin{center}
-  \begin{table}[ht]
-    \centering
-    \caption{Project phases with week-level durations and deliverables.}
-    \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{|p{0.22\textwidth}|p{0.16\textwidth}|p{0.50\textwidth}|}
-      \hline
-      Phase                                  & Duration                 & Deliverables                                                                                        \\
-      \hline
-      Phase-0: Literature and Setup          & Month 1 (Wk 1--4)        & Literature freeze, vLLM serving and Python debate-loop setup, model identification, vanilla MAD reproduction         \\
-      \hline
-      Phase-1: Injection and Executable Arms & Month 2 (Wk 5--8)        & Injection protocol, B3 and B4-matched arms, Proposition 1 proof, month-end pilot                    \\
-      \hline
-      Phase-2: Trust Mechanism Build         & Months 3--4 (Wk 9--16)   & Claim decomposition, claim-domain retrieval, trust function v1, B8-no-trust and B8 arms              \\
-      \hline
-      Phase-2 to 3: Mid-Project              & Month 5 (Wk 17--20)      & Design freeze, dry run on one dataset, FYDP-1 defence preparation, and review feedback fixes        \\
-      \hline
-      Phase-3a: Main Experiments             & Month 6 (Wk 21--24)      & Core conditions on primary datasets, two seeds, 95\% confidence intervals, and effect size report \\
-      \hline
-      Phase-3b: Ablations and Scaling        & Month 7 (Wk 25--28)      & Four ablations, $\alpha$/$\beta$ sweep, $N \in \{2,3,5\}$, and results freeze                       \\
-      \hline
-      Phase-4: Human Evaluation and Analysis & Month 8 (Wk 29--32)      & Human evaluation with $n=60$, trust AUROC/Brier calibration, failure analysis, and buffer for slippage \\
-      \hline
-      Phase-5: Writing and Defence           & Months 9--10 (Wk 33--40) & Thesis drafting, reproducibility package, FYDP-2 defence preparation, paper submission Aug--Dec 2027 \\
-      \hline
-    \end{tabular}
-    \label{tab:phases}
-  \end{table}
-\end{center}
+Table~\ref{tab:budget} gives the budget envelope. The Core run is planned on the development stack; the Full run is a separate Final-stack matrix, so Core cells are not assumed reusable unless the stack and model revisions match. The hard stop is \$1{,}350 before law-testing; because the Core and Full envelopes together can exceed that figure, the team reviews the cumulative spend before starting the Full run and does not start law-testing unless the effect is real.
 
-\begin{center}
-  \begin{table}[ht]
-    \centering
-    \caption{Review gates and their checkpoints.}
-    \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{|p{0.26\textwidth}|p{0.18\textwidth}|p{0.42\textwidth}|}
-      \hline
-      Gate              & Due            & Checkpoint                                                                                              \\
-      \hline
-      Gate 0            & End of Month 1 & Vanilla MAD reproduces the Du et al. baseline on a GPQA~\cite{rein2024gpqa} slice, and the reference list is frozen         \\
-      \hline
-      Gate 1 (Go/No-Go) & End of Month 2 & Injection validation reaches $\kappa \geq 0.75$, baseline CCR sits at 0.30 or higher, pilot executed    \\
-      \hline
-      Gate 2            & End of Month 4 & Trust mechanism plus claim-domain retrieval plus the four executable arms, first CCR and MPR on one dataset \\
-      \hline
-      FYDP-1 Defence    & Month 5        & Mid-project report with design freeze and initial results                                               \\
-      \hline
-      Gate 3            & End of Month 7 & Full results freeze with confidence intervals and effect sizes                                          \\
-      \hline
-      Thesis and FYDP-2 & Months 9--10   & Thesis completed, final defence, paper submission Aug--Dec 2027                                        \\
-      \hline
-    \end{tabular}
-    \label{tab:gates}
-  \end{table}
-\end{center}
+\begin{table}[H]
+  \centering
+  \caption{Budget envelope. The Full run is a separate Final-stack matrix, not a reuse of Core cells.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.30\textwidth}|p{0.14\textwidth}|p{0.18\textwidth}|p{0.30\textwidth}|}
+    \hline
+    Stage & GPU-h & Cash & Note \\
+    \hline
+    Final-stack smoke & 60--100 & \$80--120 & N1; not run \\
+    \hline
+    Pilot & ~112 & \$50--100 & G2; 100--150 questions \\
+    \hline
+    Core run & 1{,}280 cap & \$420--580 & 24 runs; 8{,}000 planned debates \\
+    \hline
+    Full run & ~1{,}440 envelope & \$900--1{,}200 & 36-run target; separate Final stack \\
+    \hline
+    Law-testing & ~3{,}913 & \$1{,}400--1{,}900 & Only if the effect is real \\
+    \hline
+  \end{tabular}
+  \label{tab:budget}
+\end{table}
 
-\begin{center}
-  \begin{table}[ht]
-    \centering
-    \caption{SWOT analysis for the project plan.}
-    \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{|p{0.44\textwidth}|p{0.44\textwidth}|}
-      \hline
-      \textbf{Strengths}                                                                                                                                                                                                                & \textbf{Weaknesses} \\
-      \hline
-      Clear gap on sycophantic consensus, bounded trust design with no fine-tuning, six-member team with mixed skills, and expert supervision that keeps scope tight. The design needs no new training and runs on a single rented GPU. &
-      Sparse retrieval on rare claims, imperfect claim split, correlated reasoning errors between agents, and a limited GPU budget for the pre-registered 1,280 GPU-hour matrix. Small sample noise in early pilots can also hide real gains.                                                  \\
-      \hline
-      \textbf{Opportunities}                                                                                                                                                                                                            & \textbf{Threats}    \\
-      \hline
-      Growing interest in multi-agent debate and sycophancy, open datasets GPQA and MMLU-Pro, free retrieval APIs from PubMed, arXiv, Semantic Scholar and OpenAlex, and affordable cloud GPU rental with Blackwell FP8 support.        &
-      API rate limitations/downtime, price updates, sampling errors due to time slips from complex integrations and evaluation noise in small sample sizes; all contribute to the reliability of the results.                                                 \\
-      \hline
-    \end{tabular}
-    \label{tab:swot}
-  \end{table}
-\end{center}
-
-The reason we have ordered phases sequentially is because there are dependency relationships. Specifically, vanilla MAD reproduction in Phase-0 must finish prior to when injection validation will be performed in Phase-1. Therefore, since the trust function in Phase-2 relies upon an injection harness developed in Phase-1, we cannot begin Phase-2 until after Phase-1 has finished. Similarly, main experiments in Phase-3a must wait for both the completion of the trust function and the completion of the dry run in Phase-2 to 3. Moreover, human evaluation of the results (which occurs in Phase-4) require the frozen results produced in Phase-3b.
-
-However, two buffers act as insurance policies along the critical path of our project. There is first buffer located at Month 5 with respect to a dry run of one dataset being used prior to defending the project; and secondly, there is another buffer located at Month 8 which provides us with an additional month should things slip. These buffers exist at locations along the critical path where a late failure could potentially cause us to miss a hard deadline. As such, weekly meetings and Git version control allow us to track our progress, and each gate review allows us to determine whether to "Go" or "Fix" before we can proceed into the next phase.
-
-Phase-0 spans weeks 1 through week 4. Weeks 1 and 2 are focused on freezing literature and locking reference lists, with each paper being evaluated against their respective DOIs. Week 3 sets up vLLM serving and the Python debate loop. Week 4 evaluates all three models on a small GPQA~\cite{rein2024gpqa} slice. We need to reproduce Du et al. results on that same slice with our vanilla MAD baseline before moving forward with Phase-1.
-
-Phase-1 runs Week 5 to Week 8. Week 5 builds the injection harness that inserts a fabricated wrong consensus between rounds. Week 6 to Week 8 validate the injection with kappa checks and run the B3 and B4-matched arms. The month ends with a pilot that must reach CCR 0.30 or higher to pass Gate 1. Phase-2 spans Week 9 to Week 16. Week 9 to Week 12 build claim decomposition. Claim-domain retrieval with cross-encoder reranking is added in Week 13 to Week 16.
-
-Weeks 17--20 (Phase-2 to Phase-3) freeze the design and conduct a ``dry'' run of a single dataset for the purpose of mid-project review. Weeks 21--24 (Phase-3a), use core conditions on primary datasets with two random seeds and 95\% confidence intervals. Weeks 25--28 (Phase-3b), use 4 ablation points and sweep through $N$ and $\alpha/\beta$ values. Weeks 29--32 (Phase-4), conduct human evaluations with $n = 60$. Finally, Weeks 33--40 (Phase-5) will be devoted to writing the thesis, preparing the final defence, and creating a reproducibility package, with the paper submission planned for August--December 2027.
-
-The pre-registered matrix is budgeted at 1,280 GPU-h under the gate's conservative cap of 400 questions per dataset, or about 1,067 GPU-h under the per-dataset caps of 400 GPQA-Main, 400 MMLU-Pro, and 200 HLE questions. The experiment plan estimates the Core run at USD 420--580 all-in and a Full-run top-up of USD 900--1,200 over the Core envelope. GPU time is concentrated in Phase-3a and Phase-3b. If a retrieval API fails, the run falls back to cached evidence or OpenAlex; a Gate-2 dry-run failure does not move the final defence date because the Month-8 buffer absorbs it.
+The main risks are verifier quality, retrieval coverage, annotation throughput, GPU availability, and schedule slip. The verifier and retrieval risks are handled by the N4 audit and the fallback paths. Annotation throughput is handled by the 24-item calibration and the 180/300 ladder. GPU availability is handled by batching the smoke, pilot, and Core runs and by persisting the model cache. Schedule slip is handled by the explicit gates: a failed gate triggers a fix week rather than a silent compression of the matrix.
 
 \section{Task Allocation}\label{sec:task-allocation}
 
-Six members split the work along the modules of the framework.
-Table~\ref{tab:tasks} fixes who owns which primary modules,
-and Figure~\ref{fig:task-gantt} shows when each member is active
-across the ten months.
+Table~\ref{tab:tasks} assigns the primary modules. One owner is accountable for each file or module; parallel editing is avoided by a file lease. The leader reviews each module before it is marked complete.
 
-
-\begin{center}
-  \begin{table}[ht]
-    \centering
-    \caption{Module ownership across the six team members.}
-    \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{|p{0.36\textwidth}|p{0.50\textwidth}|}
-      \hline
-      Member                      & Primary modules                              \\
-      \hline
-      Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination  \\
-      \hline
-      Rakibul Hasan               & Vanilla MAD reproduction, injection protocol \\
-      \hline
-      Md. Salman Rohoman Nayeem   & Claim decomposition, claim-domain retrieval  \\
-      \hline
-      Pratay Paul                 & Evaluation harness, CCR/MPR, trust AUROC/Brier \\
-      \hline
-      Yousuf Kamal Himel          & Executable arms B3/B4-matched/B8-no-trust/B8; B1--B10 registry appendix; vLLM serving \\
-      \hline
-      Mst. Farjana Akter Limu     & Evidence APIs, dashboard, result packages    \\
-      \hline
-    \end{tabular}
-    \label{tab:tasks}
-  \end{table}
-\end{center}
-
-\begin{figure}[H]
+\begin{table}[H]
   \centering
-  \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[
-        wkline/.style={draw=black!12},
-        monline/.style={draw=black!55, thick},
-        bar/.style={rounded corners=1pt, text=white, font=\footnotesize\bfseries},
-        mlab/.style={font=\small},
-        nlab/.style={anchor=east, font=\small\bfseries},
-      ]
-      \definecolor{navy}{HTML}{1E40AF}
-      \definecolor{tealg}{HTML}{0F766E}
-      \definecolor{amberg}{HTML}{B45309}
-      \definecolor{roseg}{HTML}{B91C1C}
-      \definecolor{purpg}{HTML}{6D28D9}
-      \definecolor{skyg}{HTML}{0369A1}
-      \def\s{0.33}
-      \path[use as bounding box] (-3.6,0) rectangle (13.7,8.8);
-      \foreach \w in {0,...,40} {\draw[wkline] (\w*\s,0) -- (\w*\s,7.8);}
-      \foreach \m in {0,...,10} {\draw[monline] (\m*4*\s,0) -- (\m*4*\s,7.8);}
-      \foreach \m in {1,...,10} {\node[mlab] at ({(2*\m-1)*2*\s},8.1) {M\m};}
-      \foreach \y in {0,...,6} {\draw[black!35] (0,\y*1.3) -- (40*\s,\y*1.3);}
-      \node[nlab] at (-0.3,7.15) {Atikur};
-      \node[nlab] at (-0.3,5.85) {Rakibul};
-      \node[nlab] at (-0.3,4.55) {Nayeem};
-      \node[nlab] at (-0.3,3.25) {Pratay};
-      \node[nlab] at (-0.3,1.95) {Yousuf};
-      \node[nlab] at (-0.3,0.65) {Limu};
-      \fill[bar, fill=navy] (0,6.85) rectangle (40*\s,7.45) node[midway] {Architecture + coordination};
-      \fill[bar, fill=tealg] (0,5.55) rectangle (12*\s,6.15) node[midway] {MAD + injection};
-      \fill[bar, fill=amberg] (8*\s,4.25) rectangle (24*\s,4.85) node[midway] {Claims + RAG};
-      \fill[bar, fill=roseg] (4*\s,2.95) rectangle (8*\s,3.55) node[midway, font=\tiny\bfseries] {Phase-1};
-      \fill[bar, fill=roseg] (18*\s,2.95) rectangle (28*\s,3.55) node[midway] {Metrics + harness};
-      \fill[bar, fill=purpg] (4*\s,1.65) rectangle (16*\s,2.25) node[midway] {Baselines + vLLM};
-      \fill[bar, fill=skyg] (6*\s,0.35) rectangle (16*\s,0.95) node[midway] {APIs + dashboard};
-      \fill[bar, fill=skyg] (28*\s,0.35) rectangle (40*\s,0.95) node[midway] {Packages + report};
-    \end{tikzpicture}}
-  \caption{Gantt view of member activity across the ten project months, following the phase plan in Table~\ref{tab:phases}.}
-  \label{fig:task-gantt}
-\end{figure}
+  \caption{Module ownership across the six team members.}
+  \renewcommand{\arraystretch}{1.3}
+  \small
+  \begin{tabular}{|p{0.32\textwidth}|p{0.54\textwidth}|}
+    \hline
+    Member & Primary modules \\
+    \hline
+    Md. Atikur Rahaman (Leader) & Architecture, trust mechanism, coordination, pre-registration \\
+    \hline
+    Rakibul Hasan & Vanilla MAD reproduction, injection protocol, B8-no-trust prompt split \\
+    \hline
+    Md. Salman Rohoman Nayeem & Claim decomposition, claim-domain retrieval, benchmark annotation \\
+    \hline
+    Pratay Paul & Evaluation harness, endpoints, statistics, human-evaluation analysis \\
+    \hline
+    Yousuf Kamal Himel & Runner, B1--B10 registry, B7 three-sample ceiling, vLLM serving \\
+    \hline
+    Mst. Farjana Akter Limu & Evidence APIs, records and manifest, dashboard, result packages \\
+    \hline
+  \end{tabular}
+  \label{tab:tasks}
+\end{table}
 
-Each task has an identified owner and a simple deliverable. As the owner matches the phase in Table~\ref{tab:phases};all phases will have at least one accountable team member. All dependencies are ordered. Vanilla reproduction will be completed before Injection begins; the Injection Harness completes before Trust Build begins. Dry Run must be passed before Main Experiments begin; Human Evaluation waits for Results Freeze. Writing utilizes the frozen results and occurs last. Each Module is reviewed by the Leader prior to being marked complete. A weekly Git commit and brief stand-up meeting monitor slippage; if any gates are missed, a "fix" week will occur prior to beginning the next phase.
+\section{Summary}\label{sec:design-summary}
 
-\section{Summary}
-
-Chapter 3 fixed the functional and nonfunctional requirements and drew the
-system boundary in the context diagram. The data flow diagram and the interface
-design follow. The design section compared the main alternatives and recorded
-why each choice was made. The project plan then locks eight phases and six
-gates that carry the work to the final defence. Implementation and evaluation
-come next.
+Chapter~\ref{chapter:design} fixed the requirements, the system boundary, and the data flow. It defined the debate loop, the claim-level evidence pipeline, the bounded trust operator, the weighted aggregation rule, the injection protocol, and the record contract. It then fixed the experimental design: four executable Core arms, a six-arm Full target, three primary datasets plus the EG-SSS benchmark, accuracy and CMR as the primary endpoints, a paired two-seed analysis, and a pre-registered stopping rule. The project plan places the work in FYDP~II, with the final-stack smoke, WP-18, calibration, and verifier audit before the pilot, the Core run, and the Full run. Chapter~\ref{chapter:implementation} describes the implementation and the evidence available at this stage.

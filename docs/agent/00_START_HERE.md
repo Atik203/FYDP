@@ -90,7 +90,7 @@ Use `docs/GLOSSARY.md` everywhere. The current names are **Core run** and **Full
 - **514 tests** and a mock vLLM end-to-end path; 13/13 P0 gate checks.
 - Gate 0: 10/10 debates, 90/90 non-empty positions, 370.8 s/debate.
 - Resumable JSONL, manifest/resume refusal, preflight, annotation tooling, human-eval tooling.
-- Two compiled manuscripts: 57-page report and 18-page journal, 0 errors/undefined refs.
+- Two compiled manuscripts: 60-page report and 18-page journal, 0 errors/undefined refs.
 - A pinned final stack that fits in 69.73 GB (offline check only; hardware smoke pending).
 - Real problem, real application, six-person team, 7–8 months.
 - The system is a strong thesis artifact even before the paper is strong.
@@ -118,7 +118,7 @@ E:\FYDP\
 │   ├── blueprint.md          # historical design doc (not evidence)
 │   ├── agent\                # these docs
 │   └── FYDP1_defence_Q&A.md  # check status notes before the defence
-├── FYDP_Summer\              # 57-page report (compiled; engineering report)
+├── FYDP_Summer\              # 60-page report (compiled; engineering report)
 ├── Papev_Summer26_6\         # 18-page journal manuscript (compiled; engineering report)
 ├── literature_review\        # paper reviews + index
 ├── UPDATE-CHECKLIST.md       # team-facing one-pager

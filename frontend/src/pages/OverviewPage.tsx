@@ -108,7 +108,7 @@ export function OverviewPage() {
             </div>
             <KpiRow kpis={p0Kpis} />
             <p className="mt-3 text-[10px] leading-relaxed text-[#64748b] dark:text-[#94a3b8]">
-              <strong>P0 release evidence:</strong> 57-pp report, 18-pp journal,
+              <strong>Current report evidence:</strong> 60-pp report, 18-pp journal,
               0 undefined references; tags <code>p0-gate</code> and{" "}
               <code>p0-release</code>. Next: final-stack 96 GB smoke → WP-18
               placebo/oracle → 24-item calibration → verifier audit → G2 pilot

@@ -66,7 +66,7 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'P0 engineering gate',
     date: 'Nov 2026',
-    description: '514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Release evidence: 57-pp report, 18-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
+    description: '514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Current report evidence: 60-pp report, 18-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
     deliverable: 'P0 gate report + runnable matrix — 13/13',
   },
   {

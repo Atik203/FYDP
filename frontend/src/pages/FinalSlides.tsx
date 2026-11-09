@@ -705,8 +705,8 @@ function FinalResultsSlide() {
                 "all gate checks passed (514 tests); tags p0-gate, p0-release",
               ],
               [
-                "P0 release",
-                "57 pp · 18 pp",
+                "FYDP II report",
+                "60 pp · 18 pp",
                 "report + journal, 0 undefined references",
               ],
               [

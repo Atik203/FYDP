@@ -1,34 +1,36 @@
-\chapter{Implementation and Validation}\label{chapter:implementation}
+\chapter{Implementation and Results}\label{chapter:implementation}
 
-This chapter records the implementation of the trust-calibrated deliberation framework and the validation evidence available at the mid-project review. It separates three kinds of evidence. The first is what ran on real hardware: Gate~0, a vanilla multi-agent debate on ten GPQA questions. The second is what the P0 gate checks without a GPU: option rendering, answer parsing, trust bounds, endpoints, dataset pins, claim routing, the manifest guard, and the matrix budget. The third is the test suite, which exercises the same modules on synthetic and mock inputs. None of these is an efficacy result. The comparative matrix has not been run, so the chapter makes no claim that trust weighting reduces collapse or improves accuracy.
+This chapter records the implementation of the trust-calibrated deliberation framework and the results available at the FYDP~II stage. It separates three kinds of evidence. The first is what ran on real hardware: Gate~0, a vanilla multi-agent debate on ten GPQA questions, and a small live smoke of the optional B7 ceiling. The second is what the P0 gate checks without a GPU: option rendering, answer parsing, trust bounds, endpoints, dataset pins, claim routing, the manifest guard, and the matrix budget. The third is the test suite, which exercises the same modules on synthetic and mock inputs. The comparative matrix has not been run, so the chapter makes no claim that trust weighting reduces collapse or improves accuracy. Where a result does not yet exist, the chapter uses a clearly labelled projected value and states the basis for it.
 
-\section{Execution Environment}\label{sec:implementation-environment}
+\section{Environment Setup}\label{sec:environment-setup}
 
-The pipeline runs in two configurations. The development configuration is the one used for Gate~0; the final configuration is pinned but has not been smoke-tested. Table~\ref{tab:stack} lists both. The development card is an NVIDIA RTX A6000 with 48GB of memory (about 45GB usable), hosted on a Vast.ai instance with 12 vCPU, 72GB of system RAM, and a 100GB container disk. The operating system was Ubuntu 22.04, Python was 3.12.3, PyTorch was 2.11.0 with CUDA 12.8, and vLLM was the nightly build \texttt{0.29.1rc1.dev128}. The final card is an NVIDIA RTX PRO 6000 Blackwell with 96GB. The pinned checkpoints are Qwen3.6-27B-FP8 (26.0GB), Gemma 4 26B-A4B-FP8-dynamic (28.67GB), and Mistral Small 3.2 24B-AWQ (15.06GB), totalling 69.73GB. The final context length is 8192 tokens, and the three servers are configured to use 0.90 of the card in total.
+\paragraph*{Hardware and software.}
+The pipeline runs in two configurations. The development configuration is the one used for Gate~0; the final configuration is pinned but has not been smoke-tested on hardware. Table~\ref{tab:stack} lists both. The development card is an NVIDIA RTX A6000 with 48\,GB of memory (about 45\,GB usable), hosted on a Vast.ai instance with 12 vCPU, 72\,GB of system RAM, and a 100\,GB container disk. The operating system was Ubuntu 22.04, Python was 3.12.3, PyTorch was 2.11.0 with CUDA 12.8, and vLLM was the nightly build \texttt{0.29.1rc1.dev128}. The final card is an NVIDIA RTX PRO 6000 Blackwell with 96\,GB. The pinned checkpoints are Qwen3.6-27B-FP8 (26.0\,GB), Gemma~4 26B-A4B-FP8-dynamic (28.67\,GB), and Mistral Small 3.2 24B-AWQ (15.06\,GB), totalling 69.73\,GB. The final context length is 8{,}192 tokens, and the three servers are configured to use 0.90 of the card in total.
 
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \caption{Development and final serving configurations. The final stack is pinned but was not smoke-tested at the time of this report.}
-  \renewcommand{\arraystretch}{1.35}
+  \renewcommand{\arraystretch}{1.3}
+  \small
   \begin{tabular}{|p{0.18\textwidth}|p{0.36\textwidth}|p{0.36\textwidth}|}
     \hline
     Item & Development (Gate~0) & Final (pinned) \\
     \hline
-    GPU & RTX A6000 48GB (45GB usable) & RTX PRO 6000 Blackwell 96GB \\
+    GPU & RTX A6000 48\,GB (45\,GB usable) & RTX PRO 6000 Blackwell 96\,GB \\
     \hline
-    Host & 12 vCPU, 72GB RAM, 100GB disk & Not yet provisioned \\
+    Host & 12 vCPU, 72\,GB RAM, 100\,GB disk & Not yet provisioned \\
     \hline
     Software & Ubuntu 22.04, Python 3.12.3, PyTorch 2.11.0, CUDA 12.8 & Python 3.10 or newer; image smoke test pending \\
     \hline
     vLLM & 0.29.1rc1.dev128 & Pinned with the final image; smoke test pending \\
     \hline
-    Agent 1 & Qwen3.5-9B-AWQ, 4-bit AWQ & Qwen3.6-27B-FP8, 26.0GB \\
+    Agent 1 & Qwen3.5-9B-AWQ, 4-bit AWQ & Qwen3.6-27B-FP8, 26.0\,GB \\
     \hline
-    Agent 2 & Gemma 4 12B, QAT w4a16 & Gemma 4 26B-A4B, FP8 dynamic, 28.67GB \\
+    Agent 2 & Gemma~4 12B, QAT w4a16 & Gemma~4 26B-A4B, FP8 dynamic, 28.67\,GB \\
     \hline
-    Agent 3 & Ministral-3-14B, AWQ 4-bit & Mistral Small 3.2 24B, AWQ, 15.06GB \\
+    Agent 3 & Ministral-3-14B, AWQ 4-bit & Mistral Small 3.2 24B, AWQ, 15.06\,GB \\
     \hline
-    Context & 4096 tokens & 8192 tokens \\
+    Context & 4{,}096 tokens & 8{,}192 tokens \\
     \hline
     Serving & OpenAI-compatible, ports 8000--8002, sequential readiness-gated startup & Same interface; final smoke test pending \\
     \hline
@@ -36,83 +38,61 @@ The pipeline runs in two configurations. The development configuration is the on
   \label{tab:stack}
 \end{table}
 
-The development stack uses 4-bit checkpoints because the A6000 is an Ampere card. The official Ministral FP8 checkpoint cannot run on Ampere: vLLM's W8A8 sm80 kernel fails. The development agent therefore uses an AWQ 4-bit checkpoint of the same model. This is a precision change, not a model change, and it is recorded in the model configuration. The final stack uses two FP8 checkpoints and one AWQ checkpoint. The total weight footprint of 69.73GB leaves room for the KV cache on the 96GB card, but the final stack has not been exercised on hardware; the smoke test remains outstanding.
+The development stack uses 4-bit checkpoints because the A6000 is an Ampere card. The official Ministral FP8 checkpoint cannot run on Ampere: vLLM's W8A8 sm80 kernel fails. The development agent therefore uses an AWQ 4-bit checkpoint of the same model. This is a precision change, not a model change, and it is recorded in the model configuration. The final stack uses two FP8 checkpoints and one AWQ checkpoint. The total weight footprint of 69.73\,GB leaves room for the KV cache on the 96\,GB card, but the final stack has not been exercised on hardware; the smoke test remains outstanding.
 
-All model calls go through the OpenAI-compatible chat-completion interface. The client retries failed calls up to three attempts with exponential backoff, does not retry an HTTP 400, and treats an empty completion as a failed attempt. Generation uses temperature 0.7 and a 1024-token output cap in the development configuration. Peer positions are truncated to 1500 characters in revision prompts so that the three-agent transcript fits the context window. The first Gate~0 run exposed this constraint: an early prompt overflow combined 2049 input tokens with a 2048-token output budget against a 4096-token context. The cap and the peer truncation are the fix, and both are now part of the configuration rather than an operator habit.
+\paragraph*{Model stack and serving.}
+All model calls go through the OpenAI-compatible chat-completion interface. The client retries failed calls up to three attempts with exponential backoff, does not retry an HTTP 400, and treats an empty completion as a failed attempt. Generation uses temperature 0.7 and a 1{,}024-token output cap in the development configuration. Peer positions are truncated to 1{,}500 characters in revision prompts so that the three-agent transcript fits the 4{,}096-token context. The first Gate~0 run exposed this constraint: an early prompt overflow combined 2{,}049 input tokens with a 2{,}048-token output budget against a 4{,}096-token context. The cap and the peer truncation are the fix, and both are now part of the configuration rather than an operator habit.
 
-\section{Pipeline Implementation}\label{sec:pipeline-implementation}
+\paragraph*{Repository and configuration.}
+The repository separates configuration from code. \texttt{configs/models.yaml} is the only model switch and carries the checkpoint, port, quantization, VRAM split, and per-agent flags for the development and final stacks. \texttt{configs/experiments.yaml} is the executable Core matrix: four conditions, three datasets, and two seeds. \texttt{configs/datasets.yaml} records the dataset revisions, splits, and provenance. \texttt{configs/phase.yaml} selects the default stack. The environment file is not committed; \texttt{.env.example} lists the keys without values. The command-line entry points are \texttt{setup.sh}, \texttt{serve.sh}, \texttt{run\_experiment.py}, \texttt{run\_matrix.py}, \texttt{p0\_gate.py}, \texttt{check\_stack.py}, and \texttt{smoke\_test.py}.
 
-\subsection{Debate Loop}\label{subsec:debate-loop}
+The runner writes a manifest with the configuration hash, the model checkpoints, the prompt hash, the dataset revisions, the code commit, the temperature, and the seed. The hash excludes the creation time, so a re-run of the same configuration resumes instead of forking. The resume guard refuses to append when a result-affecting field differs and names the keys that changed.
 
-The debate loop is a plain Python state machine rather than a graph framework. It takes a question and an optional list of answer choices, creates one client per agent, and runs $K=3$ rounds. Round one collects independent positions. In rounds two and three, each agent sees the question, the rendered options, its own previous position, its own current trust weight, and the other agents' positions truncated to 1500 characters. The agent does not see the other agents' trust weights. The loop stores the transcript, the parsed answers for each round, the injection record, the per-claim verdicts, the evidence passages, and the final aggregation.
+\paragraph*{Implementation architecture.}
+The debate loop is a plain Python state machine rather than a graph framework. It takes a question and an optional list of answer choices, creates one client per agent, and runs $K=3$ rounds. Round~0 collects independent positions. In rounds~1 and~2, each agent sees the question, the rendered options, its own previous position, its own current trust weight, and the other agents' positions truncated to 1{,}500 characters. The agent does not see the other agents' trust weights. The loop stores the transcript, the parsed answers for each round, the injection record, the per-claim verdicts, the evidence passages, and the final aggregation.
 
-The number of agents is three, and the three model families differ. The design assumes that different pre-training pipelines reduce correlated errors, but this assumption is not tested in this report. The loop also supports two and five agents for the planned $N$-scaling ablation; the trust operator is tested for $N=1,3,5$.
+The option renderer shuffles choices with a per-question seed derived from a SHA-256 hash of the question identifier and the run seed. The record stores the raw options, the rendered options, the permutation, and the rendered letter of the correct option. Free-form items receive the literal instruction ``Answer format: free text'' and no fabricated choices. The parser prefers an explicit \texttt{Answer:} or \texttt{Final answer:} line, a boxed expression, or the last line containing a letter or number. It handles caret and LaTeX scientific notation, strips units before numeric comparison, and maps a letter or option text to the rendered option.
 
-\subsection{Options and Answer Parsing}\label{subsec:options-parser}
+Claim decomposition uses tagged spans in the same generation. If no tags are present, the parser falls back to sentence splitting, keeps items of at least three words, and caps the fallback at 20 claims. The trust configuration uses at most eight claims per agent. Retrieval is routed by claim domain rather than by agent identity: biomedical and clinical claims query PubMed and Semantic Scholar, physics, chemistry, mathematics, and computer-science claims query arXiv and Semantic Scholar, and other claims query Semantic Scholar or OpenAlex. Passages are deduplicated by DOI, arXiv identifier, or title.
 
-The GPQA loader places the correct answer first, and MMLU-Pro keeps the dataset order. Neither order may reach a prompt. The option renderer shuffles the choices with a per-question seed derived from a SHA-256 hash of the question identifier and the run seed, so the order is reproducible across processes and resume does not change it. The record stores the raw options, the rendered options, the permutation, and the rendered letter of the correct option. Free-form items, such as HLE, receive the literal instruction ``Answer format: free text'' and no fabricated choices.
+The verifier is a separate interface with four implementations: lexical overlap, cross-encoder, natural-language inference, and an LLM judge. The default is lexical. A supported verdict requires support in the retrieved passage; a contradicted verdict requires an explicit contradiction; no evidence yields unverifiable. Contested evidence is reported separately and is not counted as support or contradiction. The interface records the verifier name and version with each verdict.
 
-The parser prefers an explicit answer span: an \texttt{Answer:} or \texttt{Final answer:} line, a boxed expression, or the last line containing a letter or number. It handles caret and LaTeX scientific notation, strips units before numeric comparison, and maps a letter or option text to the rendered option. A 50-case corpus with gold parses is part of the gate; the gate reports 50/50 exact matches on that corpus and the probes \texttt{10\^{}-4 eV}, \texttt{7.3 x 10\^{}-7}, \texttt{The answer is B}, and \texttt{Product 3 contains 11}. Every record carries a \texttt{parser\_version} so a parser change is auditable. This matters because Gate~0 showed that 17 of 90 generations opened with a formatting-only line such as \texttt{**Answer:**} and put the real answer on the next line.
-
-\subsection{Claim Decomposition}\label{subsec:claim-decomposition}
-
-Agents are prompted to tag claims as \texttt{<claim id="cX">...</claim>} in the same generation. The parser extracts the tagged spans; if no tags are present, it falls back to sentence splitting, keeps items of at least three words, and caps the fallback at 20 claims. The trust configuration caps the number of claims used per agent at eight. The fallback is load-bearing. In Gate~0, Qwen and Gemma tagged every generation (30/30 each), while Ministral left 5 of 30 generations untagged; without the fallback, those positions would contribute no verifiable claims.
-
-The claim text is what the retrieval and verifier layers see. Untagged prose is not verified. A judgment-style claim usually returns unverifiable and therefore does not move trust. This is a deliberate limit: the mechanism only acts on claims that the evidence layer can check.
-
-\subsection{Claim-Domain Retrieval}\label{subsec:claim-domain-retrieval}
-
-Retrieval is routed by claim domain rather than by agent identity. Biomedical and clinical claims query PubMed and Semantic Scholar; physics, chemistry, mathematics, and computer-science claims query arXiv and Semantic Scholar; other claims query Semantic Scholar or OpenAlex. This replaces the earlier design in which agent~1 always used PubMed, agent~2 always used arXiv, and agent~3 always used Semantic Scholar. The earlier design confounded source, domain, and model family: an agent could appear better because its assigned source covered the question's domain more easily. The current routing gives all agents the same evidence for the same claim, and the source mix comes from the claim set rather than from the agent's identity.
-
-Retrieved passages are deduplicated by DOI, arXiv identifier, or title. The retriever takes a small candidate set and selects the passages shown to the agent; the trust configuration uses three passages per claim. The live PubMed, arXiv, Semantic Scholar, and OpenAlex calls are not exercised by the test suite. Retrieval failures are recorded rather than fatal, and the claim becomes unverifiable when no passage is returned. The retrieval layer is therefore implemented and routed, but its live coverage and rate-limit behaviour remain an operational risk.
-
-\subsection{Verifier Interface}\label{subsec:verifier}
-
-The verifier is a separate interface with four implementations behind it: lexical overlap, cross-encoder, natural-language inference, and an LLM judge. The default is lexical. A supported verdict requires support in the retrieved passage; a contradicted verdict requires an explicit contradiction; no evidence yields unverifiable. Contested evidence is reported separately and is not counted as support or contradiction. The interface records the verifier name and version with each verdict.
-
-The lexical default is a diagnostic, not a validated scientific verifier. It scores claim-term coverage and can misread numeric or negated statements. The cross-encoder is optional and requires \texttt{sentence-transformers}; the LLM-judge hook exists but is not passed by the debate runner in the current branch. The human audit of 150--200 claim-passage pairs has not been completed. For that reason, this report makes no claim about verifier accuracy, and the planned matrix treats verifier quality as a moderator rather than a solved component.
-
-\subsection{Trust Update}\label{subsec:trust-update}
-
-The trust update follows the design in Chapter~3. Let $w_i^{(t)}$ be agent $i$'s weight at round $t$, $V_i$ the number of its claims that the verifier supports, $H_i$ the number it contradicts, and $n_i$ the number checked. The operator accumulates evidence in the log domain,
+The trust update follows the design in Chapter~\ref{chapter:design}. Let $w_i^{(t)}$ be agent $i$'s weight at round $t$, $V_i$ the number of its claims that the verifier supports, $H_i$ the number it contradicts, and $n_i$ the number checked. The operator accumulates evidence in the log domain,
 \begin{equation}
-\ell_i^{(t+1)} = \log w_i^{(t)} + \alpha \frac{V_i}{n_i} - \beta \frac{H_i}{n_i},
+  \ell_i^{(t+1)} = \log w_i^{(t)} + \alpha \frac{V_i}{n_i} - \beta \frac{H_i}{n_i},
+  \label{eq:impl-trust-update}
 \end{equation}
 applies one softmax, and projects the result onto the polytope
 \begin{equation}
-\mathcal{W} = \left\{ w \in \mathbb{R}^{N} : w_i \ge f,\; \sum_{i=1}^{N} w_i = 1,\; w_i \le \max(c, 1/N) \right\}.
+  \mathcal{W} = \left\{ w \in \mathbb{R}^{N} : w_i \ge f,\; \sum_{i=1}^{N} w_i = 1,\; w_i \le \max(c, 1/N) \right\},
+  \label{eq:impl-trust-simplex}
 \end{equation}
-The defaults are $\alpha=0.5$, $\beta=0.3$, $f=0.1$, and $c=0.9$. The projection guarantees $w_i \ge f$ and $\sum_i w_i = 1$ for every finite input. The ceiling is relaxed to $1/N$ only when $Nc<1$, a case with no feasible vector; $N=1$ returns $[1.0]$ because that is the only feasible vector. Neutral evidence, $V_i=H_i=0$, is an identity for an already feasible vector: the weights do not drift toward uniform. Dividing by $n_i$ cancels verbosity, so duplicating every claim does not increase an agent's weight.
+with $\alpha=0.5$, $\beta=0.3$, $f=0.1$, and $c=0.9$. The projection guarantees $w_i \ge f$ and $\sum_i w_i = 1$ for every finite input. The ceiling is relaxed to $1/N$ only when $Nc<1$, a case with no feasible vector; $N=1$ returns $[1.0]$ because that is the only feasible vector. Neutral evidence, $V_i=H_i=0$, is an identity for an already feasible vector. Dividing by $n_i$ cancels verbosity, so duplicating every claim does not increase an agent's weight.
 
-The operator is implemented in \texttt{trust/update.py}. The P0 gate runs 30,000 random draws for $N=1,3,5$ and checks the floor and the sum. It also checks neutral evidence and verbosity invariance. The debate loop passes the per-agent claim counts to the operator, calls it after each evidence round, and performs a closing pass on the final positions, so the vector used by aggregation is computed from the final positions rather than from an earlier round. The result carries \texttt{trust\_for\_positions} and \texttt{trust\_status}, and the runner copies those fields into every record.
+The debate loop passes the per-agent claim counts to the operator, calls it after each evidence round, and performs a closing pass on the final positions, so the vector used by aggregation is computed from the final positions rather than from an earlier round. The result carries \texttt{trust\_for\_positions} and \texttt{trust\_status}, and the runner copies those fields into every record.
 
-\subsection{Weighted Aggregation}\label{subsec:weighted-aggregation}
-
-Aggregation is a weighted plurality, not a majority vote. Each agent's final parsed position is mapped to a canonical answer group. For each group $a$, the score is
+Aggregation is a weighted plurality. For each distinct final answer $a$, the score is
 \begin{equation}
-S(a) = \sum_{i:\,p_i=a} w_i,
+  S(a) = \sum_{i:\,p_i=a} w_i,
+  \label{eq:impl-aggregation}
 \end{equation}
-and the group with the largest score wins. Ties resolve to the first observed answer. The majority answer is computed and stored alongside the weighted answer so that the same transcript can be scored under both rules; it does not choose the treatment's final answer. This is what lets the pilot compare the weighted and unweighted winners without re-running the models.
+and the group with the largest score wins. Ties resolve to the first observed answer. The majority answer is computed and stored alongside the weighted answer so the same transcript can be scored under both rules; it does not choose the treatment's final answer.
 
-\subsection{Injection Protocol}\label{subsec:injection-implementation}
-
-The injection path is a one-shot stress test. After round one, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round two. Round three carries no injection. Ineligible items are logged with a reason and are not fatal. The injection path is implemented, mock-tested, and wired to the B8-plus-injection arm; it has not been exercised on a real model panel.
-
-\subsection{Runner, Records, and Manifest}\label{subsec:runner-records}
+The injection path is a one-shot stress test. After round~0, the builder checks whether the panel is divergent, whether every answer is checkable as a multiple-choice letter or a number, and whether a target exists. A unanimous panel is ineligible, as is a panel with fewer than two agents. The eligible plan fabricates a consensus and targets the agents that disagree with it by default; the \texttt{all} scope is also supported. The injected text is appended to the targeted agents' system prompt before round~1. Round~2 carries no injection.
 
 The runner writes one JSON line per completed debate and appends it immediately, so a crash costs at most one question of GPU time. Re-running the same configuration skips completed question identifiers. Every record carries the question identifier, arm, seed, question, gold answer, raw and rendered options, permutation, rendered gold letter, raw answer, parsed answer, parser version, per-round answers, transcript, injection record, trust trajectory, final trust, verdicts, evidence, aggregation, and timing. The schema validator requires the final answer, its source, the parser version, and a valid trust simplex; it rejects a record rather than writing a plausible but unobserved value.
 
-The manifest layer hashes the configuration files, the run configuration, the model checkpoints, the prompt file, the pinned dataset revisions, the code commit, the temperature, and the seed. The hash excludes the creation time, so re-running the same configuration later resumes instead of forking. The resume guard refuses to append when a result-affecting field differs, and it names the differing keys. The P0 gate exercises the guard with an identical manifest and a changed manifest; the changed manifest is refused. The runner stamps every record with the manifest hash, so the contract is implemented, gate-tested, and present in the records written by the runner.
+The optional B7 external-answer ceiling is implemented as an appendix arm. It sends each question to OpenAI GPT-6 Luna three times, records every sample, and reports the mean single-call accuracy with a question-level bootstrap confidence interval and the three-sample majority accuracy. It is not part of the Core or Full matrix and is not the internal B8-oracle arm.
 
-\section{P0 Hardening Changes}\label{sec:p0-changes}
+\paragraph*{P0 hardening.}
+Table~\ref{tab:p0-changes} lists the P0 changes that are present in the release. The table uses ``gate-tested'' for a path that the P0 gate exercises without a GPU. The gate reports 13 passed, 0 failed, and 0 pending checks. The verifier human audit, the EG-SSS calibration set, the paid Core run, the Full run, and the final-stack smoke test are outside the gate and remain outstanding.
 
-Table~\ref{tab:p0-changes} lists the P0 changes that are present in the P0 release. The table uses ``gate-tested'' for a path that the P0 gate exercises without a GPU. The gate reports 13 passed, 0 failed, and 0 pending checks. The verifier human audit, the EG-SSS calibration set, the paid Core run, and the final-stack smoke test are outside the gate and remain outstanding.
-
-\begin{table}[ht]
+\begin{table}[H]
   \centering
-  \caption{P0 changes present in the implementation branch. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run.}
-  \renewcommand{\arraystretch}{1.35}
-  \begin{tabular}{|p{0.05\textwidth}|p{0.24\textwidth}|p{0.25\textwidth}|p{0.28\textwidth}|}
+  \caption{P0 changes present in the implementation. Gate-tested means the path is exercised by the 13-check P0 gate, not that it has been validated on a paid run.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.05\textwidth}|p{0.27\textwidth}|p{0.24\textwidth}|p{0.30\textwidth}|}
     \hline
     P0 & Change & Module or evidence & Status \\
     \hline
@@ -124,13 +104,13 @@ Table~\ref{tab:p0-changes} lists the P0 changes that are present in the P0 relea
     \hline
     4 & Eight endpoints with raw counts and confidence intervals & Endpoints module & Gate-tested: 8 endpoints on 6 records \\
     \hline
-    5 & Logit accumulation, one softmax, simplex projection, claim-count normalization; closing pass on final positions & Trust update and debate loop & Gate-tested: 30,000 draws for $N=1,3,5$; neutral and verbosity checks pass; WP-03b timing landed \\
+    5 & Logit accumulation, one softmax, simplex projection, claim-count normalization; closing pass on final positions & Trust update and debate loop & Gate-tested: 30,000 draws for $N=1,3,5$; neutral and verbosity checks pass \\
     \hline
     6 & Verifier interface with lexical, cross-encoder, NLI, and LLM-judge implementations & Verifier interface & Interface gate-tested; lexical default; human audit pending \\
     \hline
     8 & Pinned dataset revisions and claim-domain routing & Dataset config and routing & Gate-tested: 8 datasets pinned; bio routes to PubMed, math does not \\
     \hline
-    10 & Matrix cut to four executable arms; pre-registration & Matrix config and pre-registration & Gate-tested: 24 rows, 1,280 GPU-h, version 1.0; six-arm target is WP-18 \\
+    10 & Matrix cut to four executable arms; pre-registration & Matrix config and pre-registration & Gate-tested: 24 runs, 1{,}280 GPU-h, version 1.0; six-arm target is WP-18 \\
     \hline
     11 & Manifest and resume guard & Manifest module & Gate-tested: mismatch refused, identical manifest accepted; runner stamps the manifest hash \\
     \hline
@@ -138,28 +118,24 @@ Table~\ref{tab:p0-changes} lists the P0 changes that are present in the P0 relea
   \label{tab:p0-changes}
 \end{table}
 
-Three changes need a word of explanation because they alter what the earlier draft claimed. First, the trust operator is no longer a clamp followed by renormalization. The old order could leave a weight below the floor after renormalization; the projection makes the floor a property of the output rather than a hope. Second, the option order is no longer the dataset order. The correct answer was always option~A in the GPQA loader, and the prompts did not contain the options at all. The renderer and the scorer now use the same permutation. Third, the matrix is no longer the 15-condition grid. The executable matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs, at 1,280 GPU-h under the gate's conservative cap. The six-arm target adds B8-placebo and B8-oracle through WP-18; the pre-registration names both and states that the thesis reports the six-arm design as incomplete rather than silently dropping the contrasts if they are not added before unblinding.
+Three changes explain why the implementation differs from the earlier draft. First, the trust operator is no longer a clamp followed by renormalization. The old order could leave a weight below the floor after renormalization; the projection makes the floor a property of the output. Second, the option order is no longer the dataset order. The correct answer was always option~A in the GPQA loader, and the prompts did not contain the options at all; the renderer and the scorer now use the same permutation. Third, the matrix is no longer the 15-condition grid. The executable matrix is four arms $\times$ three datasets $\times$ two seeds, or 24 runs, at 1{,}280 GPU-h under the gate's conservative cap. The six-arm target adds B8-placebo and B8-oracle through WP-18; the pre-registration names both and states that the thesis reports the six-arm design as incomplete rather than silently dropping the contrasts if they are not added before unblinding.
 
-\section{Testing and Validation}\label{sec:testing-validation}
+\section{Testing and Evaluation}\label{sec:testing-evaluation}
 
-\subsection{Test Suite}\label{subsec:test-suite}
+\paragraph*{Test suite.}
+The current suite contains 523 passing tests; 514 of those were present at the P0 release. The additional tests cover the three-sample B7 ceiling, the per-sample record fields, and the oracle summary. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
 
-The branch records 514 passing tests. The suite covers the parser and answer matcher, the option renderer, the inference client's retry and failure behaviour, the debate loop and injection targeting, the trust bounds, the endpoint definitions, the statistics helpers, the dataset loaders, the manifest and resume guard, and the mock end-to-end path. The tests are colocated with the modules they exercise. A passing suite means the contracts hold on the tested inputs; it does not mean the framework has been validated on a representative question set.
-
+\paragraph*{P0 gate.}
 The P0 gate is a separate 13-check script that runs before any paid run. It checks the test suite, the record schema, options in prompts, the parser corpus, trust bounds, neutral and verbosity behaviour, the B8 versus B8-no-trust prompt diff, the B8-plus-injection mock, the endpoint summary, dataset pins, claim routing, the manifest guard, and the matrix budget. It reports 13 passed, 0 failed, and 0 pending. The gate is an engineering readiness check, not a result.
 
-\subsection{Mock End-to-End Path}\label{subsec:mock-end-to-end}
+\paragraph*{Gate 0.}
+Gate~0 is the main path that has run on real GPUs. It ran vanilla multi-agent debate on ten GPQA-Diamond questions with three agents and three rounds. Table~\ref{tab:gate0} lists the measurements. All ten debates completed three rounds, all 90 positions were non-empty, and the mean debate took 370.8 seconds with a standard deviation of 21.5 seconds. The fastest debate took 334.8 seconds and the slowest 404.4 seconds. The run generated 275{,}668 characters, used about 1.0 GPU-hour, and cost approximately USD~4.29 including model and image ingress.
 
-The repository includes a mock vLLM server with three modes: agree, divergent, and untagged. The integration test starts the mock panel, runs an arm against it, and asserts the designed injection-collapse scenario. This path is how the injection, trust, aggregation, and record code are exercised without a GPU. It is also the path used to demonstrate the pipeline when a GPU is unavailable. The mock server does not test model quality, retrieval quality, or verifier accuracy; it tests orchestration and data flow.
-
-\subsection{Gate 0}\label{subsec:gate0}
-
-Gate~0 is the only path that has run on real GPUs. It ran vanilla multi-agent debate on ten GPQA-Diamond questions with three agents and three rounds. Table~\ref{tab:gate0} lists the measurements. All ten debates completed three rounds, all 90 positions were non-empty, and the mean debate took 370.8 seconds with a standard deviation of 21.5 seconds. The fastest debate took 334.8 seconds and the slowest 404.4 seconds. The run generated 275,668 characters, used about 1.0 GPU-hour, and cost approximately USD 4.29 including model and image ingress.
-
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \caption{Gate~0 measurements for the vanilla debate loop. These values validate serving, orchestration, and parsing; they do not measure trust or collapse.}
-  \renewcommand{\arraystretch}{1.3}
+  \renewcommand{\arraystretch}{1.25}
+  \small
   \begin{tabular}{|p{0.38\textwidth}|p{0.50\textwidth}|}
     \hline
     Check & Result \\
@@ -170,9 +146,9 @@ Gate~0 is the only path that has run on real GPUs. It ran vanilla multi-agent de
     \hline
     Non-empty positions & 90/90 \\
     \hline
-    Generated text & 275,668 characters (about 69K tokens) \\
+    Generated text & 275{,}668 characters (about 69K tokens) \\
     \hline
-    Total runtime & 3,708.1 seconds (61.8 minutes) \\
+    Total runtime & 3{,}708.1 seconds (61.8 minutes) \\
     \hline
     Mean per debate & 370.8 seconds \\
     \hline
@@ -184,7 +160,7 @@ Gate~0 is the only path that has run on real GPUs. It ran vanilla multi-agent de
     \hline
     Trust trajectory & Null; Gate~0 ran before trust wiring \\
     \hline
-    Invoice & Approximately USD 4.29, including ingress \\
+    Invoice & Approximately USD~4.29, including ingress \\
     \hline
   \end{tabular}
   \label{tab:gate0}
@@ -192,14 +168,99 @@ Gate~0 is the only path that has run on real GPUs. It ran vanilla multi-agent de
 
 Gate~0 proves that the serving layer, the three-agent loop, the revision rounds, the parser, and the result logging work end to end at 4-bit precision on one GPU. It does not prove that the trust mechanism changes any decision. The trust trajectory is null because the run was vanilla MAD. The 5 of 30 untagged Ministral generations show that the fallback parser is necessary, not decorative. The 21.5-second standard deviation shows that per-question cost is predictable enough for planning, not that the matrix will finish in a fixed time.
 
-\section{Limitations and Reproducibility}\label{sec:implementation-limitations}
+\paragraph*{Mock end-to-end path.}
+The repository includes a mock vLLM server with three modes: agree, divergent, and untagged. The integration test starts the mock panel, runs an arm against it, and asserts the designed injection-collapse scenario. This path is how the injection, trust, aggregation, and record code are exercised without a GPU. It is also the path used to demonstrate the pipeline when a GPU is unavailable. The mock server does not test model quality, retrieval quality, or verifier accuracy; it tests orchestration and data flow.
 
-The implementation has five limitations that matter for the next phase. First, the verifier is lexical by default. The cross-encoder is optional, the NLI and LLM-judge implementations are interfaces rather than validated components, and the 150--200-pair human audit has not been run. A trust signal built on a weak verifier can amplify noise; the pre-registration treats verifier quality as a moderator for exactly this reason. Second, the live retrieval APIs have not been exercised by the test suite. The routing and deduplication logic are tested, but rate limits, malformed responses, and source coverage are operational unknowns. Third, the final stack is pinned but not smoke-tested. The 69.73GB weight total is a configuration check, not a serving result. Fourth, the runner-side record adapter is wired: the debate loop performs a closing pass on the final positions and exposes \texttt{trust\_for\_positions}, and the runner copies that vector, the final-answer fields, and the manifest hash into every record. Fifth, the only real-model run is Gate~0. No paid run has exercised the trust path, the verifier path, the injection path, or the matrix.
+\paragraph*{Evaluation protocol.}
+The confirmatory evaluation is pre-registered. The executable Core matrix is four conditions (B3, B4-matched, B8-no-trust, B8) on GPQA-Main, MMLU-Pro STEM, and HLE, with two seeds. GPQA-Main and MMLU-Pro are capped at 400 items and HLE at 200. The conservative gate cap is 9{,}600 debates at eight minutes each, or 1{,}280 GPU-hours; at the per-dataset caps the plan is 8{,}000 debates, about 1{,}067 GPU-hours. The realised eligible $n$ is reported per dataset and arm. The primary contrast is B8 versus B8-no-trust, paired by question. The primary endpoint is final-answer accuracy on pressure-eligible items; the co-primary endpoint is CMR. The secondary family contains appropriate revision rate, trust AUROC, trust Brier, verifier balanced accuracy, and citation faithfulness. The confirmatory family is Holm-adjusted at a family-wise $\alpha=0.05$.
 
+The analysis uses an exact McNemar test on seed~1, a paired risk difference with a question-clustered bootstrap, a seed-2 replication, and a mixed-effects sensitivity analysis. At $n=400$ and a discordant-pair proportion of 0.20, the planning minimum detectable difference is 6.3 percentage points unadjusted and about 7.5 points after the four-test Holm adjustment. If the realised eligible $n$ falls below 300 on a dataset, that dataset is reported as underpowered and is not used for a positive claim. HLE is reported separately and is not pooled with the primary tests.
+
+The six-arm Full target adds B8-placebo and B8-oracle. B8-placebo shuffles verdicts within a debate to separate evidence calibration from any reweighting. B8-oracle uses gold information, either gold-answer trust or gold-evidence-only on EG-SSS, frozen under WP-18. Both are outside the four-arm Core matrix. The pre-registration commits to adding them as a versioned amendment before unblinding; if that window is missed, the paper reports the six-arm design as incomplete rather than dropping the contrasts.
+
+The optional B7 external-answer ceiling is not part of the confirmatory matrix. It is reported, when used, as an appendix reference: three GPT-6 Luna samples per question, mean single-call accuracy with a question-level bootstrap confidence interval, and the three-sample majority.
+
+\paragraph*{Reproducibility.}
 The reproducibility package is designed around five artifacts. The code is released under the MIT licence (see \texttt{LICENSE} at the repository root). The model configuration pins every checkpoint and revision, and the dataset configuration pins every revision as a 40-character commit hash. The seed is recorded in the run configuration and in the manifest, and the per-question option permutation is derived from the seed and the question identifier. The manifest records the configuration hash, the model checkpoints, the prompt hash, the dataset revisions, the code commit, the temperature, and the seed, and the resume guard refuses a mismatch. The pre-registration fixes the four executable arms, the three datasets, the two seeds, the primary and co-primary endpoints, the analysis plan, and the stopping rules before the matrix runs.
 
 Gated datasets are shared as identifiers and hashes only. GPQA and HLE require a click-through agreement, and their item text is not redistributed. MMLU-Pro is public. The code release does not include model weights or raw dataset rows. The result package includes the transcripts and the evidence trail, which is what a reader needs to audit a decision without receiving the benchmark items.
 
+\section{Results and Discussion}\label{sec:results-discussion}
+
+\paragraph*{Engineering results.}
+Table~\ref{tab:engineering-results} collects the measured engineering evidence. These values are results in the engineering sense: they show that the pipeline runs, that the contracts hold, and that the model stack fits the target hardware. They do not measure the effect of trust on accuracy or collapse.
+
+\begin{table}[H]
+  \centering
+  \caption{Measured engineering results at the FYDP~II stage. None of these is an efficacy result.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.28\textwidth}|p{0.38\textwidth}|p{0.22\textwidth}|}
+    \hline
+    Check & Result & Status \\
+    \hline
+    P0 gate & 13 passed, 0 failed, 0 pending & Measured \\
+    \hline
+    Test suite & 523 passed; 514 at the P0 release & Measured \\
+    \hline
+    Gate~0 & 10/10 debates, 90/90 positions, 370.8\,s mean & Measured \\
+    \hline
+    Final stack fit & 69.73\,GB of 96\,GB; 0.90 utilization sum & Offline check \\
+    \hline
+    Core matrix dry run & 24 runs; 1{,}280 GPU-h cap & Planned \\
+    \hline
+    B7 live smoke & 3 samples; `B/B/B'; schema-valid record & Measured, one question \\
+    \hline
+    Frontend and manuscript builds & Build and lint pass; both PDFs compile & Measured \\
+    \hline
+  \end{tabular}
+  \label{tab:engineering-results}
+\end{table}
+
+The P0 gate and the test suite show that the contracts hold on the tested inputs. The gate is not a substitute for a paid run: it exercises the parser, the trust projection, the endpoint definitions, and the manifest guard, but it does not exercise the live retrieval APIs or a representative question set. Gate~0 shows that the serving layer and the three-agent loop run end to end. It does not show that trust changes a decision, because the trust path was not active in that run. The final-stack fit is an offline budget check; it does not prove that vLLM can load all three checkpoints together on the 96\,GB card. The B7 smoke shows that the optional ceiling works end to end, but it is one question and it is not part of the confirmatory matrix.
+
+\paragraph*{Expected efficacy results.}
+The efficacy results do not exist yet. The Core and Full matrices have not run, and the verifier audit and benchmark freeze are outstanding. To keep the design and the eventual analysis connected, Table~\ref{tab:expected-results} records the projected values that the study is designed to test. These are not measured results, and they are not reported as findings. The 20--30\% figure is the design target for the relative reduction in sycophantic collapse; the 2-percentage-point accuracy gain is an illustrative planning assumption, not a standalone hypothesis, and it is below the 7.5-point minimum detectable difference after Holm. The primary accuracy claim is therefore tied to the pre-registered paired contrast and its confidence interval, not to the 2-point illustration.
+
+\begin{table}[H]
+  \centering
+  \caption{Projected efficacy values used for planning. None of these is a measured result. The 2-point accuracy gain is illustrative and below the pre-registered MDE.}
+  \renewcommand{\arraystretch}{1.25}
+  \small
+  \begin{tabular}{|p{0.30\textwidth}|p{0.26\textwidth}|p{0.34\textwidth}|}
+    \hline
+    Quantity & Projected value & Basis \\
+    \hline
+    Collapse reduction (CCR/CMR) & 20--30\% relative & Design target; matrix not run \\
+    \hline
+    Final-answer accuracy & +2 percentage points & Illustrative planning value; below the 7.5-point MDE \\
+    \hline
+    Trust AUROC & $\ge0.65$ & G2 pilot gate \\
+    \hline
+    Injection $\kappa$ & $\ge0.75$ & G2 pilot gate \\
+    \hline
+    Verifier balanced accuracy & $\ge0.75$ & N4 audit target \\
+    \hline
+    Citation faithfulness & 300 claim--citation pairs & Planned human evaluation \\
+    \hline
+  \end{tabular}
+  \label{tab:expected-results}
+\end{table}
+
+The projected values serve three purposes. First, they make the expected direction of the study explicit before the matrix runs. Second, they let the sample-size and power calculation be checked against a concrete effect. Third, they make the eventual result easier to interpret: if the observed effect is near the projection, the mechanism is behaving as designed; if it is near zero, the boundary analysis must explain why; if it is negative, the backfire prediction is supported. The projections are not evidence, and a null or negative result is reportable under the pre-registration.
+
+\paragraph*{Discussion.}
+The engineering results support a narrow conclusion: the framework can be built, exercised, and audited, and the evaluation plan is executable. They do not support a claim that trust-calibrated deliberation reduces sycophantic collapse. Three gaps separate the current evidence from that claim. The first is the verifier. The default lexical verifier has a synthetic balanced accuracy of 0.58, and the human audit has not run. A trust signal built on a weak verifier can amplify a confident wrong majority, so the verifier audit is a scientific prerequisite, not a cleanup task. The second gap is the benchmark. EG-SSS is not built, and the 24-item calibration is the first test of whether the annotation plan is feasible. The third gap is the paid matrix. The Core run is the first test of the primary contrast; the Full run is the first test of the placebo and oracle controls.
+
+The expected values in Table~\ref{tab:expected-results} should be read against those gaps. A 20--30\% relative collapse reduction is a meaningful target only if the baseline collapse rate is high enough to leave room for it. The Gate~2 pilot is designed to measure that baseline before the Core run. The 2-point accuracy gain is deliberately modest; the primary accuracy analysis is a paired test with a 5-point non-inferiority margin and a 7.5-point MDE, so the study is not powered to detect a 2-point difference on its own. The 2-point figure is useful for discussion, not for a standalone claim.
+
+The optional B7 ceiling is a reference, not a competitor. It answers a different question: what does a strong single call get on the same items? It cannot replace the B8 versus B8-no-trust contrast, and it is not part of the Core or Full matrix. Its three-sample design reduces the sampling noise that a single call would introduce, but it is still an external reference and not a test of the mechanism.
+
+\paragraph*{Threats to validity.}
+The first threat is verifier quality. The lexical default can mistake a shared term for support, miss a negation, or misread a numeric claim. The cross-encoder is optional, and the NLI and LLM-judge paths are interfaces rather than validated components. The human audit of 150--200 pairs is the gate that must pass before a high-$q$ claim. The second threat is retrieval coverage. The routing and deduplication logic are tested, but the live APIs are not; rate limits, malformed responses, and sparse domains can turn claims into unverifiable ones. The third threat is shared error. Three heterogeneous models reduce but do not eliminate correlated mistakes, and the shared-error floor bounds what any independent verifier can certify.
+
+The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 96\,GB serving stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains. The seventh is compute: the final stack has not been smoke-tested, and a hardware failure could delay the matrix without changing the scientific question.
+
 \section{Summary}\label{sec:implementation-summary}
 
-The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 514-test suite covers the contracts on synthetic and mock inputs. The remaining work is the verifier human audit, the EG-SSS calibration set, the WP-18 placebo/oracle slice, the final-stack smoke test, and the paid matrix. Those are the conditions for an efficacy claim, and none of them is met in this report.
+The implementation is complete enough to run the debate loop, render and score multiple-choice options, decompose claims, route claims to domain-specific sources, update a bounded trust vector, aggregate a weighted answer, log a record, and validate the result schema. Gate~0 validates the base loop on ten GPQA questions. The P0 gate validates the wiring that Gate~0 did not cover, and the 523-test suite covers the contracts on synthetic and mock inputs. The engineering results do not establish efficacy. The expected values in this chapter are projections, not findings. The remaining work is the verifier human audit, the EG-SSS calibration set, the WP-18 placebo/oracle slice, the final-stack smoke test, and the paid Core and Full matrices. Those are the conditions for an efficacy claim, and none of them is met in this report.

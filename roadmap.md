@@ -13,7 +13,7 @@ Phase-by-phase execution plan for **November 2026 – December 2027**. This file
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **514 passed** |
-| Report | `FYDP_Summer/out/fydp.pdf` — 57 pages, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` — 60 pages, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 18 pages, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal figures + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 (warnings only) |

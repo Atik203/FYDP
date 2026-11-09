@@ -2,7 +2,7 @@
 
 **Branch:** `docs/report-claims` · **Base (historical):** `origin/feat/p0-hardening` at `8417dc7` · **Audit date:** 9 November 2026.
 
-> **Historical record (audit of the report at `8417dc7`).** The current release base is `main` = `dev` = `2ae56a3` (P0 release `7f2c11f`; tags `p0-gate`, `p0-release`). The P0 gate is now 13/13 with 514 tests. The old-to-new tables below are retained as the historical audit of the pre-release text; only rows that state a current status are updated, and those updates are marked in the row text.
+> **Historical record (audit of the report at `8417dc7`).** The current release base is `main` = `dev` = `2ae56a3` (P0 release `7f2c11f`; tags `p0-gate`, `p0-release`). The P0 gate is now 13/13; the P0 release recorded 514 tests and the current suite has 523. The report cover now uses the exact paper title, Chapter 3 follows the FYDP~II plan, Chapter 4 is restructured as Implementation and Results, and the separate 6.2 section was removed. The old-to-new tables below are retained as the historical audit of the pre-release text; only rows that state a current status are updated, and those updates are marked in the row text.
 
 **Mode and authorship rung**
 - Existing chapters (`0.1`–`3`, `5`): **Mode 1 — edit/polish**, **rung B** (author wrote; agent edits for clarity, claims, and consistency).
@@ -154,7 +154,7 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 
 **Engine:** pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). No XeLaTeX, LuaLaTeX, `fontspec`, `unicode-math`, shell-escape, or engine-specific package was added.
 
-**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current P0-release build is **57 pages**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
+**Result:** each pdfLaTeX pass exited 0; BibTeX exited 0. The current FYDP~II build is **60 pages**; the audit-time build was 58 pages. 0 errors, 0 undefined references, 0 undefined citations, 0 missing figure files.
 
 **Warnings:** 6 overfull `\hbox` warnings and 84 underfull `\hbox` warnings. Five overfull boxes are pre-existing title/acknowledgement lines at 3.2pt. One overfull box is a 6.6pt line in the implementation summary. The underfull boxes are mostly narrow table cells; none prevents compilation.
 
