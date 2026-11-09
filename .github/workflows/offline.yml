@@ -13,7 +13,10 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install offline test deps
-        run: pip install pytest numpy pyyaml openai python-dotenv requests
+        # Minimal GPU-free install. httpx is imported directly by
+        # inference/test_client.py, not just pulled in by openai.
+        # Do not install requirements.txt here (it drags in torch/sentence-transformers).
+        run: pip install pytest numpy pyyaml openai python-dotenv requests httpx
       - name: Pytest
         working-directory: trustcal
         run: pytest -q
