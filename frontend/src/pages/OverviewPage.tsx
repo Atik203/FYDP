@@ -87,7 +87,7 @@ export function OverviewPage() {
               </p>
               <p className="text-sm sm:text-base leading-relaxed">
                 We target <strong>≥20% sycophancy reduction</strong> (CCR
-                metric) vs. vanilla MAD on GPQA-Main, MMLU-Pro STEM and EG-SSS
+                metric) vs. vanilla MAD on GPQA-Main, MMLU-Pro STEM and SciClaimBench
                 primary sets; HLE is the abstention control, and
                 BrokenMath/BrokenArXiv are appendix-only. The Core run (24 runs)
                 is pre-registered; no efficacy claim is made yet.
@@ -108,7 +108,7 @@ export function OverviewPage() {
             </div>
             <KpiRow kpis={p0Kpis} />
             <p className="mt-3 text-[10px] leading-relaxed text-[#64748b] dark:text-[#94a3b8]">
-              <strong>Current report evidence:</strong> 69-pp report, 19-pp journal,
+              <strong>Current report evidence:</strong> 70-pp report, 19-pp journal,
               0 undefined references; tags <code>p0-gate</code> and{" "}
               <code>p0-release</code>. Next: N1 96 GB smoke + FP8 precision
               replication → WP-18 placebo/oracle → 24-item calibration →
@@ -134,7 +134,7 @@ export function OverviewPage() {
             {
               icon: CheckCircle,
               title: "The Goal",
-              desc: "Target ≥20% sycophancy reduction on GPQA-Main, MMLU-Pro STEM and EG-SSS; 4 executable arms and a 6-arm target, with B1–B10 as comparison definitions. Efficacy is not yet measured.",
+              desc: "Target ≥20% sycophancy reduction on GPQA-Main, MMLU-Pro STEM and SciClaimBench; 4 executable arms and a 6-arm target, with B1–B10 as comparison definitions. Efficacy is not yet measured.",
             },
           ].map(({ icon: Icon, title, desc }) => (
             <div

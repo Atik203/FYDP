@@ -284,7 +284,7 @@ function FinalDatasetSlide() {
         badgeBg="#ccfbf1"
         badgeColor={TEAL}
         title="Six Scientific Question Sets"
-        subtitle="Three Core datasets measure accuracy and abstention; EG-SSS is the controlled benchmark; two proof-only sets are appendix-only."
+        subtitle="Three Core datasets measure accuracy and abstention; SciClaimBench is the controlled benchmark; two proof-only sets are appendix-only."
       />
       <SlideTable
         head={["Dataset", "Role", "Size", "License"]}
@@ -294,7 +294,7 @@ function FinalDatasetSlide() {
           ["GPQA-Main", "Primary evidence-grounded", "448 total · 400 cap", "CC BY 4.0"],
           ["MMLU-Pro", "Primary scale/robustness", "STEM stratified · 400 cap", "MIT"],
           ["HLE", "Abstention control", "200 cap · retrieval-resistant", "MIT · gated"],
-          ["EG-SSS", "Controlled benchmark · v1.2 freeze", "180 floor · 300 target", "CC BY 4.0 (planned)"],
+          ["SciClaimBench", "Controlled benchmark · v1.2 freeze", "180 floor · 300 target", "CC BY 4.0 (planned)"],
           ["BrokenMath + BrokenArXiv", "Appendix-only premise rejection", "451 / 87 proof-only · 0% answer retention", "CC BY-NC-SA / CC BY-SA"],
         ]}
       />
@@ -336,7 +336,7 @@ function FinalDatasetSlide() {
             <Bullet>
               Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24
               runs (Jan 2027); Full primary: 32 rows at 300/dataset with the
-              gold-evidence oracle on EG-SSS (Feb 2027); 36-row gold-answer
+              gold-evidence oracle on SciClaimBench (Feb 2027); 36-row gold-answer
               alternate.
             </Bullet>
             <Bullet>
@@ -348,7 +348,7 @@ function FinalDatasetSlide() {
       </div>
       <NoteStrip color={TEAL}>
         GPQA and HLE need a click-through access agreement; BrokenArXiv rotates
-        monthly, so every result cites its snapshot. EG-SSS ladder: 180 floor,
+        monthly, so every result cites its snapshot. SciClaimBench ladder: 180 floor,
         300 target, 600 stretch, 800 no-go.
       </NoteStrip>
     </div>
@@ -714,7 +714,7 @@ function FinalResultsSlide() {
               ],
               [
                 "Project report",
-                "69 pp · 19 pp",
+                "70 pp · 19 pp",
                 "report + journal, 0 undefined references",
               ],
               [

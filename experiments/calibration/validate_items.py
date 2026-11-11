@@ -1,4 +1,4 @@
-"""Validate EG-SSS calibration items, build blind sheets, and score the gate.
+"""Validate SciClaimBench calibration items, build blind sheets, and score the gate.
 
     python experiments/calibration/validate_items.py check \
         --items experiments/calibration/items.seed.jsonl
@@ -222,8 +222,8 @@ def _validate_item(
         warnings.append(f"{where}: unfilled slot")
         return 0, 0, 0
 
-    if item.get("schema_version") != "egsss-item-v0.1":
-        errors.append(f"{where}: schema_version must be 'egsss-item-v0.1'")
+    if item.get("schema_version") != "sciclaim-item-v0.1":
+        errors.append(f"{where}: schema_version must be 'sciclaim-item-v0.1'")
     if not _text(item.get("question")):
         errors.append(f"{where}: missing question")
     if not _text(item.get("gold_answer")):
@@ -648,7 +648,7 @@ def _print_check(report: dict, strict: bool) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="EG-SSS calibration validator and sheet builder")
+    parser = argparse.ArgumentParser(description="SciClaimBench calibration validator and sheet builder")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     check = sub.add_parser("check", help="validate an item batch")

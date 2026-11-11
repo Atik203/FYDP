@@ -75,10 +75,10 @@ export function Idea1Content() {
         <SectionTitle icon={Lightbulb}>1. Core Idea</SectionTitle>
         <Callout variant="info" title="📌 P0 implementation status (Nov 2026)">
           <p className="mb-2">
-            <strong>514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release).</strong> The core is wired:
+            <strong>615 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release).</strong> The core is wired:
             options in prompts, parser/scorer, trust simplex projection, verifier
             interface, claim-domain routing, endpoints, and manifest/resume.
-            Current report evidence: 69-pp report, 19-pp journal, 0 undefined
+            Current report evidence: 70-pp report, 19-pp journal, 0 undefined
             references. This is engineering readiness, <strong>not an efficacy result</strong>.
             Everything below is planned work unless it is explicitly dated as
             done.
@@ -114,7 +114,7 @@ export function Idea1Content() {
               </strong>{" "}
               A pre-registered injection protocol + CCR / MPR / ECR metrics, a
               4-arm executable matrix with a 6-arm target, three Core datasets
-              (GPQA, MMLU-Pro, HLE), and an EG-SSS benchmark at 180 floor / 300
+              (GPQA, MMLU-Pro, HLE), and an SciClaimBench benchmark at 180 floor / 300
               target.
             </li>
             <li>
@@ -926,7 +926,7 @@ export function Idea1Content() {
         <SectionTitle icon={BarChart3}>8. Dataset Plan</SectionTitle>
         <p className="text-sm mb-4">
           Core datasets: GPQA-Main and MMLU-Pro STEM for evidence-grounded
-          accuracy, plus HLE as the abstention control. EG-SSS is the controlled
+          accuracy, plus HLE as the abstention control. SciClaimBench is the controlled
           gold-evidence benchmark, not a Core dataset: the v1.2 freeze is 180
           items, with 300 as the ladder target. BrokenMath and BrokenArXiv are
           appendix-only: both are proof-only with 0% answer-type retention, so
@@ -974,9 +974,9 @@ export function Idea1Content() {
         <p className="text-xs text-[#64748b] dark:text-[#94a3b8] mt-3">
           <strong>Scale:</strong> 24-item calibration first; then the Core matrix
           is 4 arms × GPQA-Main 400 / MMLU-Pro STEM 400 / HLE 200 × 2 seeds =
-          24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in
+          24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; SciClaimBench is not in
           Core v1.0. The primary Full matrix is 32 rows at 300 items/dataset
-          with the gold-evidence oracle on EG-SSS (1,280 GPU-h); the 36-row
+          with the gold-evidence oracle on SciClaimBench (1,280 GPU-h); the 36-row
           gold-answer alternate is 1,440 GPU-h. Benchmark ladder: 180 floor,
           300 target, 600 stretch, 800 no-go.
           <br />
@@ -1018,7 +1018,7 @@ export function Idea1Content() {
                 [
                   "MPR (Minority Preservation)",
                   "% debates where correct minority survives to final output",
-                  "H2 (pre-registered target): MPR improves by ≥15pp vs plain MAD on GPQA-Main and MMLU-Pro STEM, with EG-SSS reported separately at the benchmark freeze",
+                  "H2 (pre-registered target): MPR improves by ≥15pp vs plain MAD on GPQA-Main and MMLU-Pro STEM, with SciClaimBench reported separately at the benchmark freeze",
                 ],
                 [
                   "ECR (Evidence Calibration)",
@@ -1101,7 +1101,7 @@ export function Idea1Content() {
           1,280 GPU-h). The 6-arm target adds B8-placebo and B8-oracle through
           WP-18; the pre-registration records both the target and the executable
           subset. The primary Full matrix is 32 rows with the gold-evidence
-          oracle on EG-SSS; the 36-row alternate uses gold-answer trust.
+          oracle on SciClaimBench; the 36-row alternate uses gold-answer trust.
         </p>
 
         <Callout
@@ -1336,7 +1336,7 @@ export function Idea1Content() {
             {
               step: 12,
               title: "Core run (24 runs) then Full run target",
-              desc: "G3 Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs at 1,280 GPU-h. G4/G5 Full primary: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h); the 36-row gold-answer alternate is 1,440 GPU-h. B8-placebo/B8-oracle are WP-18.",
+              desc: "G3 Core: 4 arms × GPQA 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs at 1,280 GPU-h. G4/G5 Full primary: 32 rows at 300 items/dataset with the gold-evidence oracle on SciClaimBench (1,280 GPU-h); the 36-row gold-answer alternate is 1,440 GPU-h. B8-placebo/B8-oracle are WP-18.",
             },
             {
               step: 13,

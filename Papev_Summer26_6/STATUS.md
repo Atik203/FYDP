@@ -1,6 +1,6 @@
 # Preprint status — claims-accuracy pass
 
-**Branch:** `docs/journal-claims` merged; `main` = `dev` = `2ae56a3`
+**Branch:** `docs/journal-claims` merged; `main` = `dev` = `v0.2.1`
 **Base:** P0 release `7f2c11f` (P0 gate 13/13; tags `p0-gate`, `p0-release`)
 **Date:** 9 November 2026
 **Manuscript:** `cas-sc-template.tex`
@@ -28,11 +28,11 @@ Reconciles the preprint with the P0 implementation. The paper is a design and im
 - Abstract rewritten as design + implementation status. No efficacy claims; no "no mechanism exists", "produced fewer", "all surviving claims", or "selected model".
 - Introduction reframed the gap as measurement/boundary conditions and added a Related Work subsection citing R2-MAD, TERA-RAG, To Trust or Not, GAVEL, and DebateCV.
 - Method corrected: seeded options, answer parser/scorer, claim-domain routing, three verifier labels, log-domain trust -> one softmax -> floor/ceiling simplex projection, weighted plurality, one-shot injection, and a boundary-conditions subsection (R2/R4/R6/shared-error floor).
-- Datasets corrected: GPQA-Main and MMLU-Pro STEM are primary, HLE is a control, EG-SSS is planned, and BrokenMath/BrokenArXiv are proof-only and excluded.
+- Datasets corrected: GPQA-Main and MMLU-Pro STEM are primary, HLE is a control, SciClaimBench is planned, and BrokenMath/BrokenArXiv are proof-only and excluded.
 - Baselines corrected: four executable conditions; B9/B10 are approximations, not faithful reimplementations.
 - Metrics corrected: final accuracy and CMR are confirmatory; CCR-0, CCR-E, MPR-weighted, and ARR are descriptive; trust AUROC and Brier are secondary; ECR is not a primary target.
 - Results replaced by "Implementation Status and Planned Evaluation": Gate 0, 523 current tests (514 at the P0 release), 13/13 gate, known gaps, the 24-run pre-registered matrix, planned statistics, and limitations. No expected-value tables. The optional appendix-only B7 ceiling is documented as three GPT-6 Luna samples per question and is not in the Core or Full matrix.
-- Conclusion and declarations corrected; code is MIT, EG-SSS will be CC BY 4.0, gated datasets are IDs/hashes only, and dual-use/abstention language is added.
+- Conclusion and declarations corrected; code is MIT, SciClaimBench will be CC BY 4.0, gated datasets are IDs/hashes only, and dual-use/abstention language is added.
 - Five verified bibliography entries added.
 
 ## Figure status

@@ -327,7 +327,7 @@ During development, all pipeline code (claim decomposition, retrieval, trust upd
 | **Agent 1**         | [Qwen3.5-9B](https://huggingface.co/Qwen/Qwen3.5-9B)                 | Qwen3.8-27B-FP8                 | Dev: cheap iterative testing. Final: 27B dense, caps 397B MoE predecessor in coding, 262K context, Apache 2.0                  | FP8 ~29.95 GB (final); validated on dev models before the Final run |
 | **Agent 2**         | [Gemma 4 12B](https://huggingface.co/google/gemma-4-12B)                | Gemma-4-26B-A4B-FP8             | Dev: encoder-free 12B, good proxy for 26B behaviour. Final: MoE 3.8B active, 256K context, Apache 2.0                         | 28.67 GB FP8; 26B requires all params in memory despite 3.8B active per token  |
 | **Agent 3**         | [Ministral-3-14B-Instruct-2512](https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512) (FP8)        | Mistral-24B-AWQ      | Dev: Mistral-family 14B with official FP8 weights (~14GB, near-lossless) — same lineage as Final Agent 3. Final: Mistral adds third distinct family (non-Qwen, non-Gemma) for true heterogeneity   | 15.06 GB AWQ; FP8 public repos push the stack over 80 GB, so AWQ is the pinned Final artifact |
-| **External-answer ceiling (B7)** | OpenAI GPT-6 Luna (gpt-6-luna) | OpenAI GPT-6 Luna (gpt-6-luna) | Optional, appendix-only external-answer ceiling reference only; not part of the core mechanism and not in the Core or Full matrix. Three independent calls per question; mean single-call accuracy with CI + 3-sample majority (ties to the first sample); ~$3–9 per 1,000 (recompute from actual tokens; $0.10/M input + $0.50/M output) | B8-oracle (gold-answer trust, or gold-evidence-only on EG-SSS) is a separate pending arm under WP-18             |
+| **External-answer ceiling (B7)** | OpenAI GPT-6 Luna (gpt-6-luna) | OpenAI GPT-6 Luna (gpt-6-luna) | Optional, appendix-only external-answer ceiling reference only; not part of the core mechanism and not in the Core or Full matrix. Three independent calls per question; mean single-call accuracy with CI + 3-sample majority (ties to the first sample); ~$3–9 per 1,000 (recompute from actual tokens; $0.10/M input + $0.50/M output) | B8-oracle (gold-answer trust, or gold-evidence-only on SciClaimBench) is a separate pending arm under WP-18             |
 | **Reranker**       | ms-marco-MiniLM cross-encoder  | ms-marco-MiniLM cross-encoder  | Standard, fast, well-validated for passage reranking                                                                           | Domain-general — acceptable since retrieval is claim-domain routed upstream. Upgrade to SciBERT-based if evidence quality issues arise |
 | **Inference**      | vLLM                           | vLLM                           | Free, fast, standard for local multi-model serving; same engine for the Dev, main-matrix (A100), and FP8 precision paths                  | Setup complexity on first use only                                                                                                |
 | **Orchestration**  | plain Python                   | plain Python                   | Round-based state machine fits debate and injection-point control; the LangGraph port is not implemented | No external graph runtime to debug |
@@ -342,7 +342,7 @@ The staged strategy keeps compute costs manageable for a student team. All pipel
 | **FP8 precision replication + 96 GB N1 smoke** | Nov 2026 | 60–100 | $25–40 | 96 GB RTX PRO 6000 at $0.336/GPU-h; **NOT RUN** — offline 73.68 GB check only |
 | **Pilot** | Dec 2026 | ~112 | $15–20 | 100–150 questions; 4-bit 24–27B on the 80 GB A100 |
 | **Core run** | Jan 2027 | 1,280 cap (planned ~1,067) | $175–210 | 24 runs; 8,000 planned debates; 4-bit 24–27B on the 80 GB A100 |
-| **Full run, default** | Feb 2027 | 1,280 | $210 | 32 rows; gold-evidence oracle on EG-SSS; B8-placebo is a cross-agent round-pool |
+| **Full run, default** | Feb 2027 | 1,280 | $210 | 32 rows; gold-evidence oracle on SciClaimBench; B8-placebo is a cross-agent round-pool |
 | **Full run, alternate** | Feb 2027 | 1,440 | $235 | 36 rows; gold-answer oracle |
 | **Storage and bandwidth** | — | — | $40–80 | Persist the cache; copy results; destroy instances |
 | **Total plan** | — | — | **$500–600** | — |
@@ -385,12 +385,12 @@ The staged strategy keeps compute costs manageable for a student team. All pipel
 
 **Data quality/bias considerations:** BrokenMath/BrokenArXiv are appendix-only stress sets, not evidence-grounding corpora. Results on them should be framed as adversarial/worst-case behaviour, not representative of average-case deployment — this framing is already present in the original proposal's "domain-of-applicability boundary" language and should be preserved.
 
-**EG-SSS benchmark ladder.** EG-SSS is the team-built gold-evidence benchmark, not a Core v1.0 dataset. Core v1.0 runs GPQA-Main + MMLU-Pro + HLE. EG-SSS freezes at **180 items** under v1.2 (60 biomed, 60 phys/chem, 60 math/CS), scales to the **300-item Full target**, and has 600/stretch and 800/no-go rungs that are not built.
+**SciClaimBench benchmark ladder.** SciClaimBench is the team-built gold-evidence benchmark, not a Core v1.0 dataset. Core v1.0 runs GPQA-Main + MMLU-Pro + HLE. SciClaimBench freezes at **180 items** under v1.2 (60 biomed, 60 phys/chem, 60 math/CS), scales to the **300-item Full target**, and has 600/stretch and 800/no-go rungs that are not built.
 
 | Size | Role | Decision |
 |---:|---|---|
 | **24** | Calibration batch | Start here; if `H_attempt > 2.0` or defect >15%, cut to 120 |
-| **180** | EG-SSS v1.2 freeze | Freeze by Jan 2027; not in the v1.0 Core matrix |
+| **180** | SciClaimBench v1.2 freeze | Freeze by Jan 2027; not in the v1.0 Core matrix |
 | **300** | Full-run benchmark target | Target by Feb 2027 |
 | **600** | Stretch | Only with 2–3 dedicated annotators |
 | **800** | No-go | Do not build |
@@ -496,7 +496,7 @@ _Post-P0 calendar. The July–October 2026 record — Gate 0, the trust operator
 | --- | --- | --- | --- | --- |
 | **Nov 2026** | Final-stack readiness, WP-18, calibration, verifier audit start | 96 GB smoke (**NOT RUN**; offline 73.68 GB check only); B8-placebo/B8-oracle switches | 24-item calibration | smoke PASS; 6-arm support; calibration report |
 | **Dec 2026** | Verifier audit; pilot run | 150–200 claim–passage pairs; 100–150 pilot questions | Injection κ; baseline collapse check | **G2**; verifier report |
-| **Jan 2027** | Core run | 4-condition matrix, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds | 24 runs; 1,280 GPU-h cap | **G3**; EG-SSS-180 freeze (v1.2) |
+| **Jan 2027** | Core run | 4-condition matrix, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds | 24 runs; 1,280 GPU-h cap | **G3**; SciClaimBench-180 freeze (v1.2) |
 | **Feb 2027** | Full run | 6-arm config; 300-item benchmark target | 32-row gold-evidence default (36-row gold-answer alternate); human eval starts | **G4/G5** |
 | **Mar 2027** | Human evaluation and SDT | 150–200 paired items, 3 raters, expert ceiling | κ/ICC; SDT axes | Analysis freeze |
 | **Apr 2027** | Law-testing and ablations | q sweep, ρ, granularity, shared-error floor | Only if the effect is real | Results freeze |
@@ -675,7 +675,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 
 **Expected experimental results pattern:**
 
-- Largest gains on pressure-eligible items (GPQA-Main, MMLU-Pro) and the EG-SSS benchmark, where the mechanism is targeted.
+- Largest gains on pressure-eligible items (GPQA-Main, MMLU-Pro) and the SciClaimBench benchmark, where the mechanism is targeted.
 - Near-zero gain on easy/agreed-upon questions — reported honestly as a domain-of-applicability boundary, not hidden.
 - The planned strongest result sentence is the B8 vs B8-no-trust accuracy/CMR contrast; B4-matched is the evidence-information control.
 
@@ -726,7 +726,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 - **Robustness to paraphrased injection templates:** currently named as a known protocol limitation (L2) but not tested. If time allows in Phase 4's buffer month, even a small (20–30 question) paraphrase-robustness check would meaningfully strengthen the paper against the "your injection template is too easy to detect" objection.
 - **Sensitivity to K (number of debate rounds):** N-scaling is planned, but K is fixed at 3 throughout. A reviewer may ask whether results are an artifact of this specific round count.
 
-**Missing datasets:** none flagged as critical — the current Core set (GPQA-Main, MMLU-Pro, HLE) plus the EG-SSS v1.2 benchmark is well-justified; BrokenMath/BrokenArXiv are appendix-only checks.
+**Missing datasets:** none flagged as critical — the current Core set (GPQA-Main, MMLU-Pro, HLE) plus the SciClaimBench v1.2 benchmark is well-justified; BrokenMath/BrokenArXiv are appendix-only checks.
 
 **Possible reviewer criticisms, ranked by likely severity:**
 
@@ -745,7 +745,7 @@ Proceeding to **Phase 5 (Sections 16–18)** — the final phase.
 **Recommended pre-Core actions, in priority order:**
 
 1. Run the 96 GB Final-stack smoke (currently NOT RUN; offline check only).
-2. Finalize WP-18's oracle scope (gold-answer vs gold-evidence-only on EG-SSS) before freezing the Full config.
+2. Finalize WP-18's oracle scope (gold-answer vs gold-evidence-only on SciClaimBench) before freezing the Full config.
 3. Add the compute-cost-vs-accuracy/CMR table to the planned evaluation outputs.
 4. Freeze the 24-item calibration batch and start the verifier audit.
 

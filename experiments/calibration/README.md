@@ -1,4 +1,6 @@
-# EG-SSS 24-item calibration — protocol and working files
+# SciClaimBench 24-item calibration — protocol and working files
+
+**Co-author guide:** [`docs/COAUTHOR_GUIDE.md`](../../docs/COAUTHOR_GUIDE.md) — roles, worked examples, and the 4/6-week plan.
 
 **Gate:** Phase N3 (roadmap §4). **Owner:** P3 + annotators.
 **Status (9 Nov 2026): BLOCKED on item authoring and human annotation.**
@@ -9,7 +11,7 @@ result until the sheets contain real human labels.
 
 ## 1. What this gate decides
 
-The 24-item batch is the feasibility test for EG-SSS, the team-built
+The 24-item batch is the feasibility test for SciClaimBench, the team-built
 gold-evidence benchmark. It answers three questions before the team spends the
 ~410 h needed for the 180-item v1.2 freeze:
 
@@ -27,7 +29,7 @@ until the numbers look better.
 
 ## 2. Item sources and licensing
 
-EG-SSS is team-authored. The preferred source is an original item written for
+SciClaimBench is team-authored. The preferred source is an original item written for
 this project; such items are released under **CC BY 4.0** when frozen.
 
 An item may be adapted from a public-domain or CC BY source only when all of
@@ -39,9 +41,9 @@ the following are recorded in the item's `source` block:
 
 Do **not** adapt or redistribute gated or non-redistributable benchmark text
 (GPQA and HLE are gated; MMLU-Pro test text must not be redistributed) into
-EG-SSS. Those datasets may be used internally as comparison datasets, but their
-item text must never appear in a committed EG-SSS file. SciFact is CC BY-NC 2.0
-and is used only for the verifier audit, not as an EG-SSS source.
+SciClaimBench. Those datasets may be used internally as comparison datasets, but their
+item text must never appear in a committed SciClaimBench file. SciFact is CC BY-NC 2.0
+and is used only for the verifier audit, not as an SciClaimBench source.
 
 LLM assistance is allowed for drafting question stems or candidate claims, but
 a human must verify every claim, every evidence link, and every gold verdict.
@@ -88,9 +90,9 @@ The full field table is in [`schema.md`](schema.md). A complete skeleton is in
 [`item.template.json`](item.template.json), and the 24 unfilled slots are in
 [`items.seed.jsonl`](items.seed.jsonl).
 
-EG-SSS has no loader in `trustcal/src/trustcal/eval/datasets.py` yet, so this
+SciClaimBench has no loader in `trustcal/src/trustcal/eval/datasets.py` yet, so this
 batch is the authoring and annotation format, not a runnable
-`run_experiment.py --questions-file` input. Do not point the runner at an EG-SSS
+`run_experiment.py --questions-file` input. Do not point the runner at an SciClaimBench
 batch until a loader and a v1.2 dataset key exist; that work is outside this
 calibration gate.
 
@@ -151,7 +153,7 @@ items immediately; do not start the 180-item freeze.
 | Size | Role | Split | Annotation envelope | Entry condition | Decision |
 | ---: | --- | --- | ---: | --- | --- |
 | **24** | Calibration batch | 8 / 8 / 8 | ~1 week | protocol frozen | κ ≥ 0.75, defect ≤ 15%, `H_attempt` ≤ 2.0 → 180; otherwise cut to 120 |
-| **180** | EG-SSS v1.2 freeze | 60 / 60 / 60 | ~410 h | 24-item calibration passes | freeze by Jan 2027; report κ and defect rate |
+| **180** | SciClaimBench v1.2 freeze | 60 / 60 / 60 | ~410 h | 24-item calibration passes | freeze by Jan 2027; report κ and defect rate |
 | **300** | Full-run target | 100 / 100 / 100 | ~684 h | 180-item set is clean | target by Feb 2027 |
 | **600** | Stretch | 200 / 200 / 200 | ~1,368 h | 2–3 dedicated annotators | not built by default |
 | **800** | No-go | — | ~1,824 h | — | do not build |

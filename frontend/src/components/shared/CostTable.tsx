@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * on a 96 GB card is only the N1 hardware smoke plus a small GPQA precision
  * replication, not the Full matrix.
  * Core is 24 runs / 1,280 GPU-h. Full is 32 rows / 1,280 GPU-h with the
- * gold-evidence oracle on EG-SSS; the 36-row gold-answer alternate is
+ * gold-evidence oracle on SciClaimBench; the 36-row gold-answer alternate is
  * 1,440 GPU-h. All-in costs include GPU + bandwidth + storage + 20% spot
  * overhead; the total is $500–600 with a $600 hard stop.
  */
@@ -53,7 +53,7 @@ const STAGES: Stage[] = [
   },
   {
     name: "Full",
-    scope: "32 rows · gold-evidence oracle on EG-SSS · 36-row gold-answer alternate · 300 items/dataset",
+    scope: "32 rows · gold-evidence oracle on SciClaimBench · 36-row gold-answer alternate · 300 items/dataset",
     when: "Feb 2027",
     hours: "1,280 · 1,440 alt",
     cost: "$210 · $235 alt",
@@ -153,7 +153,7 @@ export function CostTable() {
 
       <p className="text-[10px] text-[#64748b] dark:text-[#94a3b8] leading-relaxed">
         <strong>Core</strong> is the 4-bit main matrix. <strong>Full</strong> is
-        the 32-row matrix with the gold-evidence oracle on EG-SSS; the 36-row
+        the 32-row matrix with the gold-evidence oracle on SciClaimBench; the 36-row
         gold-answer alternate is $235. The 96 GB FP8 stack is not the main Full
         matrix: it covers the N1 smoke plus a small GPQA precision replication.
         Total $500–600, hard stop $600. If the 80 GB A100 is unavailable, the

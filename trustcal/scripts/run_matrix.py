@@ -220,7 +220,7 @@ def _build_plan(matrix: Matrix, out_root: Path) -> list[tuple[dict, RunConfig]]:
         overrides = condition.get("overrides", {})
         for dataset in matrix.datasets:
             # WP-18 conditional Full count: gold-evidence oracle only runs on a
-            # dataset that carries gold evidence (EG-SSS), so 36 rows drop to 32
+            # dataset that carries gold evidence (SciClaimBench), so 36 rows drop to 32
             # without changing the config's condition list. The skip happens
             # before RunConfig because that class rejects gold_evidence on any
             # other dataset.

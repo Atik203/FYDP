@@ -15,7 +15,7 @@ Index of every experimental run for the trustcal pipeline. One folder per experi
 
 | Gate | Folder | State |
 | --- | --- | --- |
-| EG-SSS 24-item calibration | [`calibration/`](calibration/README.md) | **BLOCKED** — 24 item slots are structurally valid but unfilled; 0 human labels |
+| SciClaimBench 24-item calibration | [`calibration/`](calibration/README.md) | **BLOCKED** — 24 item slots are structurally valid but unfilled; 0 human labels |
 | Verifier audit (N4) | [`verifier_audit/`](verifier_audit/README.md) | **READY FOR ANNOTATION** — 180 real SciFact dev pairs; 0 human labels |
 | B8 pipeline-pair audit | [`verifier_audit/`](verifier_audit/README.md) | **BLOCKED** — needs a B8 retrieval run; the B7 smoke has no verdicts |
 

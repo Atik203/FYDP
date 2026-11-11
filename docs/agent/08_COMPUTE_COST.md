@@ -57,7 +57,7 @@ The main matrix runs on the **80 GB A100 PCIe** because the 4-bit 24–27B stack
 | **Total plan** | — | — | — | **$500–600** |
 | **Hard stop** | — | — | — | **$600** |
 
-**Full design:** the default is **32 rows** with a **gold-evidence oracle on EG-SSS**; **36 rows** is the gold-answer alternate. The two Full rows are **alternatives**, not additions; the total counts one Full run. The **placebo** is a **cross-agent round-pool**. WP-18 freezes the definition; do not run Full before N1 and WP-18.
+**Full design:** the default is **32 rows** with a **gold-evidence oracle on SciClaimBench**; **36 rows** is the gold-answer alternate. The two Full rows are **alternatives**, not additions; the total counts one Full run. The **placebo** is a **cross-agent round-pool**. WP-18 freezes the definition; do not run Full before N1 and WP-18.
 
 **Fallback:** if the 80 GB A100 spot is unavailable and the main runs use the 96 GB card at **$0.336/GPU-h**, the plan becomes **$1,050–1,150** and requires **re-approval**. This is a fallback, not the default, and must not be presented as the plan.
 
@@ -133,7 +133,7 @@ The main matrix runs on the **80 GB A100 PCIe** because the 4-bit 24–27B stack
 - **Main matrix:** one **80 GB A100 PCIe** spot, **$0.136/GPU-h**, 4-bit 24–27B final families.
 - **Pilot:** ~112 GPU-h / **$15–20**.
 - **Core:** 1,280 GPU-h cap (~1,067 planned) / **$175–210**.
-- **Full default:** 32-row gold-evidence oracle on EG-SSS, 1,280 GPU-h / **$210**.
+- **Full default:** 32-row gold-evidence oracle on SciClaimBench, 1,280 GPU-h / **$210**.
 - **Full alternate:** 36-row gold-answer, 1,440 GPU-h / **$235**.
 - **FP8 precision replication + N1 smoke:** 60–100 GPU-h at **$0.336/h** / **$25–40**.
 - **Storage/bandwidth:** **$40–80**.

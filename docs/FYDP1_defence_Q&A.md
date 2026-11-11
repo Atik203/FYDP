@@ -67,7 +67,7 @@
 **Scope today (be exact):**
 
 - ✅ Gate 0: full three-model debate loop runs end to end on 10 GPQA questions — 10/10 debates, 90/90 positions (`experiments/gate0/README.md:29-35`).
-- ✅ Trust math, parser, endpoints, injection, runner, verifier interface, κ tooling — tested (514 tests).
+- ✅ Trust math, parser, endpoints, injection, runner, verifier interface, κ tooling — tested (615 tests).
 - ✅ Trust update is wired into the debate loop; revisions use the evolving trust and the final vote uses `trust_for_positions`.
 - 🟡 Retrieval/verifier quality and the human audit remain the bottleneck; ECR is deprecated and not a primary endpoint.
 
@@ -92,7 +92,7 @@ If asked "explain your project in two minutes," say this:
 | ECR | 🟡 deprecated | `eval/metrics.py`; not a primary endpoint |
 | Placebo / oracle (WP-18) | 🔴 pending | B8-placebo/B8-oracle not implemented |
 | Statistics (bootstrap, McNemar, Holm) | ✅ implemented | `eval/stats.py`, `scripts/run_matrix.py` |
-| Tests | ✅ 514 tests | colocated `test_*.py` |
+| Tests | ✅ 615 tests | colocated `test_*.py` |
 
 **The one sentence to repeat:** "The loop is real, the math is real and tested, and the evidence layer is implemented; the verifier audit and the paid matrix are the remaining gates."
 
@@ -159,7 +159,7 @@ Every "why did you choose X" question, in one table.
 | Verdicts | supported / contradicted / unverifiable / contested | Unverifiable must not move trust; contested is reported separately | `Papev:201`; blueprint `:260` |
 | Injection point | between rounds 1 and 2, once | Pressure with no new evidence; upper-bound stress test | blueprint `:182,299` |
 | Injection target | the correct-minority agents by default | Tests exactly the collapse thesis | `orchestrator/injection.py:64-67` |
-| Datasets | Core: GPQA-Main + MMLU-Pro + HLE; EG-SSS v1.2; BrokenMath/BrokenArXiv appendix-only | Accuracy comparability plus a ceiling control; no adversarial set in the Core matrix | [Section 13](#13-datasets--sources) |
+| Datasets | Core: GPQA-Main + MMLU-Pro + HLE; SciClaimBench v1.2; BrokenMath/BrokenArXiv appendix-only | Accuracy comparability plus a ceiling control; no adversarial set in the Core matrix | [Section 13](#13-datasets--sources) |
 | Sample size | pilot 100–150; Core caps 400/400/200 | Stable paired statistics vs iteration speed | `configs/experiments.yaml`; `PILOT_CRITERION.md` |
 | Seeds | 2 for the main matrix; the pilot is a single frozen set | Replication without doubling the Core-run budget; the unit of analysis is the question | `PRE_REGISTRATION.md` |
 | Metrics | Final accuracy + CMR primary; ARR, trust AUROC/Brier; ECR deprecated | Correction, minority survival, ranking, no regression | `eval/endpoints.py` |
@@ -445,13 +445,13 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 | B9 | iMAD reimplementation | Debate-trigger prediction | ✅ implemented (approximation) |
 | B10 | ConsensAgent reimplementation | Prompt-rewrite sycophancy fix | ✅ implemented (approximation) |
 | B8-placebo | Shuffled verdicts | Any-reweighting control | 🔴 pending WP-18 |
-| B8-oracle | Gold-answer trust (or gold-evidence-only on EG-SSS) | Upper bound; not a competitor | 🔴 pending WP-18 |
+| B8-oracle | Gold-answer trust (or gold-evidence-only on SciClaimBench) | Upper bound; not a competitor | 🔴 pending WP-18 |
 
 **B7 / B8-oracle details (the classic trap question):**
 
 - B7 is the optional, appendix-only external-answer ceiling: it draws three independent samples per question from OpenAI GPT-6 Luna (`gpt-6-luna`) and reports mean single-call accuracy with a question-level bootstrap CI plus 3-sample majority accuracy. Ties resolve to the first sample. About $3–9 per 1,000 questions at three samples (recompute from actual prompt/output tokens).
 - It is a **ceiling reference**, not part of the mechanism; it never receives the gold answer (`blueprint.md:322,339`).
-- B8-oracle is different: it is an internal upper bound that uses gold information — gold-evidence-only on EG-SSS in the default 32-row Full, or gold-answer trust in the 36-row alternate — and it is not implemented yet (WP-18).
+- B8-oracle is different: it is an internal upper bound that uses gold information — gold-evidence-only on SciClaimBench in the default 32-row Full, or gold-answer trust in the 36-row alternate — and it is not implemented yet (WP-18).
 - If asked "is that unfair, a bigger model?": yes, deliberately — it shows the best a strong commercial model achieves, so the panel can see where debate+trust lands relative to a frontier point.
 
 **Fair comparison notes:**
@@ -480,7 +480,7 @@ Registry: `trustcal/src/trustcal/eval/baselines.py`. All B1–B10 arms are imple
 - **Q: How is this a fair comparison?** B5/B6 run the same three models as ours, so differences come from aggregation logic, not model choice; B1–B4 use identical prompts and settings.
 - **Q: Why reimplement B9 and B10 instead of quoting their papers?** Published numbers use different models and datasets; a same-stack reimplementation is the only honest comparison.
 - **Q: What if the reimplementation underperforms the original?** We ship a differentiation paragraph documenting every deviation; underperformance of a reimplementation is reported, not hidden (blueprint `:415`).
-- **Q: Why an oracle baseline at all if it cannot be deployed?** It bounds the ceiling — if debate+trust approaches the oracle, that is a strong result; if not, the gap is informative. B8-oracle is pending WP-18; the default is gold-evidence on EG-SSS (32-row Full), and the gold-answer alternate is 36 rows.
+- **Q: Why an oracle baseline at all if it cannot be deployed?** It bounds the ceiling — if debate+trust approaches the oracle, that is a strong result; if not, the gap is informative. B8-oracle is pending WP-18; the default is gold-evidence on SciClaimBench (32-row Full), and the gold-answer alternate is 36 rows.
 - **Q: Which baseline is the most threatening to us?** B4-matched — debate plus retrieval without trust. If B4-matched matches our numbers, the trust layer adds nothing.
 
 ## 7. Injection Protocol Deep-Dive
@@ -655,7 +655,7 @@ Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has 
 | `src/trustcal/runner.py` | experiment loop, records, summaries |
 | `scripts/` | setup.sh, serve.sh, run_experiment.py, run_matrix.py, p0_gate.py, verify_env.py, check_stack.py, preflight.py, verifier_audit.py, annotate.py, mock_vllm.py |
 | `configs/` | models.yaml, datasets.yaml, experiments.yaml, phase.yaml |
-| colocated `test_*.py` | 514 tests |
+| colocated `test_*.py` | 615 tests |
 
 **Configs (memorize for "show me"):**
 
@@ -670,7 +670,7 @@ Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has 
 - `python scripts/check_stack.py --phase final` then `python scripts/preflight.py --phase final --offline` — Final-stack budget and preflight checks.
 - `python scripts/run_experiment.py --arm B3 --dataset gpqa --limit 10` (arms: B1–B10, pilot, injection).
 - `python scripts/annotate.py make` / `score --min-kappa 0.75`.
-- `pytest` — 514 tests.
+- `pytest` — 615 tests.
 
 **Outputs per run:** `records.jsonl` per question, `summary.json`, `summary-<stamp>.md` (`runner.py:119-144`); resume is keyed by `{dataset}-{index:04d}`.
 
@@ -687,9 +687,9 @@ Start: three agents at uniform weights [1/3, 1/3, 1/3]. Round 1 verdicts: A has 
 
 If a judge asks "run it live": prefer the mock-server path — it proves orchestration without touching GPUs. If nothing can run, walk the code map in Section 2 instead.
 
-### 11.2 Test Inventory (514 tests)
+### 11.2 Test Inventory (615 tests)
 
-The 103-function component breakdown below is the pre-P0 slice; the current suite is 514 tests, with added matrix, endpoint, verifier-audit, stack and integration coverage.
+The 103-function component breakdown below is the pre-P0 slice; the current suite is 615 tests, with added matrix, endpoint, verifier-audit, stack and integration coverage.
 
 | Test file (count at pre-P0 snapshot) | Invariants covered |
 | --- | --- |
@@ -715,7 +715,7 @@ The 103-function component breakdown below is the pre-P0 slice; the current suit
 | `eval/metrics.py` + `eval/endpoints.py` + `baselines.py` | accuracy/CMR/ARR/AUROC/Brier (ECR deprecated), B1–B10 registry and arms |
 | `eval/answers.py` + `agreement.py` + `annotation.py` | canonical matching, κ, sheets |
 | `runner.py` + `preflight.py` + `mock_vllm.py` | experiment loop, checks, GPU-free mocks |
-| `scripts/` + `configs/` + colocated `test_*.py` | CLI entry points, configs, 514 tests |
+| `scripts/` + `configs/` + colocated `test_*.py` | CLI entry points, configs, 615 tests |
 
 ## 12. Implemented vs Planned
 
@@ -765,7 +765,7 @@ B2, B5, B6, B7, B9 and B10 are comparison/appendix arms in the same registry; th
 | GPQA | `Idavidrein/gpqa` | pinned `633f5ee89ab8ad4522a9f850766b73f62147ffdd` | CC BY 4.0 (gated) | Rein et al., COLM 2024 (`rein2024gpqa`) | Primary evidence-grounded set (GPQA-Main cap 400) |
 | MMLU-Pro | `TIGER-Lab/MMLU-Pro` | `b189ec765aa7ed75c8acfea42df31fdae71f97be` | MIT | Wang et al., NeurIPS 2024 D&B (`wang2024mmlupro`) | Primary scale/robustness set (cap 400) |
 | HLE | `cais/hle` | `5a81a4c7271a2a2a312b9a690f0c2fde837e4c29` | MIT (gated) | Phan et al., Nature 649, 2026 (`phan2026hle`) | Expert ceiling / abstention control (cap 200) |
-| EG-SSS | team-built | v1.2 freeze | CC BY 4.0 for original items | team-built benchmark; no external citation | 180-item v1.2 freeze; 300-item Full target; not in Core v1.0 |
+| SciClaimBench | team-built | v1.2 freeze | CC BY 4.0 for original items | team-built benchmark; no external citation | 180-item v1.2 freeze; 300-item Full target; not in Core v1.0 |
 | BrokenMath | `INSAIT-Institute/BrokenMath` | `main` | CC BY-NC-SA 4.0 | Petrov et al., arXiv:2510.04721 (`petrov2025brokenmath`) | Appendix-only adversarial stress test (504 samples) |
 | BrokenArXiv | `MathArena/brokenarxiv` | `main`, snapshot `0226-0526` | CC BY-SA 4.0 | No dedicated paper; MathArena platform, arXiv:2605.00674 (`dekoninck2026matharena`) | Appendix-only adversarial, monthly refreshed |
 
@@ -780,7 +780,7 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 - **Q: Why is BrokenMath non-commercial?** It is CC BY-NC-SA 4.0 — research use only; our use is academic and the license is recorded (`datasets.yaml:13`).
 - **Q: Why cite a snapshot for BrokenArXiv?** It rotates monthly; a pinned snapshot makes results reproducible (`datasets.yaml:23`).
 - **Q: What is GPQA Diamond?** The 198-question curated subset; the revision is pinned at `633f5ee…` (`datasets.yaml:40`).
-- **Q: Why six datasets when Core uses three?** Different roles: Core runs GPQA-Main, MMLU-Pro and HLE. EG-SSS freezes at 180 under v1.2 and scales to the 300-item Full target. BrokenMath and BrokenArXiv are appendix-only adversarial checks.
+- **Q: Why six datasets when Core uses three?** Different roles: Core runs GPQA-Main, MMLU-Pro and HLE. SciClaimBench freezes at 180 under v1.2 and scales to the 300-item Full target. BrokenMath and BrokenArXiv are appendix-only adversarial checks.
 - **Q: How many questions in the Core matrix?** GPQA 400 + MMLU-Pro 400 + HLE 200 per seed, two seeds = 8,000 planned debates / ~1,067 GPU-h under a 1,280 GPU-h conservative cap; the pilot runs 100–150 (`datasets.yaml`).
 
 ## 14. Experiments & Evidence
@@ -882,7 +882,7 @@ Config: `trustcal/configs/datasets.yaml`; blueprint table `docs/blueprint.md` §
 | --- | --- |
 | Verifier accuracy is not yet human-validated | "The 150–200 pair audit is the next gate. The lexical baseline scores 0.58 balanced accuracy on the synthetic audit set, so it is a diagnostic, not a paper result." |
 | The effect has not been measured yet | "The Core run is the next gate. No efficacy claim is made before it; the P0 gate is engineering readiness, not evidence." |
-| Placebo/oracle arms are not implemented yet | "WP-18 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset. The Full default is 32 rows with a gold-evidence oracle on EG-SSS; the gold-answer alternate is 36 rows." |
+| Placebo/oracle arms are not implemented yet | "WP-18 adds B8-placebo and B8-oracle before the main run; the pre-registration lists the six-arm target and the four-arm executable subset. The Full default is 32 rows with a gold-evidence oracle on SciClaimBench; the gold-answer alternate is 36 rows." |
 | `--rounds` ignored with real clients | "Rounds come from the config file; the flag is legacy for mocks. It is queued for cleanup." (`runner.py:161-166`) |
 | Empty constraints subsections in report | "The standards/constraints chapter is being completed for the thesis; the mapping exists in Ch5." (`FYDP_Summer/5.sic.tex:53-73`) |
 | Registry vs matrix | "B1–B10 are the registry; the Core matrix is exactly B3, B4-matched, B8-no-trust and B8. The Full target adds placebo and oracle." |

@@ -79,7 +79,7 @@ A full 3×3×3 is too large. Use the **Core 4-arm design** plus the **Full 6-arm
 | **B8-no-trust** | retrieved, same as B8 | majority (`use_trust=False`) | **Primary control:** same everything except trust |
 | **B8** | retrieved | trust-weighted | Treatment |
 
-**Core matrix:** 4 conditions × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**; conservative gate cap **1,280 GPU-h**. EG-SSS is **not** in Core v1.0.
+**Core matrix:** 4 conditions × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**; conservative gate cap **1,280 GPU-h**. SciClaimBench is **not** in Core v1.0.
 
 ### 3.3 Full run — target pending WP-18
 
@@ -88,9 +88,9 @@ The Full target adds B8-placebo and B8-oracle:
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
 | **B8-placebo** | retrieved, labels/verdicts **cross-agent round-pooled** | trust-weighted | Tests whether evidence calibration matters vs any reweighting |
-| **B8-oracle** | gold evidence on EG-SSS (default) or gold-answer trust (alternate) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
+| **B8-oracle** | gold evidence on SciClaimBench (default) or gold-answer trust (alternate) | trust-weighted | Upper bound; tests whether the verifier is the bottleneck |
 
-**Full count:** the default is **32 rows** with **gold-evidence oracle on EG-SSS** (1,280 GPU-h, **$210**); the alternate is **36 rows** with **gold-answer trust** at 300 items/dataset (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** **WP-18 freezes the definition and the row count.** Do not assert either count as final before WP-18.
+**Full count:** the default is **32 rows** with **gold-evidence oracle on SciClaimBench** (1,280 GPU-h, **$210**); the alternate is **36 rows** with **gold-answer trust** at 300 items/dataset (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** **WP-18 freezes the definition and the row count.** Do not assert either count as final before WP-18.
 
 ### 3.4 Targeted additions (subset; not Core v1.0)
 
@@ -124,7 +124,7 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 | **GPQA-Main** | Primary accuracy/CMR | 400 | Shuffle options; no correct-first leak; GPQA-Diamond is pilot only |
 | **MMLU-Pro STEM** | Primary scale/robustness | 400 | Stratified; claim-domain routing; exclude non-STEM from evidence |
 | **HLE** | Ceiling/abstention control | 200 | Google-proof; expect high `unverifiable`; **not** a powered primary |
-| **EG-SSS** | Benchmark artifact, **not in Core v1.0** | 180 at v1.2 freeze | Joins at benchmark freeze under v1.2; 300 is the Full target |
+| **SciClaimBench** | Benchmark artifact, **not in Core v1.0** | 180 at v1.2 freeze | Joins at benchmark freeze under v1.2; 300 is the Full target |
 
 **Core totals:** 4 arms × (400 + 400 + 200) × 2 seeds = **8,000 debates**, ≈ **1,067 GPU-h** at 8 min/debate. The **1,280 GPU-h** cap is the conservative gate number (it assumes up to 400/cell across all three datasets).
 
@@ -140,7 +140,7 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 
 > **Dataset audit finding (8 Nov 2026, still binding):** BrokenMath's official benchmark is **451/451 proof** with empty `gold_answer`; BrokenArXiv is **87/87 proof** with empty `answer`. Answer-type retention is **0%**, not 60–70%. They cannot be used for claim-level evidence grounding or CCR. HLE is designed to be retrieval-resistant; use it as an abstention/ceiling control.
 
-### 4.3 Benchmark ladder (EG-SSS)
+### 4.3 Benchmark ladder (SciClaimBench)
 
 | Size | Role | Annotation | Decision |
 |---:|---|---:|---|
@@ -176,7 +176,7 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 | GPQA-Main | 448 | 448 | 60–80% | 400 (primary) |
 | MMLU-Pro STEM | 6,696 | 6,696 | 40–60% | 400 (primary) |
 | HLE | 2,500 | 790–980 | 70–85% | 200 (control) |
-| EG-SSS | 180 at v1.2 | 180 | constructed | v1.2 freeze; not Core v1.0 |
+| SciClaimBench | 180 at v1.2 | 180 | constructed | v1.2 freeze; not Core v1.0 |
 | BrokenMath benchmark | 451 | **0** | n/a | **0**; appendix only |
 | BrokenArXiv | 87 | **0** | n/a | **0**; appendix only |
 
@@ -191,7 +191,7 @@ If B8 ≈ B8-placebo, the "evidence-grounded" claim fails. If B8 ≈ B8-no-trust
 - VitaminC: CC BY-SA 3.0 (derivatives share-alike).
 - PubMedQA: MIT.
 
-**Release strategy:** code MIT; original EG-SSS items CC BY 4.0; for GPQA/HLE/BrokenMath/BrokenArXiv, release IDs/hashes and evaluation scripts only, not item text.
+**Release strategy:** code MIT; original SciClaimBench items CC BY 4.0; for GPQA/HLE/BrokenMath/BrokenArXiv, release IDs/hashes and evaluation scripts only, not item text.
 
 ---
 
@@ -240,14 +240,14 @@ Assumptions: 6.2 min/debate at Gate 0 (no retrieval); 8 min with retrieval/trust
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Old blueprint (do not run) | 15 | 5 | 3 | 1,000 | 225,000 | ~30,000 | $8,000+ |
 | **Core v1.0** | 4 | GPQA 400 + MMLU-Pro 400 + HLE 200 | 2 | 1,000/cell | **8,000** | **~1,067 planned; 1,280 cap** | **$175–210** |
-| **Full default** (B8-oracle = gold-evidence on EG-SSS) | 6 | 300/dataset; oracle on EG-SSS | 2 | 900/cell | **9,600** (32 rows) | **1,280** | **$210** |
+| **Full default** (B8-oracle = gold-evidence on SciClaimBench) | 6 | 300/dataset; oracle on SciClaimBench | 2 | 900/cell | **9,600** (32 rows) | **1,280** | **$210** |
 | **Full alternate** (B8-oracle = gold-answer trust) | 6 | 300/dataset | 2 | 900/cell | **10,800** (36 rows) | **1,440** | **$235** |
 | Pilot (N5) | 3–4 | pilot subset | 1–2 | 100–150 | — | ~112 | $15–20 |
 | FP8 precision replication + N1 smoke | — | GPQA subset | 1 | 150–200 | — | 60–100 | $25–40 |
 | Storage and bandwidth | — | — | — | — | — | — | $40–80 |
 | **Total plan** | — | — | — | — | — | — | **$500–600** |
 
-**Budget rules:** The main matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h** with the **4-bit 24–27B final families**. Core and Full use the same stack, so cells are reusable only where model revisions, prompts, and configs match. The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed). The Full default is 32 rows (gold-evidence oracle on EG-SSS); 36 rows is the gold-answer alternate. **Hard stop: $600.** If the 80 GB A100 spot is unavailable and the main runs use 96 GB at $0.336/h, the plan is **$1,050–1,150** and requires re-approval; that fallback is not the default. Law-testing is outside this envelope. The exact Full caps are **not frozen** until WP-18.
+**Budget rules:** The main matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h** with the **4-bit 24–27B final families**. Core and Full use the same stack, so cells are reusable only where model revisions, prompts, and configs match. The **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed). The Full default is 32 rows (gold-evidence oracle on SciClaimBench); 36 rows is the gold-answer alternate. **Hard stop: $600.** If the 80 GB A100 spot is unavailable and the main runs use 96 GB at $0.336/h, the plan is **$1,050–1,150** and requires re-approval; that fallback is not the default. Law-testing is outside this envelope. The exact Full caps are **not frozen** until WP-18.
 
 Full price table and formulas: [`08_COMPUTE_COST.md`](08_COMPUTE_COST.md).
 
@@ -363,8 +363,8 @@ ACL/EMNLP main remains a stretch, not the planning target.
 ## 12. What not to run
 
 - Do not run 15 conditions × 5 datasets × 3 seeds × 1,000 questions (~30,000 GPU-h).
-- Do not put EG-SSS in Core v1.0; it joins at the v1.2 benchmark freeze.
-- Do not describe a 400-per-dataset Core matrix over EG-SSS; the Core datasets are GPQA/MMLU-Pro/HLE.
+- Do not put SciClaimBench in Core v1.0; it joins at the v1.2 benchmark freeze.
+- Do not describe a 400-per-dataset Core matrix over SciClaimBench; the Core datasets are GPQA/MMLU-Pro/HLE.
 - Do not assert a 36-run or 32-run Full matrix as final before WP-18 freezes it.
 - Do not run B8 without injection and call it a CCR result.
 - Do not compare B8 to B4 when B4 uses a different partition/prompt.

@@ -8,11 +8,11 @@
 
 | Item | Value |
 |---|---|
-| Branches | `main` = `dev` = `2ae56a3` (post-release docs commit) |
+| Branches | `main` = `dev` = `v0.2.1` (current release line) |
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed** |
 | Tests | **615 passed** (514 at the P0 release) |
-| Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` - 70 pages, 80 cited works, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, 0 errors/undefined refs |
 | Final stack | Qwen3.8-27B-FP8 / Gemma-4-26B-A4B-FP8 / Mistral-24B-AWQ, **73.68 GB** pinned |
 | Final-stack 96 GB smoke | **Not run** |
@@ -40,10 +40,10 @@ These docs are for LLM coding agents and human teammates. They are deliberately 
 
 ## Current status (9 November 2026)
 
-- **P0 is released.** `main` and `dev` are the only branches, both at `2ae56a3`; `p0-gate` and `p0-release` tag the release. Feature branches and extra worktrees are deleted; only the `E:\FYDP` worktree exists.
+- **P0 is released.** `main` and `dev` are the only branches, both at the `v0.2.1` release line; `p0-gate` and `p0-release` tag the P0 release. Feature branches and extra worktrees are deleted; only the `E:\FYDP` worktree exists.
 - **No efficacy results.** P0 proves the engineering path: 13/13 gate checks, 514 tests, two compiled manuscripts, and an offline final-stack fit check.
-- **Core v1.0 is executable:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. Planned 8,000 debates ≈ **1,067 GPU-h**; conservative gate cap **1,280 GPU-h**. EG-SSS is **not** in Core v1.0.
-- **Full is a target, not a frozen matrix:** the default is **32 runs** with a gold-evidence oracle on EG-SSS (1,280 GPU-h); the alternate is **36 runs** with gold-answer trust (1,440 GPU-h). **WP-18** freezes this.
+- **Core v1.0 is executable:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. Planned 8,000 debates ≈ **1,067 GPU-h**; conservative gate cap **1,280 GPU-h**. SciClaimBench is **not** in Core v1.0.
+- **Full is a target, not a frozen matrix:** the default is **32 runs** with a gold-evidence oracle on SciClaimBench (1,280 GPU-h); the alternate is **36 runs** with gold-answer trust (1,440 GPU-h). **WP-18** freezes this.
 - **Next work, in order:** N1 final-stack 96 GB smoke (Nov) → N2 WP-18 placebo/oracle (Nov–Dec) → N3 24-item benchmark calibration (Nov–Feb) → N4 verifier audit (Nov–Dec) → N5 pilot/G2 (Dec) → Core/G3 (Jan 2027) → Full/G4-G5 (Feb 2027).
 - **`roadmap.md` is the task board.** `06_AGENT_CHECKLIST.md` is historical plus a short post-P0 checklist.
 
@@ -89,7 +89,7 @@ These docs are for LLM coding agents and human teammates. They are deliberately 
 | Date | Change |
 |---|---|
 | 2026-11-08 | Created the agent doc set after five parallel audits (prior art, code, experiment design, Q1 positioning, datasets). Verified 206 tests; identified the GPQA-options, answer-matcher, no-accuracy, injection/trust, and ECR blockers. Added the R²-MAD/TERA-RAG/To Trust or Not preemption analysis and the benchmark/verification-ceiling reframe. |
-| 2026-11-09 | P0 released: 13/13 gate, 514 tests, `main = dev = 2ae56a3`, tags `p0-gate`/`p0-release`. Refreshed the agent docs to post-P0 state. Corrected the pending placebo/oracle slice to **WP-18**, the Core matrix to GPQA/MMLU-Pro/HLE (EG-SSS at the v1.2 freeze), and the Full target to conditional 36/32 runs. Recorded the released prompt hash `bc9c7b...`; the old `6cc9b0...` hash is pre-WP-13. |
+| 2026-11-09 | P0 released: 13/13 gate, 514 tests, `main = dev = 2ae56a3`, tags `p0-gate`/`p0-release`. Refreshed the agent docs to post-P0 state. Corrected the pending placebo/oracle slice to **WP-18**, the Core matrix to GPQA/MMLU-Pro/HLE (SciClaimBench at the v1.2 freeze), and the Full target to conditional 36/32 runs. Recorded the released prompt hash `bc9c7b...`; the old `6cc9b0...` hash is pre-WP-13. |
 
 ## What still needs updating
 

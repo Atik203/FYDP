@@ -50,7 +50,7 @@ def test_full_config_exists_and_is_separate_from_core() -> None:
     assert FULL.is_file(), "configs/experiments_full.yaml must exist"
     raw = yaml.safe_load(FULL.read_text(encoding="utf-8"))
     assert raw["phase"] == "fourbit"
-    assert raw["datasets"] == ["gpqa_main", "mmlu_pro", "eg_sss_180"]
+    assert raw["datasets"] == ["gpqa_main", "mmlu_pro", "sciclaim_180"]
     assert raw["seeds"] == [1, 2]
     assert raw["sample_caps"]["main"] == 300
     assert list(raw["conditions"]) == SIX_ARM
@@ -69,7 +69,7 @@ def test_full_default_is_the_32_row_gold_evidence_plan() -> None:
     assert len(plan) == 32
     oracle_rows = [cfg for condition, cfg in plan if condition["key"] == "B8-oracle"]
     assert len(oracle_rows) == 2
-    assert {cfg.dataset for cfg in oracle_rows} == {"eg_sss_180"}
+    assert {cfg.dataset for cfg in oracle_rows} == {"sciclaim_180"}
     assert all(cfg.oracle_mode == "gold_evidence" for cfg in oracle_rows)
 
 
@@ -90,14 +90,14 @@ def test_full_dry_run_row_count_matches_the_selected_oracle_mode() -> None:
     assert all(cfg.placebo_unit == "round_pool" for cfg in placebo_rows)
     assert all(cfg.oracle_mode == "off" for cfg in placebo_rows)
     if oracle_mode == "gold_evidence":
-        assert {cfg.dataset for _, cfg in oracle_rows} == {"eg_sss_180"}
+        assert {cfg.dataset for _, cfg in oracle_rows} == {"sciclaim_180"}
         assert len(oracle_rows) == 2
     else:
         assert len(oracle_rows) == 6
         assert {cfg.dataset for _, cfg in oracle_rows} == {
             "gpqa_main",
             "mmlu_pro",
-            "eg_sss_180",
+            "sciclaim_180",
         }
 
 
@@ -114,7 +114,7 @@ def test_full_gold_evidence_variant_has_32_rows(tmp_path) -> None:
     assert len(plan) == 32
     oracle_rows = [cfg for condition, cfg in plan if condition["key"] == "B8-oracle"]
     assert len(oracle_rows) == 2
-    assert {cfg.dataset for cfg in oracle_rows} == {"eg_sss_180"}
+    assert {cfg.dataset for cfg in oracle_rows} == {"sciclaim_180"}
     assert all(cfg.oracle_mode == "gold_evidence" for cfg in oracle_rows)
 
 

@@ -117,7 +117,7 @@ def test_modes_and_units_are_frozen() -> None:
     assert DEFAULT_PLACEBO_UNIT == "round_pool"
     assert GOLD_SOURCE_ANSWER == "question.answer"
     assert GOLD_SOURCE_EVIDENCE == "question.gold_evidence"
-    assert "eg_sss_180" in GOLD_EVIDENCE_DATASETS
+    assert "sciclaim_180" in GOLD_EVIDENCE_DATASETS
 
 
 def test_placebo_seed_is_deterministic_and_seed_dependent() -> None:

@@ -6,7 +6,7 @@
 **Premise:** the user wants 9+ but explicitly says: *do not suggest things that will fail; suggest what will work.*  
 **Honest verdict:** **9+ is a low-probability option, not a plan.** The rational target for this 6-person FYDP is **8.4–8.6**; a **9.0–9.2** is possible only if the theory is clean, the benchmark is adopted, and the causal result is counterintuitive. The plan below secures the 8.3–8.6 core first, then adds the 9+ layer. If the 9+ layer fails, the thesis still succeeds.
 
-> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **Core-run staged**: a 4-arm causal study plus the 180-item EG-SSS at the v1.2 benchmark freeze, expected score 8.4. Core v1.0 itself uses GPQA/MMLU-Pro/HLE; the 180-item set is not in the v1.0 matrix. The full 9+ stack is a call option, not the plan. See §9A.
+> **Red-team correction (8 Nov 2026).** The full 9+ stack is technically feasible but **strategically dominated**. Unconditional \(P(9+) \approx 11\text{–}12\%\); \(P(8.3\text{–}8.6) \approx 30\text{–}35\%\); \(P(8.3+) \approx 50\text{–}55\%\); \(P(8+) \approx 75\%\). The recommended path is **Core-run staged**: a 4-arm causal study plus the 180-item SciClaimBench at the v1.2 benchmark freeze, expected score 8.4. Core v1.0 itself uses GPQA/MMLU-Pro/HLE; the 180-item set is not in the v1.0 matrix. The full 9+ stack is a call option, not the plan. See §9A.
 
 ---
 
@@ -68,7 +68,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 | **Theory** | A threshold condition for 3 agents | A **phase-transition law** with sufficiency, necessity, and a finite-sample bound; plus a dependence/adversarial extension |
 | **Math** | A simple expectation argument | Concentration bounds, effective sample size, minimax lower bound, submodularity |
 | **Method** | Bounded trust update | **Value-of-information verification** with a near-optimality guarantee; risk-controlled abstention |
-| **Benchmark** | 180-item EG-SSS | **300–500 items**, 3 domains, 5 conditions, verifier-quality labels, human-validated |
+| **Benchmark** | 180-item SciClaimBench | **300–500 items**, 3 domains, 5 conditions, verifier-quality labels, human-validated |
 | **Causal study** | 2×2 with a few arms | **6-arm Full core (32-row gold-evidence default; 36-row gold-answer alternate) + ceiling/granularity sweeps + mediation + claim-level vs document-level + evidence-supports-majority** |
 | **Human eval** | 60 Likert items | **150–200 binary judgments**, 2 blinded annotators, κ/ICC, citation faithfulness |
 | **Writing** | A system report | A crisp law/benchmark paper with a falsifiable headline |
@@ -93,7 +93,7 @@ A 9+ thesis in this space is not “a better mechanism.” It is **a new law + a
 
 1. **Theory (derived, proof check required):** a threshold law for a correct minority under a wrong majority, with claim dependence and adversarial evidence bias; sufficiency, necessity, and a finite-sample bound.
 2. **Method (proposal):** a value-of-information verification policy that chooses which claims to verify under a fixed budget, with a submodular near-optimality guarantee; an abstention gate when the evidence is insufficient.
-3. **Benchmark:** EG-SSS-300, 300 gold-evidence items across biomed, physics/chemistry, and math/CS, with five pressure/evidence conditions.
+3. **Benchmark:** SciClaimBench-300, 300 gold-evidence items across biomed, physics/chemistry, and math/CS, with five pressure/evidence conditions.
 4. **Causal study:** the 6-arm Full core (32-row gold-evidence default; 36-row gold-answer alternate) plus ceiling/granularity sweeps isolating evidence *information* from evidence *influence*, with placebo/trust-hidden/oracle controls and a claim-level vs document-level test. The 6-arm core alone is 8+, not 9+.
 5. **Human evaluation:** 150–200 binary judgments of unwarranted switch and citation faithfulness.
 
@@ -418,7 +418,7 @@ Value-of-information verification can be a secondary experiment: under a fixed a
 
 ---
 
-## 5. Benchmark: EG-SSS-300
+## 5. Benchmark: SciClaimBench-300
 
 ### 5.1 Size
 
@@ -444,7 +444,7 @@ z = w_e e + w_s s_{\text{maj}} + w_v v + b + \epsilon
 - Report a 6-axis profile: resistance, correction, deference, attribution, abstention, robustness.
 - **Headline figure: the trust plane** (resistance vs deference) — calibrated, sycophantic, contrarian, incoherent.
 
-This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 800 items is a dataset paper; with it, it is a 9+ benchmark.
+This turns SciClaimBench from a scoreboard into a measurement instrument. Without it, 800 items is a dataset paper; with it, it is a 9+ benchmark.
 
 ### 5.4 Release
 
@@ -459,7 +459,7 @@ This turns EG-SSS from a scoreboard into a measurement instrument. Without it, 8
 
 ### 6.1 Arms
 
-**Core v1.0** uses the first four rows. **B8-placebo and B8-oracle are the Full target, pending WP-18**; the Full default is 32 rows with a gold-evidence oracle on EG-SSS (1,280 GPU-h), and 36 rows is the gold-answer alternate (1,440 GPU-h).
+**Core v1.0** uses the first four rows. **B8-placebo and B8-oracle are the Full target, pending WP-18**; the Full default is 32 rows with a gold-evidence oracle on SciClaimBench (1,280 GPU-h), and 36 rows is the gold-answer alternate (1,440 GPU-h).
 
 | Arm | Evidence | Aggregation | Purpose |
 |---|---|---|---|
@@ -559,7 +559,7 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 | Phase | Weeks | Work | Score secured |
 |---|---|---|---|
 | **P0** | Done 2026-11-09 | Engineering hardening; 13/13, 514 tests | 6.25 |
-| **Benchmark** | 3–11 | EG-SSS annotation starts week 3; 180-item v1.2 freeze; 300-item Full target only if clean | 8.1–8.3 |
+| **Benchmark** | 3–11 | SciClaimBench annotation starts week 3; 180-item v1.2 freeze; 300-item Full target only if clean | 8.1–8.3 |
 | **Theory** | 1–11 | Model + R2/R4/R6; proof check weeks 9–11; measure \(\rho\) in week 4 | 8.3–8.6 |
 | **Core run** | 5–19 | 4-arm causal study; GPQA-Main + MMLU-Pro + HLE; 400/400/200; 2 seeds; verify boundary | 7.6–8.0 |
 | **Full run** | 12–22 | 6-arm target pending WP-18; 32-row gold-evidence default / 36-row gold-answer alternate; 300-item target | 8.0–8.3 |
@@ -602,8 +602,8 @@ Automatic CCR ≈ UWS + EWE + ambiguous. Automatic ARR ≈ ARR + lucky. The huma
 | A. Theorem | 5–8 wk | 72% | 9% | 7.8 | Viable section; trap as headline |
 | B. Conformal | 4–6 wk | 88% | 5% | 7.4 | Viable secondary; trap as headline |
 | C. Causal | 14–18 wk | 85% | 11% | 8.2 | Viable core |
-| D. 180 EG-SSS | 5–7 wk | 72% | 9% | 8.0 | Viable option |
-| D. 300 EG-SSS | 9–13 wk | 62% | 10% | 7.9 | Borderline |
+| D. 180 SciClaimBench | 5–7 wk | 72% | 9% | 8.0 | Viable option |
+| D. 300 SciClaimBench | 9–13 wk | 62% | 10% | 7.9 | Borderline |
 | E. 1,000 + leaderboard | 22–30 wk | 32% | 7% | 7.3 | **Trap** |
 | F. New mechanism | 9–14 wk | 65% | 8% | 7.6 | Viable ablation; trap as headline |
 | G. Full 9+ stack | 24–30 wk | 42% | 8% | 8.55 | **Strategically dominated** |
@@ -687,7 +687,7 @@ These are judgments, not guarantees. The expected-value-maximizing plan is the r
 1. **Week 1:** P0-0 (options), P0-1 (parser), P0-2 (accuracy), P0-3 (injection/trust). Agents implement; a human reviews every test diff.
 2. **Week 2:** P0-4 (metrics), P0-5 (trust math), P0-6 (verifier audit); run the 206-test suite + new tests.
 3. **Week 3:** P0-7/8/9 (baselines, datasets, injection), P0-10/11 (matrix, manifest), P0-12 (docs); start the 100-question pilot.
-4. **Weeks 4–5:** pilot gates; fix failures; start EG-SSS item drafting with agents and human adjudication.
+4. **Weeks 4–5:** pilot gates; fix failures; start SciClaimBench item drafting with agents and human adjudication.
 5. **Weeks 6–7:** 6-arm causal study on GPQA-Main + MMLU-Pro STEM; theory draft (Theorem 1 + finite-sample bound).
 6. **Week 8:** decision gate — if the pilot passes and the causal effect is in the right direction, add Theorem 2–3 + the value-of-information method; if not, pivot to the measurement/negative paper and protect the 8.0 thesis.
 

@@ -40,9 +40,9 @@ ORACLE_MODES: tuple[str, ...] = ("off", "gold_answer", "gold_evidence")
 PLACEBO_UNITS: tuple[str, ...] = ("agent_round", "round_pool")
 DEFAULT_PLACEBO_UNIT = "round_pool"
 
-#: EG-SSS is the v1.2 gold-evidence benchmark; these aliases are accepted until
+#: SciClaimBench is the v1.2 gold-evidence benchmark; these aliases are accepted until
 #: the dataset key is frozen in ``configs/datasets.yaml``.
-GOLD_EVIDENCE_DATASETS = frozenset({"eg_sss", "eg_sss_180", "eg_sss_300"})
+GOLD_EVIDENCE_DATASETS = frozenset({"sciclaim", "sciclaim_180", "sciclaim_300"})
 
 GOLD_SOURCE_ANSWER = "question.answer"
 GOLD_SOURCE_EVIDENCE = "question.gold_evidence"

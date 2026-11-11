@@ -46,8 +46,8 @@ export const ganttPhases: GanttPhase[] = [
   { name: 'Ph 0: Literature & Setup', duration: 'Jul–Sep 2026', deliverables: 'Literature freeze, vLLM 3-model serving on the A6000, Gate 0 MAD reproduction — passed 16 Sep 2026 (10/10 debates × 3 rounds)', progress: 100, barVariant: 'teal' },
   { name: 'Ph 1: P0 Engineering', duration: 'Oct–Nov 2026', deliverables: 'Core wired: options in prompts, parser/scorer, trust simplex projection, verifier interface, claim-domain routing, endpoints, manifest/resume. 514 tests; P0 gate 13/13 passed.', progress: 100, barVariant: 'default' },
   { name: 'Ph 2: Pilot run', duration: 'Dec 2026', deliverables: 'N1 96 GB smoke + FP8 precision replication ($25–40) → WP-18 placebo/oracle → 24-item calibration → verifier audit (150–200 pairs; lexical 0.58 balanced accuracy; target ≥0.75, κ ≥0.60) → 50-question Month-1 pilot → 100–150-question G2 pilot. 3 seeds for the pilot; 2 for the main matrix. G2 decides whether the Core run proceeds.', progress: 0, barVariant: 'amber' },
-  { name: 'Ph 3: Core run', duration: 'Jan 2027', deliverables: 'G3 Core run: 4 executable arms (B3, B4-matched, B8-no-trust, B8) × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; EG-SSS is not in Core v1.0 (180 items at the v1.2 benchmark freeze). PRE_REGISTRATION.md v1.0.', progress: 0, barVariant: 'rose' },
-  { name: 'Ph 4: Full run + benchmark', duration: 'Feb 2027', deliverables: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h; $210), plus a 36-row gold-answer alternate (1,440 GPU-h; $235). Adds B8-placebo/B8-oracle via WP-18. EG-SSS ladder: 180 floor, 300 target, 600 stretch, 800 no-go.', progress: 0, barVariant: 'rose' },
+  { name: 'Ph 3: Core run', duration: 'Jan 2027', deliverables: 'G3 Core run: 4 executable arms (B3, B4-matched, B8-no-trust, B8) × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h. B8-oracle is not a Core arm; SciClaimBench is not in Core v1.0 (180 items at the v1.2 benchmark freeze). PRE_REGISTRATION.md v1.0.', progress: 0, barVariant: 'rose' },
+  { name: 'Ph 4: Full run + benchmark', duration: 'Feb 2027', deliverables: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on SciClaimBench (1,280 GPU-h; $210), plus a 36-row gold-answer alternate (1,440 GPU-h; $235). Adds B8-placebo/B8-oracle via WP-18. SciClaimBench ladder: 180 floor, 300 target, 600 stretch, 800 no-go.', progress: 0, barVariant: 'rose' },
   { name: 'Ph 5: Human Eval + SDT', duration: 'Mar 2027', deliverables: 'Human evaluation / SDT, benchmark annotation, and verifier-audit follow-up.', progress: 0, barVariant: 'default' },
   { name: 'Ph 6: Results Freeze', duration: 'Apr 2027', deliverables: 'Freeze results, CIs, and effect sizes. No new runs or arm changes after the freeze.', progress: 0, barVariant: 'amber' },
   { name: 'Ph 7: Thesis Chapters', duration: 'May 2027', deliverables: 'Write the thesis chapters against the frozen results.', progress: 0, barVariant: 'teal' },
@@ -66,7 +66,7 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'P0 engineering gate',
     date: 'Nov 2026',
-    description: '514 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Current report evidence: 69-pp report, 19-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
+    description: '615 tests; P0 gate 13/13 passed and released (tags p0-gate, p0-release). Current report evidence: 70-pp report, 19-pp journal, 0 undefined references. Core wiring is in place — this is engineering readiness, not an efficacy result.',
     deliverable: 'P0 gate report + runnable matrix — 13/13',
   },
   {
@@ -78,14 +78,14 @@ export const milestones: TimelineItem[] = [
   {
     milestone: 'Core run',
     date: 'Jan 2027',
-    description: 'G3 Core run: 4 executable arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, budgeted at 1,280 GPU-h. B8-oracle is not a Core arm, and EG-SSS is not in Core v1.0. No efficacy claim is made before the pre-registered analysis.',
+    description: 'G3 Core run: 4 executable arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, budgeted at 1,280 GPU-h. B8-oracle is not a Core arm, and SciClaimBench is not in Core v1.0. No efficacy claim is made before the pre-registered analysis.',
     deliverable: 'G3 Core matrix + pre-registered causal contrast (B8 vs B8-no-trust)',
   },
   {
     milestone: 'Full run + benchmark',
     date: 'Feb 2027',
-    description: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h), adding B8-placebo/B8-oracle through WP-18; the 36-row gold-answer alternate is 1,440 GPU-h. EG-SSS benchmark freeze at 180 items (v1.2); ladder 180 floor, 300 target, 600 stretch, 800 no-go.',
-    deliverable: 'Full-run matrix + EG-SSS v1.2',
+    description: 'G4/G5 Full: 32 rows at 300 items/dataset with the gold-evidence oracle on SciClaimBench (1,280 GPU-h), adding B8-placebo/B8-oracle through WP-18; the 36-row gold-answer alternate is 1,440 GPU-h. SciClaimBench benchmark freeze at 180 items (v1.2); ladder 180 floor, 300 target, 600 stretch, 800 no-go.',
+    deliverable: 'Full-run matrix + SciClaimBench v1.2',
   },
   {
     milestone: 'Human eval + SDT',
@@ -169,7 +169,7 @@ export const risks: RiskRow[] = [
   { risk: 'Timeline overload (matrix + benchmark)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'High', impactVariant: 'rose', mitigation: 'Core run first (24 runs); Full run and 300-item benchmark only after Core run lands' },
   { risk: 'iMAD reimplementation fidelity', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '~10-day dedicated budget; explicit divergence documentation' },
   { risk: 'Single 80 GB A100 compute ceiling', likelihood: 'Medium', likelihoodVariant: 'amber', impact: 'Moderate', impactVariant: 'amber', mitigation: '4-bit 24–27B main stack (~53.3 GB) on one 80 GB A100; Core is 24 runs / 1,280 GPU-h; Full primary is 32 rows / 1,280 GPU-h (36-row alternate / 1,440 GPU-h)' },
-  { risk: 'Dataset mismatch (proof-only benchmarks)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'Moderate', impactVariant: 'amber', mitigation: 'BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; EG-SSS controlled set' },
+  { risk: 'Dataset mismatch (proof-only benchmarks)', likelihood: 'High', likelihoodVariant: 'rose', impact: 'Moderate', impactVariant: 'amber', mitigation: 'BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; SciClaimBench controlled set' },
 ];
 
 // Blueprint §8 — Dataset Plan
@@ -184,7 +184,7 @@ export interface DatasetRow {
 export const datasets: DatasetRow[] = [
   { name: 'GPQA-Main', role: 'Primary evidence-grounded benchmark', source: 'Idavidrein/gpqa (HF, official; gated)', size: '448 total · 400 cap', limitation: 'Well-known, not adversarial; options shuffled per question' },
   { name: 'MMLU-Pro (STEM)', role: 'Primary scale/robustness benchmark', source: 'TIGER-Lab/MMLU-Pro (HF, official)', size: 'STEM stratified · 400 cap', limitation: 'Broad STEM, non-adversarial' },
-  { name: 'EG-SSS', role: 'Controlled benchmark release (v1.2 freeze); not a Core dataset', source: 'Original release (planned; CC BY 4.0)', size: '180 floor · 300 target', limitation: 'Annotation-intensive; 600 stretch, 800 no-go, only with 2–3 dedicated annotators' },
+  { name: 'SciClaimBench', role: 'Controlled benchmark release (v1.2 freeze); not a Core dataset', source: 'Original release (planned; CC BY 4.0)', size: '180 floor · 300 target', limitation: 'Annotation-intensive; 600 stretch, 800 no-go, only with 2–3 dedicated annotators' },
   { name: 'HLE', role: 'Abstention / ceiling control', source: 'cais/hle (HF, official; gated)', size: '200 cap in matrix', limitation: 'Retrieval-resistant — never pooled with the primary tests' },
   { name: 'BrokenMath', role: 'Appendix-only premise rejection', source: 'INSAIT-Institute/BrokenMath (HF, official)', size: '451 proof-only', limitation: '0% answer-type retention — not usable for CCR' },
   { name: 'BrokenArXiv', role: 'Appendix-only qualitative', source: 'MathArena/brokenarxiv (HF, official)', size: '87 proof-only', limitation: '0% answer-type retention; cite the exact monthly snapshot' },

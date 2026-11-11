@@ -18,12 +18,12 @@ Work in this order. Record commands and exact output in `experiments/next/WP-<id
   python scripts/smoke_test.py --phase final --limit 20
   ```
   **Pass:** three `server OK`; all preflight checks OK; smoke PASS; record peak `nvidia-smi` and loaded weights. Cost 60–100 GPU-h on the 96 GB card at $0.336/GPU-h / $25–40 (includes the FP8 precision replication).
-- [ ] **N2 — WP-18 placebo/oracle (Nov–Dec 2026).** Implement B8-placebo and B8-oracle, prompt/config switches, tests, and `configs/experiments_full.yaml`. **Freeze the Full definition:** default 32 runs with a gold-evidence oracle on EG-SSS (1,280 GPU-h / $210); 36 runs with gold-answer trust is the alternate (1,440 GPU-h / $235). **Not implemented.**
+- [ ] **N2 — WP-18 placebo/oracle (Nov–Dec 2026).** Implement B8-placebo and B8-oracle, prompt/config switches, tests, and `configs/experiments_full.yaml`. **Freeze the Full definition:** default 32 runs with a gold-evidence oracle on SciClaimBench (1,280 GPU-h / $210); 36 runs with gold-answer trust is the alternate (1,440 GPU-h / $235). **Not implemented.**
 - [ ] **N3 — Benchmark calibration (Nov 2026–Feb 2027).** 24-item calibration first; if clean, 180-item **v1.2 freeze** (Core floor); 300-item Full target only if the 180 set is clean; 600 stretch; 800 no-go.
 - [ ] **N4 — Verifier audit (Nov–Dec 2026).** 150–200 claim–passage pairs, 2 annotators. Target balanced accuracy ≥0.75, κ ≥0.60. Current lexical verifier: **0.58** on the synthetic audit. **Pending.**
 - [ ] **N5/G2 — Pilot (Dec 2026).** Baseline CCR ≥0.30; trust AUROC ≥0.65; ≥65% correct-direction changes; injection κ ≥0.75; no schema-invalid records.
 - [ ] **G3 — Core run (Jan 2027).** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main` 400, `mmlu_pro` 400, `hle` 200) × 2 seeds = 24 runs. 8,000 debates ≈ 1,067 GPU-h planned; 1,280 cap.
-- [ ] **G4/G5 — Full run (Feb 2027).** 6-arm target; default 32-row gold-evidence on EG-SSS / 36-row gold-answer alternate; placebo ≠ B8; oracle separates; sign reversal at the predicted q/ρ boundary; external validity.
+- [ ] **G4/G5 — Full run (Feb 2027).** 6-arm target; default 32-row gold-evidence on SciClaimBench / 36-row gold-answer alternate; placebo ≠ B8; oracle separates; sign reversal at the predicted q/ρ boundary; external validity.
 - [ ] **Results freeze (Apr 2027).** CIs, negative results, pre-registered contrasts, manifest trace.
 - [ ] **Thesis (Jun 2027), defence (Jun/Jul 2027), paper (Aug–Dec 2027).** No paper deadline before the defence.
 
@@ -216,8 +216,8 @@ Work in this order. Record commands and exact output in `experiments/next/WP-<id
 
 - [ ] **1.8.1 Drop BrokenMath/BrokenArXiv from the primary matrix**
   - **Done when:** they are absent from every CCR/ECR arm; only a premise-rejection appendix remains.
-- [ ] **1.8.2 Use GPQA-Main + MMLU-Pro STEM + EG-SSS as primary**
-  - **Done when:** the matrix lists GPQA-Main (448), MMLU-Pro STEM (1,000 stratified), EG-SSS (180).
+- [ ] **1.8.2 Use GPQA-Main + MMLU-Pro STEM + SciClaimBench as primary**
+  - **Done when:** the matrix lists GPQA-Main (448), MMLU-Pro STEM (1,000 stratified), SciClaimBench (180).
 - [ ] **1.8.3 Add SciFact + VitaminC + PubMedQA validation**
   - **Done when:** loaders work; 300/1,000/500 samples verified.
 - [ ] **1.8.4 Claim-domain routing**
@@ -240,7 +240,7 @@ Work in this order. Record commands and exact output in `experiments/next/WP-<id
 
 ### P1.10 — Matrix + pre-registration (P0-10)
 
-- [ ] **1.10.1 Cut to 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 × 2 seeds**
+- [ ] **1.10.1 Cut to 6 arms × (GPQA-Main + MMLU-Pro STEM + SciClaimBench) × 250–500 × 2 seeds**
   - **Done when:** the estimate is ≤1,500 GPU-h at 8 min/debate.
 - [ ] **1.10.2 Write `PRE_REGISTRATION.md`**
   - **Done when:** primary endpoint, comparator, n, MDE, analysis, multiplicity, exclusions, stopping rules are frozen.
@@ -289,7 +289,7 @@ Do not proceed until:
 ## Phase 2 — Pilot (100 questions)
 
 - [ ] **2.1 Freeze the pilot set**
-  - 100 questions from GPQA-Main + MMLU-Pro STEM + EG-SSS; shared round-0 prefix.
+  - 100 questions from GPQA-Main + MMLU-Pro STEM + SciClaimBench; shared round-0 prefix.
   - **Done when:** item IDs and screening seed are recorded.
 - [ ] **2.2 Run the pilot**
   ```bash

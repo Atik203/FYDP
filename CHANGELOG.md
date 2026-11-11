@@ -4,6 +4,30 @@ All notable changes to this repository are recorded here. The format follows [Ke
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-11
+
+### Added
+
+- Co-author guide for Authors 2–6: roles, worked examples, direct links, submission rules, and a 6-week recommended / 4-week compressed plan.
+- Co-author templates for item verification, annotation submission, training notes, weekly check-ins, and paper support.
+
+### Changed
+
+- Renamed the benchmark from EG-SSS to **SciClaimBench** throughout the repository, manuscripts, frontend, and documentation.
+- Renamed the dataset keys to `sciclaim_180` and `sciclaim_300`, and the schema version to `sciclaim-item-v0.1`.
+- Updated the Full config hash in the v1.3 pre-registration draft.
+- Recompiled both manuscripts after the rename.
+- Linked the co-author guide from the README, contributing guide, documentation index, and both annotation protocols.
+
+### Verification
+
+- 615 GPU-free tests pass.
+- P0 gate passes 13/13.
+- Fourbit and final stack checks pass at 53.26 GB and 73.68 GB.
+- Report: 70 pages. Journal: 19 pages; both compile with 0 errors and 0 undefined citations.
+- Frontend build and lint pass.
+- No efficacy result is claimed.
+
 ## [0.2.0] - 2026-11-09
 
 ### Added

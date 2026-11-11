@@ -4,7 +4,7 @@
 #
 # Default Full plan (pre-registration-aligned, cheaper):
 #   five arms x 3 datasets x 2 seeds = 30 rows
-#   + B8-oracle on EG-SSS (gold evidence exists there) x 2 seeds = 2 rows
+#   + B8-oracle on SciClaimBench (gold evidence exists there) x 2 seeds = 2 rows
 #   = 32 rows / 9,600 debates / 1,280 GPU-h at 300 items/dataset.
 # B8-placebo uses the cross-agent round pool (unit B): verdict labels move
 # across all agents' claims in one round, so per-agent support/harm counts and
@@ -17,11 +17,11 @@
 # debates / 1,440 GPU-h. That path is tested from a temporary config, not the
 # default Full config.
 #
-# `eg_sss_180` is the v1.2 EG-SSS key. The dataset loader entry is owned by the
+# `sciclaim_180` is the v1.2 SciClaimBench key. The dataset loader entry is owned by the
 # v1.2 benchmark freeze; a dry run does not load datasets, but a real Full run
 # fails clearly until the key exists in configs/datasets.yaml. The 300-item cap
 # is the pre-registered Full target; if the v1.2 freeze remains 180 items, set
-# dataset_caps.eg_sss_180: 180 and recompute the debate/GPU envelope.
+# dataset_caps.sciclaim_180: 180 and recompute the debate/GPU envelope.
 
 # The Full matrix runs on the 80GB four-bit stack; check the budget with
 # `python scripts/check_stack.py --phase fourbit` before the session.
@@ -30,7 +30,7 @@ phase: fourbit
 datasets:
   - gpqa_main
   - mmlu_pro
-  - eg_sss_180
+  - sciclaim_180
 
 seeds: [1, 2]
 
@@ -41,7 +41,7 @@ sample_caps:
 dataset_caps:
   gpqa_main: 300
   mmlu_pro: 300
-  eg_sss_180: 300
+  sciclaim_180: 300
 
 conditions:
   B3:
@@ -66,4 +66,4 @@ conditions:
   B8-oracle:
     arm: B8
     oracle_mode: gold_evidence
-    description: "Evidence/verifier upper bound: normal trust path over gold evidence; EG-SSS only; not deployable, not B7."
+    description: "Evidence/verifier upper bound: normal trust path over gold evidence; SciClaimBench only; not deployable, not B7."

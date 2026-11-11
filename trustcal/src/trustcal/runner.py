@@ -151,7 +151,7 @@ class RunConfig:
             raise ValueError("placebo_mode and oracle_mode are mutually exclusive")
         if self.oracle_mode == "gold_evidence" and self.dataset not in GOLD_EVIDENCE_DATASETS:
             raise ValueError(
-                "oracle_mode='gold_evidence' requires an EG-SSS dataset "
+                "oracle_mode='gold_evidence' requires an SciClaimBench dataset "
                 f"(one of {sorted(GOLD_EVIDENCE_DATASETS)}); got {self.dataset!r}"
             )
         self.out_root = Path(self.out_root)

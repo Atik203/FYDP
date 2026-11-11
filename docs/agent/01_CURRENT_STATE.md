@@ -1,6 +1,6 @@
 # 01 — Current State
 
-**Snapshot:** 9 November 2026. **Branches:** `main` = `dev` = `2ae56a3`. **Tags:** `p0-gate` = `055a244`; `p0-release` = `7f2c11f`. **P0 is released; no efficacy results exist.**
+**Snapshot:** 11 November 2026. **Branches:** `main` = `dev` = `v0.2.1`. **Tags:** `p0-gate` = `055a244`; `p0-release` = `7f2c11f`. **P0 is released; no efficacy results exist.**
 
 This file is the status source of truth. If code and this file disagree, **code wins**; update this file and report the discrepancy. The order of work is `roadmap.md`.
 
@@ -33,7 +33,7 @@ Legend: ✅ real / tested / released; 🟡 implemented but partially wired, unva
 | Statistics | ✅ | `eval/stats.py` | Bootstrap/d/McNemar/Holm implemented; analysis waits for data |
 | Docs | ✅ | `docs/agent/` | This set refreshed 9 Nov 2026; `02`, `04`, `06`, `09` are explicitly historical |
 | Pre-registration | ✅ v1.0 + v1.1 erratum | `PRE_REGISTRATION.md` | Frozen. The v1.1 erratum records the released prompt hash `bc9c7b...`; `6cc9b0...` is pre-WP-13, not current |
-| Manuscripts | ✅ engineering | `FYDP_Summer/out/fydp.pdf`; `Papev_Summer26_6/out/cas-sc-template.pdf` | 69 pp and 19 pp; 80 and 71 cited works; 0 errors/undefined refs; implementation and conclusion written; **no efficacy results** |
+| Manuscripts | ✅ engineering | `FYDP_Summer/out/fydp.pdf`; `Papev_Summer26_6/out/cas-sc-template.pdf` | 70 pp and 19 pp; 80 and 71 cited works; 0 errors/undefined refs; implementation and conclusion written; **no efficacy results** |
 
 ---
 
@@ -41,8 +41,8 @@ Legend: ✅ real / tested / released; 🟡 implemented but partially wired, unva
 
 | Branch / ref | State | Action |
 |---|---|---|
-| `main` | Release trunk; `2ae56a3`; deploys the web frontend | Release only after a gate and a clean build |
-| `dev` | Development/integration; `2ae56a3` | Work here through `next/<slice>` |
+| `main` | Release trunk; `v0.2.1`; deploys the web frontend | Release only after a gate and a clean build |
+| `dev` | Development/integration; `v0.2.1` | Work here through `next/<slice>` |
 | `next/<slice>` | Short-lived; one worktree; deleted after merge | Create from `dev`; push after green checkpoints |
 | `p0-gate` (tag) | `055a244` | Historical gate marker |
 | `p0-release` (tag) | `7f2c11f` | P0 release marker |
@@ -110,7 +110,7 @@ The detailed pre-P0 findings (injection without retrieval, CCR=0 in B8, `evidenc
 
 ## 5. Manuscript status
 
-- **Report:** `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs. The implementation and conclusion are written. It is an **engineering report for the full project**, not an efficacy paper.
+- **Report:** `FYDP_Summer/out/fydp.pdf` - 70 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs. The implementation and conclusion are written. It is an **engineering report for the full project**, not an efficacy paper.
 - **Journal:** `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs. Same caveat.
 - **Claim audits:** `Papev_Summer26_6/CLAIMS_AUDIT.md` and `FYDP_Summer/CLAIMS_AUDIT.md` are the authoritative record of the 9 Nov 2026 claim changes. `04_LITERATURE_AND_GAPS.md §7` is the historical source.
 - **No results claim:** do not write accuracy, CCR, CMR, trust AUROC, or sign-reversal claims until the pilot/Core data exist. The abstract must not claim an effect.

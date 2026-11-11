@@ -1,6 +1,6 @@
 {
   "snapshot": "2026-11-09",
-  "gate": "EG-SSS 24-item calibration",
+  "gate": "SciClaimBench 24-item calibration",
   "target_items": 24,
   "strata": {
     "biomedical": 8,

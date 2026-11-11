@@ -1,6 +1,6 @@
 # trustcal — implementation status
 
-Status map for the Python pipeline in `trustcal/`. **P0 is released**: gate **13/13**, **615 tests**, tags `p0-gate` = `055a244` and `p0-release` = `7f2c11f`, with `main` and `dev` at the `v0.2.0` release. No efficacy results are claimed. Gate 0 is still the only paid GPU run (vanilla MAD, 10 GPQA debates × 3 rounds on the Dev stack); the 24-row Core matrix has **not** been run. WP-18 is implemented; the 32-row gold-evidence Full config exists.
+Status map for the Python pipeline in `trustcal/`. **P0 is released**: gate **13/13**, **615 tests**, tags `p0-gate` = `055a244` and `p0-release` = `7f2c11f`, with `main` and `dev` at the `v0.2.1` release. No efficacy results are claimed. Gate 0 is still the only paid GPU run (vanilla MAD, 10 GPQA debates × 3 rounds on the Dev stack); the 24-row Core matrix has **not** been run. WP-18 is implemented; the 32-row gold-evidence Full config exists.
 
 | Area | Files | Status | Notes |
 | --- | --- | --- | --- |
@@ -22,14 +22,14 @@ Status map for the Python pipeline in `trustcal/`. **P0 is released**: gate **13
 | Human-eval tooling | `src/trustcal/eval/{annotation,agreement}.py`, `scripts/annotate.py`, `scripts/human_eval.py` | Implemented; no raters or data | Injection-kappa sheets (30 divergent + 10 control; exit 2 below kappa 0.75) and Phase 4 blinded Likert sheets (n=60, factual grounding + hallucination severity, nominal kappa). `human_eval.py` has no unit tests. |
 | Scripts | `setup.sh`, `scripts/*.py`, `scripts/*.sh` | Implemented; gate/CLI-checked, not run on the Final GPU | GPU-only: `setup.sh`, `serve.sh`, `install_vllm.sh`. GPU-free/CLI: `p0_gate`, `check_stack`, `preflight`, `mock_vllm`, `repro_mad`, `run_experiment`, `run_matrix`, `analyze`, `pilot_report`, `annotate`, `human_eval`, `smoke_test`, `verify_env`, `gen_serve_cmds`, `verifier_audit`. |
 
-The six-arm **Full target** is not the released Core matrix. Its **default** is 32 runs with a gold-evidence oracle on EG-SSS (24 core rows + 6 placebo rows + 2 oracle rows), 1,280 GPU-h / $210. The **alternate** is 36 runs with gold-answer trust at 300 items/dataset: 10,800 debates / 1,440 GPU-h / $235. The two are alternatives, not additions. WP-18 is implemented; the v1.3 draft is pending team sign-off.
+The six-arm **Full target** is not the released Core matrix. Its **default** is 32 runs with a gold-evidence oracle on SciClaimBench (24 core rows + 6 placebo rows + 2 oracle rows), 1,280 GPU-h / $210. The **alternate** is 36 runs with gold-answer trust at 300 items/dataset: 10,800 debates / 1,440 GPU-h / $235. The two are alternatives, not additions. WP-18 is implemented; the v1.3 draft is pending team sign-off.
 
 ## Approximations and deviations
 
 - **B9 iMAD** — `DebateGate` is a heuristic: confidence below 0.7, hedge words, or a plausible different alternative triggers debate. It is **not** the trained FocusCal MLP. The `should_debate` interface and logged trigger fields are the swap point.
 - **B10 ConsensAgent** — implements the stalled/copying trigger and confidence + consistency aggregation; it does **not** include the fine-tuned GPT-4o prompt optimizer. A `rewriter` hook exists but none is wired; `rewrite_used` is recorded.
 - **B7 external-answer ceiling** — calls OpenAI Chat Completions (`gpt-6-luna`; 1.05M-token context, 128K max output) and requires `OPENAI_API_KEY`. The Gemini runtime path is retired. B7 is an optional, appendix-only external-answer ceiling, **not** the B8-oracle arm. It draws three independent samples per question (`OPENAI_ORACLE_SAMPLES=3`) with default reasoning and stores each sample's answer and correctness; the report gives mean single-call accuracy with a question-level bootstrap CI and 3-sample majority accuracy, with ties resolved to the first sample. Each B7 sample omits `temperature` because GPT-6 Luna only supports its default value. Estimated ~$3–9 per 1,000 questions at three samples, recomputed from actual prompt/output tokens. A live 3-sample smoke passed on 9 November 2026 on 2+2 (`B/B/B`); the single-call smoke also passed.
-- **B8-placebo / B8-oracle** — implemented under WP-18. `placebo_unit: round_pool` shuffles verdict labels across all agents' claims in a debate round; `oracle_mode: gold_evidence` is the Full default on EG-SSS, with `gold_answer` as the 36-row alternate. Both are validated in the Full config, not the released Core config.
+- **B8-placebo / B8-oracle** — implemented under WP-18. `placebo_unit: round_pool` shuffles verdict labels across all agents' claims in a debate round; `oracle_mode: gold_evidence` is the Full default on SciClaimBench, with `gold_answer` as the 36-row alternate. Both are validated in the Full config, not the released Core config.
 - **LangGraph** — the debate loop is a plain-Python state machine. The planned graph port is meant to wrap the same round functions; no graph module exists and `langgraph` is not installed in the local venv.
 - **Reranking / verdicts** — the default scorer is lexical. If `sentence-transformers` is installed, `rerank` lazy-loads `cross-encoder/ms-marco-MiniLM-L-6-v2`; its logits are squashed to [0,1], but support still requires claim-term coverage (relevance is not entailment). The LLM-judge hook exists at `classify_claim` and is not passed by `DebateRunner`.
 - **ECR** — implemented as `1 - ECE` between trust and final-answer correctness; it is a calibration proxy, not an independent evidence audit, and has not been measured on real runs.
@@ -37,8 +37,8 @@ The six-arm **Full target** is not the released Core matrix. Its **default** is 
 
 ## Branches
 
-- `main` — release trunk and deployed frontend; currently at `7b2f29d`.
-- `dev` — long-lived development/integration branch; also at `7b2f29d`; `configs/phase.yaml` defaults to dev.
+- `main` — release trunk and deployed frontend; currently at the `v0.2.1` release.
+- `dev` — long-lived development/integration branch; also at the `v0.2.1` release; `configs/phase.yaml` defaults to dev.
 - `next/<slice>` — short-lived work branch from `dev`, in its own worktree; merge into `dev` and delete.
 - Only `main` and `dev` are long-lived. The temporary P0 integration branch and `p0/wp-*` slices are retired and deleted; there are no extra worktrees.
 - Gate tags: `p0-gate` = `055a244`; release tag `p0-release` = `7f2c11f`.

@@ -178,7 +178,7 @@ export function ProposalPage() {
           }}
         >
           <strong>Implementation status (Nov 2026).</strong> P0 is engineering
-          readiness: 514 tests, 13/13 gate checks passed. No efficacy result has
+          readiness: 615 tests, 13/13 gate checks passed. No efficacy result has
           been measured. Planned work is labelled as planned throughout.
         </p>
 
@@ -753,7 +753,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           The Core matrix uses three datasets. <strong>GPQA-Main</strong> and{" "}
           <strong>MMLU-Pro STEM</strong> are the primary evidence-grounded
           benchmarks; <strong>HLE</strong> is the abstention control, never
-          pooled with the primary tests. <strong>EG-SSS</strong> is the
+          pooled with the primary tests. <strong>SciClaimBench</strong> is the
           controlled gold-evidence benchmark, not a Core dataset: it is frozen
           at 180 items in v1.2. The dataset audit found that BrokenMath
           (451/451) and BrokenArXiv (87/87) are proof-only with 0% answer-type
@@ -783,7 +783,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
               <td style={tdStyle}>STEM-stratified, 400 cap in the matrix; broad, non-adversarial</td>
             </tr>
             <tr>
-              <td style={tdStyle}>EG-SSS</td>
+              <td style={tdStyle}>SciClaimBench</td>
               <td style={tdStyle}>Controlled benchmark release (v1.2 freeze); not a Core dataset</td>
               <td style={tdStyle}>Original release (planned; CC BY 4.0)</td>
               <td style={tdStyle}>Annotation-intensive; 180 floor, 300 target, 600 stretch, 800 no-go</td>
@@ -813,10 +813,10 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           a 24-item calibration before the pilot. The executable Core matrix is
           4 arms &times; GPQA-Main 400 / MMLU-Pro STEM 400 / HLE 200 &times; 2
           seeds = 24 runs, budgeted at 1,280 GPU-h. B8-oracle is not a Core arm,
-          and EG-SSS is not in Core v1.0. The six-arm target adds B8-placebo and
+          and SciClaimBench is not in Core v1.0. The six-arm target adds B8-placebo and
           B8-oracle through WP-18, and the pre-registration records both the
           target and the executable subset. The benchmark ladder is 180 items as
-          the floor (EG-SSS v1.2 freeze), 300 as the target, 600 as a stretch,
+          the floor (SciClaimBench v1.2 freeze), 300 as the target, 600 as a stretch,
           and 800 as a no-go unless 2&ndash;3 dedicated annotators are
           committed.
         </p>
@@ -907,7 +907,7 @@ study. Scaling ablations at <em>N</em> &isin; &#123;2, 3, 5&#125; are planned
           (trust-weighted treatment). The six-arm target adds{" "}
           <strong>B8-placebo</strong> (verdicts shuffled within debate) and{" "}
           <strong>B8-oracle</strong> (gold evidence), pending WP-18. The primary
-          Full matrix is 32 rows with the gold-evidence oracle on EG-SSS; the
+          Full matrix is 32 rows with the gold-evidence oracle on SciClaimBench; the
           36-row alternate uses gold-answer trust (1,440 GPU-h, $235). WP-13 is
           the landed B8-no-trust prompt split, not the placebo/oracle slice.
         </p>
@@ -985,7 +985,7 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
               <td style={tdStyle}>Dataset mismatch (proof-only benchmarks)</td>
               <td style={tdStyle}>High</td>
               <td style={tdStyle}>Moderate</td>
-              <td style={tdStyle}>BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; EG-SSS controlled set</td>
+              <td style={tdStyle}>BrokenMath/BrokenArXiv appendix-only; GPQA-Main + MMLU-Pro STEM primary; HLE abstention control; SciClaimBench controlled set</td>
             </tr>
             <tr>
               <td style={tdStyle}>iMAD reimplementation divergence</td>
@@ -1064,13 +1064,13 @@ corpus); (A4) adaptive confidence gating disabled (debate runs on every
             <tr>
               <td style={tdStyle}>Jan 2027</td>
               <td style={tdStyle}>Core run</td>
-              <td style={tdStyle}>G3: 4 arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h; B8-oracle is not a Core arm; EG-SSS is not in Core v1.0</td>
+              <td style={tdStyle}>G3: 4 arms × GPQA-Main 400 / MMLU-Pro 400 / HLE 200 × 2 seeds = 24 runs, 1,280 GPU-h; B8-oracle is not a Core arm; SciClaimBench is not in Core v1.0</td>
               <td style={tdStyle}>Core matrix + pre-registered causal contrast (B8 vs B8-no-trust)</td>
             </tr>
             <tr>
               <td style={tdStyle}>Feb 2027</td>
               <td style={tdStyle}>Full run + benchmark</td>
-              <td style={tdStyle}>G4/G5: 32 rows at 300 items/dataset with the gold-evidence oracle on EG-SSS (1,280 GPU-h; $210); WP-18 adds B8-placebo/B8-oracle. The 36-row gold-answer alternate is 1,440 GPU-h ($235). EG-SSS v1.2 freezes at 180 items</td>
+              <td style={tdStyle}>G4/G5: 32 rows at 300 items/dataset with the gold-evidence oracle on SciClaimBench (1,280 GPU-h; $210); WP-18 adds B8-placebo/B8-oracle. The 36-row gold-answer alternate is 1,440 GPU-h ($235). SciClaimBench v1.2 freezes at 180 items</td>
               <td style={tdStyle}>Full run + benchmark ladder: 180 floor, 300 target, 600 stretch, 800 no-go</td>
             </tr>
             <tr>

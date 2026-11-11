@@ -1,5 +1,5 @@
 {
-  "schema_version": "egsss-item-v0.1",
+  "schema_version": "sciclaim-item-v0.1",
   "template": true,
   "_instructions": "Copy this object, delete template/_instructions, replace every TEMPLATE value with real content, and give the item a unique item_id. Each position needs 3-6 atomic claims; every claim needs at least one cited passage with a resolvable locator. Do not invent evidence or verdicts.",
   "item_id": "TEMPLATE-001",

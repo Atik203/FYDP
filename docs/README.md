@@ -6,6 +6,8 @@
 | [`project_structure.md`](project_structure.md) | Module map and the responsibility of each package |
 | [`GLOSSARY.md`](GLOSSARY.md) | Terms, metrics, arms, and stack names used across the project |
 | [`CONSISTENCY_AUDIT.md`](CONSISTENCY_AUDIT.md) | Claim and number reconciliation; historical snapshots are marked |
+| [`COAUTHOR_GUIDE.md`](COAUTHOR_GUIDE.md) | Co-author onboarding, annotation roles, worked examples, and the 4/6-week plan |
+| [`coauthor/templates/`](coauthor/templates/) | Submission templates for item verification, annotation, training, check-ins, and paper support |
 | [`FYDP1_defence_Q&A.md`](FYDP1_defence_Q&A.md) | Defence preparation, runbook, and likely questions |
 | [`title_rationale.md`](title_rationale.md) | Why the report uses its exact title |
 | [`literature_review_guide.md`](literature_review_guide.md) | Review template and verification protocol |

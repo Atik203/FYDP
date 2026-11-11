@@ -83,7 +83,7 @@ The six-arm target is the causal design in
 | 3 | **B8-no-trust** | retrieved; same as B8 | majority (`use_trust: false`) | executable; primary control |
 | 4 | **B8** | retrieved | trust-weighted | executable; treatment |
 | 5 | **B8-placebo** | retrieved; verdict labels shuffled across the debate-round claim pool (`placebo_unit: round_pool`) | trust-weighted | **v1.3 draft** — semantics recorded, pending sign-off; Full only |
-| 6 | **B8-oracle** | gold evidence (`oracle_mode: gold_evidence`) on EG-SSS only | trust-weighted | **v1.3 draft** — semantics recorded, pending sign-off; Full only |
+| 6 | **B8-oracle** | gold evidence (`oracle_mode: gold_evidence`) on SciClaimBench only | trust-weighted | **v1.3 draft** — semantics recorded, pending sign-off; Full only |
 
 The released Core matrix is exactly the four conditions above:
 4 conditions × 3 datasets × 2 seeds = 24 runs. `B8-placebo` and `B8-oracle` are
@@ -111,7 +111,7 @@ this pre-registration.
 | `gpqa_main` | 400 | `633f5ee89ab8ad4522a9f850766b73f62147ffdd` | primary evidence-grounded set |
 | `mmlu_pro` | 400 | `b189ec765aa7ed75c8acfea42df31fdae71f97be` | primary scale/robustness set (STEM) |
 | `hle` | 200 | `5a81a4c7271a2a2a312b9a690f0c2fde837e4c29` | ceiling/abstention control; never pooled with the primary tests |
-| `EG-SSS-180` | 180 floor; 300 Full target (not in the 24-row Core matrix) | benchmark freeze | mechanism test with gold evidence; the only `B8-oracle` dataset in the v1.3 draft |
+| `SciClaimBench-180` | 180 floor; 300 Full target (not in the 24-row Core matrix) | benchmark freeze | mechanism test with gold evidence; the only `B8-oracle` dataset in the v1.3 draft |
 
 **Sampling.** Samples are deterministic and stratified, not `rows[:cap]`
 (dataset loader policy, `trustcal/configs/datasets.yaml`). GPQA options are shuffled per
@@ -120,12 +120,12 @@ question with a seeded permutation; the correct answer is not always first.
 it is retrieval-resistant, so a trust gain there is not a positive-evidence
 claim; its accuracy and abstention behaviour are reported separately.
 
-**EG-SSS-180.** Not in the 24-row Core matrix. The 180-item gold-evidence set
+**SciClaimBench-180.** Not in the 24-row Core matrix. The 180-item gold-evidence set
 (60 biomed, 60 phys/chem, 60 math/CS) is added at benchmark freeze as version
 1.2, before unblinding. It becomes the third primary dataset for CMR and the
 only dataset where B8-oracle is fully meaningful. The v1.3 draft also uses
-`eg_sss_180` for the two gold-evidence oracle rows in the Full matrix at the
-300-item Full target. No EG-SSS results exist at the date of this draft.
+`sciclaim_180` for the two gold-evidence oracle rows in the Full matrix at the
+300-item Full target. No SciClaimBench results exist at the date of this draft.
 
 **Seeds.** `seeds: [1, 2]`. Seed is a technical replicate; the unit of
 analysis is the question. Seed 1 is the pre-registered primary replicate for
@@ -235,7 +235,7 @@ At the expected baseline accuracy `b0 = 0.40`, the n = 400 / π_d = 0.20 cell
 (6.3 pp) is ≈ 15.7% relative; at n = 300 it is ≈ 18.1% relative. At
 `b0 = 0.30`, 6.3 pp is ≈ 20.9% relative; at `b0 = 0.45`, ≈ 13.9% relative.
 With the worst-case Holm adjustment across the 4-test confirmatory family
-(α = 0.0125), the n = 400 / π_d = 0.20 MDE is ≈ 7.5 pp; if EG-SSS-180 joins as
+(α = 0.0125), the n = 400 / π_d = 0.20 MDE is ≈ 7.5 pp; if SciClaimBench-180 joins as
 a third primary dataset (6 tests, α = 0.0083), it is ≈ 7.8 pp. The smallest
 detectable difference we will claim at n = 400 with the full 4-test family is
 therefore **7.5 pp absolute (≈ 19% relative at b0 = 0.40)**; the unadjusted
@@ -361,7 +361,7 @@ including `hle` (control, descriptive only).
 
 1. **No condition is added, removed, or redefined after seeing results.** The
    only pre-unblinding additions allowed are B8-placebo and B8-oracle (WP-18)
-   and EG-SSS-180 (benchmark freeze), each with a new version and a new config
+   and SciClaimBench-180 (benchmark freeze), each with a new version and a new config
    hash. The v1.3 draft in §12 is the proposed version for the first pair; its
    Full config hash is recorded there and is not effective until sign-off.
 2. **No optional stopping and no interim analysis of the primary contrast.**
@@ -464,8 +464,8 @@ stack above remains the precision-replication stack.
 |---|---|---|---|
 | 1.0 | 9 November 2026 | Initial pre-registration; executable 4-condition matrix cut; six-arm target named | frozen |
 | 1.1 | 9 November 2026 | Erratum: released prompt hash `bc9c7b…`; `origin/feat/p0-hardening` retired; B8-placebo/B8-oracle assigned to WP-18; oracle semantics pending WP-18 | frozen |
-| 1.2 | benchmark freeze | Add EG-SSS-180 as the third primary dataset and the gold-evidence testbed | pending |
-| 1.3 | 9 November 2026 (draft) | **v1.3 draft — pending team sign-off.** Records placebo/oracle semantics, the 32-row Full default (36-row gold-answer alternate), the 4-bit/80 GB execution stack, the FP8 precision replication, and a $500–600 budget with a $600 hard stop. No endpoint, hypothesis, or analysis family changes. | draft — pending team sign-off |
+| 1.2 | benchmark freeze | Add SciClaimBench-180 as the third primary dataset and the gold-evidence testbed | pending |
+| 1.3 | 11 November 2026 (draft) | **v1.3 draft — pending team sign-off.** Records placebo/oracle semantics, the 32-row Full default (36-row gold-answer alternate), the 4-bit/80 GB execution stack, the FP8 precision replication, and a $500–600 budget with a $600 hard stop. Renames the benchmark from EG-SSS to SciClaimBench and updates the Full config hash. No endpoint, hypothesis, or analysis family changes. | draft — pending team sign-off |
 | 1.4 | 9 November 2026 | B7 provider: Gemini retired; OpenAI gpt-6-luna | frozen |
 
 Amendments are made only before unblinding. Once the first confirmatory row is
@@ -497,15 +497,15 @@ misroute the remaining work.
   separate `configs/experiments_full.yaml`, and the mock/smoke coverage. The
   target is 6 arms × 3 datasets × 2 seeds = 36 runs at 300 items/dataset =
   10,800 debates / 1,440 GPU-h if B8-oracle uses gold-answer trust; 32 runs /
-  1,280 GPU-h if B8-oracle is gold-evidence-only on EG-SSS. The v1.0 Core
+  1,280 GPU-h if B8-oracle is gold-evidence-only on SciClaimBench. The v1.0 Core
   matrix remains 24 runs, 8,000 planned debates / 1,067 GPU-h, with the
   1,280 GPU-h gate cap.
 - **Oracle semantics pending.** WP-18 must freeze whether B8-oracle uses
-  gold-answer trust or gold-evidence-only trust on EG-SSS. Neither definition
+  gold-answer trust or gold-evidence-only trust on SciClaimBench. Neither definition
   is asserted here; the choice changes the run count and GPU envelope above.
   B7 (Gemini external answer) is not B8-oracle.
-- **EG-SSS-180.** Not in v1.0. It joins at benchmark freeze as v1.2. No
-  EG-SSS result exists at this date.
+- **SciClaimBench-180.** Not in v1.0. It joins at benchmark freeze as v1.2. No
+  SciClaimBench result exists at this date.
 
 ### v1.4 erratum — 9 November 2026
 
@@ -534,7 +534,7 @@ pre-registered matrix endpoint, an arm, a dataset, a seed, or a run count.
   input and $0.50/M output, dominated by output tokens; recompute from the
   actual prompt/output tokens before quoting a total.
 
-### v1.3 draft - pending team sign-off (9 November 2026)
+### v1.3 draft - pending team sign-off (11 November 2026)
 
 > **Draft only — not approved and not effective.** This is the proposed v1.3
 > amendment for team sign-off. It records the execution plan and budget only.
@@ -544,11 +544,18 @@ pre-registered matrix endpoint, an arm, a dataset, a seed, or a run count.
 > approved. On sign-off this section becomes v1.3; the v1.0 values above remain
 > the historical record.
 
+**Benchmark rename.** The benchmark's working name, EG-SSS, is replaced by
+**SciClaimBench** in this draft. The rename happened before the v1.2 benchmark
+freeze and before any confirmatory row; no items, labels, or results existed
+under the old name. The dataset key is `sciclaim_180` for the 180-item floor and
+`sciclaim_300` for the 300-item Full target. The 24-item calibration protocol is
+unchanged.
+
 **Why this amendment exists.** v1.0 left the placebo/oracle semantics and the
 Full row count to WP-18, and its budget assumed the two-stack Dev/Final plan.
 This draft fills that placeholder: it records the execution plan the team
 intends to run — a 4-bit stack on one 80 GB A100 for the main causal matrix, a
-32-row Full default with a gold-evidence oracle on EG-SSS, a 96 GB FP8
+32-row Full default with a gold-evidence oracle on SciClaimBench, a 96 GB FP8
 precision replication, and a $500–600 budget with a $600 hard stop. It is
 recorded before any confirmatory Full row so the plan cannot be adjusted after
 seeing outcomes. It supersedes the v1.1 framing that treated the 36-run
@@ -564,11 +571,11 @@ alternate.
 | Main model revisions | `cyankiwi/Qwen3.8-27B-AWQ-INT4` `e3a700906e6a73ba4290b1873dc2ba8198527ab5`; `cyankiwi/gemma-4-26B-A4B-it-AWQ-4bit` `5c5db8a7aeabb70b27923ef56536aa5343ecbb5b`; `jeffcookio/Mistral-Small-3.2-24B-Instruct-2506-awq-sym` `49ec31ec0975e46a1aeef24186a45f11be3042b8` |
 | Main hardware | one 80 GB A100 PCIe spot at $0.136/GPU-h |
 | Core matrix | unchanged: 4 conditions × 3 datasets × 2 seeds = 24 rows; ~1,067 planned / 1,280 GPU-h cap |
-| Full datasets | `gpqa_main`, `mmlu_pro`, `eg_sss_180`; HLE remains a Core control and is not in the 32-row Full plan |
-| Full matrix, default | 32 rows: 24 rows for the four core arms (3 datasets × 2 seeds) + 6 `B8-placebo` rows (3 datasets × 2 seeds) + 2 `B8-oracle` rows (`eg_sss_180` × 2 seeds); 1,280 GPU-h |
+| Full datasets | `gpqa_main`, `mmlu_pro`, `sciclaim_180`; HLE remains a Core control and is not in the 32-row Full plan |
+| Full matrix, default | 32 rows: 24 rows for the four core arms (3 datasets × 2 seeds) + 6 `B8-placebo` rows (3 datasets × 2 seeds) + 2 `B8-oracle` rows (`sciclaim_180` × 2 seeds); 1,280 GPU-h |
 | Full matrix, alternate | 36 rows: 24 core-arm rows + 6 `B8-placebo` + 6 `B8-oracle` (`gold_answer`, 3 datasets × 2 seeds); 1,440 GPU-h |
 | Seeds | 1 and 2 in both matrices |
-| Full config hash | sha256 `40bef0f31b66953c4072dc2854e16c0396fbb7fd` (`experiments_full.yaml`) |
+| Full config hash | sha256 `07fd4cf85a6cb962c0475e94edb6989f990741a8` (`experiments_full.yaml`) |
 | Core config hash | sha256 `722cf5b910beb9a162cab5ade81fa629ff3510be` (`experiments_fourbit.yaml`) |
 | Precision config hash | sha256 `fd34b51f393f3c76969345b53818fc63ec3008ef` (`experiments_precision.yaml`) |
 
@@ -576,7 +583,7 @@ The hashes are sha256 of the committed blobs above. The Full config now pins
 `phase: fourbit`; the pre-pin value `F3C4904C…` is superseded. The 36-row
 variant is an alternate, not the default; it is not covered by this hash and
 requires its own config hash and version bump before execution. Full uses 300
-items per dataset (the 300-item EG-SSS Full target); the v1.2 freeze owns the
+items per dataset (the 300-item SciClaimBench Full target); the v1.2 freeze owns the
 180-item floor.
 Core and Full use the same 4-bit stack. Cell reuse is allowed only where model
 revisions, prompts, datasets, and caps match; the Full envelope below is costed
@@ -597,9 +604,9 @@ record fields (`placebo_mode`, `placebo_unit`, `placebo_seed`,
 `placebo_permutation_hash`, `placebo_noop_reason`) remain required; a round with
 fewer than two verdicts is recorded as a no-op, never silently replaced by B8.
 
-**3. Oracle: gold evidence on EG-SSS.**
+**3. Oracle: gold evidence on SciClaimBench.**
 
-`B8-oracle` uses `oracle_mode: gold_evidence` and runs only on `eg_sss_180`.
+`B8-oracle` uses `oracle_mode: gold_evidence` and runs only on `sciclaim_180`.
 The normal verifier and trust path are kept; the dataset's gold evidence is
 substituted for retrieval, and trust is computed from the verifier's verdicts on
 that evidence. The oracle does not set trust from the gold answer and does not
@@ -679,7 +686,7 @@ not by editing this record.
 - The 24-row Core matrix remains the released matrix.
 - The Full matrix is the six-arm causal design; this draft does not add a
   confirmatory family or a new Holm test.
-- v1.2 remains pending; this draft does not freeze the EG-SSS dataset revision.
+- v1.2 remains pending; this draft does not freeze the SciClaimBench dataset revision.
 - B7 remains the optional external-answer ceiling from v1.4 and is not
   B8-oracle.
 
@@ -691,7 +698,7 @@ not by editing this record.
   stack. Before launch, pin the 4-bit stack as the matrix phase (or record the
   equivalent serving configuration) and re-record the manifest. Do not run the
   main matrix on the FP8 or Dev stack by default.
-- **EG-SSS cap.** The hashed config sets `dataset_caps.eg_sss_180: 300`. Confirm
+- **SciClaimBench cap.** The hashed config sets `dataset_caps.sciclaim_180: 300`. Confirm
   that the v1.2 freeze is the 180-item floor and the Full target is 300; if the
   Full cap changes, recompute the debate/GPU envelope and re-hash.
 - **Core hash.** §9 records the v1.0 `experiments.yaml` blob `d63ee9…`; the

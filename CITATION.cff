@@ -24,8 +24,8 @@ authors:
   - family-names: Huda
     given-names: Mohammad Nurul
     affiliation: "Department of Computer Science and Engineering, United International University, Dhaka, Bangladesh"
-version: 0.2.0
-date-released: 2026-11-09
+version: 0.2.1
+date-released: 2026-11-11
 url: "https://github.com/Atik203/trustcal"
 repository-code: "https://github.com/Atik203/trustcal"
 license: MIT

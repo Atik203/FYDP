@@ -110,8 +110,8 @@ def test_placebo_units_are_both_accepted_with_placebo_mode() -> None:
         assert cfg.placebo_unit == unit
 
 
-def test_gold_evidence_accepts_the_eg_sss_key() -> None:
-    cfg = RunConfig(arm="B8", dataset="eg_sss_180", oracle_mode="gold_evidence")
+def test_gold_evidence_accepts_the_sciclaim_key() -> None:
+    cfg = RunConfig(arm="B8", dataset="sciclaim_180", oracle_mode="gold_evidence")
     assert cfg.oracle_mode == "gold_evidence"
 
 
@@ -253,7 +253,7 @@ def test_b8_oracle_gold_evidence_record_fields(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(
         "trustcal.runner.build_verifier", lambda name, **kwargs: TwoClaimVerifier()
     )
-    cfg = _cfg(tmp_path, dataset="eg_sss_180", oracle_mode="gold_evidence")
+    cfg = _cfg(tmp_path, dataset="sciclaim_180", oracle_mode="gold_evidence")
     question = {**QUESTION, "gold_evidence": GOLD_EVIDENCE}
     clients = [
         FakeClient(TWO_CLAIM_ALPHA),

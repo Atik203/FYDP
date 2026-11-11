@@ -12,11 +12,11 @@
 | Item | Value |
 |---|---|
 | Branches | `main` = release/deployed frontend; `dev` = development |
-| Release tip | `2ae56a3` on both `main` and `dev`; `p0-release` tag = `7f2c11f`. |
+| Release tip | `v0.2.1` on both `main` and `dev`; `p0-release` tag = `7f2c11f`. |
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **615 passed** (514 at the P0 release) |
-| Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` - 70 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` - 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 |
@@ -58,7 +58,7 @@ The manuscript is now honest and internally consistent, but it is **not a result
 | 8 | Verifier was word overlap | 🟡 verifier interface implemented; lexical default; human audit pending |
 | 9 | B8 vs B4 confounded | ✅ B8-no-trust is the primary matched control; B4-matched uses same partition |
 | 10 | Baselines approximate | 🟡 B9/B10 still labeled approximations; do not claim “+X% over iMAD” |
-| 11 | Datasets did not fit the method | ✅ BrokenMath/BrokenArXiv appendix-only; GPQA + MMLU-Pro + EG-SSS primary |
+| 11 | Datasets did not fit the method | ✅ BrokenMath/BrokenArXiv appendix-only; GPQA + MMLU-Pro + SciClaimBench primary |
 | 12 | Matrix too big | ✅ Core matrix 24 rows / 1,280 GPU-h; pre-registration v1.0 |
 | 13 | Cost ignored bandwidth/storage | ✅ Vast.ai spot model with bandwidth/storage/spot interruptions |
 | 14 | Paper overclaimed | ✅ claims audit and report chapters updated; no efficacy claims |
@@ -71,7 +71,7 @@ The manuscript is now honest and internally consistent, but it is **not a result
 |---|---|---|
 | **Nov 2026** | Final-stack 96 GB smoke (NOT RUN); WP-18 placebo/oracle; 24-item calibration; verifier audit start | smoke PASS; 6-arm support; calibration report |
 | **Dec 2026** | Pilot run 100–150 questions; injection κ | **G2** |
-| **Jan 2027** | Core run: 4 arms, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds; 1,280 GPU-h cap; EG-SSS-180 freeze (v1.2) | **G3** |
+| **Jan 2027** | Core run: 4 arms, GPQA 400 + MMLU-Pro 400 + HLE 200, 2 seeds; 1,280 GPU-h cap; SciClaimBench-180 freeze (v1.2) | **G3** |
 | **Feb 2027** | Full run: 6 arms; 300 benchmark; human eval start | **G4/G5** |
 | **Mar 2027** | Human eval 150–200; SDT; expert ceiling | analysis freeze |
 | **Apr 2027** | q/ρ sweeps, granularity, shared-error floor, ablations | results freeze |
@@ -88,7 +88,7 @@ The manuscript is now honest and internally consistent, but it is **not a result
 | Size | Role | Annotation | Decision |
 |---:|---|---:|---|
 | **24** | Calibration batch | ~1 week | Start now; if `H_attempt > 2.0` or defect >15%, cut to 120 |
-| **180** | EG-SSS v1.2 freeze (not in the v1.0 Core matrix) | ~410 h | Freeze January 2027 |
+| **180** | SciClaimBench v1.2 freeze (not in the v1.0 Core matrix) | ~410 h | Freeze January 2027 |
 | **300** | Full-run benchmark target | ~684 h | Target February 2027 |
 | **600** | Stretch | ~1,368 h | Only with 2–3 dedicated annotators |
 | **800** | No-go | ~1,824 h | Do not build |
@@ -119,7 +119,7 @@ A 300-item set with clean gold is better than a 600-item set with bad gold.
 |---|---|---|
 | **P1** | Theory, paper/thesis lead | `docs/agent/07_9PLUS_BLUEPRINT.md`, theory chapters |
 | **P2** | GPU runs, runner, reproducibility | `runner.py`, `scripts/`, `08_COMPUTE_COST.md` |
-| **P3** | Benchmark + annotation | EG-SSS, `eval/datasets.py` |
+| **P3** | Benchmark + annotation | SciClaimBench, `eval/datasets.py` |
 | **P4** | Statistics + causal analysis | `eval/stats.py`, `eval/endpoints.py` |
 | **P5** | Human evaluation | `scripts/human_eval.py`, rubric |
 | **P6** | Retrieval + verifier | `retrieval/`, `verifier.py` |

@@ -188,7 +188,7 @@ Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable 
     \hline
     B8-placebo & Retrieved, verdicts shuffled across the cross-agent round pool & Trust-weighted & Full; WP-18 pending \\
     \hline
-    B8-oracle & Gold information; gold-evidence-only on EG-SSS for the 32-row target, gold-answer for the 36-row alternate & Trust-weighted & Full; WP-18 pending \\
+    B8-oracle & Gold information; gold-evidence-only on SciClaimBench for the 32-row target, gold-answer for the 36-row alternate & Trust-weighted & Full; WP-18 pending \\
     \hline
     B7 & External single-call ceiling; three GPT-6 Luna samples & Not applicable & Optional appendix \\
     \hline
@@ -199,11 +199,11 @@ Table~\ref{tab:arms} lists the arms. The Core matrix is exactly four executable 
 The primary causal contrast is B8 versus B8-no-trust. B3 and B4-matched are controls, not competitors: B3 isolates debate without retrieval, and B4-matched provides an evidence-information control. The placebo contrast tests whether the effect comes from evidence calibration or from any re-weighting. The oracle contrast bounds the verifier bottleneck. The pre-registration names both the Full target and the four-arm executable subset.
 
 \paragraph*{Datasets and benchmark ladder.}
-Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the primary sets; HLE is a ceiling control and is never pooled with the primary tests, and answer-level abstention is planned but not implemented. EG-SSS is the team-built gold-evidence benchmark: items are drawn from the same three domains and paired with 3--6 atomic claims per position, two annotators label claim-level support and verdicts, disagreements are adjudicated, the target agreement is Cohen's $\kappa \ge 0.75$, and the set is released under CC BY 4.0 when frozen. The claim-evidence-verdict schema follows health-claim verification datasets~\cite{sarrouti2021healthver}, and scientific claim verification datasets such as SciFact pair claims with evidence abstracts and rationale labels~\cite{wadden2020fact}. EG-SSS is not in Core v1.0; it joins at the v1.2 benchmark freeze as a 180-item set and scales to the 300-item Full target.
+Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the primary sets; HLE is a ceiling control and is never pooled with the primary tests, and answer-level abstention is planned but not implemented. SciClaimBench is the team-built gold-evidence benchmark: items are drawn from the same three domains and paired with 3--6 atomic claims per position, two annotators label claim-level support and verdicts, disagreements are adjudicated, the target agreement is Cohen's $\kappa \ge 0.75$, and the set is released under CC BY 4.0 when frozen. The claim-evidence-verdict schema follows health-claim verification datasets~\cite{sarrouti2021healthver}, and scientific claim verification datasets such as SciFact pair claims with evidence abstracts and rationale labels~\cite{wadden2020fact}. SciClaimBench is not in Core v1.0; it joins at the v1.2 benchmark freeze as a 180-item set and scales to the 300-item Full target.
 
 \begin{table}[H]
   \centering
-  \caption{Datasets and roles. EG-SSS is a benchmark-freeze addition, not a Core v1.0 dataset.}
+  \caption{Datasets and roles. SciClaimBench is a benchmark-freeze addition, not a Core v1.0 dataset.}
   \renewcommand{\arraystretch}{1.25}
   \small
   \begin{tabular}{|p{0.18\textwidth}|p{0.10\textwidth}|p{0.44\textwidth}|p{0.18\textwidth}|}
@@ -216,9 +216,9 @@ Table~\ref{tab:datasets} lists the datasets. GPQA-Main and MMLU-Pro are the prim
     \hline
     HLE & 200 & Ceiling control; abstention planned; not pooled & Pinned revision \\
     \hline
-    EG-SSS-180 & 180 & Gold-evidence mechanism test; Core floor & v1.2 freeze \\
+    SciClaimBench-180 & 180 & Gold-evidence mechanism test; Core floor & v1.2 freeze \\
     \hline
-    EG-SSS-300 & 300 & Full-run target & Target \\
+    SciClaimBench-300 & 300 & Full-run target & Target \\
     \hline
   \end{tabular}
   \label{tab:datasets}
@@ -238,7 +238,7 @@ The unit of analysis is the question. Seed~1 is the pre-registered primary repli
 \paragraph*{Threats to validity.}
 The first threat is verifier quality. The default verifier is lexical, and the synthetic audit scores 0.58 balanced accuracy. A trust signal built on a weak verifier can amplify a confident wrong majority. The human audit of 150--200 pairs is the gate that must pass before the matrix can support a high-$q$ claim. The second threat is retrieval coverage. The routing and deduplication logic are tested, but the live APIs are not; rate limits, malformed responses, and sparse domains can turn claims into unverifiable ones. The third threat is shared error. Three heterogeneous models reduce but do not eliminate correlated mistakes, and the shared-error floor is a boundary on what any independent verifier can certify.
 
-The fourth threat is benchmark gold. EG-SSS is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 80\,GB matrix stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains.
+The fourth threat is benchmark gold. SciClaimBench is team-built, so its gold evidence and verdicts require annotation discipline and a defect-rate report. The fifth threat is model-family specificity: the result will be conditional on the three chosen checkpoints and the 80\,GB matrix stack. The sixth is stochasticity: the local models run at temperature 0.7, and the optional B7 ceiling uses three samples per question. The analysis averages over seeds where the design allows it and reports the variation that remains.
 
 \section{Project Plan}\label{sec:project-plan}
 
@@ -281,7 +281,7 @@ The project plan runs from November 2026 to December 2027. Table~\ref{tab:phases
 
 Agreement is reported with Cohen's $\kappa$ for two annotators~\cite{cohen1960coefficient} and Krippendorff's $\alpha$ when three raters or missing labels are involved~\cite{krippendorff2004reliability}; both are reported with confidence intervals rather than as point estimates alone.
 
-Table~\ref{tab:budget} gives the budget envelope. Core and Full are both planned on the 4-bit 24--27B matrix stack (Qwen3.8-27B-AWQ-INT4, Gemma~4 26B-A4B AWQ, Mistral 24B AWQ; 53.3\,GB of weights) on one 80\,GB A100 PCIe spot at \$0.136 per GPU-hour, so Core cells are reusable in Full where the stack and model revisions match. The 96\,GB FP8 stack is used only for the N1 smoke and a small GPQA precision replication, not for the main matrix. The Full target is 32 rows with the gold-evidence oracle on EG-SSS; the 36-row gold-answer version is an alternate. The hard stop is \$600 for the confirmatory envelope. N9 law-testing is outside that cap and is commissioned only if the effect is real. If the 80\,GB A100 spot is unavailable and the main runs must use the 96\,GB card at \$0.336 per GPU-hour, the cost rises to about \$1{,}050--1{,}150 and requires explicit re-approval.
+Table~\ref{tab:budget} gives the budget envelope. Core and Full are both planned on the 4-bit 24--27B matrix stack (Qwen3.8-27B-AWQ-INT4, Gemma~4 26B-A4B AWQ, Mistral 24B AWQ; 53.3\,GB of weights) on one 80\,GB A100 PCIe spot at \$0.136 per GPU-hour, so Core cells are reusable in Full where the stack and model revisions match. The 96\,GB FP8 stack is used only for the N1 smoke and a small GPQA precision replication, not for the main matrix. The Full target is 32 rows with the gold-evidence oracle on SciClaimBench; the 36-row gold-answer version is an alternate. The hard stop is \$600 for the confirmatory envelope. N9 law-testing is outside that cap and is commissioned only if the effect is real. If the 80\,GB A100 spot is unavailable and the main runs must use the 96\,GB card at \$0.336 per GPU-hour, the cost rises to about \$1{,}050--1{,}150 and requires explicit re-approval.
 
 \begin{table}[H]
   \centering
@@ -298,7 +298,7 @@ Table~\ref{tab:budget} gives the budget envelope. Core and Full are both planned
     \hline
     Core run & 1{,}067 planned; 1{,}280 cap & \$175--210 & 24 runs; 8{,}000 planned debates; 4-bit A100 \\
     \hline
-    Full target & 1{,}280 & \$210 & 32 rows; gold-evidence oracle on EG-SSS \\
+    Full target & 1{,}280 & \$210 & 32 rows; gold-evidence oracle on SciClaimBench \\
     \hline
     Full alternate & 1{,}440 & \$235 & 36 rows; gold-answer oracle; not the default \\
     \hline
@@ -345,4 +345,4 @@ Table~\ref{tab:tasks} assigns the primary modules. One owner is accountable for 
 
 \section{Summary}\label{sec:design-summary}
 
-Chapter~\ref{chapter:design} fixed the requirements, the system boundary, and the data flow. It defined the debate loop, the claim-level evidence pipeline, the bounded trust operator, the weighted aggregation rule, the injection protocol, and the record contract. It then fixed the experimental design: four executable Core arms, a 32-row Full target (36-row gold-answer alternate), two primary datasets with an HLE ceiling control and the EG-SSS benchmark, final-answer accuracy as the primary endpoint with CMR as the co-primary endpoint, a paired two-seed analysis, and a pre-registered stopping rule. The project plan covers the full project from November 2026 to December 2027, with the precision-stack smoke, WP-18, calibration, and verifier audit before the pilot, the Core run, and the Full run. Chapter~\ref{chapter:implementation} describes the implementation and the evidence available at the time of writing.
+Chapter~\ref{chapter:design} fixed the requirements, the system boundary, and the data flow. It defined the debate loop, the claim-level evidence pipeline, the bounded trust operator, the weighted aggregation rule, the injection protocol, and the record contract. It then fixed the experimental design: four executable Core arms, a 32-row Full target (36-row gold-answer alternate), two primary datasets with an HLE ceiling control and the SciClaimBench benchmark, final-answer accuracy as the primary endpoint with CMR as the co-primary endpoint, a paired two-seed analysis, and a pre-registered stopping rule. The project plan covers the full project from November 2026 to December 2027, with the precision-stack smoke, WP-18, calibration, and verifier audit before the pilot, the Core run, and the Full run. Chapter~\ref{chapter:implementation} describes the implementation and the evidence available at the time of writing.

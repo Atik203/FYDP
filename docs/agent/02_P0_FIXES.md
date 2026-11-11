@@ -257,7 +257,7 @@
 4. **Replace agent→source with claim→domain routing:** bio/clinical → PubMed + S2; physics/chemistry → arXiv + S2; math/CS → arXiv + S2; other → S2/OpenAlex; deduplicate by DOI/arXiv ID/title.
 5. **Equalize evidence volume** across partition conditions; rotate sources if partitioning is kept as an ablation.
 6. **Add validation sets:** SciFact (300), VitaminC (1,000 stratified), PubMedQA (500); hand-labeled pipeline sample (300 answers / 500 claims / 100 transitions).
-7. **Build EG-SSS:** 180 items (60 biomed, 60 phys/chem, 60 math/CS) with gold evidence, 3–6 atomic claims per position, gold verdicts, and five conditions (evidence available/absent/placebo/contradictory × pressure).
+7. **Build SciClaimBench:** 180 items (60 biomed, 60 phys/chem, 60 math/CS) with gold evidence, 3–6 atomic claims per position, gold verdicts, and five conditions (evidence available/absent/placebo/contradictory × pressure).
 8. **Pin all revisions; stratify samples; report eligible n per dataset.**
 9. **Do not claim 60–70% retention for proof datasets.** Report 0% and explain why they are excluded.
 
@@ -311,7 +311,7 @@
 - `run_matrix.py:173-190`.
 
 **Change:**
-1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + EG-SSS) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`). **As executed at P0 release, the Core v1.0 matrix is narrower:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**; GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**, with a **1,280 GPU-h** conservative gate cap. EG-SSS is not in Core v1.0; it is 180 items at the v1.2 benchmark freeze. The Full target is 6 arms/3 datasets/2 seeds, **default 32 runs with a gold-evidence oracle on EG-SSS** (1,280 GPU-h / $210); **36 runs with gold-answer trust is the alternate** (300 items/dataset, 10,800 debates / 1,440 GPU-h / $235). **WP-18** (not the historical WP-13) freezes the Full definition.
+1. Replace with 6 arms × (GPQA-Main + MMLU-Pro STEM + SciClaimBench) × 250–500 eligible × 2 seeds (see `03_EXPERIMENT_PLAN.md`). **As executed at P0 release, the Core v1.0 matrix is narrower:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**; GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates ≈ **1,067 GPU-h planned**, with a **1,280 GPU-h** conservative gate cap. SciClaimBench is not in Core v1.0; it is 180 items at the v1.2 benchmark freeze. The Full target is 6 arms/3 datasets/2 seeds, **default 32 runs with a gold-evidence oracle on SciClaimBench** (1,280 GPU-h / $210); **36 runs with gold-answer trust is the alternate** (300 items/dataset, 10,800 debates / 1,440 GPU-h / $235). **WP-18** (not the historical WP-13) freezes the Full definition.
 2. Compute power for CCR/accuracy; report MDE per dataset.
 3. Freeze `PRE_REGISTRATION.md`: primary endpoint, comparator, exclusions, analysis, multiplicity, stopping rules.
 4. Treat the full 15×5 grid as a thesis appendix plan, not an executable matrix.

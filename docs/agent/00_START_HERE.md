@@ -1,6 +1,6 @@
 # 00 — Start Here
 
-**Status date:** 9 November 2026. **P0 engineering is released.** `main` = `dev` = `2ae56a3`; tags `p0-gate` = `055a244` and `p0-release` = `7f2c11f`.
+**Status date:** 11 November 2026. **P0 engineering is released.** `main` = `dev` = `v0.2.1`; tags `p0-gate` = `055a244` and `p0-release` = `7f2c11f`.
 
 **Project title:** *The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate, with a Controlled Benchmark for Sycophantic Consensus.*
 
@@ -9,10 +9,10 @@
 > - Read `roadmap.md` for the current order of work. `06_AGENT_CHECKLIST.md` is historical plus a short post-P0 checklist.
 > - Next: **N1** final-stack 96 GB smoke (not run) → **N2** WP-18 placebo/oracle → **N3** 24-item benchmark calibration → **N4** verifier audit → **N5** pilot/G2.
 > - Do **not** run the Core matrix before the pilot passes G2.
-> - **Core v1.0:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. Planned 8,000 debates ≈ **1,067 GPU-h**; conservative gate cap **1,280 GPU-h**. EG-SSS is **not** in Core v1.0.
-> - **Full default:** 32 rows with a gold-evidence oracle on EG-SSS = 1,280 GPU-h / **$210**. The 36-row gold-answer alternate is 1,440 GPU-h / **$235**. **WP-18 freezes it.**
+> - **Core v1.0:** 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main`, `mmlu_pro`, `hle`) × 2 seeds = **24 runs**. Planned 8,000 debates ≈ **1,067 GPU-h**; conservative gate cap **1,280 GPU-h**. SciClaimBench is **not** in Core v1.0.
+> - **Full default:** 32 rows with a gold-evidence oracle on SciClaimBench = 1,280 GPU-h / **$210**. The 36-row gold-answer alternate is 1,440 GPU-h / **$235**. **WP-18 freezes it.**
 > - The **verification ceiling** is a derived hypothesis, not a proved theorem.
-> - **BrokenMath/BrokenArXiv are appendix-only** (official splits are proof-only; answer-type retention 0%). Use **GPQA-Main + MMLU-Pro STEM + HLE** in Core v1.0; **EG-SSS 180** joins at the v1.2 benchmark freeze.
+> - **BrokenMath/BrokenArXiv are appendix-only** (official splits are proof-only; answer-type retention 0%). Use **GPQA-Main + MMLU-Pro STEM + HLE** in Core v1.0; **SciClaimBench 180** joins at the v1.2 benchmark freeze.
 
 ---
 
@@ -31,11 +31,11 @@ Use `docs/GLOSSARY.md` everywhere. The current names are **Core run** and **Full
 | Stage | Scope | Cost |
 |---|---|---:|
 | **Pilot run (N5/G2)** | ~100–150 questions; 4-bit 24–27B stack on the 80 GB A100; B3, B8-no-trust, B8; injection on/off; trust on/off | ~112 GPU-h; $15–20 |
-| **Core run (G3)** | 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main` 400, `mmlu_pro` 400, `hle` 200) × 2 seeds = **24 runs**; 8,000 debates; 180-item EG-SSS is **not** in v1.0 | ~1,067 GPU-h planned; **1,280 cap**; $175–210 |
-| **Full run (G4/G5)** | Default: 32 rows with a gold-evidence oracle on EG-SSS = 1,280 GPU-h. Alternate: 36 rows with a gold-answer oracle at 300 items/dataset = 1,440 GPU-h. WP-18 freezes it. | $210 default; $235 alternate |
+| **Core run (G3)** | 4 conditions (B3, B4-matched, B8-no-trust, B8) × 3 datasets (`gpqa_main` 400, `mmlu_pro` 400, `hle` 200) × 2 seeds = **24 runs**; 8,000 debates; 180-item SciClaimBench is **not** in v1.0 | ~1,067 GPU-h planned; **1,280 cap**; $175–210 |
+| **Full run (G4/G5)** | Default: 32 rows with a gold-evidence oracle on SciClaimBench = 1,280 GPU-h. Alternate: 36 rows with a gold-answer oracle at 300 items/dataset = 1,440 GPU-h. WP-18 freezes it. | $210 default; $235 alternate |
 | **Law-testing (N9)** | q/ρ sweeps, granularity, shared-error floor, robustness | Outside the $500–600 envelope; separate approval required |
 
-**Hard stop: $600.** The main matrix runs on one **80 GB A100 PCIe** at **$0.136/GPU-h**; the 96 GB FP8 stack at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (60–100 GPU-h, $25–40). Fallback if the A100 spot is unavailable: 96 GB main runs = $1,050–1,150, re-approval required; not the default. **EG-SSS ladder:** 24 calibration → 180 v1.2 floor → 300 Full target → 600 stretch → 800 no-go. The 180-item set joins at the benchmark freeze under v1.2, not in the v1.0 Core matrix.
+**Hard stop: $600.** The main matrix runs on one **80 GB A100 PCIe** at **$0.136/GPU-h**; the 96 GB FP8 stack at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (60–100 GPU-h, $25–40). Fallback if the A100 spot is unavailable: 96 GB main runs = $1,050–1,150, re-approval required; not the default. **SciClaimBench ladder:** 24 calibration → 180 v1.2 floor → 300 Full target → 600 stretch → 800 no-go. The 180-item set joins at the benchmark freeze under v1.2, not in the v1.0 Core matrix.
 
 ### Historical score projections (8 November 2026)
 
@@ -77,7 +77,7 @@ Use `docs/GLOSSARY.md` everywhere. The current names are **Core run** and **Full
 13. **The trust line is present even when trust is disabled.** — **Fixed (historical WP-13).** The trust line is removed for `use_trust=False`; B8 vs B8-no-trust differs only in the trust line.
 14. **B9/B10/B6 are approximations and unmatched.** — **Partially fixed.** Fidelity labels and compute logging exist; the baselines remain approximations. Do not claim "+X% over iMAD."
 15. **The matrix is ~30,000 GPU-hours.** — **Fixed.** Core is 24 runs / 1,280 GPU-h cap; Full is 32 rows / 1,280 GPU-h by default, or 36 rows / 1,440 GPU-h for the gold-answer alternate.
-16. **`main` is 10 commits behind a feature branch.** — **Fixed.** `main` = `dev` = `2ae56a3`; feature branches are deleted.
+16. **`main` is 10 commits behind a feature branch.** — **Fixed.** `main` = `dev` = `v0.2.1`; feature branches are deleted.
 17. **BrokenMath and BrokenArXiv are proof-only.** — **Fixed by exclusion.** They are appendix-only; 0% answer-type retention.
 18. **Source-by-agent assignment is a fatal confound.** — **Fixed.** Routing is by claim domain; the agent→source mapping is removed from the primary design.
 19. **Loader bugs make the current numbers uninterpretable.** — **Fixed.** `gold_answer`, `answer_type`, splits, pinned revisions, and stratified sampling are in P0.
@@ -90,7 +90,7 @@ Use `docs/GLOSSARY.md` everywhere. The current names are **Core run** and **Full
 - **615 tests** (514 at the P0 release) and a mock vLLM end-to-end path; 13/13 P0 gate checks.
 - Gate 0: 10/10 debates, 90/90 non-empty positions, 370.8 s/debate.
 - Resumable JSONL, manifest/resume refusal, preflight, annotation tooling, human-eval tooling.
-- Two compiled manuscripts: 69-page report (80 cited works) and 19-page journal (71 cited works), 0 errors/undefined refs.
+- Two compiled manuscripts: 70-page report (80 cited works) and 19-page journal (71 cited works), 0 errors/undefined refs.
 - A pinned final stack that fits in 73.68 GB (offline check only; hardware smoke pending).
 - Real problem, real application, six-person team, 7–8 months.
 - The system is a strong thesis artifact even before the paper is strong.
@@ -118,7 +118,7 @@ E:\FYDP\
 │   ├── blueprint.md          # historical design doc (not evidence)
 │   ├── agent\                # these docs
 │   └── FYDP1_defence_Q&A.md  # check status notes before the defence
-├── FYDP_Summer\              # 69-page report (compiled; engineering report)
+├── FYDP_Summer\              # 70-page report (compiled; engineering report)
 ├── Papev_Summer26_6\         # 19-page journal manuscript (compiled; engineering report)
 ├── literature_review\        # paper reviews + index
 ├── UPDATE-CHECKLIST.md       # team-facing one-pager

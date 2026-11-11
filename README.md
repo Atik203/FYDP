@@ -26,18 +26,19 @@ The framework runs three heterogeneous agents for three rounds. Each response is
 | --- | --- |
 | [`frontend/`](frontend/) | React 19 + TypeScript + Vite 8 site for the proposal, roadmap, papers, and defence decks |
 | [`trustcal/`](trustcal/) | Python pipeline: vLLM serving, debate loop, retrieval, verifier, trust operator, evaluation, runner |
-| [`FYDP_Summer/`](FYDP_Summer/) | Full project report ([`fydp.pdf`](FYDP_Summer/fydp.pdf), 69 pp) |
+| [`FYDP_Summer/`](FYDP_Summer/) | Full project report ([`fydp.pdf`](FYDP_Summer/fydp.pdf), 70 pp) |
 | [`Papev_Summer26_6/`](Papev_Summer26_6/) | Journal-style manuscript ([`cas-sc-template.pdf`](Papev_Summer26_6/cas-sc-template.pdf), 19 pp) |
 | [`PRE_REGISTRATION.md`](PRE_REGISTRATION.md) | Endpoints, hypotheses, exclusions, stopping rules, and the v1.3 stack amendment |
 | [`literature_review/`](literature_review/) | Paper matrix, gap map, and per-paper reviews |
 | [`experiments/`](experiments/) | Run reports, gate artifacts, calibration protocols, and `next/WP-*.md` records |
 | [`docs/`](docs/) | Research blueprint, glossary, consistency audit, defence notes, and figure sources |
+| [`docs/COAUTHOR_GUIDE.md`](docs/COAUTHOR_GUIDE.md) | Co-author onboarding, annotation roles, examples, templates, and the 4/6-week plan |
 | [`roadmap.md`](roadmap.md) | Phase-by-phase execution plan and compute budget |
 | [`AGENTS.md`](AGENTS.md) | Canonical instructions for human and AI contributors |
 
 ## Current status
 
-Snapshot: **9 November 2026**.
+Snapshot: **11 November 2026**.
 
 | Area | State |
 | --- | --- |
@@ -46,9 +47,9 @@ Snapshot: **9 November 2026**.
 | Full matrix | 32-row gold-evidence default / 36-row gold-answer alternate, with placebo and oracle controls; **not run** |
 | FP8 precision | 3-row GPQA replication configured; the 96 GB hardware smoke has **not run** |
 | Verifier audit | 180 SciFact pairs prepared; human labels pending |
-| EG-SSS calibration | 24 items pending authoring and adjudication |
+| SciClaimBench calibration | 24 items pending authoring and adjudication |
 | Pre-registration | v1.3 draft; team sign-off pending |
-| Manuscripts | 69-page report and 19-page journal; 0 errors and 0 undefined citations |
+| Manuscripts | 70-page report and 19-page journal; 0 errors and 0 undefined citations |
 
 The engineering evidence is real. The efficacy claim is not yet tested. See [`trustcal/IMPLEMENTATION_STATUS.md`](trustcal/IMPLEMENTATION_STATUS.md) for the per-component map and [`roadmap.md`](roadmap.md) for the execution order.
 
@@ -125,7 +126,7 @@ The journal uses the same sequence with `Papev_Summer26_6/cas-sc-template.tex`. 
 | Layer | Design |
 | --- | --- |
 | Core matrix | 4 conditions × 3 datasets × 2 seeds = **24 runs** |
-| Full matrix | **32 rows** with the gold-evidence oracle on EG-SSS; **36 rows** with the gold-answer alternate |
+| Full matrix | **32 rows** with the gold-evidence oracle on SciClaimBench; **36 rows** with the gold-answer alternate |
 | Primary datasets | GPQA-Main and MMLU-Pro; HLE is a ceiling control |
 | Primary endpoint | Final-answer accuracy on pressure-eligible items |
 | Co-primary endpoint | Correct-minority retention (CMR) |
@@ -145,7 +146,7 @@ If you use the code, the benchmark design, or the report, cite the repository:
   title        = {The Boundaries of Evidence-Grounded Trust in Multi-Agent Scientific Debate,
                   with a Controlled Benchmark for Sycophantic Consensus},
   year         = {2026},
-  version      = {0.2.0},
+  version      = {0.2.1},
   howpublished = {\url{https://github.com/Atik203/trustcal}},
   note         = {FYDP II, United International University}
 }
@@ -173,3 +174,5 @@ See [`SECURITY.md`](SECURITY.md). Never commit `.env`, `HF_TOKEN`, `OPENAI_API_K
 | Mst. Farjana Akter Limu | Evidence APIs, records, manifest, result packages |
 
 Supervisor: **Mohammad Nurul Huda, Ph.D.**, Professor, Department of Computer Science and Engineering, United International University.
+
+Co-author onboarding, annotation assignments, worked examples, and the 4/6-week plan: [`docs/COAUTHOR_GUIDE.md`](docs/COAUTHOR_GUIDE.md). Submission templates: [`docs/coauthor/templates/`](docs/coauthor/templates/).

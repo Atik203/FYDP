@@ -1,4 +1,4 @@
-# EG-SSS item schema (v0.1)
+# SciClaimBench item schema (v0.1)
 
 One JSON object per item. The seed batch is JSONL; a single-item template is
 JSON. The validator accepts either a JSON list or one object per JSONL line.
@@ -7,7 +7,7 @@ JSON. The validator accepts either a JSON list or one object per JSONL line.
 
 | Field | Type | Required | Meaning |
 | --- | --- | --- | --- |
-| `schema_version` | string | yes | `"egsss-item-v0.1"` |
+| `schema_version` | string | yes | `"sciclaim-item-v0.1"` |
 | `item_id` | string | yes | Stable ID, unique in the batch; e.g. `cal-001` |
 | `stratum` | enum | yes | `biomedical`, `physics_chemistry`, or `math_cs` |
 | `status` | enum | yes | `unfilled`, `drafted`, `annotated`, `adjudicated`, or `frozen` |

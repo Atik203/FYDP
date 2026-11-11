@@ -9,11 +9,11 @@ Phase-by-phase execution plan for **November 2026 – December 2027**. This file
 | Item | Value |
 |---|---|
 | Branches | `main` = release/deployed frontend; `dev` = development |
-| Release tip | `2ae56a3` on both `main` and `dev`; `p0-release` tag = `7f2c11f`. |
+| Release tip | `v0.2.1` on both `main` and `dev`; `p0-release` tag = `7f2c11f`. |
 | Tags | `p0-gate` = `055a244`; `p0-release` = `7f2c11f` |
 | P0 gate | **13/13 passed, 0 failed, 0 pending** |
 | Tests | **615 passed** (514 at the P0 release) |
-| Report | `FYDP_Summer/out/fydp.pdf` - 69 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
+| Report | `FYDP_Summer/out/fydp.pdf` - 70 pages, 80 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Journal | `Papev_Summer26_6/out/cas-sc-template.pdf` — 19 pages, 71 cited works, explicit pdfLaTeX, 0 errors/undefined refs |
 | Figures | six journal figures + two report-only figures at 6000 × 3375 (600+ DPI) |
 | Frontend | `npm run build` passes and prerenders all routes; `npm run lint` exits 0 (warnings only) |
@@ -94,10 +94,10 @@ python scripts/smoke_test.py --phase final --limit 20
 **Scope:**
 
 - `B8-placebo`: B8 with **cross-agent round-pooled** evidence labels/verdicts. Tests whether the *signal*, not the extra machinery, causes the effect.
-- `B8-oracle`: B8 with gold information — the default is gold-evidence-only on EG-SSS; the alternate is gold-answer trust — frozen in WP-18. Upper bound, not a competitor.
+- `B8-oracle`: B8 with gold information — the default is gold-evidence-only on SciClaimBench; the alternate is gold-answer trust — frozen in WP-18. Upper bound, not a competitor.
 - Runner/config switches, prompt handling, tests, and a separate Full-run matrix.
 - Keep the current executable Core matrix at 4 conditions × 3 datasets × 2 seeds = **24 runs**. Conservative gate cap 1,280 GPU-h (9,600 debates at 400/cell); per-dataset plan GPQA 400 + MMLU-Pro 400 + HLE 200 = 8,000 debates / ~1,067 GPU-h.
-- Add `configs/experiments_full.yaml` for the 6-arm Full run: the default is **32 rows** with a **gold-evidence oracle on EG-SSS** (1,280 GPU-h); the alternate is **36 rows** with a **gold-answer oracle** at 300 items/dataset (1,440 GPU-h). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze.
+- Add `configs/experiments_full.yaml` for the 6-arm Full run: the default is **32 rows** with a **gold-evidence oracle on SciClaimBench** (1,280 GPU-h); the alternate is **36 rows** with a **gold-answer oracle** at 300 items/dataset (1,440 GPU-h). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; SciClaimBench joins at the v1.2 benchmark freeze.
 - Update `PRE_REGISTRATION.md` with the 6-arm target and the executable subset (that file is maintained separately; this roadmap does not edit it).
 
 **Acceptance:** mock B8-placebo and B8-oracle records validate; placebo does not match B8; oracle ranks at or above B8; `run_matrix.py --dry-run` shows 24 Core rows and the frozen Full rows (32 gold-evidence default; 36 gold-answer alternate); no change to the 13/13 gate.
@@ -108,16 +108,16 @@ python scripts/smoke_test.py --phase final --limit 20
 
 ## 4. Phase N3 — Benchmark calibration and freeze (Nov 2026–Feb 2027)
 
-**Objective:** build EG-SSS at the scale the design can defend.
+**Objective:** build SciClaimBench at the scale the design can defend.
 
-**Scope:** Core v1.0 runs on GPQA-Main + MMLU-Pro + HLE. EG-SSS is not in the v1.0 Core matrix; it freezes at 180 items under v1.2 and scales to the 300-item Full target.
+**Scope:** Core v1.0 runs on GPQA-Main + MMLU-Pro + HLE. SciClaimBench is not in the v1.0 Core matrix; it freezes at 180 items under v1.2 and scales to the 300-item Full target.
 
 **Ladder:**
 
 | Size | Role | Annotation | Decision |
 |---:|---|---:|---|
 | **24** | Calibration batch | ~1 week | Start here; if `H_attempt > 2.0` or defect >15%, cut to 120 immediately |
-| **180** | EG-SSS v1.2 freeze (not in the v1.0 Core matrix) | ~410 h | Freeze by Jan 2027 |
+| **180** | SciClaimBench v1.2 freeze (not in the v1.0 Core matrix) | ~410 h | Freeze by Jan 2027 |
 | **300** | Full-run benchmark target | ~684 h | Target by Feb 2027 |
 | **600** | Stretch | ~1,368 h | Only with 2–3 dedicated annotators |
 | **800** | No-go | ~1,824 h | Do not build |
@@ -162,7 +162,7 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Arms:** B3, B4-matched, B8-no-trust, B8.
 
-**Design:** GPQA-Main + MMLU-Pro + HLE; 400 + 400 + 200 items; 2 seeds; **24 runs, 8,000 planned debates / ~1,067 GPU-h**; **1,280 GPU-h conservative gate cap**; EG-SSS-180 freezes under v1.2, outside this matrix. Runs on the **4-bit 24–27B stack on one 80 GB A100 PCIe**.
+**Design:** GPQA-Main + MMLU-Pro + HLE; 400 + 400 + 200 items; 2 seeds; **24 runs, 8,000 planned debates / ~1,067 GPU-h**; **1,280 GPU-h conservative gate cap**; SciClaimBench-180 freezes under v1.2, outside this matrix. Runs on the **4-bit 24–27B stack on one 80 GB A100 PCIe**.
 
 **Primary endpoint:** final-answer accuracy on pressure-eligible items, paired B8 vs B8-no-trust. **Co-primary:** CMR. Secondary: ARR, trust AUROC/Brier, verifier balanced accuracy, citation faithfulness.
 
@@ -180,7 +180,7 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Arms:** B3, B4-matched, B8-no-trust, B8, B8-placebo, B8-oracle.
 
-**Design:** 6 arms × 3 datasets × 2 seeds; 300-item benchmark target. The default is **32 rows** with a **gold-evidence oracle on EG-SSS** (1,280 GPU-h, **$210**); **36 rows** is the **gold-answer alternate** (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; EG-SSS joins at the v1.2 benchmark freeze. Human eval starts in parallel. Core and Full run on the same **4-bit 24–27B stack on one 80 GB A100 PCIe**, so cells are reusable only where model revisions, prompts, and configs match.
+**Design:** 6 arms × 3 datasets × 2 seeds; 300-item benchmark target. The default is **32 rows** with a **gold-evidence oracle on SciClaimBench** (1,280 GPU-h, **$210**); **36 rows** is the **gold-answer alternate** (1,440 GPU-h, **$235**). **B8-placebo is a cross-agent round-pool.** Exact per-dataset caps are frozen in the v1.3 WP-18 amendment; SciClaimBench joins at the v1.2 benchmark freeze. Human eval starts in parallel. Core and Full run on the same **4-bit 24–27B stack on one 80 GB A100 PCIe**, so cells are reusable only where model revisions, prompts, and configs match.
 
 **G4/G5 pass:** placebo does not match B8; oracle separates; the sign reversal appears at the predicted q/ρ boundary; one external-validity check replicates the sign.
 
@@ -240,7 +240,7 @@ python scripts/smoke_test.py --phase final --limit 20
 
 **Hard stop: $600.** The two Full rows are alternatives; the total counts one Full run. The main causal matrix runs on one **80 GB A100 PCIe** spot at **$0.136/GPU-h**; the **96 GB FP8 stack** at **$0.336/GPU-h** is only the N1 smoke plus the GPQA precision replication (B3/B8-no-trust/B8, 150–200 questions, 1 seed). If the 80 GB A100 spot is unavailable and the main runs use 96 GB at $0.336/h, the plan is **$1,050–1,150** and requires **re-approval**; that fallback is not the default. Persist the cache; batch sessions; copy results before destroying the instance.
 
-The Full default is **32 rows** with a gold-evidence oracle on EG-SSS; **36 rows** is the gold-answer alternate. **B8-placebo is a cross-agent round-pool.** Core and Full run on the same 4-bit 24–27B stack, so cells are reusable only where model revisions, prompts, and configs match. Law-testing is outside this envelope and is not authorized by the $600 hard stop.
+The Full default is **32 rows** with a gold-evidence oracle on SciClaimBench; **36 rows** is the gold-answer alternate. **B8-placebo is a cross-agent round-pool.** Core and Full run on the same 4-bit 24–27B stack, so cells are reusable only where model revisions, prompts, and configs match. Law-testing is outside this envelope and is not authorized by the $600 hard stop.
 
 ---
 

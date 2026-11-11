@@ -23,7 +23,7 @@
 - **4-bit matrix stack:** 53.3GB pinned weights (Qwen3.8 AWQ, Gemma AWQ, Mistral AWQ); 80GB A100 offline check passes.
 - **Final stack:** 73.68GB pinned weights (Qwen3.8 FP8, Gemma FP8, Mistral AWQ); not smoke-tested.
 - **B7:** optional appendix ceiling, three GPT-6 Luna samples per question; not in Core/Full.
-- **Report:** 69 pages, 80 cited works, 0 errors/undefined refs; 14 overfull and 108 underfull boxes.
+- **Report:** 70 pages, 80 cited works, 0 errors/undefined refs; 12 overfull and 118 underfull boxes.
 
 ## Figure status
 
@@ -42,7 +42,7 @@ pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 pdflatex -interaction=nonstopmode -halt-on-error fydp.tex
 ```
 
-Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **69 pages, 80 cited works, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 14 overfull boxes (most at 1.9--65.5pt in long table/paragraph lines) and 108 underfull boxes, mostly narrow table cells.
+Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exited 0; BibTeX exited 0. **70 pages, 80 cited works, 0 errors, 0 undefined references, 0 undefined citations, 0 missing figures.** 12 overfull boxes and 118 underfull boxes, mostly in long table/paragraph lines and narrow table cells.
 
 ## Remaining placeholders / actions
 
@@ -51,7 +51,7 @@ Engine: pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026). Each pdfLaTeX pass exite
 - **Historical note (retired):** the RTX A6000 USD 0.263/hour figure is superseded; current budget in `docs/agent/08_COMPUTE_COST.md` (80 GB A100 PCIe at USD 0.136/GPU-h).
 - Run `smoke_test.py --phase final` on the 96GB stack.
 - Complete the 150--200-pair verifier human audit.
-- Complete the 24-item calibration batch and freeze the EG-SSS 180-item Core floor / 300-item Full target.
+- Complete the 24-item calibration batch and freeze the SciClaimBench 180-item Core floor / 300-item Full target.
 - Complete the WP-18 placebo/oracle slice; the Core matrix remains four arms until it lands.
 - The runner record adapter is wired; check a sample record for `manifest_hash`, `final_answer`, and the trust fields before the paid run.
 - Check the regenerated 600+ DPI figures against the new captions.
