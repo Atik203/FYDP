@@ -32,7 +32,7 @@ The framework runs three heterogeneous agents for three rounds. Each response is
 | [`literature_review/`](literature_review/) | Paper matrix, gap map, and per-paper reviews |
 | [`experiments/`](experiments/) | Run reports, gate artifacts, calibration protocols, and `next/WP-*.md` records |
 | [`docs/`](docs/) | Research blueprint, glossary, consistency audit, defence notes, and figure sources |
-| [`docs/COAUTHOR_GUIDE.md`](docs/COAUTHOR_GUIDE.md) | Co-author onboarding, annotation roles, examples, templates, and the 4/6-week plan |
+| [`docs/MEMBER_GUIDE.md`](docs/MEMBER_GUIDE.md) | Member onboarding, annotation roles, examples, templates, and the 4/6-week plan |
 | [`roadmap.md`](roadmap.md) | Phase-by-phase execution plan and compute budget |
 | [`AGENTS.md`](AGENTS.md) | Canonical instructions for human and AI contributors |
 
@@ -175,4 +175,4 @@ See [`SECURITY.md`](SECURITY.md). Never commit `.env`, `HF_TOKEN`, `OPENAI_API_K
 
 Supervisor: **Mohammad Nurul Huda, Ph.D.**, Professor, Department of Computer Science and Engineering, United International University.
 
-Co-author onboarding, annotation assignments, worked examples, and the 4/6-week plan: [`docs/COAUTHOR_GUIDE.md`](docs/COAUTHOR_GUIDE.md). Submission templates: [`docs/coauthor/templates/`](docs/coauthor/templates/).
+Member onboarding, annotation assignments, worked examples, and the 4/6-week plan: [`docs/MEMBER_GUIDE.md`](docs/MEMBER_GUIDE.md). Submission templates: [`docs/member/templates/`](docs/member/templates/).

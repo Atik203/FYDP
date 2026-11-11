@@ -4,7 +4,7 @@ This is a research repository, not a general-purpose library. Contributions are 
 
 Before changing anything, read [`AGENTS.md`](AGENTS.md) and, for the Python pipeline, [`trustcal/AGENTS.md`](trustcal/AGENTS.md). Those files define the source-of-truth rules; this file defines the workflow.
 
-Co-authors working on the annotation gates should start with [`docs/COAUTHOR_GUIDE.md`](docs/COAUTHOR_GUIDE.md) and the templates in [`docs/coauthor/templates/`](docs/coauthor/templates/).
+Members working on the annotation gates should start with [`docs/MEMBER_GUIDE.md`](docs/MEMBER_GUIDE.md) and the templates in [`docs/member/templates/`](docs/member/templates/).
 
 ## Branches
 

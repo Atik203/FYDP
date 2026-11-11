@@ -6,14 +6,16 @@ All notable changes to this repository are recorded here. The format follows [Ke
 
 ### Changed
 
-- Clarified that the co-author “training” task is a **human rater calibration session**, not model training; renamed the template to `calibration_notes.md`.
+- Reorganized the guide by member, changed “Author” to “Member”, and limited assignments to the human-judgment work that cannot be delegated to agents.
+- Clarified that the “training” task is a **human rater calibration session**, not model training; renamed the template to `calibration_notes.md`.
+- Removed the paper-support assignment and template; Member 1 and the agents handle manuscript checks.
 
 ## [0.2.1] - 2026-11-11
 
 ### Added
 
-- Co-author guide for Authors 2–6: roles, worked examples, direct links, submission rules, and a 6-week recommended / 4-week compressed plan.
-- Co-author templates for item verification, annotation submission, training notes, weekly check-ins, and paper support.
+- Member guide for Members 2–6: roles, worked examples, direct links, submission rules, and a 6-week recommended / 4-week compressed plan.
+- Member templates for item verification, annotation submission, rater calibration notes, and weekly check-ins.
 
 ### Changed
 
@@ -21,7 +23,7 @@ All notable changes to this repository are recorded here. The format follows [Ke
 - Renamed the dataset keys to `sciclaim_180` and `sciclaim_300`, and the schema version to `sciclaim-item-v0.1`.
 - Updated the Full config hash in the v1.3 pre-registration draft.
 - Recompiled both manuscripts after the rename.
-- Linked the co-author guide from the README, contributing guide, documentation index, and both annotation protocols.
+- Linked the member guide from the README, contributing guide, documentation index, and both annotation protocols.
 
 ### Verification
 

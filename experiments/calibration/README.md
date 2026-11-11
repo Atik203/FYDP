@@ -1,6 +1,6 @@
 # SciClaimBench 24-item calibration — protocol and working files
 
-**Co-author guide:** [`docs/COAUTHOR_GUIDE.md`](../../docs/COAUTHOR_GUIDE.md) — roles, worked examples, and the 4/6-week plan.
+**Member guide:** [`docs/MEMBER_GUIDE.md`](../../docs/MEMBER_GUIDE.md) — roles, worked examples, and the 4/6-week plan.
 
 **Gate:** Phase N3 (roadmap §4). **Owner:** P3 + annotators.
 **Status (9 Nov 2026): BLOCKED on item authoring and human annotation.**

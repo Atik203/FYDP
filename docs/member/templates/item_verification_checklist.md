@@ -3,9 +3,9 @@
 **Verifier:** ____________________  
 **Date:** ____________________  
 **Batch:** `experiments/calibration/private/items.jsonl`  
-**Guide:** [`docs/COAUTHOR_GUIDE.md`](../../COAUTHOR_GUIDE.md)
+**Guide:** [`docs/MEMBER_GUIDE.md`](../../MEMBER_GUIDE.md)
 
-Use one copy per item. Do not edit the item source; return the completed checklist and a written problem list to Author 1.
+Use one copy per item. Do not edit the item source; return the completed checklist and a written problem list to Member 1.
 
 ## Item
 

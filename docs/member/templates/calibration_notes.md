@@ -1,6 +1,6 @@
 # Rater calibration notes
 
-This is a **human rater calibration session**, not model training. Author 1 or an agent may prepare the deck, examples, and practice rows; Author 2 facilitates the session, answers codebook questions, protects blinding, and signs the notes.
+This is a **human rater calibration session**, not model training. Member 1 or an agent may prepare the deck, examples, and practice rows; Member 2 facilitates the session, answers codebook questions, protects blinding, and signs the notes.
 
 **Date:** ____________________  
 **Lead:** ____________________  
@@ -16,7 +16,7 @@ This is a **human rater calibration session**, not model training. Author 1 or a
 - [ ] `experiments/calibration/schema.md`
 - [ ] `experiments/verifier_audit/README.md`
 - [ ] `docs/GLOSSARY.md`
-- [ ] `docs/COAUTHOR_GUIDE.md`
+- [ ] `docs/MEMBER_GUIDE.md`
 
 ## Practice rows
 
