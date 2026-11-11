@@ -43,11 +43,13 @@ You are not being asked to run models, write code, or build the literature revie
 | Person | Main role | Main tasks | Main deliverables |
 | --- | --- | --- | --- |
 | **Author 1 — Atik** | First author; pipeline and experiments | Draft SciClaimBench items with agents, run the GPU pipeline, compute agreement/accuracy, write the analysis, integrate the paper | Draft items, score reports, manuscript numbers |
-| **Author 2 — Rakibul** | **Annotation lead** | Run training, prepare batches, protect blinding, rate the verifier audit, co-author SciClaimBench items, write the agreement report | Training notes, verifier rater sheet, agreement report, adjudication coordination |
+| **Author 2 — Rakibul** | **Annotation lead** | Facilitate the rater calibration session, prepare batches, protect blinding, rate the verifier audit, co-author SciClaimBench items, write the agreement report | Calibration notes, verifier rater sheet, agreement report, adjudication coordination |
 | **Author 3 — Salman** | **SciClaimBench item lead** | Verify claim atomicity and evidence locators, cross-review items, QA the verifier-audit sheets | Item-verification checklist, defect log, verifier QA note |
 | **Author 4 — Pratay** | **SciClaimBench rater 1; verifier rater 2** | Label all SciClaimBench claims and all 180 verifier pairs; check statistics | Two completed rater sheets, statistics check |
 | **Author 5 — Yousuf** | **SciClaimBench rater 2; paper-support lead** | Label all SciClaimBench claims; run the number/citation/terminology check on the manuscripts | Second SciClaimBench sheet, paper-support checklist |
 | **Author 6 — Limu** | **Adjudicator; data/licence steward** | Adjudicate both audits, check licences and private-data handling, maintain the adjudication log | Adjudicated sheets, licence/PII checklist |
+
+**Why Author 2 runs the calibration.** “Training” here means **human rater calibration**, not model training. The models are frozen and inference-only; no model is trained in this project. Agents can prepare the calibration deck, examples, and practice rows, but Author 2 runs the 30-minute session, records the decisions, and owns blinding and agreement. This keeps the first author from anchoring the raters.
 
 ### Who rates what
 

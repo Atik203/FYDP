@@ -1,4 +1,6 @@
-# Training notes
+# Rater calibration notes
+
+This is a **human rater calibration session**, not model training. Author 1 or an agent may prepare the deck, examples, and practice rows; Author 2 facilitates the session, answers codebook questions, protects blinding, and signs the notes.
 
 **Date:** ____________________  
 **Lead:** ____________________  

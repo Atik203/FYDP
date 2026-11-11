@@ -4,6 +4,10 @@ All notable changes to this repository are recorded here. The format follows [Ke
 
 ## [Unreleased]
 
+### Changed
+
+- Clarified that the co-author “training” task is a **human rater calibration session**, not model training; renamed the template to `calibration_notes.md`.
+
 ## [0.2.1] - 2026-11-11
 
 ### Added
