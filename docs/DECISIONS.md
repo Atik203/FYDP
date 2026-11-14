@@ -2,6 +2,18 @@
 
 Approved architecture, hardware, and environment decisions. Add an entry before confirmatory work when a decision changes the compute path, driver, CUDA version, or serving environment.
 
+## 2026-11-14 — Dev-slice validation before cloud runs
+
+**Status:** approved.
+
+**Decision:** use the 18 GB `uiu-h200` slice for single-model development checks before paying for cloud GPU time. Run one dev model at a time; use `mock_vllm.py` for the three-agent flow. Finalize prompts, parser, answer rendering, serving flags, manifest/resume, and the retrieval/verifier path before the cloud smoke.
+
+**What it can validate:** each dev model loads; the chat template and output format work; the parser and option renderer work; one real agent can run against two mock agents; the retrieval/verifier path works; configs, hashes, and resume logic are stable.
+
+**What it cannot validate:** three real models at once, KV-cache pressure on the final stack, FP8 serving, final-model behavior, or the cloud hardware-smoke gate.
+
+**Expected effect:** the matrix GPU-hours do not change; the free slice reduces avoidable cloud debugging and retry overhead. Planning offset is **$20–50 direct**, with additional risk avoidance if it prevents a failed Core/Full rerun. The **$500–600** planning range and **$600** hard stop remain unchanged until actual invoices replace the estimate.
+
 ## 2026-11-14 — University H200 MIG access
 
 **Status:** approved for development and interface checks only; not approved for the confirmatory matrix.

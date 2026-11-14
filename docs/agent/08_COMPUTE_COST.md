@@ -59,6 +59,8 @@ The main matrix runs on the **80 GB A100 PCIe** because the 4-bit 24–27B stack
 
 **Full design:** the default is **32 rows** with a **gold-evidence oracle on SciClaimBench**; **36 rows** is the gold-answer alternate. The two Full rows are **alternatives**, not additions; the total counts one Full run. The **placebo** is a **cross-agent round-pool**. WP-18 freezes the definition; do not run Full before N1 and WP-18.
 
+**Dev-slice offset (not a cap change).** The free university `uiu-h200` 18 GB slice can run one dev model at a time and the mock three-agent path. It cannot run the 53.26 GB 4-bit matrix stack, the 73.68 GB FP8 stack, or the three-model dev trio. Use it to finalize prompts, parser, answer rendering, serving flags, manifest/resume, and retrieval/verifier checks before renting cloud GPUs. It does not reduce the matrix debate hours; its expected effect is to reduce avoidable setup/debug/retry overhead. Planning offset: **$20–50 direct** (a 5–10% reduction in the 20% overhead line, plus avoided smoke retries). A prevented Core/Full rerun is worth **$175–235**, but that is risk avoidance, not expected savings. Keep the **$500–600** range and **$600** hard stop until actual invoices replace the estimate.
+
 **Fallback:** if the 80 GB A100 spot is unavailable and the main runs use the 96 GB card at **$0.336/GPU-h**, the plan becomes **$1,050–1,150** and requires **re-approval**. This is a fallback, not the default, and must not be presented as the plan.
 
 **Law-testing:** outside the **$500–600** envelope and the **$600 hard stop**. No law-testing spend is authorized under this budget; a separate cost model and approval are required.
