@@ -104,6 +104,23 @@ Paper reviews live in `literature_review/papers/NN-slug-author-year.md` and foll
 - Don't commit unless explicitly asked. Never push to `main` directly; use a branch.
 - `dist/` is build output — never edit it by hand.
 
+## University H200 access
+
+The university GPU is the current approved compute path. Use it only for this project, and only under these rules. If an action is not explicitly allowed here, ask the user first.
+
+- **Access:** SSH through the local alias `uiu-h200` only. Do not expose ports or create another connection method.
+- **GPU:** H200 MIG `1g.18gb`, 18 GB VRAM maximum. Use only this slice.
+- **Driver / CUDA:** NVIDIA driver `580.178.04`, CUDA `13.5`. Do not change, overwrite, reinstall, or upgrade either; do not replace system libraries.
+- **Host changes:** do not change GPU clocks, power limits, MIG settings, the SSH daemon, host keys, the account name, the login method, or other users' `authorized_keys`.
+- **Storage:** 200 GB maximum. Check `df -h` and `du -sh`; stay inside the project space; do not change mounts, quotas, or permissions; do not delete other users' files.
+- **Python:** use a project-local venv or conda environment only. No system-wide packages and no `sudo` without administrator approval.
+- **Jobs:** use `tmux` or `screen`; stop idle GPU jobs. No mining, public services, port scanning, or unrelated workloads.
+- **Secrets:** never commit a server address, hostname, username, account ID, password, SSH key, or host fingerprint. Allowed identifiers are `uiu-h200`, `H200 1g.18gb`, driver `580.178.04`, and CUDA `13.5`.
+- **Policy:** follow the university's monitoring, acceptable-use, and data-handling policies.
+- **Change control:** record approved hardware, driver, CUDA, or environment changes in `docs/DECISIONS.md` before confirmatory work.
+
+The 18 GB slice cannot hold the 53.26 GB 4-bit matrix stack, the 73.68 GB FP8 stack, or the ~25 GB dev trio. Do not schedule the Core/Full matrices, the multi-model smoke, or the FP8 precision replication on it. Use it only for single small-model interface, prompt, parser, or retrieval checks, and ask the user before a GPU run.
+
 ## Cache discipline (why this file is structured this way)
 
 To maximize prompt-cache hits across agent tools and models (DeepSeek V4, MiniMax M3, Kimi K2.7, Claude Code), this file is the **single canonical instruction block**:

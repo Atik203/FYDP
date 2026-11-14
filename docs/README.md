@@ -6,6 +6,7 @@
 | [`project_structure.md`](project_structure.md) | Module map and the responsibility of each package |
 | [`GLOSSARY.md`](GLOSSARY.md) | Terms, metrics, arms, and stack names used across the project |
 | [`CONSISTENCY_AUDIT.md`](CONSISTENCY_AUDIT.md) | Claim and number reconciliation; historical snapshots are marked |
+| [`DECISIONS.md`](DECISIONS.md) | Approved hardware, driver, CUDA, and environment decisions |
 | [`MEMBER_GUIDE.md`](MEMBER_GUIDE.md) | Member onboarding, annotation roles, worked examples, and the 4/6-week plan |
 | [`member/templates/`](member/templates/) | Submission templates for item verification, annotation, rater calibration, and weekly check-ins |
 | [`FYDP1_defence_Q&A.md`](FYDP1_defence_Q&A.md) | Defence preparation, runbook, and likely questions |

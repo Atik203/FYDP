@@ -129,7 +129,13 @@ No FP8 precision replication is trusted until that hardware smoke passes and its
 - GPQA/HLE are gated Hugging Face repos: downloads 401 without `HF_TOKEN`. B7 needs `OPENAI_API_KEY`.
 - Vast images ship their own `AGENTS.md`/`CLAUDE.md` plus `vast-capabilities` (installed services, ports, persistence) — prefer those for machine facts.
 
+## University H200 slice (18 GB)
+
+The current approved GPU is the university H200 MIG `1g.18gb` slice, reached only through the local SSH alias `uiu-h200`. The full rules are in the repository-root `AGENTS.md`. The slice has 18 GB of VRAM and cannot serve the 53.26 GB `fourbit` stack, the 73.68 GB `final` stack, or the ~25 GB dev trio. Do not schedule a multi-model smoke, the Core/Full matrices, or the FP8 precision replication on it. It is limited to single small-model interface, prompt, parser, or retrieval checks; ask the user before any GPU run. Do not expose ports. Record approved hardware, driver, CUDA, or environment changes in `docs/DECISIONS.md`.
+
 ## Managing the GPU instance from a local machine (Vast.ai)
+
+> **Not the current access path.** The university `uiu-h200` slice is the approved GPU. Do not create a Vast instance without explicit user approval. The notes below are retained for a future approved fallback.
 
 Vast's supported agent integration is the **CLI + agent skill** (no official MCP server; third-party MCP servers exist but are not vendored here). Install the skill for opencode and other skills-framework agents:
 
